@@ -1,0 +1,1 @@
+export { MDFeRegistrations } from './MDFeRegistrations';

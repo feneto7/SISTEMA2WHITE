@@ -1,0 +1,208 @@
+/* Basic reset and macOS-like font stack */
+* { box-sizing: border-box; }
+html, body, #root { height: 100%; }
+body {
+  margin: 0;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  background: linear-gradient(135deg, #e6ecf5, #f5f7fb);
+}
+
+button { font-family: inherit; }
+
+/* Animações do sistema */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Customização da scrollbar estilo macOS */
+.list-content::-webkit-scrollbar {
+  width: 8px;
+}
+
+.list-content::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.list-content::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 4px;
+}
+
+.list-content::-webkit-scrollbar-thumb:hover {
+  background: rgba(0, 0, 0, 0.3);
+}
+
+/* Estilos globais para campos de input do sistema */
+input[type="text"],
+input[type="email"],
+input[type="tel"],
+input[type="password"],
+input[type="number"],
+textarea,
+select {
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  background: rgba(0, 0, 0, 0.04);
+  font-size: 14px;
+  font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  color: var(--text-primary, #1d1d1f);
+  outline: none;
+  width: 100%;
+  border-radius: 8px;
+  padding: 10px 16px;
+  transition: all 0.2s ease;
+}
+
+input[type="text"]::placeholder,
+input[type="email"]::placeholder,
+input[type="tel"]::placeholder,
+input[type="password"]::placeholder,
+input[type="number"]::placeholder,
+textarea::placeholder {
+  color: rgba(0, 0, 0, 0.5);
+  font-weight: 400;
+}
+
+/* Efeito de foco nos campos de input */
+input[type="text"]:focus,
+input[type="email"]:focus,
+input[type="tel"]:focus,
+input[type="password"]:focus,
+input[type="number"]:focus,
+textarea:focus,
+select:focus {
+  background: rgba(0, 0, 0, 0.06);
+  border-color: rgba(10, 132, 255, 0.3);
+  box-shadow: 0 0 0 3px rgba(10, 132, 255, 0.1);
+}
+
+/* Container padrão para campos de busca */
+.search-input-container {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: rgba(0, 0, 0, 0.04);
+  border-radius: 8px;
+  padding: 10px 16px;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  transition: all 0.2s ease;
+}
+
+/* Efeito de foco no container de busca */
+.search-input-container:focus-within {
+  background: rgba(0, 0, 0, 0.06);
+  border-color: rgba(10, 132, 255, 0.3);
+  box-shadow: 0 0 0 3px rgba(10, 132, 255, 0.1);
+}
+
+/* Efeito de foco no input de busca */
+input[type="text"]:focus {
+  outline: none;
+}
+
+/* Efeitos específicos para botões de ação - mais sutis */
+.actionButton:hover {
+  background: linear-gradient(to bottom, #f8f8f8, #e0e0e0) !important;
+  color: rgba(0, 0, 0, 0.8) !important;
+  transform: translateY(-1px) scale(1.05) !important;
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.12), inset 0 1px 0 rgba(255, 255, 255, 0.4) !important;
+}
+
+.actionButton:active {
+  transform: translateY(0px) scale(0.95) !important;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1), inset 0 1px 0 rgba(255, 255, 255, 0.3) !important;
+  border: none !important;
+  outline: none !important;
+}
+
+.actionButton:focus {
+  border-color: rgba(10, 132, 255, 0.3) !important;
+  box-shadow: 0 0 0 3px rgba(10, 132, 255, 0.1), 0 1px 2px rgba(0, 0, 0, 0.1), inset 0 1px 0 rgba(255, 255, 255, 0.3) !important;
+  outline: none !important;
+}
+
+/* Estilos globais para botões do sistema - estilo macOS */
+button {
+  font-family: inherit;
+  outline: none !important;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  border-radius: 6px;
+  position: relative;
+  overflow: hidden;
+  border: none !important;
+  -webkit-appearance: none !important;
+  -moz-appearance: none !important;
+  appearance: none !important;
+}
+
+/* Efeito de hover estilo macOS para todos os botões */
+button:hover {
+  transform: translateY(-1px) scale(1.02);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15), 0 2px 4px rgba(0, 0, 0, 0.1);
+  filter: brightness(1.05);
+}
+
+/* Efeito de active estilo macOS */
+button:active {
+  transform: translateY(0px) scale(0.98);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  filter: brightness(0.95);
+  border: none !important;
+  outline: none !important;
+}
+
+/* Efeito de foco estilo macOS */
+button:focus {
+  outline: none !important;
+  border-color: rgba(10, 132, 255, 0.4) !important;
+  box-shadow: 0 0 0 3px rgba(10, 132, 255, 0.15), 0 2px 8px rgba(0, 0, 0, 0.1) !important;
+}
+
+/* Remover bordas de foco indesejadas */
+button:focus,
+div[role="button"]:focus,
+[onclick]:focus {
+  outline: none !important;
+  border-color: inherit !important;
+}
+
+/* Garantir que elementos clicáveis não tenham bordas de foco */
+button:focus-visible,
+div[role="button"]:focus-visible,
+[onclick]:focus-visible {
+  outline: none !important;
+}
+
+/* Remover bordas específicas das abas */
+div[style*="tab"]:focus,
+div[style*="tab"]:hover:focus,
+div[style*="tab"]:active:focus {
+  outline: none !important;
+  border-color: #d0d0d0 !important;
+  box-shadow: inherit !important;
+}
+
+/* CSS específico para abas do modal */
+.modal-tab {
+  outline: none !important;
+  border-color: #d0d0d0 !important;
+}
+
+.modal-tab:focus,
+.modal-tab:focus-visible,
+.modal-tab:hover:focus,
+.modal-tab:active:focus {
+  outline: none !important;
+  border-color: #d0d0d0 !important;
+  box-shadow: inherit !important;
+}
+

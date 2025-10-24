@@ -1,0 +1,32 @@
+{
+  "name": "system",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Electron + Vite + React + TypeScript app with modular pages and shared styles",
+  "main": "dist/main/index.js",
+  "author": "",
+  "license": "MIT",
+  "scripts": {
+    "start": "electron-vite dev",
+    "dev": "electron-vite dev",
+    "build": "electron-vite build",
+    "preview": "electron-vite preview",
+    "typecheck": "tsc -b"
+  },
+  "dependencies": {
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1"
+  },
+  "devDependencies": {
+    "@types/node": "^22.7.4",
+    "@types/react": "^18.3.8",
+    "@types/react-dom": "^18.3.0",
+    "@vitejs/plugin-react": "^4.3.3",
+    "electron": "^31.6.0",
+    "electron-vite": "^2.3.0",
+    "terser": "^5.44.0",
+    "typescript": "^5.6.3",
+    "vite": "^5.4.10"
+  }
+}

@@ -1,0 +1,1 @@
+export { NewMDFe } from './NewMDFe';

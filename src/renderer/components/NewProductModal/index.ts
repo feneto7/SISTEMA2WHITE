@@ -1,0 +1,1 @@
+export { NewProductModal } from './NewProductModal';

@@ -1,0 +1,1 @@
+export { MDFePage } from './MDFe';
