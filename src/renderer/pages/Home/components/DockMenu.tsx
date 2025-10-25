@@ -8,6 +8,15 @@ import {
   DocumentIcon,
   UsersIcon
 } from '../../../components/Icons/Icons';
+
+// Ícone customizado para operações
+const OperationsIcon = ({ size = 24, color = 'currentColor' }: { size?: number; color?: string }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+    <circle cx="9" cy="21" r="1"/>
+    <circle cx="20" cy="21" r="1"/>
+    <path d="M1 1H5L7.68 14.39C7.77144 14.8504 8.02191 15.264 8.38755 15.5583C8.75318 15.8526 9.2107 16.009 9.68 16H19.4C19.8693 16.009 20.3268 15.8526 20.6925 15.5583C21.0581 15.264 21.3086 14.8504 21.4 14.39L23 6H6"/>
+  </svg>
+);
 import { useClickSound } from '../../../hooks/useClickSound';
 import { useNavigation } from '../../../router/Navigation';
 import { Tooltip } from '../../../components/Tooltip';
@@ -55,6 +64,7 @@ export function DockMenu(): JSX.Element {
         <DockButton icon={DocumentIcon} label="Documentos" />
         <DockButton icon={DocumentIcon} label="Produtos" onClick={() => navigate('products')} />
         <DockButton icon={UsersIcon} label="Clientes" onClick={() => navigate('clients')} />
+        <DockButton icon={OperationsIcon} label="Operações" onClick={() => navigate('operations')} />
         <DockButton icon={DocumentIcon} label="Fiscal" onClick={() => navigate('fiscal')} />
       </div>
     </div>
