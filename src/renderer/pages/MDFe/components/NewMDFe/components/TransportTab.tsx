@@ -146,7 +146,7 @@ export function TransportTab({ formData, onUpdateFormData }: TransportTabProps):
   };
 
   const getInputProps = (field: string, placeholder: string, type: string = 'text') => ({
-    type: type as const,
+    type: type,
     style: getInputStyle(field),
     value: formData[field] || '',
     onChange: (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => handleInputChange(field, e.target.value),
@@ -493,6 +493,7 @@ export function TransportTab({ formData, onUpdateFormData }: TransportTabProps):
           </div>
         )}
       </div>
+
     </div>
   );
 }
