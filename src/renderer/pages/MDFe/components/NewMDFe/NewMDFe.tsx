@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { modalStyles } from '../../../../styles/modalStyles';
 import { useClickSound } from '../../../../hooks/useClickSound';
-import { DocumentsTab, TransportTab, DriversTab, RouteTab } from './components';
+import { DocumentsTab, TransportTab, DriversTab, RouteTab, FreightTab, InsuranceTab, TotalizersTab } from './components';
 
 // New MDF-e modal
 // Modularized component following project rules
@@ -11,7 +11,7 @@ interface NewMDFeProps {
   onSave: (mdfeData: any) => void;
 }
 
-type TabType = 'documents' | 'transport' | 'drivers' | 'route';
+type TabType = 'documents' | 'transport' | 'drivers' | 'route' | 'freight' | 'insurance' | 'totalizers';
 
 type MDFeType = 'rodoviario' | 'aereo' | 'aquaviario' | 'ferroviario';
 
@@ -71,6 +71,49 @@ export function NewMDFe({ isOpen, onClose, onSave }: NewMDFeProps): JSX.Element 
     municipioDescarregamento: '',
     ufDescarregamento: '',
     
+    // Freight data
+    valePedagioList: [],
+    categoriaVeicular: '',
+    
+    // Payment data
+    nomeResponsavel: '',
+    cpfCnpjResponsavel: '',
+    valorTotalContrato: '',
+    formaPagamento: '',
+    numeroBanco: '',
+    numeroAgencia: '',
+    pix: '',
+    cnpjIpef: '',
+    
+    // CIOT data
+    ciotList: [],
+    
+    // Insurance data
+    responsavelSeguro: '',
+    cpfCnpjResponsavelSeguro: '',
+    nomeSeguradora: '',
+    cnpjSeguradora: '',
+    numeroApolice: '',
+    averbacaoList: [],
+    exibirDadosSeguro: false,
+    
+    // Totalizers data
+    qntTotalNFe: '',
+    valorTotalCarga: '',
+    codUnidadeMedidaCarga: '',
+    pesoTotalCarga: '',
+    lacreList: [],
+    autorizadoList: [],
+    notasSemPesoBruto: [],
+    
+    // Product data
+    tipoCarga: '',
+    descricaoProduto: '',
+    gtin: '',
+    codigoNCM: '',
+    cepLocalCarregamento: '',
+    cepLocalDescarregamento: '',
+    
     // MDF-e basic data
     tipoMDFe: 'rodoviario',
     numero: '',
@@ -128,6 +171,37 @@ export function NewMDFe({ isOpen, onClose, onSave }: NewMDFeProps): JSX.Element 
       ufsPercurso: [],
       municipioDescarregamento: '',
       ufDescarregamento: '',
+      valePedagioList: [],
+      categoriaVeicular: '',
+      nomeResponsavel: '',
+      cpfCnpjResponsavel: '',
+      valorTotalContrato: '',
+      formaPagamento: '',
+      numeroBanco: '',
+      numeroAgencia: '',
+      pix: '',
+      cnpjIpef: '',
+      ciotList: [],
+      responsavelSeguro: '',
+      cpfCnpjResponsavelSeguro: '',
+      nomeSeguradora: '',
+      cnpjSeguradora: '',
+      numeroApolice: '',
+      averbacaoList: [],
+      exibirDadosSeguro: false,
+      qntTotalNFe: '',
+      valorTotalCarga: '',
+      codUnidadeMedidaCarga: '',
+      pesoTotalCarga: '',
+      lacreList: [],
+      autorizadoList: [],
+      notasSemPesoBruto: [],
+      tipoCarga: '',
+      descricaoProduto: '',
+      gtin: '',
+      codigoNCM: '',
+      cepLocalCarregamento: '',
+      cepLocalDescarregamento: '',
       tipoMDFe: 'rodoviario',
       numero: '',
       serie: '001',
@@ -283,6 +357,42 @@ export function NewMDFe({ isOpen, onClose, onSave }: NewMDFeProps): JSX.Element 
           >
             Rota
           </button>
+          <button
+            style={{
+              ...modalStyles.tab,
+              ...(activeTab === 'freight' ? modalStyles.tabActive : {})
+            }}
+            onClick={() => {
+              playClickSound();
+              setActiveTab('freight');
+            }}
+          >
+            Frete
+          </button>
+          <button
+            style={{
+              ...modalStyles.tab,
+              ...(activeTab === 'insurance' ? modalStyles.tabActive : {})
+            }}
+            onClick={() => {
+              playClickSound();
+              setActiveTab('insurance');
+            }}
+          >
+            Seguro
+          </button>
+          <button
+            style={{
+              ...modalStyles.tab,
+              ...(activeTab === 'totalizers' ? modalStyles.tabActive : {})
+            }}
+            onClick={() => {
+              playClickSound();
+              setActiveTab('totalizers');
+            }}
+          >
+            Totalizadores
+          </button>
         </div>
 
         {/* Tab content */}
@@ -314,6 +424,27 @@ export function NewMDFe({ isOpen, onClose, onSave }: NewMDFeProps): JSX.Element 
               onUpdateFormData={updateFormData}
             />
           )}
+
+          {activeTab === 'freight' && (
+            <FreightTab
+              formData={formData}
+              onUpdateFormData={updateFormData}
+            />
+          )}
+
+          {activeTab === 'insurance' && (
+            <InsuranceTab
+              formData={formData}
+              onUpdateFormData={updateFormData}
+            />
+          )}
+
+          {activeTab === 'totalizers' && (
+            <TotalizersTab
+              formData={formData}
+              onUpdateFormData={updateFormData}
+            />
+          )}
         </div>
 
         {/* Modal footer */}
@@ -324,18 +455,36 @@ export function NewMDFe({ isOpen, onClose, onSave }: NewMDFeProps): JSX.Element 
           >
             Cancelar
           </button>
-          <button
-            style={{
-              ...modalStyles.button,
-              ...modalStyles.buttonPrimary
-            }}
-            onClick={() => {
-              playClickSound();
-              handleSave();
-            }}
-          >
-            Criar MDF-e
-          </button>
+          <div style={{ display: 'flex', gap: '8px' }}>
+            <button
+              style={{
+                ...modalStyles.button,
+                background: 'linear-gradient(to bottom, #34C759, #28A745)',
+                color: 'white',
+                border: '1px solid #34C759',
+                boxShadow: '0 1px 2px rgba(52, 199, 89, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.2)'
+              }}
+              onClick={() => {
+                playClickSound();
+                // TODO: Implementar validação do MDF-e
+                console.log('Validando MDF-e:', formData);
+              }}
+            >
+              Validar
+            </button>
+            <button
+              style={{
+                ...modalStyles.button,
+                ...modalStyles.buttonPrimary
+              }}
+              onClick={() => {
+                playClickSound();
+                handleSave();
+              }}
+            >
+              Criar MDF-e
+            </button>
+          </div>
         </div>
       </div>
     </div>
