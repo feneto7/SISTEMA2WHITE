@@ -11,6 +11,8 @@ const Products = lazy(() => import('./pages/Products/Products').then(module => (
 const Clients = lazy(() => import('./pages/Clients/Clients').then(module => ({ default: module.Clients })));
 const Fiscal = lazy(() => import('./pages/Fiscal/Fiscal').then(module => ({ default: module.Fiscal })));
 const MDFe = lazy(() => import('./pages/MDFe/MDFe').then(module => ({ default: module.MDFePage })));
+const Operations = lazy(() => import('./pages/Operations/Operations').then(module => ({ default: module.default })));
+const Sales = lazy(() => import('./pages/Sales/Sales').then(module => ({ default: module.default })));
 
 // Componente de loading otimizado
 const PageLoader = () => (
@@ -73,6 +75,10 @@ function AppContent(): JSX.Element {
         return <Fiscal />;
       case 'mdfe':
         return <MDFe />;
+      case 'operations':
+        return <Operations />;
+      case 'sales':
+        return <Sales />;
       default:
         return <Home />;
     }
