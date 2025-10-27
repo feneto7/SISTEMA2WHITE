@@ -1,5 +1,5 @@
 import React, { useState, useRef } from 'react';
-import { modalStyles } from '../../../../../styles/modalStyles';
+import { systemStyles, systemColors } from '../../../../../styles/systemStyle';
 import { useClickSound } from '../../../../../hooks/useClickSound';
 import { useElementScrollbarStyles } from '../../../../../hooks/useScrollbarStyles';
 import { AddButton } from '../../../../../components/AddButton';
@@ -85,8 +85,8 @@ export function RouteTab({ formData, onUpdateFormData }: RouteTabProps): JSX.Ele
   };
 
   const getInputStyle = (field: string) => {
-    const baseStyle = modalStyles.formInput;
-    const focusStyle = focusedField === field ? modalStyles.formInputFocus : {};
+    const baseStyle = systemStyles.input.field;
+    const focusStyle = focusedField === field ? systemStyles.input.fieldFocus : {};
     return { ...baseStyle, ...focusStyle };
   };
 
@@ -149,7 +149,7 @@ export function RouteTab({ formData, onUpdateFormData }: RouteTabProps): JSX.Ele
     container: {
       height: '100%',
       overflow: 'auto' as const,
-      padding: '0'
+      padding: '20px'
     },
     section: {
       marginBottom: '24px'
@@ -157,12 +157,12 @@ export function RouteTab({ formData, onUpdateFormData }: RouteTabProps): JSX.Ele
     sectionTitle: {
       fontSize: '14px',
       fontWeight: '600',
-      color: 'var(--text-primary)',
+      color: systemColors.text.primary,
       margin: '0 0 16px 0',
       fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, Helvetica, Arial, sans-serif',
       textTransform: 'uppercase' as const,
       letterSpacing: '0.5px',
-      borderBottom: '1px solid rgba(0, 0, 0, 0.1)',
+      borderBottom: `1px solid ${systemColors.border.light}`,
       paddingBottom: '8px'
     },
     formGrid: {
@@ -182,9 +182,9 @@ export function RouteTab({ formData, onUpdateFormData }: RouteTabProps): JSX.Ele
       alignItems: 'flex-end',
       marginBottom: '16px',
       padding: '16px',
-      backgroundColor: '#f8f8f8',
+      backgroundColor: systemColors.background.content,
       borderRadius: '6px',
-      border: '1px solid #d0d0d0'
+      border: `1px solid ${systemColors.border.light}`
     },
     ufSelect: {
       flex: 1
@@ -200,8 +200,8 @@ export function RouteTab({ formData, onUpdateFormData }: RouteTabProps): JSX.Ele
       justifyContent: 'space-between',
       alignItems: 'center',
       padding: '12px 16px',
-      backgroundColor: '#ffffff',
-      border: '1px solid #d0d0d0',
+      backgroundColor: systemColors.background.white,
+      border: `1px solid ${systemColors.border.light}`,
       borderRadius: '6px',
       boxShadow: '0 1px 2px rgba(0, 0, 0, 0.05)',
       transition: 'background 0.15s ease'
@@ -214,14 +214,14 @@ export function RouteTab({ formData, onUpdateFormData }: RouteTabProps): JSX.Ele
     ufOrder: {
       fontSize: '12px',
       fontWeight: '600',
-      color: '#666',
+      color: systemColors.text.secondary,
       fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, Helvetica, Arial, sans-serif',
       minWidth: '30px'
     },
     ufName: {
       fontSize: '14px',
       fontWeight: '500',
-      color: '#1a1a1a',
+      color: systemColors.text.primary,
       fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, Helvetica, Arial, sans-serif'
     },
     removeButton: {
@@ -242,46 +242,55 @@ export function RouteTab({ formData, onUpdateFormData }: RouteTabProps): JSX.Ele
     emptyState: {
       textAlign: 'center' as const,
       padding: '40px 20px',
-      color: '#999',
+      color: systemColors.text.secondary,
       fontStyle: 'italic',
       fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, Helvetica, Arial, sans-serif'
     },
     infoText: {
       fontSize: '11px',
-      color: 'var(--text-secondary)',
+      color: systemColors.text.secondary,
       fontStyle: 'italic',
       marginTop: '4px',
       fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, Helvetica, Arial, sans-serif'
-    }
+    },
+    label: systemStyles.input.label
   };
 
   return (
     <div ref={formContainerRef} style={styles.container}>
       {/* Seção de Local de Carregamento */}
-      <div style={modalStyles.formSection}>
-        <h4 style={modalStyles.formSectionTitle}>Local de Carregamento</h4>
-        <div style={modalStyles.formGrid}>
+      <div style={styles.section}>
+        <h4 style={styles.sectionTitle}>Local de Carregamento</h4>
+        <div style={styles.formGrid}>
           <div style={styles.formGroup}>
-            <label style={modalStyles.formLabel}>UF:</label>
-            <select
-              style={{
-                ...modalStyles.formSelect,
-                ...(focusedField === 'ufCarregamento' ? modalStyles.formInputFocus : {})
-              }}
-              value={formData.ufCarregamento || ''}
-              onChange={(e) => handleUFCarregamentoChange(e.target.value)}
-              onFocus={() => handleInputFocus('ufCarregamento')}
-              onBlur={handleInputBlur}
-              onClick={() => playClickSound()}
-            >
-              <option value="">Selecione a UF</option>
-              {ufsBrasileiras.map(uf => (
-                <option key={uf} value={uf}>{uf}</option>
-              ))}
-            </select>
+            <label style={styles.label}>UF:</label>
+            <div style={{ position: 'relative' }}>
+              <select
+                style={{
+                  ...systemStyles.select.field,
+                  ...(focusedField === 'ufCarregamento' ? systemStyles.select.fieldFocus : {}),
+                  appearance: 'none' as const,
+                  WebkitAppearance: 'none' as const,
+                  MozAppearance: 'none' as const
+                }}
+                value={formData.ufCarregamento || ''}
+                onChange={(e) => handleUFCarregamentoChange(e.target.value)}
+                onFocus={() => handleInputFocus('ufCarregamento')}
+                onBlur={handleInputBlur}
+                onClick={() => playClickSound()}
+              >
+                <option value="">Selecione a UF</option>
+                {ufsBrasileiras.map(uf => (
+                  <option key={uf} value={uf}>{uf}</option>
+                ))}
+              </select>
+              <div style={systemStyles.select.arrow}>
+                <div style={systemStyles.select.arrowIcon}></div>
+              </div>
+            </div>
           </div>
           <div style={styles.formGroup}>
-            <label style={modalStyles.formLabel}>
+            <label style={styles.label}>
               Município:
               {loadingMunicipiosCarregamento && (
                 <span style={{
@@ -294,64 +303,80 @@ export function RouteTab({ formData, onUpdateFormData }: RouteTabProps): JSX.Ele
                 </span>
               )}
             </label>
-            <select
-              style={{
-                ...modalStyles.formSelect,
-                ...(focusedField === 'municipioCarregamento' ? modalStyles.formInputFocus : {}),
-                opacity: loadingMunicipiosCarregamento ? 0.7 : 1
-              }}
-              value={formData.municipioCarregamento || ''}
-              onChange={(e) => {
-                playClickSound();
-                onUpdateFormData('municipioCarregamento', e.target.value);
-              }}
-              onFocus={() => handleInputFocus('municipioCarregamento')}
-              onBlur={handleInputBlur}
-              onClick={() => playClickSound()}
-              disabled={!formData.ufCarregamento || loadingMunicipiosCarregamento}
-            >
-              <option value="">
-                {!formData.ufCarregamento 
-                  ? 'Selecione uma UF primeiro' 
-                  : loadingMunicipiosCarregamento 
-                    ? 'Carregando municípios...'
-                    : 'Selecione o município'}
-              </option>
-              {municipiosCarregamento.map(municipio => (
-                <option key={municipio.codigo_ibge} value={municipio.nome}>
-                  {municipio.nome}
+            <div style={{ position: 'relative' }}>
+              <select
+                style={{
+                  ...systemStyles.select.field,
+                  ...(focusedField === 'municipioCarregamento' ? systemStyles.select.fieldFocus : {}),
+                  appearance: 'none' as const,
+                  WebkitAppearance: 'none' as const,
+                  MozAppearance: 'none' as const,
+                  opacity: loadingMunicipiosCarregamento ? 0.7 : 1
+                }}
+                value={formData.municipioCarregamento || ''}
+                onChange={(e) => {
+                  playClickSound();
+                  onUpdateFormData('municipioCarregamento', e.target.value);
+                }}
+                onFocus={() => handleInputFocus('municipioCarregamento')}
+                onBlur={handleInputBlur}
+                onClick={() => playClickSound()}
+                disabled={!formData.ufCarregamento || loadingMunicipiosCarregamento}
+              >
+                <option value="">
+                  {!formData.ufCarregamento 
+                    ? 'Selecione uma UF primeiro' 
+                    : loadingMunicipiosCarregamento 
+                      ? 'Carregando municípios...'
+                      : 'Selecione o município'}
                 </option>
-              ))}
-            </select>
+                {municipiosCarregamento.map(municipio => (
+                  <option key={municipio.codigo_ibge} value={municipio.nome}>
+                    {municipio.nome}
+                  </option>
+                ))}
+              </select>
+              <div style={systemStyles.select.arrow}>
+                <div style={systemStyles.select.arrowIcon}></div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
 
       {/* Seção de UFs de Percurso */}
-      <div style={modalStyles.formSection}>
-        <h4 style={modalStyles.formSectionTitle}>UFs de Percurso</h4>
+      <div style={styles.section}>
+        <h4 style={styles.sectionTitle}>UFs de Percurso</h4>
         <div style={styles.ufContainer}>
           <div style={styles.ufSelect}>
-            <label style={modalStyles.formLabel}>Adicionar UF:</label>
-            <select
-              style={{
-                ...modalStyles.formSelect,
-                ...(focusedField === 'novaUF' ? modalStyles.formInputFocus : {})
-              }}
-              value={novaUF}
-              onChange={(e) => {
-                playClickSound();
-                setNovaUF(e.target.value);
-              }}
-              onFocus={() => handleInputFocus('novaUF')}
-              onBlur={handleInputBlur}
-              onClick={() => playClickSound()}
-            >
-              <option value="">Selecione uma UF</option>
-              {ufsBrasileiras.map(uf => (
-                <option key={uf} value={uf}>{uf}</option>
-              ))}
-            </select>
+            <label style={styles.label}>Adicionar UF:</label>
+            <div style={{ position: 'relative' }}>
+              <select
+                style={{
+                  ...systemStyles.select.field,
+                  ...(focusedField === 'novaUF' ? systemStyles.select.fieldFocus : {}),
+                  appearance: 'none' as const,
+                  WebkitAppearance: 'none' as const,
+                  MozAppearance: 'none' as const
+                }}
+                value={novaUF}
+                onChange={(e) => {
+                  playClickSound();
+                  setNovaUF(e.target.value);
+                }}
+                onFocus={() => handleInputFocus('novaUF')}
+                onBlur={handleInputBlur}
+                onClick={() => playClickSound()}
+              >
+                <option value="">Selecione uma UF</option>
+                {ufsBrasileiras.map(uf => (
+                  <option key={uf} value={uf}>{uf}</option>
+                ))}
+              </select>
+              <div style={systemStyles.select.arrow}>
+                <div style={systemStyles.select.arrowIcon}></div>
+              </div>
+            </div>
           </div>
           <AddButton
             onClick={handleAdicionarUF}
@@ -392,30 +417,38 @@ export function RouteTab({ formData, onUpdateFormData }: RouteTabProps): JSX.Ele
       </div>
 
       {/* Seção de Local de Descarregamento */}
-      <div style={modalStyles.formSection}>
-        <h4 style={modalStyles.formSectionTitle}>Local de Descarregamento</h4>
-        <div style={modalStyles.formGrid}>
+      <div style={styles.section}>
+        <h4 style={styles.sectionTitle}>Local de Descarregamento</h4>
+        <div style={styles.formGrid}>
           <div style={styles.formGroup}>
-            <label style={modalStyles.formLabel}>UF:</label>
-            <select
-              style={{
-                ...modalStyles.formSelect,
-                ...(focusedField === 'ufDescarregamento' ? modalStyles.formInputFocus : {})
-              }}
-              value={formData.ufDescarregamento || ''}
-              onChange={(e) => handleUFDescarregamentoChange(e.target.value)}
-              onFocus={() => handleInputFocus('ufDescarregamento')}
-              onBlur={handleInputBlur}
-              onClick={() => playClickSound()}
-            >
-              <option value="">Selecione a UF</option>
-              {ufsBrasileiras.map(uf => (
-                <option key={uf} value={uf}>{uf}</option>
-              ))}
-            </select>
+            <label style={styles.label}>UF:</label>
+            <div style={{ position: 'relative' }}>
+              <select
+                style={{
+                  ...systemStyles.select.field,
+                  ...(focusedField === 'ufDescarregamento' ? systemStyles.select.fieldFocus : {}),
+                  appearance: 'none' as const,
+                  WebkitAppearance: 'none' as const,
+                  MozAppearance: 'none' as const
+                }}
+                value={formData.ufDescarregamento || ''}
+                onChange={(e) => handleUFDescarregamentoChange(e.target.value)}
+                onFocus={() => handleInputFocus('ufDescarregamento')}
+                onBlur={handleInputBlur}
+                onClick={() => playClickSound()}
+              >
+                <option value="">Selecione a UF</option>
+                {ufsBrasileiras.map(uf => (
+                  <option key={uf} value={uf}>{uf}</option>
+                ))}
+              </select>
+              <div style={systemStyles.select.arrow}>
+                <div style={systemStyles.select.arrowIcon}></div>
+              </div>
+            </div>
           </div>
           <div style={styles.formGroup}>
-            <label style={modalStyles.formLabel}>
+            <label style={styles.label}>
               Município:
               {loadingMunicipiosDescarregamento && (
                 <span style={{
@@ -428,35 +461,43 @@ export function RouteTab({ formData, onUpdateFormData }: RouteTabProps): JSX.Ele
                 </span>
               )}
             </label>
-            <select
-              style={{
-                ...modalStyles.formSelect,
-                ...(focusedField === 'municipioDescarregamento' ? modalStyles.formInputFocus : {}),
-                opacity: loadingMunicipiosDescarregamento ? 0.7 : 1
-              }}
-              value={formData.municipioDescarregamento || ''}
-              onChange={(e) => {
-                playClickSound();
-                onUpdateFormData('municipioDescarregamento', e.target.value);
-              }}
-              onFocus={() => handleInputFocus('municipioDescarregamento')}
-              onBlur={handleInputBlur}
-              onClick={() => playClickSound()}
-              disabled={!formData.ufDescarregamento || loadingMunicipiosDescarregamento}
-            >
-              <option value="">
-                {!formData.ufDescarregamento 
-                  ? 'Selecione uma UF primeiro' 
-                  : loadingMunicipiosDescarregamento 
-                    ? 'Carregando municípios...'
-                    : 'Selecione o município'}
-              </option>
-              {municipiosDescarregamento.map(municipio => (
-                <option key={municipio.codigo_ibge} value={municipio.nome}>
-                  {municipio.nome}
+            <div style={{ position: 'relative' }}>
+              <select
+                style={{
+                  ...systemStyles.select.field,
+                  ...(focusedField === 'municipioDescarregamento' ? systemStyles.select.fieldFocus : {}),
+                  appearance: 'none' as const,
+                  WebkitAppearance: 'none' as const,
+                  MozAppearance: 'none' as const,
+                  opacity: loadingMunicipiosDescarregamento ? 0.7 : 1
+                }}
+                value={formData.municipioDescarregamento || ''}
+                onChange={(e) => {
+                  playClickSound();
+                  onUpdateFormData('municipioDescarregamento', e.target.value);
+                }}
+                onFocus={() => handleInputFocus('municipioDescarregamento')}
+                onBlur={handleInputBlur}
+                onClick={() => playClickSound()}
+                disabled={!formData.ufDescarregamento || loadingMunicipiosDescarregamento}
+              >
+                <option value="">
+                  {!formData.ufDescarregamento 
+                    ? 'Selecione uma UF primeiro' 
+                    : loadingMunicipiosDescarregamento 
+                      ? 'Carregando municípios...'
+                      : 'Selecione o município'}
                 </option>
-              ))}
-            </select>
+                {municipiosDescarregamento.map(municipio => (
+                  <option key={municipio.codigo_ibge} value={municipio.nome}>
+                    {municipio.nome}
+                  </option>
+                ))}
+              </select>
+              <div style={systemStyles.select.arrow}>
+                <div style={systemStyles.select.arrowIcon}></div>
+              </div>
+            </div>
           </div>
         </div>
       </div>

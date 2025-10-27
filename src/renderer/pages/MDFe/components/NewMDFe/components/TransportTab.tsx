@@ -1,6 +1,6 @@
 import React, { useState, useRef } from 'react';
 import { useClickSound } from '../../../../../hooks/useClickSound';
-import { modalStyles } from '../../../../../styles/modalStyles';
+import { systemStyles, systemColors } from '../../../../../styles/systemStyle';
 import { useElementScrollbarStyles } from '../../../../../hooks/useScrollbarStyles';
 
 interface Vehicle {
@@ -140,8 +140,8 @@ export function TransportTab({ formData, onUpdateFormData }: TransportTabProps):
   };
 
   const getInputStyle = (field: string) => {
-    const baseStyle = modalStyles.formInput;
-    const focusStyle = focusedField === field ? modalStyles.formInputFocus : {};
+    const baseStyle = systemStyles.input.field;
+    const focusStyle = focusedField === field ? systemStyles.input.fieldFocus : {};
     return { ...baseStyle, ...focusStyle };
   };
 
@@ -220,23 +220,18 @@ export function TransportTab({ formData, onUpdateFormData }: TransportTabProps):
       border: '1px solid rgba(0, 0, 0, 0.1)'
     },
     selectLabel: {
-      fontSize: '12px',
-      fontWeight: '600',
-      color: 'var(--text-secondary)',
-      fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, Helvetica, Arial, sans-serif',
-      textTransform: 'uppercase' as const,
-      letterSpacing: '0.5px'
+      ...systemStyles.input.label
     },
     select: {
-      ...modalStyles.formInput,
+      ...systemStyles.input.field,
       cursor: 'pointer'
     },
     selectFocus: {
-      ...modalStyles.formInputFocus
+      ...systemStyles.input.fieldFocus
     },
     infoText: {
       fontSize: '11px',
-      color: 'var(--text-secondary)',
+      color: systemColors.text.secondary,
       fontStyle: 'italic',
       marginTop: '4px',
       fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, Helvetica, Arial, sans-serif'
@@ -258,18 +253,15 @@ export function TransportTab({ formData, onUpdateFormData }: TransportTabProps):
       cursor: 'pointer'
     },
     checkbox: {
-      ...modalStyles.checkbox,
+      ...systemStyles.checkbox.box,
       width: '16px',
       height: '16px'
     },
     checkboxChecked: {
-      ...modalStyles.checkboxChecked
-    },
-    checkboxDot: {
-      ...modalStyles.checkboxDot
+      ...systemStyles.checkbox.boxChecked
     },
     checkboxLabel: {
-      ...modalStyles.checkboxLabel,
+      ...systemStyles.checkbox.label,
       fontSize: '12px'
     },
     additionalForm: {
@@ -284,34 +276,43 @@ export function TransportTab({ formData, onUpdateFormData }: TransportTabProps):
       display: 'grid',
       gridTemplateColumns: 'repeat(auto-fit, minmax(150px, 1fr))',
       gap: '12px'
+    },
+    label: {
+      ...systemStyles.input.label
     }
   };
 
   return (
     <div ref={formContainerRef} style={styles.container}>
       {/* Seção de Seleção de Veículo */}
-      <div style={modalStyles.formSection}>
-        <h4 style={modalStyles.formSectionTitle}>Veículo Cadastrado</h4>
+      <div style={styles.section}>
+        <h4 style={styles.sectionTitle}>Veículo Cadastrado</h4>
         <div style={{marginBottom: '16px'}}>
           <label style={styles.selectLabel}>Selecionar Veículo Cadastrado</label>
-          <select
-            style={{
-              ...styles.select,
-              ...(focusedField === 'veiculoSelecionado' ? styles.selectFocus : {})
-            }}
-            value={formData.veiculoSelecionado || ''}
-            onChange={(e) => handleVehicleSelect(e.target.value)}
-            onFocus={() => handleInputFocus('veiculoSelecionado')}
-            onBlur={handleInputBlur}
-            onClick={() => playClickSound()}
-          >
-            <option value="">Selecione um veículo cadastrado</option>
-            {veiculosCadastrados.map((vehicle) => (
-              <option key={vehicle.id} value={vehicle.id}>
-                {vehicle.placa} - {vehicle.marca} {vehicle.modelo} ({vehicle.proprietario})
-              </option>
-            ))}
-          </select>
+          <div style={{ position: 'relative' as const }}>
+            <select
+              style={{
+                ...systemStyles.select.field,
+                ...(focusedField === 'veiculoSelecionado' ? systemStyles.select.fieldFocus : {}),
+                paddingRight: '24px'
+              }}
+              value={formData.veiculoSelecionado || ''}
+              onChange={(e) => handleVehicleSelect(e.target.value)}
+              onFocus={() => handleInputFocus('veiculoSelecionado')}
+              onBlur={handleInputBlur}
+              onClick={() => playClickSound()}
+            >
+              <option value="">Selecione um veículo cadastrado</option>
+              {veiculosCadastrados.map((vehicle) => (
+                <option key={vehicle.id} value={vehicle.id}>
+                  {vehicle.placa} - {vehicle.marca} {vehicle.modelo} ({vehicle.proprietario})
+                </option>
+              ))}
+            </select>
+            <div style={systemStyles.select.arrow}>
+              <div style={systemStyles.select.arrowIcon}></div>
+            </div>
+          </div>
           <div style={styles.infoText}>
             Selecione um veículo cadastrado para preencher automaticamente os campos abaixo, ou preencha manualmente.
           </div>
@@ -319,55 +320,55 @@ export function TransportTab({ formData, onUpdateFormData }: TransportTabProps):
       </div>
 
       {/* Seção de Dados do Veículo */}
-      <div style={modalStyles.formSection}>
-        <h4 style={modalStyles.formSectionTitle}>Dados do Veículo</h4>
-        <div style={modalStyles.formGrid}>
+      <div style={styles.section}>
+        <h4 style={styles.sectionTitle}>Dados do Veículo</h4>
+        <div style={styles.formGrid}>
           <div style={styles.formGroup}>
-            <label style={modalStyles.formLabel}>Placa *</label>
+            <label style={styles.label}>Placa *</label>
             <input {...getInputProps('placa', 'ABC-1234')} />
           </div>
           <div style={styles.formGroup}>
-            <label style={modalStyles.formLabel}>RENAVAM</label>
+            <label style={styles.label}>RENAVAM</label>
             <input {...getInputProps('renavam', '12345678901')} />
           </div>
           <div style={styles.formGroup}>
-            <label style={modalStyles.formLabel}>Chassi</label>
+            <label style={styles.label}>Chassi</label>
             <input {...getInputProps('chassi', '9BWZZZZ377VT00426')} />
           </div>
           <div style={styles.formGroup}>
-            <label style={modalStyles.formLabel}>Marca *</label>
+            <label style={styles.label}>Marca *</label>
             <input {...getInputProps('marca', 'Volkswagen')} />
           </div>
           <div style={styles.formGroup}>
-            <label style={modalStyles.formLabel}>Modelo *</label>
+            <label style={styles.label}>Modelo *</label>
             <input {...getInputProps('modelo', 'Gol')} />
           </div>
           <div style={styles.formGroup}>
-            <label style={modalStyles.formLabel}>Ano Fabricação</label>
+            <label style={styles.label}>Ano Fabricação</label>
             <input {...getInputProps('anoFabricacao', '2023')} />
           </div>
           <div style={styles.formGroup}>
-            <label style={modalStyles.formLabel}>Ano Modelo</label>
+            <label style={styles.label}>Ano Modelo</label>
             <input {...getInputProps('anoModelo', '2024')} />
           </div>
           <div style={styles.formGroup}>
-            <label style={modalStyles.formLabel}>Cor</label>
+            <label style={styles.label}>Cor</label>
             <input {...getInputProps('cor', 'Branco')} />
           </div>
           <div style={styles.formGroup}>
-            <label style={modalStyles.formLabel}>Combustível</label>
+            <label style={styles.label}>Combustível</label>
             <input {...getInputProps('combustivel', 'Flex')} />
           </div>
           <div style={styles.formGroup}>
-            <label style={modalStyles.formLabel}>Capacidade (kg)</label>
+            <label style={styles.label}>Capacidade (kg)</label>
             <input {...getInputProps('capacidade', '1500')} />
           </div>
         </div>
       </div>
 
       {/* Seção de Dados do Proprietário */}
-      <div style={modalStyles.formSection}>
-        <h4 style={modalStyles.formSectionTitle}>Dados do Proprietário</h4>
+      <div style={styles.section}>
+        <h4 style={styles.sectionTitle}>Dados do Proprietário</h4>
         
         {/* Checkbox para proprietário não emitente */}
         <div style={{
@@ -390,7 +391,11 @@ export function TransportTab({ formData, onUpdateFormData }: TransportTabProps):
                 ...(proprietarioNaoEmitente ? styles.checkboxChecked : {})
               }}
             >
-              {proprietarioNaoEmitente && <div style={styles.checkboxDot}></div>}
+              {proprietarioNaoEmitente && (
+                <svg viewBox="0 0 10 10" style={systemStyles.checkbox.checkmark}>
+                  <path d="M2 5 L4 7 L8 2" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
+                </svg>
+              )}
             </div>
             <span style={styles.checkboxLabel}>
               O proprietário NÃO é o emitente
@@ -398,29 +403,29 @@ export function TransportTab({ formData, onUpdateFormData }: TransportTabProps):
           </div>
         </div>
 
-        <div style={modalStyles.formGrid}>
+        <div style={styles.formGrid}>
           <div style={styles.formGroup}>
-            <label style={modalStyles.formLabel}>Nome/Razão Social</label>
+            <label style={styles.label}>Nome/Razão Social</label>
             <input {...getInputProps('proprietario', 'João Silva')} />
           </div>
           <div style={styles.formGroup}>
-            <label style={modalStyles.formLabel}>CPF/CNPJ</label>
+            <label style={styles.label}>CPF/CNPJ</label>
             <input {...getInputProps('cpfCnpjProprietario', '123.456.789-00')} />
           </div>
-          <div style={{...styles.formGroup, ...modalStyles.formGridFull}}>
-            <label style={modalStyles.formLabel}>Endereço</label>
+          <div style={{...styles.formGroup, ...styles.formGroupFull}}>
+            <label style={styles.label}>Endereço</label>
             <input {...getInputProps('enderecoProprietario', 'Rua das Flores, 123')} />
           </div>
           <div style={styles.formGroup}>
-            <label style={modalStyles.formLabel}>Cidade</label>
+            <label style={styles.label}>Cidade</label>
             <input {...getInputProps('cidadeProprietario', 'São Paulo')} />
           </div>
           <div style={styles.formGroup}>
-            <label style={modalStyles.formLabel}>UF</label>
+            <label style={styles.label}>UF</label>
             <select
               style={{
-                ...modalStyles.formSelect,
-                ...(focusedField === 'ufProprietario' ? modalStyles.formInputFocus : {})
+                ...systemStyles.select.field,
+                ...(focusedField === 'ufProprietario' ? systemStyles.select.fieldFocus : {})
               }}
               value={formData.ufProprietario || ''}
               onChange={(e) => {
@@ -438,7 +443,7 @@ export function TransportTab({ formData, onUpdateFormData }: TransportTabProps):
             </select>
           </div>
           <div style={styles.formGroup}>
-            <label style={modalStyles.formLabel}>CEP</label>
+            <label style={styles.label}>CEP</label>
             <input {...getInputProps('cepProprietario', '01234-567')} />
           </div>
         </div>
@@ -448,31 +453,31 @@ export function TransportTab({ formData, onUpdateFormData }: TransportTabProps):
           <div style={styles.additionalForm}>
             <div style={styles.additionalFormGrid}>
               <div style={styles.formGroup}>
-                <label style={modalStyles.formLabel}>RNTRC</label>
+                <label style={styles.label}>RNTRC</label>
                 <input {...getInputProps('rntrc', '123456789')} />
               </div>
               <div style={styles.formGroup}>
-                <label style={modalStyles.formLabel}>Tipo de Proprietário</label>
+                <label style={styles.label}>Tipo de Proprietário</label>
                 <input {...getInputProps('tipoProprietario', 'Pessoa Física')} />
               </div>
               <div style={styles.formGroup}>
-                <label style={modalStyles.formLabel}>CPF/CNPJ</label>
+                <label style={styles.label}>CPF/CNPJ</label>
                 <input {...getInputProps('cpfCnpjProprietario', '123.456.789-00')} />
               </div>
               <div style={styles.formGroup}>
-                <label style={modalStyles.formLabel}>Nome</label>
+                <label style={styles.label}>Nome</label>
                 <input {...getInputProps('proprietario', 'João Silva')} />
               </div>
               <div style={styles.formGroup}>
-                <label style={modalStyles.formLabel}>IE</label>
+                <label style={styles.label}>IE</label>
                 <input {...getInputProps('ie', '123456789')} />
               </div>
               <div style={styles.formGroup}>
-                <label style={modalStyles.formLabel}>UF</label>
+                <label style={styles.label}>UF</label>
                 <select
                   style={{
-                    ...modalStyles.formSelect,
-                    ...(focusedField === 'ufProprietarioCompleto' ? modalStyles.formInputFocus : {})
+                    ...systemStyles.select.field,
+                    ...(focusedField === 'ufProprietarioCompleto' ? systemStyles.select.fieldFocus : {})
                   }}
                   value={formData.ufProprietarioCompleto || ''}
                   onChange={(e) => {

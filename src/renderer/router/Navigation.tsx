@@ -2,7 +2,7 @@ import React from 'react';
 
 // Navegação simples baseada em contexto para telas do renderer
 // Rotas definidas no sistema: manter simples sem dependências externas
-export type Route = 'home' | 'products' | 'clients' | 'fiscal' | 'mdfe' | 'operations' | 'sales';
+export type Route = 'login' | 'home' | 'products' | 'clients' | 'users' | 'fiscal' | 'mdfe' | 'sales' | 'settings';
 
 interface NavigationContextValue {
   route: Route;
@@ -12,7 +12,7 @@ interface NavigationContextValue {
 const NavigationContext = React.createContext<NavigationContextValue | undefined>(undefined);
 
 export function NavigationProvider({ children }: { children: React.ReactNode }): JSX.Element {
-  const [route, setRoute] = React.useState<Route>('home');
+  const [route, setRoute] = React.useState<Route>('login');
 
   const navigate = React.useCallback((to: Route) => {
     setRoute(to);

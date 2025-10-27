@@ -1,6 +1,4 @@
-//--------------------------------------------------------------------
-// EXPORTAÇÃO DA PÁGINA DE VENDA
-// Arquivo de índice para facilitar importações
-//--------------------------------------------------------------------
+// Exportação da página Sales
+export { default } from './Sales';
 
-export { default } from './Sales'; 
+

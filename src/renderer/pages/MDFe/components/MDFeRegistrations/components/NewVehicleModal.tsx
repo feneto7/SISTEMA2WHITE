@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useClickSound } from '../../../../../hooks/useClickSound';
-import { modalStyles } from '../../../../../styles/modalStyles';
+import { systemStyles, systemColors } from '../../../../../styles/systemStyle';
 
 interface Vehicle {
   id: string;
@@ -92,8 +92,8 @@ export function NewVehicleModal({ isOpen, onClose, onSave, editingVehicle }: New
   };
 
   const getInputStyle = (field: string) => {
-    const baseStyle = modalStyles.formInput;
-    const focusStyle = focusedField === field ? modalStyles.formInputFocus : {};
+    const baseStyle = systemStyles.input.field;
+    const focusStyle = focusedField === field ? systemStyles.input.fieldFocus : {};
     return { ...baseStyle, ...focusStyle };
   };
 
@@ -162,117 +162,170 @@ export function NewVehicleModal({ isOpen, onClose, onSave, editingVehicle }: New
 
   if (!isOpen) return null;
 
-  // Custom styles for NewVehicleModal - narrower width, taller height
-  const customModalStyles = {
-    ...modalStyles,
+  const styles = {
+    overlay: {
+      position: 'fixed' as const,
+      top: 0,
+      left: 0,
+      right: 0,
+      bottom: 0,
+      backgroundColor: 'rgba(0, 0, 0, 0.4)',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      zIndex: 1000
+    },
     container: {
-      ...modalStyles.container,
+      backgroundColor: systemColors.background.window,
+      borderRadius: '10px',
+      boxShadow: '0 20px 60px rgba(0, 0, 0, 0.3), 0 0 0 1px rgba(0, 0, 0, 0.1)',
       width: '600px',
       height: '85vh',
-      maxWidth: '90vw',
       maxHeight: '90vh',
-      minWidth: '500px',
-      minHeight: '500px'
+      display: 'flex',
+      flexDirection: 'column' as const,
+      overflow: 'hidden'
+    },
+    titleBar: {
+      ...systemStyles.titleBar
+    },
+    title: {
+      ...systemStyles.titleBarTitle
+    },
+    content: {
+      flex: 1,
+      padding: '16px',
+      background: systemColors.background.content,
+      overflow: 'auto'
+    },
+    section: {
+      marginBottom: '16px'
+    },
+    sectionTitle: {
+      fontSize: '13px',
+      fontWeight: '600',
+      color: systemColors.text.primary,
+      marginBottom: '12px'
+    },
+    grid: {
+      display: 'grid',
+      gridTemplateColumns: 'repeat(2, 1fr)',
+      gap: '12px'
+    },
+    group: {
+      marginBottom: '8px'
+    },
+    label: {
+      ...systemStyles.input.label
+    },
+    input: {
+      ...systemStyles.input.field
+    },
+    fullWidth: {
+      gridColumn: '1 / -1'
+    },
+    footer: {
+      padding: '12px 16px',
+      background: systemColors.background.primary,
+      borderTop: `1px solid ${systemColors.border.light}`,
+      display: 'flex',
+      justifyContent: 'flex-end',
+      gap: '8px'
     }
   };
 
-  // Compact form group style for better vertical compression
-  const compactFormGroupStyle = {
-    ...modalStyles.formGroup,
-    gap: '4px'
-  };
-
   return (
-    <div style={modalStyles.overlay} onClick={handleClose}>
-      <div style={customModalStyles.container} onClick={(e) => e.stopPropagation()}>
+    <div style={styles.overlay} onClick={handleClose}>
+      <div style={styles.container} onClick={(e) => e.stopPropagation()}>
         {/* Modal header */}
-        <div style={modalStyles.header}>
-          <div style={modalStyles.trafficLights}>
-            <div style={{...modalStyles.trafficLight, ...modalStyles.trafficLightRed}} onClick={handleClose}></div>
-            <div style={{...modalStyles.trafficLight, ...modalStyles.trafficLightYellow}}></div>
-            <div style={{...modalStyles.trafficLight, ...modalStyles.trafficLightGreen}}></div>
+        <div style={styles.titleBar}>
+          <div style={systemStyles.trafficLights.container}>
+            <button style={{...systemStyles.trafficLights.button, ...systemStyles.trafficLights.red}} onClick={handleClose}></button>
+            <button style={{...systemStyles.trafficLights.button, ...systemStyles.trafficLights.yellow}}></button>
+            <button style={{...systemStyles.trafficLights.button, ...systemStyles.trafficLights.green}}></button>
           </div>
-          <div style={modalStyles.title}>
+          <div style={styles.title}>
             {editingVehicle ? 'Editar Veículo' : 'Novo Veículo'}
           </div>
           <div style={{ width: '60px' }}></div>
         </div>
 
         {/* Form content */}
-        <div style={{...modalStyles.tabContent, padding: '16px'}}>
+        <div style={styles.content}>
           {/* Vehicle Information */}
-          <div style={{...modalStyles.formSection, marginBottom: '16px'}}>
-            <h4 style={{...modalStyles.formSectionTitle, marginBottom: '12px'}}>Informações do Veículo</h4>
-            <div style={{...modalStyles.formGrid, gap: '12px'}}>
-              <div style={compactFormGroupStyle}>
-                <label style={modalStyles.formLabel}>Placa *</label>
+          <div style={styles.section}>
+            <h4 style={styles.sectionTitle}>Informações do Veículo</h4>
+            <div style={styles.grid}>
+              {/* Vehicle fields with proper styling */}
+              <div style={styles.group}>
+                <label style={styles.label}>Placa *</label>
                 <input {...getInputProps('placa', 'ABC-1234')} />
               </div>
-              <div style={compactFormGroupStyle}>
-                <label style={modalStyles.formLabel}>RENAVAM</label>
+              <div style={styles.group}>
+                <label style={styles.label}>RENAVAM</label>
                 <input {...getInputProps('renavam', '12345678901')} />
               </div>
-              <div style={compactFormGroupStyle}>
-                <label style={modalStyles.formLabel}>Chassi</label>
+              <div style={styles.group}>
+                <label style={styles.label}>Chassi</label>
                 <input {...getInputProps('chassi', '9BWZZZZ377VT00426')} />
               </div>
-              <div style={compactFormGroupStyle}>
-                <label style={modalStyles.formLabel}>Marca *</label>
+              <div style={styles.group}>
+                <label style={styles.label}>Marca *</label>
                 <input {...getInputProps('marca', 'Volkswagen')} />
               </div>
-              <div style={compactFormGroupStyle}>
-                <label style={modalStyles.formLabel}>Modelo *</label>
+              <div style={styles.group}>
+                <label style={styles.label}>Modelo *</label>
                 <input {...getInputProps('modelo', 'Gol')} />
               </div>
-              <div style={compactFormGroupStyle}>
-                <label style={modalStyles.formLabel}>Ano Fabricação</label>
+              <div style={styles.group}>
+                <label style={styles.label}>Ano Fabricação</label>
                 <input {...getInputProps('anoFabricacao', '2023')} />
               </div>
-              <div style={compactFormGroupStyle}>
-                <label style={modalStyles.formLabel}>Ano Modelo</label>
+              <div style={styles.group}>
+                <label style={styles.label}>Ano Modelo</label>
                 <input {...getInputProps('anoModelo', '2024')} />
               </div>
-              <div style={compactFormGroupStyle}>
-                <label style={modalStyles.formLabel}>Cor</label>
+              <div style={styles.group}>
+                <label style={styles.label}>Cor</label>
                 <input {...getInputProps('cor', 'Branco')} />
               </div>
-              <div style={compactFormGroupStyle}>
-                <label style={modalStyles.formLabel}>Combustível</label>
+              <div style={styles.group}>
+                <label style={styles.label}>Combustível</label>
                 <input {...getInputProps('combustivel', 'Flex')} />
               </div>
-              <div style={compactFormGroupStyle}>
-                <label style={modalStyles.formLabel}>Capacidade (kg)</label>
+              <div style={styles.group}>
+                <label style={styles.label}>Capacidade (kg)</label>
                 <input {...getInputProps('capacidade', '1500')} />
               </div>
             </div>
           </div>
 
           {/* Owner Information */}
-          <div style={{...modalStyles.formSection, marginBottom: '16px'}}>
-            <h4 style={{...modalStyles.formSectionTitle, marginBottom: '12px'}}>Dados do Proprietário</h4>
-            <div style={{...modalStyles.formGrid, gap: '12px'}}>
-              <div style={compactFormGroupStyle}>
-                <label style={modalStyles.formLabel}>Nome/Razão Social</label>
+          <div style={styles.section}>
+            <h4 style={styles.sectionTitle}>Dados do Proprietário</h4>
+            <div style={styles.grid}>
+              <div style={styles.group}>
+                <label style={styles.label}>Nome/Razão Social</label>
                 <input {...getInputProps('proprietario', 'João Silva')} />
               </div>
-              <div style={compactFormGroupStyle}>
-                <label style={modalStyles.formLabel}>CPF/CNPJ</label>
+              <div style={styles.group}>
+                <label style={styles.label}>CPF/CNPJ</label>
                 <input {...getInputProps('cpfCnpjProprietario', '123.456.789-00')} />
               </div>
-              <div style={{...modalStyles.formGroup, ...modalStyles.formGridFull}}>
-                <label style={modalStyles.formLabel}>Endereço</label>
+              <div style={styles.group}>
+                <label style={styles.label}>Endereço</label>
                 <input {...getInputProps('enderecoProprietario', 'Rua das Flores, 123')} />
               </div>
-              <div style={compactFormGroupStyle}>
-                <label style={modalStyles.formLabel}>Cidade</label>
+              <div style={styles.group}>
+                <label style={styles.label}>Cidade</label>
                 <input {...getInputProps('cidadeProprietario', 'São Paulo')} />
               </div>
-              <div style={compactFormGroupStyle}>
-                <label style={modalStyles.formLabel}>UF</label>
+              <div style={styles.group}>
+                <label style={styles.label}>UF</label>
                 <input {...getInputProps('ufProprietario', 'SP')} />
               </div>
-              <div style={compactFormGroupStyle}>
-                <label style={modalStyles.formLabel}>CEP</label>
+              <div style={styles.group}>
+                <label style={styles.label}>CEP</label>
                 <input {...getInputProps('cepProprietario', '01234-567')} />
               </div>
             </div>
@@ -280,18 +333,12 @@ export function NewVehicleModal({ isOpen, onClose, onSave, editingVehicle }: New
         </div>
 
         {/* Modal footer */}
-        <div style={modalStyles.footer}>
-          <button
-            style={modalStyles.button}
-            onClick={handleClose}
-          >
+        <div style={styles.footer}>
+          <button style={systemStyles.button.default} onClick={handleClose}>
             Cancelar
           </button>
           <button
-            style={{
-              ...modalStyles.button,
-              ...modalStyles.buttonPrimary
-            }}
+            style={systemStyles.button.primary}
             onClick={() => {
               playClickSound();
               handleSave();

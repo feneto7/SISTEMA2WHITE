@@ -1,8 +1,9 @@
 import React, { useState, lazy, Suspense } from 'react';
-import { macStyles } from '../../styles/style';
+import { systemStyles, systemColors } from '../../styles/systemStyle';
 import { SearchBox, ProductList } from './components';
 import { useNavigation } from '../../router/Navigation';
 import { useClickSound } from '../../hooks/useClickSound';
+import { BackButton } from '../../components/BackButton';
 
 // Lazy loading do modal para melhor performance
 // Carrega apenas quando necessário
@@ -128,7 +129,6 @@ export function Products(): JSX.Element {
     // Aqui você pode mostrar uma confirmação e excluir o produto
   };
 
-  const styles = macStyles.pages.products;
   const [nameColumnWidth, setNameColumnWidth] = useState<number>(360);
   const [isNewProductHovered, setIsNewProductHovered] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -136,19 +136,38 @@ export function Products(): JSX.Element {
   const maxWidth = 640;
 
   return (
-    <div style={styles.container}>
-      {/* Barra de pesquisa com botão voltar */}
+    <div style={{
+      height: '100%',
+      display: 'flex',
+      flexDirection: 'column',
+      padding: '20px',
+      gap: '20px',
+      overflow: 'hidden'
+    }}>
+      {/* Header com botão voltar */}
+      <div style={systemStyles.page.header}>
+        <BackButton 
+          onClick={() => navigate('home')} 
+          label="Voltar para Home" 
+        />
+        <h1 style={systemStyles.page.title}>Produtos e Serviços</h1>
+        <div style={{ width: '80px' }} />
+      </div>
+
+      {/* Barra de pesquisa */}
       <SearchBox
         searchTerm={searchTerm}
         onSearchChange={setSearchTerm}
         placeholder="Buscar produtos ou serviços..."
         resultsCount={filteredProducts.length}
-        onBackClick={() => navigate('home')}
         additionalButton={
           <button
             style={{
-              ...styles.newProductButton,
-              ...(isNewProductHovered ? styles.newProductButtonHover : {})
+              ...systemStyles.button.primary,
+              display: 'flex',
+              alignItems: 'center',
+              gap: '6px',
+              ...(isNewProductHovered ? systemStyles.button.primaryHover : {})
             }}
             onMouseEnter={() => setIsNewProductHovered(true)}
             onMouseLeave={() => setIsNewProductHovered(false)}
@@ -164,12 +183,20 @@ export function Products(): JSX.Element {
       />
 
       {/* Lista de produtos */}
-      <div style={styles.listContainer}>
+      <div style={{
+        ...systemStyles.list.container,
+        flexDirection: 'column' as const
+      }}>
         <div style={{
-          ...styles.listHeader,
-          gridTemplateColumns: `${nameColumnWidth}px 1fr 0.8fr 0.8fr 1fr 80px`
+          ...systemStyles.list.header,
+          gridTemplateColumns: `${nameColumnWidth}px 1fr 0.8fr 0.8fr 1fr 80px`,
+          display: 'grid'
         }}>
-          <div style={{ ...styles.headerCell, width: nameColumnWidth, cursor: 'col-resize' }}
+          <div style={{ 
+            ...systemStyles.list.headerCell, 
+            width: nameColumnWidth, 
+            cursor: 'col-resize'
+          }}
             onMouseDown={(e) => {
               const startX = e.clientX;
               const startWidth = nameColumnWidth;
@@ -183,26 +210,16 @@ export function Products(): JSX.Element {
                 window.removeEventListener('mouseup', onUp);
               };
               window.addEventListener('mousemove', onMove);
-              window.addEventListener('mouseup', onUp);
+              window.removeEventListener('mouseup', onUp);
             }}
           >
             Produto/Serviço
-            <div style={styles.headerCellDivider}></div>
           </div>
-          <div style={styles.headerCell}>
-            Categoria
-            <div style={styles.headerCellDivider}></div>
-          </div>
-          <div style={styles.headerCell}>
-            Tipo
-            <div style={styles.headerCellDivider}></div>
-          </div>
-          <div style={styles.headerCell}>
-            Estoque
-            <div style={styles.headerCellDivider}></div>
-          </div>
-          <div style={styles.headerCell}>Preço</div>
-          <div style={styles.headerCell}>Ações</div>
+          <div style={systemStyles.list.headerCell}>Categoria</div>
+          <div style={systemStyles.list.headerCell}>Tipo</div>
+          <div style={systemStyles.list.headerCell}>Estoque</div>
+          <div style={systemStyles.list.headerCell}>Preço</div>
+          <div style={systemStyles.list.headerCell}>Ações</div>
         </div>
 
         <ProductList 

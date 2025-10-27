@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { modalStyles } from '../../../styles/modalStyles';
+import { systemStyles, systemColors } from '../../../styles/systemStyle';
 import { useClickSound } from '../../../hooks/useClickSound';
 
 // Componente da aba Principal - Formulário de cadastro básico de produto
@@ -123,26 +123,43 @@ export function MainTab({ onFormDataChange }: MainTabProps): JSX.Element {
 
   return (
     <div>
-      <h3 style={modalStyles.tabContentTitle}>
+      <h3 style={{
+        fontSize: '15px',
+        fontWeight: '600',
+        color: systemColors.text.primary,
+        marginBottom: '20px',
+        fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, Helvetica, Arial, sans-serif'
+      }}>
         Informações Principais
       </h3>
       
       {/* Seção de Identificação */}
-      <div style={modalStyles.formSection}>
-        <h4 style={modalStyles.formSectionTitle}>Identificação</h4>
+      <div style={{
+        marginBottom: '24px'
+      }}>
+        <h4 style={{
+          fontSize: '13px',
+          fontWeight: '600',
+          color: systemColors.text.secondary,
+          marginBottom: '12px',
+          textTransform: 'uppercase',
+          letterSpacing: '0.5px',
+          fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, Helvetica, Arial, sans-serif'
+        }}>Identificação</h4>
         
-        <div style={modalStyles.formGrid}>
+        <div style={{
+          display: 'grid',
+          gridTemplateColumns: 'repeat(3, 1fr)',
+          gap: '16px'
+        }}>
            {/* Código */}
-           <div style={modalStyles.formGroup}>
-             <label style={modalStyles.formLabel}>Código:</label>
+           <div style={systemStyles.input.container}>
+             <label style={systemStyles.input.label}>Código:</label>
              <input
                type="text"
                style={{
-                 ...modalStyles.formInput,
-                 backgroundColor: '#f5f5f5',
-                 color: '#666',
-                 cursor: 'not-allowed',
-                 opacity: 0.7
+                 ...systemStyles.input.field,
+                 ...systemStyles.button.disabled
                }}
                value=""
                readOnly
@@ -152,13 +169,13 @@ export function MainTab({ onFormDataChange }: MainTabProps): JSX.Element {
            </div>
 
           {/* Descrição */}
-          <div style={modalStyles.formGroup}>
-            <label style={modalStyles.formLabel}>Descrição:</label>
+          <div style={systemStyles.input.container}>
+            <label style={systemStyles.input.label}>Descrição:</label>
             <input
               type="text"
                style={{
-                 ...modalStyles.formInput,
-                 ...(focusedField === 'descricao' ? modalStyles.formInputFocus : {})
+                 ...systemStyles.input.field,
+                 ...(focusedField === 'descricao' ? systemStyles.input.fieldFocus : {})
                }}
               value={formData.descricao}
               onChange={(e) => {
@@ -172,59 +189,69 @@ export function MainTab({ onFormDataChange }: MainTabProps): JSX.Element {
           </div>
 
           {/* Categoria */}
-          <div style={modalStyles.formGroup}>
-            <label style={modalStyles.formLabel}>Categoria:</label>
-            <select
-               style={{
-                 ...modalStyles.formSelect,
-                 ...(focusedField === 'categoria' ? modalStyles.formInputFocus : {})
-               }}
-              value={formData.categoria}
-              onChange={(e) => {
-                handleInputChange('categoria', e.target.value);
-              }}
-              onClick={playClickSound}
-              onFocus={() => setFocusedField('categoria')}
-              onBlur={() => setFocusedField(null)}
-            >
-              <option value="">Selecione uma categoria</option>
-              {categorias.map(categoria => (
-                <option key={categoria} value={categoria}>{categoria}</option>
-              ))}
-            </select>
+          <div style={systemStyles.input.container}>
+            <label style={systemStyles.input.label}>Categoria:</label>
+            <div style={systemStyles.select.container}>
+              <select
+                 style={{
+                   ...systemStyles.select.field,
+                   ...(focusedField === 'categoria' ? systemStyles.select.fieldFocus : {})
+                 }}
+                value={formData.categoria}
+                onChange={(e) => {
+                  handleInputChange('categoria', e.target.value);
+                }}
+                onClick={playClickSound}
+                onFocus={() => setFocusedField('categoria')}
+                onBlur={() => setFocusedField(null)}
+              >
+                <option value="">Selecione uma categoria</option>
+                {categorias.map(categoria => (
+                  <option key={categoria} value={categoria}>{categoria}</option>
+                ))}
+              </select>
+              <div style={systemStyles.select.arrow}>
+                <div style={systemStyles.select.arrowIcon} />
+              </div>
+            </div>
           </div>
 
           {/* Unidade de Medida */}
-          <div style={modalStyles.formGroup}>
-            <label style={modalStyles.formLabel}>Unidade de Medida:</label>
-            <select
-               style={{
-                 ...modalStyles.formSelect,
-                 ...(focusedField === 'unidadeMedida' ? modalStyles.formInputFocus : {})
-               }}
-              value={formData.unidadeMedida}
-              onChange={(e) => {
-                handleInputChange('unidadeMedida', e.target.value);
-              }}
-              onClick={playClickSound}
-              onFocus={() => setFocusedField('unidadeMedida')}
-              onBlur={() => setFocusedField(null)}
-            >
-              <option value="">Selecione a unidade</option>
-              {unidadesMedida.map(unidade => (
-                <option key={unidade} value={unidade}>{unidade}</option>
-              ))}
-            </select>
+          <div style={systemStyles.input.container}>
+            <label style={systemStyles.input.label}>Unidade de Medida:</label>
+            <div style={systemStyles.select.container}>
+              <select
+                 style={{
+                   ...systemStyles.select.field,
+                   ...(focusedField === 'unidadeMedida' ? systemStyles.select.fieldFocus : {})
+                 }}
+                value={formData.unidadeMedida}
+                onChange={(e) => {
+                  handleInputChange('unidadeMedida', e.target.value);
+                }}
+                onClick={playClickSound}
+                onFocus={() => setFocusedField('unidadeMedida')}
+                onBlur={() => setFocusedField(null)}
+              >
+                <option value="">Selecione a unidade</option>
+                {unidadesMedida.map(unidade => (
+                  <option key={unidade} value={unidade}>{unidade}</option>
+                ))}
+              </select>
+              <div style={systemStyles.select.arrow}>
+                <div style={systemStyles.select.arrowIcon} />
+              </div>
+            </div>
           </div>
 
           {/* Código de Barras */}
-          <div style={modalStyles.formGroup}>
-            <label style={modalStyles.formLabel}>Código de Barras:</label>
+          <div style={systemStyles.input.container}>
+            <label style={systemStyles.input.label}>Código de Barras:</label>
             <input
               type="text"
                style={{
-                 ...modalStyles.formInput,
-                 ...(focusedField === 'codigoBarras' ? modalStyles.formInputFocus : {})
+                 ...systemStyles.input.field,
+                 ...(focusedField === 'codigoBarras' ? systemStyles.input.fieldFocus : {})
                }}
               value={formData.codigoBarras}
               onChange={(e) => {
@@ -238,13 +265,13 @@ export function MainTab({ onFormDataChange }: MainTabProps): JSX.Element {
           </div>
 
           {/* Referência */}
-          <div style={modalStyles.formGroup}>
-            <label style={modalStyles.formLabel}>Referência:</label>
+          <div style={systemStyles.input.container}>
+            <label style={systemStyles.input.label}>Referência:</label>
             <input
               type="text"
                style={{
-                 ...modalStyles.formInput,
-                 ...(focusedField === 'referencia' ? modalStyles.formInputFocus : {})
+                 ...systemStyles.input.field,
+                 ...(focusedField === 'referencia' ? systemStyles.input.fieldFocus : {})
                }}
               value={formData.referencia}
               onChange={(e) => {
@@ -260,18 +287,32 @@ export function MainTab({ onFormDataChange }: MainTabProps): JSX.Element {
       </div>
 
       {/* Seção de Preços */}
-      <div style={modalStyles.formSection}>
-        <h4 style={modalStyles.formSectionTitle}>Preços</h4>
+      <div style={{
+        marginBottom: '24px'
+      }}>
+        <h4 style={{
+          fontSize: '13px',
+          fontWeight: '600',
+          color: systemColors.text.secondary,
+          marginBottom: '12px',
+          textTransform: 'uppercase',
+          letterSpacing: '0.5px',
+          fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, Helvetica, Arial, sans-serif'
+        }}>Preços</h4>
         
-        <div style={modalStyles.formGrid}>
+        <div style={{
+          display: 'grid',
+          gridTemplateColumns: 'repeat(3, 1fr)',
+          gap: '16px'
+        }}>
           {/* Preço de Custo */}
-          <div style={modalStyles.formGroup}>
-            <label style={modalStyles.formLabel}>Preço de Custo:</label>
+          <div style={systemStyles.input.container}>
+            <label style={systemStyles.input.label}>Preço de Custo:</label>
             <input
               type="text"
                style={{
-                 ...modalStyles.formInput,
-                 ...(focusedField === 'precoCusto' ? modalStyles.formInputFocus : {})
+                 ...systemStyles.input.field,
+                 ...(focusedField === 'precoCusto' ? systemStyles.input.fieldFocus : {})
                }}
               value={formData.precoCusto}
               onChange={(e) => {
@@ -295,13 +336,13 @@ export function MainTab({ onFormDataChange }: MainTabProps): JSX.Element {
           </div>
 
           {/* Margem */}
-          <div style={modalStyles.formGroup}>
-            <label style={modalStyles.formLabel}>Margem (%):</label>
+          <div style={systemStyles.input.container}>
+            <label style={systemStyles.input.label}>Margem (%):</label>
             <input
               type="text"
                style={{
-                 ...modalStyles.formInput,
-                 ...(focusedField === 'margem' ? modalStyles.formInputFocus : {})
+                 ...systemStyles.input.field,
+                 ...(focusedField === 'margem' ? systemStyles.input.fieldFocus : {})
                }}
               value={formData.margem}
               onChange={(e) => {
@@ -323,13 +364,13 @@ export function MainTab({ onFormDataChange }: MainTabProps): JSX.Element {
           </div>
 
           {/* Preço de Venda */}
-          <div style={modalStyles.formGroup}>
-            <label style={modalStyles.formLabel}>Preço de Venda:</label>
+          <div style={systemStyles.input.container}>
+            <label style={systemStyles.input.label}>Preço de Venda:</label>
             <input
               type="text"
                style={{
-                 ...modalStyles.formInput,
-                 ...(focusedField === 'precoVenda' ? modalStyles.formInputFocus : {})
+                 ...systemStyles.input.field,
+                 ...(focusedField === 'precoVenda' ? systemStyles.input.fieldFocus : {})
                }}
               value={formData.precoVenda}
               onChange={(e) => {
@@ -346,54 +387,78 @@ export function MainTab({ onFormDataChange }: MainTabProps): JSX.Element {
       </div>
 
       {/* Seção de Fornecedor */}
-      <div style={modalStyles.formSection}>
-        <h4 style={modalStyles.formSectionTitle}>Fornecedor</h4>
+      <div style={{
+        marginBottom: '24px'
+      }}>
+        <h4 style={{
+          fontSize: '13px',
+          fontWeight: '600',
+          color: systemColors.text.secondary,
+          marginBottom: '12px',
+          textTransform: 'uppercase',
+          letterSpacing: '0.5px',
+          fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, Helvetica, Arial, sans-serif'
+        }}>Fornecedor</h4>
         
-        <div style={modalStyles.formGrid}>
+        <div style={{
+          display: 'grid',
+          gridTemplateColumns: 'repeat(2, 1fr)',
+          gap: '16px'
+        }}>
           {/* Marca */}
-          <div style={modalStyles.formGroup}>
-            <label style={modalStyles.formLabel}>Marca:</label>
-            <select
-               style={{
-                 ...modalStyles.formSelect,
-                 ...(focusedField === 'marca' ? modalStyles.formInputFocus : {})
-               }}
-              value={formData.marca}
-              onChange={(e) => {
-                playClickSound();
-                handleInputChange('marca', e.target.value);
-              }}
-              onFocus={() => setFocusedField('marca')}
-              onBlur={() => setFocusedField(null)}
-            >
-              <option value="">Selecione uma marca</option>
-              {marcas.map(marca => (
-                <option key={marca} value={marca}>{marca}</option>
-              ))}
-            </select>
+          <div style={systemStyles.input.container}>
+            <label style={systemStyles.input.label}>Marca:</label>
+            <div style={systemStyles.select.container}>
+              <select
+                 style={{
+                   ...systemStyles.select.field,
+                   ...(focusedField === 'marca' ? systemStyles.select.fieldFocus : {})
+                 }}
+                value={formData.marca}
+                onChange={(e) => {
+                  playClickSound();
+                  handleInputChange('marca', e.target.value);
+                }}
+                onFocus={() => setFocusedField('marca')}
+                onBlur={() => setFocusedField(null)}
+              >
+                <option value="">Selecione uma marca</option>
+                {marcas.map(marca => (
+                  <option key={marca} value={marca}>{marca}</option>
+                ))}
+              </select>
+              <div style={systemStyles.select.arrow}>
+                <div style={systemStyles.select.arrowIcon} />
+              </div>
+            </div>
           </div>
 
           {/* Fornecedor */}
-          <div style={modalStyles.formGroup}>
-            <label style={modalStyles.formLabel}>Fornecedor:</label>
-            <select
-               style={{
-                 ...modalStyles.formSelect,
-                 ...(focusedField === 'fornecedor' ? modalStyles.formInputFocus : {})
-               }}
-              value={formData.fornecedor}
-              onChange={(e) => {
-                playClickSound();
-                handleInputChange('fornecedor', e.target.value);
-              }}
-              onFocus={() => setFocusedField('fornecedor')}
-              onBlur={() => setFocusedField(null)}
-            >
-              <option value="">Selecione um fornecedor</option>
-              {fornecedores.map(fornecedor => (
-                <option key={fornecedor} value={fornecedor}>{fornecedor}</option>
-              ))}
-            </select>
+          <div style={systemStyles.input.container}>
+            <label style={systemStyles.input.label}>Fornecedor:</label>
+            <div style={systemStyles.select.container}>
+              <select
+                 style={{
+                   ...systemStyles.select.field,
+                   ...(focusedField === 'fornecedor' ? systemStyles.select.fieldFocus : {})
+                 }}
+                value={formData.fornecedor}
+                onChange={(e) => {
+                  playClickSound();
+                  handleInputChange('fornecedor', e.target.value);
+                }}
+                onFocus={() => setFocusedField('fornecedor')}
+                onBlur={() => setFocusedField(null)}
+              >
+                <option value="">Selecione um fornecedor</option>
+                {fornecedores.map(fornecedor => (
+                  <option key={fornecedor} value={fornecedor}>{fornecedor}</option>
+                ))}
+              </select>
+              <div style={systemStyles.select.arrow}>
+                <div style={systemStyles.select.arrowIcon} />
+              </div>
+            </div>
           </div>
         </div>
       </div>

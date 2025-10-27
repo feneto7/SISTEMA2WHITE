@@ -1,8 +1,9 @@
 import React, { useState, lazy, Suspense } from 'react';
-import { macStyles } from '../../styles/style';
+import { systemStyles, systemColors } from '../../styles/systemStyle';
 import { ClientSearchBox, ClientList } from './components';
 import { useNavigation } from '../../router/Navigation';
 import { useClickSound } from '../../hooks/useClickSound';
+import { BackButton } from '../../components/BackButton';
 
 // Lazy loading do modal para melhor performance
 // Carrega apenas quando necessário
@@ -143,26 +144,43 @@ export function Clients(): JSX.Element {
     console.log('Novo cliente salvo:', newClient);
   };
 
-  const styles = macStyles.pages.clients;
   const [nameColumnWidth, setNameColumnWidth] = useState<number>(300);
   const [isNewClientHovered, setIsNewClientHovered] = useState(false);
   const minWidth = 200;
   const maxWidth = 500;
 
   return (
-    <div style={styles.container}>
-      {/* Barra de pesquisa com botão voltar */}
+    <div style={{
+      height: '100%',
+      display: 'flex',
+      flexDirection: 'column',
+      padding: '20px',
+      gap: '20px',
+      overflow: 'hidden'
+    }}>
+      {/* Header com botão voltar */}
+      <div style={systemStyles.page.header}>
+        <BackButton 
+          onClick={() => navigate('home')} 
+          label="Voltar para Home" 
+        />
+        <h1 style={systemStyles.page.title}>Clientes</h1>
+        <div style={{ width: '80px' }} />
+      </div>
+      {/* Barra de pesquisa */}
       <ClientSearchBox
         searchTerm={searchTerm}
         onSearchChange={setSearchTerm}
         placeholder="Buscar clientes por nome, email, telefone ou documento..."
         resultsCount={filteredClients.length}
-        onBackClick={() => navigate('home')}
         additionalButton={
           <button
             style={{
-              ...styles.newClientButton,
-              ...(isNewClientHovered ? styles.newClientButtonHover : {})
+              ...systemStyles.button.primary,
+              display: 'flex',
+              alignItems: 'center',
+              gap: '6px',
+              ...(isNewClientHovered ? systemStyles.button.primaryHover : {})
             }}
             onMouseEnter={() => setIsNewClientHovered(true)}
             onMouseLeave={() => setIsNewClientHovered(false)}
@@ -178,12 +196,20 @@ export function Clients(): JSX.Element {
       />
 
       {/* Lista de clientes */}
-      <div style={styles.listContainer}>
+      <div style={{
+        ...systemStyles.list.container,
+        flexDirection: 'column' as const
+      }}>
         <div style={{
-          ...styles.listHeader,
-          gridTemplateColumns: `${nameColumnWidth}px 1fr 1fr 1fr 0.8fr 80px`
+          ...systemStyles.list.header,
+          gridTemplateColumns: `${nameColumnWidth}px 1fr 1fr 1fr 0.8fr 80px`,
+          display: 'grid'
         }}>
-          <div style={{ ...styles.headerCell, width: nameColumnWidth, cursor: 'col-resize' }}
+          <div style={{ 
+            ...systemStyles.list.headerCell, 
+            width: nameColumnWidth, 
+            cursor: 'col-resize' 
+          }}
             onMouseDown={(e) => {
               const startX = e.clientX;
               const startWidth = nameColumnWidth;
@@ -197,26 +223,16 @@ export function Clients(): JSX.Element {
                 window.removeEventListener('mouseup', onUp);
               };
               window.addEventListener('mousemove', onMove);
-              window.addEventListener('mouseup', onUp);
+              window.removeEventListener('mouseup', onUp);
             }}
           >
             Nome/Razão Social
-            <div style={styles.headerCellDivider}></div>
           </div>
-          <div style={styles.headerCell}>
-            Email
-            <div style={styles.headerCellDivider}></div>
-          </div>
-          <div style={styles.headerCell}>
-            Telefone
-            <div style={styles.headerCellDivider}></div>
-          </div>
-          <div style={styles.headerCell}>
-            Documento
-            <div style={styles.headerCellDivider}></div>
-          </div>
-          <div style={styles.headerCell}>Tipo</div>
-          <div style={styles.headerCell}>Ações</div>
+          <div style={systemStyles.list.headerCell}>Email</div>
+          <div style={systemStyles.list.headerCell}>Telefone</div>
+          <div style={systemStyles.list.headerCell}>Documento</div>
+          <div style={systemStyles.list.headerCell}>Tipo</div>
+          <div style={systemStyles.list.headerCell}>Ações</div>
         </div>
 
         <ClientList 

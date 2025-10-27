@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { modalStyles } from '../../../../styles/modalStyles';
+import { systemStyles, systemColors } from '../../../../styles/systemStyle';
 import { useClickSound } from '../../../../hooks/useClickSound';
 import { VehicleTab, DriverTab, RoutesTab, SettingsTab } from './components';
 
@@ -15,6 +16,9 @@ type TabType = 'vehicle' | 'driver' | 'routes' | 'settings';
 export function MDFeRegistrations({ isOpen, onClose }: MDFeRegistrationsProps): JSX.Element | null {
   const playClickSound = useClickSound();
   const [activeTab, setActiveTab] = useState<TabType>('vehicle');
+  const [isCloseHovered, setIsCloseHovered] = useState(false);
+  const [isCancelHovered, setIsCancelHovered] = useState(false);
+  const [isSaveHovered, setIsSaveHovered] = useState(false);
   const [formData, setFormData] = useState({
     // Vehicle data
     placa: '',
@@ -177,24 +181,63 @@ export function MDFeRegistrations({ isOpen, onClose }: MDFeRegistrationsProps): 
 
   return (
     <div style={modalStyles.overlay} onClick={handleClose}>
-      <div style={modalStyles.container} onClick={(e) => e.stopPropagation()}>
+      <div style={{
+        ...modalStyles.container,
+        ...systemStyles.window,
+        background: systemColors.background.window
+      }} onClick={(e) => e.stopPropagation()}>
         {/* Modal header */}
-        <div style={modalStyles.header}>
-          <div style={modalStyles.trafficLights}>
-            <div style={{...modalStyles.trafficLight, ...modalStyles.trafficLightRed}} onClick={handleClose}></div>
-            <div style={{...modalStyles.trafficLight, ...modalStyles.trafficLightYellow}}></div>
-            <div style={{...modalStyles.trafficLight, ...modalStyles.trafficLightGreen}}></div>
+        <div style={{
+          ...systemStyles.titleBar,
+          position: 'relative'
+        }}>
+          <div style={systemStyles.trafficLights.container}>
+            <button
+              style={{
+                ...systemStyles.trafficLights.button,
+                ...systemStyles.trafficLights.red
+              }}
+              onClick={() => {
+                playClickSound();
+                handleClose();
+              }}
+              onMouseEnter={() => setIsCloseHovered(true)}
+              onMouseLeave={() => setIsCloseHovered(false)}
+              title="Fechar"
+            />
+            <button
+              style={{
+                ...systemStyles.trafficLights.button,
+                ...systemStyles.trafficLights.yellow
+              }}
+              onClick={() => {
+                playClickSound();
+                // Minimizar modal (implementar depois)
+              }}
+              title="Minimizar"
+            />
+            <button
+              style={{
+                ...systemStyles.trafficLights.button,
+                ...systemStyles.trafficLights.green
+              }}
+              onClick={() => {
+                playClickSound();
+                // Maximizar modal (implementar depois)
+              }}
+              title="Maximizar"
+            />
           </div>
-          <div style={modalStyles.title}>Cadastros MDF-e</div>
+          <h2 style={systemStyles.titleBarTitle}>Cadastros MDF-e</h2>
           <div style={{ width: '60px' }}></div>
         </div>
 
         {/* Tab system */}
-        <div style={modalStyles.tabsContainer}>
+        <div style={systemStyles.tabs.container}>
           <button
             style={{
-              ...modalStyles.tab,
-              ...(activeTab === 'vehicle' ? modalStyles.tabActive : {})
+              ...systemStyles.tabs.tab,
+              ...(activeTab === 'vehicle' ? systemStyles.tabs.tabActive : {})
             }}
             onClick={() => {
               playClickSound();
@@ -205,8 +248,8 @@ export function MDFeRegistrations({ isOpen, onClose }: MDFeRegistrationsProps): 
           </button>
           <button
             style={{
-              ...modalStyles.tab,
-              ...(activeTab === 'driver' ? modalStyles.tabActive : {})
+              ...systemStyles.tabs.tab,
+              ...(activeTab === 'driver' ? systemStyles.tabs.tabActive : {})
             }}
             onClick={() => {
               playClickSound();
@@ -217,8 +260,8 @@ export function MDFeRegistrations({ isOpen, onClose }: MDFeRegistrationsProps): 
           </button>
           <button
             style={{
-              ...modalStyles.tab,
-              ...(activeTab === 'routes' ? modalStyles.tabActive : {})
+              ...systemStyles.tabs.tab,
+              ...(activeTab === 'routes' ? systemStyles.tabs.tabActive : {})
             }}
             onClick={() => {
               playClickSound();
@@ -229,8 +272,8 @@ export function MDFeRegistrations({ isOpen, onClose }: MDFeRegistrationsProps): 
           </button>
           <button
             style={{
-              ...modalStyles.tab,
-              ...(activeTab === 'settings' ? modalStyles.tabActive : {})
+              ...systemStyles.tabs.tab,
+              ...(activeTab === 'settings' ? systemStyles.tabs.tabActive : {})
             }}
             onClick={() => {
               playClickSound();
@@ -242,7 +285,13 @@ export function MDFeRegistrations({ isOpen, onClose }: MDFeRegistrationsProps): 
         </div>
 
         {/* Tab content */}
-        <div style={modalStyles.tabContent}>
+        <div style={{
+          ...modalStyles.tabContent,
+          background: systemColors.background.content,
+          flex: 1,
+          overflow: 'auto',
+          padding: '20px'
+        }}>
           {activeTab === 'vehicle' && (
             <VehicleTab
               formData={formData}
@@ -273,19 +322,39 @@ export function MDFeRegistrations({ isOpen, onClose }: MDFeRegistrationsProps): 
         </div>
 
         {/* Modal footer */}
-        <div style={modalStyles.footer}>
+        <div style={{
+          padding: '16px 20px',
+          background: systemColors.background.primary,
+          borderTop: `1px solid ${systemColors.border.light}`,
+          display: 'flex',
+          justifyContent: 'flex-end',
+          gap: '12px'
+        }}>
           <button
-            style={modalStyles.button}
-            onClick={handleClose}
+            style={{
+              ...systemStyles.button.default,
+              ...(isCancelHovered ? systemStyles.button.defaultHover : {})
+            }}
+            onMouseEnter={() => setIsCancelHovered(true)}
+            onMouseLeave={() => setIsCancelHovered(false)}
+            onClick={() => {
+              playClickSound();
+              handleClose();
+            }}
           >
             Cancelar
           </button>
           <button
             style={{
-              ...modalStyles.button,
-              ...modalStyles.buttonPrimary
+              ...systemStyles.button.primary,
+              ...(isSaveHovered ? systemStyles.button.primaryHover : {})
             }}
-            onClick={handleSave}
+            onMouseEnter={() => setIsSaveHovered(true)}
+            onMouseLeave={() => setIsSaveHovered(false)}
+            onClick={() => {
+              playClickSound();
+              handleSave();
+            }}
           >
             Salvar Cadastros
           </button>

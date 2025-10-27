@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef, useMemo, useCallback } from 'react';
 import { SearchIcon, EditIcon, DeleteIcon } from '../../../components/Icons/Icons';
 import { macStyles } from '../../../styles/style';
+import { systemStyles, systemColors } from '../../../styles/systemStyle';
 import { useClickSound } from '../../../hooks/useClickSound';
 import { VirtualList, useListPerformance, useDebounce } from '../../../hooks/useVirtualization';
 
@@ -153,7 +154,10 @@ export const ProductList = React.memo<ProductListProps>(({ products, formatCurre
 
   // Renderização normal para listas pequenas
   return (
-    <div style={styles.listContent} className="list-content" ref={listRef}>
+    <div style={{
+      ...styles.listContent,
+      background: systemColors.background.content
+    }} className="list-content" ref={listRef}>
       {products.map((product, index) => renderProductItem(product, index))}
     </div>
   );
@@ -171,7 +175,7 @@ interface ProductRowProps {
   onDeleteProduct?: (product: Product) => void;
 }
 
-const ProductRow = React.memo<ProductRowProps>(({ 
+const ProductRow = React.memo(React.forwardRef<HTMLDivElement, ProductRowProps>(({ 
   product, 
   index, 
   formatCurrency, 
@@ -179,7 +183,7 @@ const ProductRow = React.memo<ProductRowProps>(({
   isSelected,
   onEditProduct,
   onDeleteProduct
-}) => {
+}, ref) => {
   const [isHovered, setIsHovered] = useState(false);
   const styles = macStyles.pages.products;
   const playClickSound = useClickSound();
@@ -198,13 +202,16 @@ const ProductRow = React.memo<ProductRowProps>(({
     if (isSelected) {
       return {
         ...baseStyle,
-        background: 'rgba(10, 132, 255, 0.1)',
-        border: '1px solid rgba(10, 132, 255, 0.3)',
+        background: systemColors.selection.background,
+        border: `1px solid ${systemColors.selection.border}`,
         transform: 'translateX(4px)',
         boxShadow: '0 2px 8px rgba(10, 132, 255, 0.2)'
       };
     } else if (isHovered) {
-      return { ...baseStyle, ...styles.listRowHover };
+      return { 
+        ...baseStyle, 
+        background: systemColors.control.hover
+      };
     }
     
     return baseStyle;
@@ -229,6 +236,7 @@ const ProductRow = React.memo<ProductRowProps>(({
 
   return (
     <div
+      ref={ref}
       style={rowStyle}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
@@ -261,27 +269,42 @@ const ProductRow = React.memo<ProductRowProps>(({
         <div style={styles.actionButtons}>
           {onEditProduct && (
             <button
-              style={styles.actionButton}
+              style={{
+                ...systemStyles.button.default,
+                padding: '4px 8px',
+                minWidth: 'auto',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center'
+              }}
               onClick={handleEdit}
               title="Editar produto"
             >
-              <EditIcon size={16} color="rgba(0, 0, 0, 0.6)" />
+              <EditIcon size={16} color={systemColors.text.secondary} />
             </button>
           )}
           {onDeleteProduct && (
             <button
-              style={styles.actionButton}
+              style={{
+                ...systemStyles.button.default,
+                padding: '4px 8px',
+                minWidth: 'auto',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                color: '#FF3B30'
+              }}
               onClick={handleDelete}
               title="Excluir produto"
             >
-              <DeleteIcon size={16} color="rgba(255, 59, 48, 0.8)" />
+              <DeleteIcon size={16} color="#FF3B30" />
             </button>
           )}
         </div>
       </div>
     </div>
   );
-});
+}));
 
 ProductRow.displayName = 'ProductRow';
 

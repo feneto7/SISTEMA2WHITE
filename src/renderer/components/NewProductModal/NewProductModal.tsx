@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { modalStyles } from '../../styles/modalStyles';
+import { systemStyles, systemColors } from '../../styles/systemStyle';
 import { useClickSound } from '../../hooks/useClickSound';
 import { MainTab, TaxTab, WholesaleTab, IngredientsTab, VariationsTab } from './components';
 
@@ -69,15 +70,22 @@ export function NewProductModal({ isOpen, onClose }: NewProductModalProps): JSX.
 
   return (
     <div style={styles.overlay} onClick={handleOverlayClick}>
-      <div style={styles.container}>
+      <div style={{
+        ...styles.container,
+        ...systemStyles.window,
+        background: systemColors.background.window
+      }}>
         {/* Header com botões de controle macOS */}
-        <div style={styles.header}>
+        <div style={{
+          ...systemStyles.titleBar,
+          position: 'relative'
+        }}>
           {/* Botões de controle (traffic lights) */}
-          <div style={styles.trafficLights}>
+          <div style={systemStyles.trafficLights.container}>
             <button
               style={{
-                ...styles.trafficLight,
-                ...styles.trafficLightRed
+                ...systemStyles.trafficLights.button,
+                ...systemStyles.trafficLights.red
               }}
               onClick={() => {
                 playClickSound();
@@ -89,8 +97,8 @@ export function NewProductModal({ isOpen, onClose }: NewProductModalProps): JSX.
             />
             <button
               style={{
-                ...styles.trafficLight,
-                ...styles.trafficLightYellow
+                ...systemStyles.trafficLights.button,
+                ...systemStyles.trafficLights.yellow
               }}
               onClick={() => {
                 playClickSound();
@@ -100,8 +108,8 @@ export function NewProductModal({ isOpen, onClose }: NewProductModalProps): JSX.
             />
             <button
               style={{
-                ...styles.trafficLight,
-                ...styles.trafficLightGreen
+                ...systemStyles.trafficLights.button,
+                ...systemStyles.trafficLights.green
               }}
               onClick={() => {
                 playClickSound();
@@ -111,49 +119,61 @@ export function NewProductModal({ isOpen, onClose }: NewProductModalProps): JSX.
             />
           </div>
 
-          <h2 style={styles.title}>Novo Produto</h2>
+          <h2 style={systemStyles.titleBarTitle}>Novo Produto</h2>
           <div style={{ width: '60px' }}></div> {/* Espaçador para centralizar o título */}
         </div>
 
         {/* Seletor de tipo */}
-        <div style={styles.typeSelector}>
-          <span style={styles.typeLabel}>Tipo de cadastro:</span>
-          <div style={styles.checkboxGroup}>
-            <div style={styles.checkboxItem} onClick={() => {
+        <div style={{
+          padding: '16px 20px',
+          background: systemColors.background.primary,
+          borderBottom: `1px solid ${systemColors.border.light}`,
+          display: 'flex',
+          alignItems: 'center',
+          gap: '16px'
+        }}>
+          <span style={{
+            fontSize: '13px',
+            fontWeight: '500',
+            color: systemColors.text.label,
+            fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, Helvetica, Arial, sans-serif'
+          }}>Tipo de cadastro:</span>
+          <div style={{ display: 'flex', gap: '16px' }}>
+            <div style={systemStyles.radio.container} onClick={() => {
               playClickSound();
               setProductType('simple');
             }}>
               <div style={{
-                ...styles.checkbox,
-                ...(productType === 'simple' ? styles.checkboxChecked : {})
+                ...systemStyles.radio.circle,
+                ...(productType === 'simple' ? systemStyles.radio.circleChecked : {})
               }}>
-                {productType === 'simple' && <div style={styles.checkboxDot} />}
+                {productType === 'simple' && <div style={systemStyles.radio.dot} />}
               </div>
-              <span style={styles.checkboxLabel}>Simples</span>
+              <span style={systemStyles.radio.label}>Simples</span>
             </div>
-            <div style={styles.checkboxItem} onClick={() => {
+            <div style={systemStyles.radio.container} onClick={() => {
               playClickSound();
               setProductType('variation');
             }}>
               <div style={{
-                ...styles.checkbox,
-                ...(productType === 'variation' ? styles.checkboxChecked : {})
+                ...systemStyles.radio.circle,
+                ...(productType === 'variation' ? systemStyles.radio.circleChecked : {})
               }}>
-                {productType === 'variation' && <div style={styles.checkboxDot} />}
+                {productType === 'variation' && <div style={systemStyles.radio.dot} />}
               </div>
-              <span style={styles.checkboxLabel}>Com Variação</span>
+              <span style={systemStyles.radio.label}>Com Variação</span>
             </div>
           </div>
         </div>
 
         {/* Abas */}
-        <div style={styles.tabsContainer}>
+        <div style={systemStyles.tabs.container}>
           {availableTabs.map((tab) => (
             <button
               key={tab.key}
               style={{
-                ...styles.tab,
-                ...(activeTab === tab.key ? styles.tabActive : {})
+                ...systemStyles.tabs.tab,
+                ...(activeTab === tab.key ? systemStyles.tabs.tabActive : {})
               }}
               onClick={() => {
                 playClickSound();
@@ -166,16 +186,29 @@ export function NewProductModal({ isOpen, onClose }: NewProductModalProps): JSX.
         </div>
 
         {/* Conteúdo da aba */}
-        <div style={styles.tabContent}>
+        <div style={{
+          ...styles.tabContent,
+          background: systemColors.background.content,
+          flex: 1,
+          overflow: 'auto',
+          padding: '20px'
+        }}>
           {renderTabContent()}
         </div>
 
         {/* Footer */}
-        <div style={styles.footer}>
+        <div style={{
+          padding: '16px 20px',
+          background: systemColors.background.primary,
+          borderTop: `1px solid ${systemColors.border.light}`,
+          display: 'flex',
+          justifyContent: 'flex-end',
+          gap: '12px'
+        }}>
           <button 
             style={{
-              ...styles.button,
-              ...(isCancelHovered ? styles.buttonHover : {})
+              ...systemStyles.button.default,
+              ...(isCancelHovered ? systemStyles.button.defaultHover : {})
             }}
             onMouseEnter={() => setIsCancelHovered(true)}
             onMouseLeave={() => setIsCancelHovered(false)}
@@ -188,9 +221,8 @@ export function NewProductModal({ isOpen, onClose }: NewProductModalProps): JSX.
           </button>
           <button 
             style={{
-              ...styles.button,
-              ...styles.buttonPrimary,
-              ...(isSaveHovered ? styles.buttonPrimaryHover : {})
+              ...systemStyles.button.primary,
+              ...(isSaveHovered ? systemStyles.button.primaryHover : {})
             }}
             onMouseEnter={() => setIsSaveHovered(true)}
             onMouseLeave={() => setIsSaveHovered(false)}

@@ -1,4 +1,9 @@
-// Expose minimal, safe APIs to the renderer if needed in the future
-export {};
+const { contextBridge, ipcRenderer } = require('electron');
+
+// Expose protected methods that allow the renderer process to use
+// the ipcRenderer without exposing the entire object
+contextBridge.exposeInMainWorld('electronAPI', {
+  getInstalledCertificates: () => ipcRenderer.invoke('get-installed-certificates')
+});
 
 

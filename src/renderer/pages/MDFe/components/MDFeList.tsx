@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef, useMemo, useCallback } from 'react';
-import { SearchIcon, CloseIcon, DetailIcon } from '../../../components/Icons/Icons';
-import { macStyles } from '../../../styles/style';
+import { AppIcons } from '../../../components/Icons/AppIcons';
+import { systemStyles, systemColors } from '../../../styles/systemStyle';
 import { useClickSound } from '../../../hooks/useClickSound';
 import { VirtualList, useListPerformance, useDebounce } from '../../../hooks/useVirtualization';
 import { useElementScrollbarStyles } from '../../../hooks/useScrollbarStyles';
@@ -28,7 +28,6 @@ interface MDFeListProps {
 // Componente de listagem de MDF-es
 // Modularizado e reutilizável seguindo as regras do projeto
 export const MDFeList = React.memo<MDFeListProps>(({ mdfes, onCloseMDFe, onDetailMDFe }) => {
-  const styles = macStyles.pages.clients;
   const [selectedIndex, setSelectedIndex] = useState<number>(-1);
   const listRef = useRef<HTMLDivElement>(null);
   const selectedItemRef = useRef<HTMLDivElement>(null);
@@ -38,6 +37,116 @@ export const MDFeList = React.memo<MDFeListProps>(({ mdfes, onCloseMDFe, onDetai
 
   // Verificar se precisa de virtualização
   const { shouldVirtualize, itemCount } = useListPerformance(mdfes, 50);
+
+  // Definir estilos locais baseados em systemStyles
+  const styles = {
+    listContainer: {
+      ...systemStyles.list.container,
+      flexDirection: 'column' as const
+    },
+    listHeader: {
+      ...systemStyles.list.header,
+      display: 'grid' as const
+    },
+    headerCell: {
+      ...systemStyles.list.headerCell
+    },
+    headerCellDivider: {
+      display: 'inline-block',
+      width: '1px',
+      height: '16px',
+      background: systemColors.border.light,
+      marginLeft: '12px',
+      verticalAlign: 'middle'
+    },
+    listContent: {
+      ...systemStyles.list.content
+    },
+    listRow: {
+      padding: '12px 16px',
+      borderBottom: `1px solid ${systemColors.border.divider}`,
+      display: 'grid' as const,
+      transition: 'background-color 0.15s ease'
+    },
+    listRowHover: {
+      ...systemStyles.list.rowHover
+    },
+    rowCell: {
+      fontSize: '13px',
+      color: systemColors.text.primary,
+      fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, Helvetica, Arial, sans-serif',
+      overflow: 'hidden' as const,
+      textOverflow: 'ellipsis' as const,
+      whiteSpace: 'nowrap' as const
+    },
+    clientName: {
+      fontSize: '13px',
+      fontWeight: '500',
+      color: systemColors.text.primary,
+      marginBottom: '4px'
+    },
+    emailText: {
+      fontSize: '11px',
+      color: systemColors.text.secondary
+    },
+    phoneText: {
+      fontSize: '13px',
+      color: systemColors.text.primary
+    },
+    typeBadgeIndividual: {
+      padding: '4px 8px',
+      borderRadius: '4px',
+      fontSize: '10px',
+      fontWeight: '600',
+      color: '#34C759',
+      background: 'rgba(52, 199, 89, 0.1)',
+      textTransform: 'uppercase' as const
+    },
+    typeBadgeCompany: {
+      padding: '4px 8px',
+      borderRadius: '4px',
+      fontSize: '10px',
+      fontWeight: '600',
+      color: '#FF9500',
+      background: 'rgba(255, 149, 0, 0.1)',
+      textTransform: 'uppercase' as const
+    },
+    actionButtons: {
+      display: 'flex',
+      gap: '4px'
+    },
+    actionButton: {
+      width: '28px',
+      height: '28px',
+      borderRadius: '4px',
+      border: 'none',
+      background: 'transparent',
+      cursor: 'pointer',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      transition: 'all 0.15s ease'
+    },
+    emptyState: {
+      display: 'flex',
+      flexDirection: 'column' as const,
+      alignItems: 'center',
+      justifyContent: 'center',
+      padding: '60px 20px',
+      textAlign: 'center' as const
+    },
+    emptyText: {
+      fontSize: '16px',
+      fontWeight: '500',
+      color: systemColors.text.secondary,
+      marginTop: '16px'
+    },
+    emptySubtext: {
+      fontSize: '13px',
+      color: systemColors.text.tertiary,
+      marginTop: '8px'
+    }
+  };
 
   // Memoizar função de navegação por teclado para evitar recriações desnecessárias
   const handleKeyDown = useCallback((e: KeyboardEvent) => {
@@ -117,7 +226,7 @@ export const MDFeList = React.memo<MDFeListProps>(({ mdfes, onCloseMDFe, onDetai
   // Memoizar estado vazio para evitar recriações
   const emptyState = useMemo(() => (
     <div style={styles.emptyState}>
-      <SearchIcon size={48} color="rgba(0, 0, 0, 0.2)" />
+      <AppIcons.Search size={48} color={systemColors.text.tertiary} />
       <p style={styles.emptyText}>Nenhuma MDF-e encontrada</p>
       <p style={styles.emptySubtext}>Clique em "Nova MDF-e" para criar a primeira</p>
     </div>
@@ -262,7 +371,73 @@ const MDFeRow = React.memo<MDFeRowProps>(({
   onDetailMDFe
 }) => {
   const [isHovered, setIsHovered] = useState(false);
-  const styles = macStyles.pages.clients;
+  const styles = {
+    listRow: {
+      padding: '12px 16px',
+      borderBottom: `1px solid ${systemColors.border.divider}`,
+      display: 'grid' as const,
+      transition: 'background-color 0.15s ease'
+    },
+    listRowHover: {
+      ...systemStyles.list.rowHover
+    },
+    rowCell: {
+      fontSize: '13px',
+      color: systemColors.text.primary,
+      fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, Helvetica, Arial, sans-serif',
+      overflow: 'hidden' as const,
+      textOverflow: 'ellipsis' as const,
+      whiteSpace: 'nowrap' as const
+    },
+    clientName: {
+      fontSize: '13px',
+      fontWeight: '500',
+      color: systemColors.text.primary,
+      marginBottom: '4px'
+    },
+    emailText: {
+      fontSize: '11px',
+      color: systemColors.text.secondary
+    },
+    phoneText: {
+      fontSize: '13px',
+      color: systemColors.text.primary
+    },
+    typeBadgeIndividual: {
+      padding: '4px 8px',
+      borderRadius: '4px',
+      fontSize: '10px',
+      fontWeight: '600',
+      color: '#34C759',
+      background: 'rgba(52, 199, 89, 0.1)',
+      textTransform: 'uppercase' as const
+    },
+    typeBadgeCompany: {
+      padding: '4px 8px',
+      borderRadius: '4px',
+      fontSize: '10px',
+      fontWeight: '600',
+      color: '#FF9500',
+      background: 'rgba(255, 149, 0, 0.1)',
+      textTransform: 'uppercase' as const
+    },
+    actionButtons: {
+      display: 'flex',
+      gap: '4px'
+    },
+    actionButton: {
+      width: '28px',
+      height: '28px',
+      borderRadius: '4px',
+      border: 'none',
+      background: 'transparent',
+      cursor: 'pointer',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      transition: 'all 0.15s ease'
+    }
+  };
   const playClickSound = useClickSound();
 
   // Memoizar estilo da linha para evitar recálculos desnecessários
@@ -365,7 +540,7 @@ const MDFeRow = React.memo<MDFeRowProps>(({
               onClick={handleClose}
               title="Encerrar MDF-e"
             >
-              <CloseIcon size={16} color="rgba(255, 149, 0, 0.8)" />
+              <AppIcons.Delete size={16} color="rgba(255, 149, 0, 0.8)" />
             </button>
           )}
           {onDetailMDFe && (
@@ -374,7 +549,7 @@ const MDFeRow = React.memo<MDFeRowProps>(({
               onClick={handleDetail}
               title="Detalhar MDF-e"
             >
-              <DetailIcon size={16} color="rgba(0, 0, 0, 0.6)" />
+              <AppIcons.Edit size={16} color="rgba(0, 0, 0, 0.6)" />
             </button>
           )}
         </div>
