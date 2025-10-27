@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { modalStyles } from '../../../../../styles/modalStyles';
+import { systemStyles, systemColors } from '../../../../../styles/systemStyle';
 import { useClickSound } from '../../../../../hooks/useClickSound';
 import { useElementScrollbarStyles } from '../../../../../hooks/useScrollbarStyles';
 import { AddButton } from '../../../../../components/AddButton';
@@ -96,8 +96,8 @@ export function DriversTab({ formData, onUpdateFormData }: DriversTabProps): JSX
   };
 
   const getInputStyle = (field: string) => {
-    const baseStyle = modalStyles.formInput;
-    const focusStyle = focusedField === field ? modalStyles.formInputFocus : {};
+    const baseStyle = systemStyles.input.field;
+    const focusStyle = focusedField === field ? systemStyles.input.fieldFocus : {};
     return { ...baseStyle, ...focusStyle };
   };
 
@@ -176,7 +176,7 @@ export function DriversTab({ formData, onUpdateFormData }: DriversTabProps): JSX
     container: {
       height: '100%',
       overflow: 'auto' as const,
-      padding: '0'
+      padding: '20px'
     },
     section: {
       marginBottom: '24px'
@@ -184,12 +184,12 @@ export function DriversTab({ formData, onUpdateFormData }: DriversTabProps): JSX
     sectionTitle: {
       fontSize: '14px',
       fontWeight: '600',
-      color: 'var(--text-primary)',
+      color: systemColors.text.primary,
       margin: '0 0 16px 0',
       fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, Helvetica, Arial, sans-serif',
       textTransform: 'uppercase' as const,
       letterSpacing: '0.5px',
-      borderBottom: '1px solid rgba(0, 0, 0, 0.1)',
+      borderBottom: `1px solid ${systemColors.border.light}`,
       paddingBottom: '8px'
     },
     selectContainer: {
@@ -198,24 +198,24 @@ export function DriversTab({ formData, onUpdateFormData }: DriversTabProps): JSX
       gap: '8px',
       marginBottom: '20px',
       padding: '16px',
-      background: 'rgba(255, 255, 255, 0.6)',
+      background: systemColors.background.content,
       borderRadius: '8px',
-      border: '1px solid rgba(0, 0, 0, 0.1)'
+      border: `1px solid ${systemColors.border.light}`
     },
     selectLabel: {
-      fontSize: '12px',
+      fontSize: '11px',
       fontWeight: '600',
-      color: 'var(--text-secondary)',
+      color: systemColors.text.secondary,
       fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, Helvetica, Arial, sans-serif',
       textTransform: 'uppercase' as const,
-      letterSpacing: '0.5px'
+      letterSpacing: '0.3px'
     },
     select: {
-      ...modalStyles.formInput,
+      ...systemStyles.select.field,
       cursor: 'pointer'
     },
     selectFocus: {
-      ...modalStyles.formInputFocus
+      ...systemStyles.select.fieldFocus
     },
     selectRow: {
       display: 'flex',
@@ -230,7 +230,7 @@ export function DriversTab({ formData, onUpdateFormData }: DriversTabProps): JSX
     },
     infoText: {
       fontSize: '11px',
-      color: 'var(--text-secondary)',
+      color: systemColors.text.secondary,
       fontStyle: 'italic',
       marginTop: '4px',
       fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, Helvetica, Arial, sans-serif'
@@ -248,9 +248,9 @@ export function DriversTab({ formData, onUpdateFormData }: DriversTabProps): JSX
       gap: '6px'
     },
     condutoresList: {
-      background: 'rgba(255, 255, 255, 0.4)',
+      background: systemColors.background.content,
       borderRadius: '8px',
-      border: '1px solid rgba(0, 0, 0, 0.05)',
+      border: `1px solid ${systemColors.border.light}`,
       maxHeight: '200px',
       overflowY: 'auto' as const
     },
@@ -259,7 +259,7 @@ export function DriversTab({ formData, onUpdateFormData }: DriversTabProps): JSX
       justifyContent: 'space-between',
       alignItems: 'center',
       padding: '12px 16px',
-      borderBottom: '1px solid rgba(0, 0, 0, 0.05)',
+      borderBottom: `1px solid ${systemColors.border.divider}`,
       transition: 'background 0.15s ease'
     },
     condutorItemLast: {
@@ -273,11 +273,11 @@ export function DriversTab({ formData, onUpdateFormData }: DriversTabProps): JSX
     condutorName: {
       fontSize: '14px',
       fontWeight: '500',
-      color: '#1a1a1a'
+      color: systemColors.text.primary
     },
     condutorDetails: {
       fontSize: '12px',
-      color: '#666'
+      color: systemColors.text.secondary
     },
     removeButton: {
       padding: '6px 12px',
@@ -293,39 +293,48 @@ export function DriversTab({ formData, onUpdateFormData }: DriversTabProps): JSX
     emptyState: {
       padding: '20px',
       textAlign: 'center' as const,
-      color: '#666',
+      color: systemColors.text.secondary,
       fontSize: '14px',
       fontStyle: 'italic'
-    }
+    },
+    label: systemStyles.input.label
   };
 
   return (
     <div ref={formContainerRef} style={styles.container}>
       {/* Seção de Condutores Cadastrados */}
-      <div style={modalStyles.formSection}>
-        <h4 style={modalStyles.formSectionTitle}>Condutores Cadastrados</h4>
+      <div style={styles.section}>
+        <h4 style={styles.sectionTitle}>Condutores Cadastrados</h4>
         <div style={{marginBottom: '16px'}}>
           <label style={styles.selectLabel}>Selecionar Condutor</label>
           <div style={styles.selectRow}>
-            <select
-              style={{
-                ...styles.select,
-                ...(focusedField === 'condutorSelecionado' ? styles.selectFocus : {}),
-                flex: 1
-              }}
-              value={condutorSelecionado}
-              onChange={(e) => handleCondutorSelect(e.target.value)}
-              onFocus={() => handleInputFocus('condutorSelecionado')}
-              onBlur={handleInputBlur}
-              onClick={() => playClickSound()}
-            >
-              <option value="">Selecione um condutor cadastrado</option>
-              {condutoresCadastrados.map((condutor) => (
-                <option key={condutor.id} value={condutor.id}>
-                  {condutor.nomeCondutor} - {condutor.cpfCondutor} ({condutor.categoriaCnh})
-                </option>
-              ))}
-            </select>
+            <div style={{ position: 'relative', flex: 1 }}>
+              <select
+                style={{
+                  ...styles.select,
+                  ...(focusedField === 'condutorSelecionado' ? styles.selectFocus : {}),
+                  paddingRight: '24px',
+                  appearance: 'none' as const,
+                  WebkitAppearance: 'none' as const,
+                  MozAppearance: 'none' as const
+                }}
+                value={condutorSelecionado}
+                onChange={(e) => handleCondutorSelect(e.target.value)}
+                onFocus={() => handleInputFocus('condutorSelecionado')}
+                onBlur={handleInputBlur}
+                onClick={() => playClickSound()}
+              >
+                <option value="">Selecione um condutor cadastrado</option>
+                {condutoresCadastrados.map((condutor) => (
+                  <option key={condutor.id} value={condutor.id}>
+                    {condutor.nomeCondutor} - {condutor.cpfCondutor} ({condutor.categoriaCnh})
+                  </option>
+                ))}
+              </select>
+              <div style={systemStyles.select.arrow}>
+                <div style={systemStyles.select.arrowIcon}></div>
+              </div>
+            </div>
             <AddButton
               onClick={handleAdicionarCondutorCadastrado}
               disabled={!condutorSelecionado}
@@ -339,19 +348,19 @@ export function DriversTab({ formData, onUpdateFormData }: DriversTabProps): JSX
       </div>
 
       {/* Seção de Novo Condutor */}
-      <div style={modalStyles.formSection}>
-        <h4 style={modalStyles.formSectionTitle}>Novo Condutor</h4>
+      <div style={styles.section}>
+        <h4 style={styles.sectionTitle}>Novo Condutor</h4>
         <div style={styles.formGrid}>
           <div style={styles.formGroup}>
-            <label style={modalStyles.formLabel}>Nome Completo *</label>
+            <label style={styles.label}>Nome Completo *</label>
             <input {...getInputProps('nomeCondutor', 'João Silva')} />
           </div>
           <div style={styles.formGroup}>
-            <label style={modalStyles.formLabel}>CPF *</label>
+            <label style={styles.label}>CPF *</label>
             <input {...getInputProps('cpfCondutor', '123.456.789-00')} />
           </div>
           <div style={styles.formGroup}>
-            <label style={modalStyles.formLabel}>CNH *</label>
+            <label style={styles.label}>CNH *</label>
             <input {...getInputProps('cnhCondutor', '12345678901')} />
           </div>
           <div style={styles.formGroup}>
@@ -365,8 +374,8 @@ export function DriversTab({ formData, onUpdateFormData }: DriversTabProps): JSX
       </div>
 
       {/* Lista de Condutores Selecionados */}
-      <div style={modalStyles.formSection}>
-        <h4 style={modalStyles.formSectionTitle}>Condutores Selecionados</h4>
+      <div style={styles.section}>
+        <h4 style={styles.sectionTitle}>Condutores Selecionados</h4>
         <div style={styles.condutoresList}>
           {formData.condutoresSelecionados && formData.condutoresSelecionados.length > 0 ? (
             formData.condutoresSelecionados.map((condutor: Driver, index: number) => (

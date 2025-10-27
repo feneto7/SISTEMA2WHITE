@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef, useMemo, useCallback } from 'react';
 import { SearchIcon, EditIcon, DeleteIcon } from '../../../components/Icons/Icons';
-import { macStyles } from '../../../styles/style';
+import { systemStyles, systemColors } from '../../../styles/systemStyle';
 import { useClickSound } from '../../../hooks/useClickSound';
 import { VirtualList, useListPerformance, useDebounce } from '../../../hooks/useVirtualization';
 
@@ -25,7 +25,6 @@ interface ClientListProps {
 }
 
 export const ClientList = React.memo<ClientListProps>(({ clients, nameColumnWidth, onEditClient, onDeleteClient }) => {
-  const styles = macStyles.pages.clients;
   const [selectedIndex, setSelectedIndex] = useState<number>(-1);
   const listRef = useRef<HTMLDivElement>(null);
   const selectedItemRef = useRef<HTMLDivElement>(null);
@@ -110,12 +109,31 @@ export const ClientList = React.memo<ClientListProps>(({ clients, nameColumnWidt
 
   // Memoizar estado vazio para evitar recriações
   const emptyState = useMemo(() => (
-    <div style={styles.emptyState}>
+    <div style={{
+      display: 'flex',
+      flexDirection: 'column',
+      alignItems: 'center',
+      justifyContent: 'center',
+      height: '100%',
+      gap: '12px',
+      padding: '40px'
+    }}>
       <SearchIcon size={48} color="rgba(0, 0, 0, 0.2)" />
-      <p style={styles.emptyText}>Nenhum cliente encontrado</p>
-      <p style={styles.emptySubtext}>Tente buscar com outros termos</p>
+      <p style={{
+        fontSize: '16px',
+        fontWeight: '500',
+        color: systemColors.text.secondary,
+        margin: 0,
+        fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, Helvetica, Arial, sans-serif'
+      }}>Nenhum cliente encontrado</p>
+      <p style={{
+        fontSize: '13px',
+        color: 'rgba(0, 0, 0, 0.4)',
+        margin: 0,
+        fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, Helvetica, Arial, sans-serif'
+      }}>Tente buscar com outros termos</p>
     </div>
-  ), [styles.emptyState, styles.emptyText, styles.emptySubtext]);
+  ), []);
 
   // Função para renderizar item individual
   const renderClientItem = useCallback((client: Client, index: number) => (
@@ -145,14 +163,14 @@ export const ClientList = React.memo<ClientListProps>(({ clients, nameColumnWidt
         renderItem={renderClientItem}
         overscan={5}
         className="list-content"
-        style={styles.listContent}
+        style={systemStyles.list.content}
       />
     );
   }
 
   // Renderização normal para listas pequenas
   return (
-    <div style={styles.listContent} className="list-content" ref={listRef}>
+    <div style={systemStyles.list.content} className="list-content" ref={listRef}>
       {clients.map((client, index) => renderClientItem(client, index))}
     </div>
   );
@@ -169,43 +187,51 @@ interface ClientRowProps {
   onDeleteClient?: (client: Client) => void;
 }
 
-const ClientRow = React.memo<ClientRowProps>(({ 
+const ClientRow = React.memo(React.forwardRef<HTMLDivElement, ClientRowProps>(({ 
   client, 
   index, 
   nameColumnWidth, 
   isSelected,
   onEditClient,
   onDeleteClient
-}) => {
+}, ref) => {
   const [isHovered, setIsHovered] = useState(false);
-  const styles = macStyles.pages.clients;
   const playClickSound = useClickSound();
 
   // Memoizar estilo da linha para evitar recálculos desnecessários
   const rowStyle = useMemo(() => {
     const baseStyle = {
-      ...styles.listRow,
       gridTemplateColumns: `${nameColumnWidth}px 1fr 1fr 1fr 0.8fr 80px`,
+      padding: '16px 12px',
+      borderBottom: `1px solid ${systemColors.border.divider}`,
+      display: 'grid',
+      gap: '16px',
       animationDelay: `${index * 0.05}s`,
+      animation: 'fadeIn 0.3s ease forwards',
+      opacity: 0,
       cursor: 'pointer',
-      transition: 'all 0.15s ease'
+      transition: 'all 0.15s ease',
+      fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, Helvetica, Arial, sans-serif'
     };
 
     // Aplicar estilo de hover ou seleção
     if (isSelected) {
       return {
         ...baseStyle,
-        background: 'rgba(10, 132, 255, 0.1)',
-        border: '1px solid rgba(10, 132, 255, 0.3)',
+        background: systemColors.selection.background,
+        border: `1px solid ${systemColors.selection.border}`,
         transform: 'translateX(4px)',
         boxShadow: '0 2px 8px rgba(10, 132, 255, 0.2)'
       };
     } else if (isHovered) {
-      return { ...baseStyle, ...styles.listRowHover };
+      return { 
+        ...baseStyle, 
+        background: systemColors.control.hover
+      };
     }
     
     return baseStyle;
-  }, [styles.listRow, styles.listRowHover, nameColumnWidth, index, isSelected, isHovered]);
+  }, [nameColumnWidth, index, isSelected, isHovered]);
 
   // Memoizar callbacks para evitar recriações
   const handleEdit = useCallback((e: React.MouseEvent) => {
@@ -226,52 +252,96 @@ const ClientRow = React.memo<ClientRowProps>(({
 
   return (
     <div
+      ref={ref}
       style={rowStyle}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
       onClick={handleClick}
     >
-      <div style={styles.rowCell} className="cell-name">
-        <div style={styles.clientName}>{client.name}</div>
+      <div style={{ display: 'flex', alignItems: 'center' }} className="cell-name">
+        <div style={{
+          fontSize: '14px',
+          fontWeight: '500',
+          color: systemColors.text.primary,
+          whiteSpace: 'nowrap',
+          overflow: 'hidden',
+          textOverflow: 'ellipsis'
+        }}>{client.name}</div>
       </div>
-      <div style={styles.rowCell} className="cell-email">
-        <span style={styles.emailText}>{client.email}</span>
+      <div style={{ display: 'flex', alignItems: 'center' }} className="cell-email">
+        <span style={{
+          fontSize: '13px',
+          color: systemColors.text.primary
+        }}>{client.email}</span>
       </div>
-      <div style={styles.rowCell} className="cell-phone">
-        <span style={styles.phoneText}>{client.phone}</span>
+      <div style={{ display: 'flex', alignItems: 'center' }} className="cell-phone">
+        <span style={{
+          fontSize: '13px',
+          color: systemColors.text.primary
+        }}>{client.phone}</span>
       </div>
-      <div style={styles.rowCell} className="cell-document">
-        <span style={styles.documentText}>{client.document}</span>
+      <div style={{ display: 'flex', alignItems: 'center' }} className="cell-document">
+        <span style={{
+          fontSize: '13px',
+          color: systemColors.text.primary
+        }}>{client.document}</span>
       </div>
-      <div style={styles.rowCell} className="cell-type">
-        <span style={client.type === 'individual' ? styles.typeBadgeIndividual : styles.typeBadgeCompany}>
+      <div style={{ display: 'flex', alignItems: 'center' }} className="cell-type">
+        <span style={{
+          fontSize: '11px',
+          color: client.type === 'individual' ? '#34C759' : '#FF9500',
+          background: client.type === 'individual' ? 'rgba(52, 199, 89, 0.1)' : 'rgba(255, 149, 0, 0.1)',
+          padding: '4px 10px',
+          borderRadius: '6px',
+          fontWeight: '600'
+        }}>
           {client.type === 'individual' ? 'Pessoa Física' : 'Pessoa Jurídica'}
         </span>
       </div>
-      <div style={styles.rowCell} className="cell-actions">
-        <div style={styles.actionButtons}>
+      <div style={{ display: 'flex', alignItems: 'center' }} className="cell-actions">
+        <div style={{
+          display: 'flex',
+          gap: '8px',
+          justifyContent: 'center',
+          alignItems: 'center'
+        }}>
           {onEditClient && (
             <button
-              style={styles.actionButton}
+              style={{
+                ...systemStyles.button.default,
+                padding: '4px 8px',
+                minWidth: 'auto',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center'
+              }}
               onClick={handleEdit}
               title="Editar cliente"
             >
-              <EditIcon size={16} color="rgba(0, 0, 0, 0.6)" />
+              <EditIcon size={16} color={systemColors.text.secondary} />
             </button>
           )}
           {onDeleteClient && (
             <button
-              style={styles.actionButton}
+              style={{
+                ...systemStyles.button.default,
+                padding: '4px 8px',
+                minWidth: 'auto',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                color: '#FF3B30'
+              }}
               onClick={handleDelete}
               title="Excluir cliente"
             >
-              <DeleteIcon size={16} color="rgba(255, 59, 48, 0.8)" />
+              <DeleteIcon size={16} color="#FF3B30" />
             </button>
           )}
         </div>
       </div>
     </div>
   );
-});
+}));
 
 ClientRow.displayName = 'ClientRow';

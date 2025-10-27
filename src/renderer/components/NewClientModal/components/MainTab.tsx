@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useClickSound } from '../../../hooks/useClickSound';
-import { modalStyles } from '../../../styles/modalStyles';
+import { systemStyles, systemColors } from '../../../styles/systemStyle';
 
 // Interface para dados do formulário
 interface FormData {
@@ -82,6 +82,7 @@ interface MainTabProps {
 export function MainTab({ clientType, formData, onUpdateFormData }: MainTabProps): JSX.Element {
   const playClickSound = useClickSound();
   const [isLoadingCNPJ, setIsLoadingCNPJ] = useState(false);
+  const [focusedField, setFocusedField] = useState<string | null>(null);
 
   // Função para consultar CNPJ na API BrasilAPI
   const consultarCNPJ = async (cnpj: string) => {
@@ -278,31 +279,52 @@ export function MainTab({ clientType, formData, onUpdateFormData }: MainTabProps
   return (
     <div>
       {/* Seção de Informações Principais */}
-      <div style={modalStyles.formSection}>
-        <h4 style={modalStyles.formSectionTitle}>Informações Principais</h4>
-        <div style={modalStyles.formGrid}>
-        <div style={modalStyles.formGroup}>
-          <label style={modalStyles.formLabel}>
+      <div style={{ marginBottom: '24px' }}>
+        <h4 style={{
+          fontSize: '13px',
+          fontWeight: '600',
+          color: systemColors.text.secondary,
+          textTransform: 'uppercase' as const,
+          letterSpacing: '0.5px',
+          marginBottom: '12px'
+        }}>Informações Principais</h4>
+        <div style={{
+          display: 'grid',
+          gridTemplateColumns: 'repeat(3, 1fr)',
+          gap: '16px'
+        }}>
+        <div style={systemStyles.input.container}>
+          <label style={systemStyles.input.label}>
             {clientType === 'individual' ? 'Nome Completo' : 'Razão Social'}
           </label>
           <input
             type="text"
-            style={modalStyles.formInput}
+            style={{
+              ...systemStyles.input.field,
+              ...(focusedField === 'name' ? systemStyles.input.fieldFocus : {})
+            }}
             value={formData.name}
             onChange={(e) => onUpdateFormData('name', e.target.value)}
+            onFocus={() => setFocusedField('name')}
+            onBlur={() => setFocusedField(null)}
             onClick={playClickSound}
             placeholder={clientType === 'individual' ? 'Digite o nome completo' : 'Digite a razão social'}
           />
         </div>
-        <div style={modalStyles.formGroup}>
-          <label style={modalStyles.formLabel}>
+        <div style={systemStyles.input.container}>
+          <label style={systemStyles.input.label}>
             {clientType === 'individual' ? 'CPF' : 'Nome Fantasia'}
           </label>
           <input
             type="text"
-            style={modalStyles.formInput}
+            style={{
+              ...systemStyles.input.field,
+              ...(focusedField === 'cpfFantasy' ? systemStyles.input.fieldFocus : {})
+            }}
             value={clientType === 'individual' ? formData.document : (formData.fantasyName || '')}
             onChange={(e) => clientType === 'individual' ? handleDocumentChange(e.target.value) : onUpdateFormData('fantasyName', e.target.value)}
+            onFocus={() => setFocusedField('cpfFantasy')}
+            onBlur={() => setFocusedField(null)}
             onClick={playClickSound}
             placeholder={clientType === 'individual' ? '000.000.000-00' : 'Digite o nome fantasia'}
             maxLength={clientType === 'individual' ? 14 : undefined}
@@ -310,8 +332,8 @@ export function MainTab({ clientType, formData, onUpdateFormData }: MainTabProps
         </div>
         {/* Campo CNPJ para pessoa jurídica */}
         {clientType === 'company' && (
-          <div style={modalStyles.formGroup}>
-            <label style={modalStyles.formLabel}>
+          <div style={systemStyles.input.container}>
+            <label style={systemStyles.input.label}>
               CNPJ
               {isLoadingCNPJ && (
                 <span style={{
@@ -328,12 +350,15 @@ export function MainTab({ clientType, formData, onUpdateFormData }: MainTabProps
               <input
                 type="text"
                 style={{
-                  ...modalStyles.formInput,
+                  ...systemStyles.input.field,
+                  ...(focusedField === 'cnpj' ? systemStyles.input.fieldFocus : {}),
                   opacity: isLoadingCNPJ ? 0.7 : 1,
                   cursor: isLoadingCNPJ ? 'not-allowed' : 'text'
                 }}
                 value={formData.document}
                 onChange={(e) => handleDocumentChange(e.target.value)}
+                onFocus={() => setFocusedField('cnpj')}
+                onBlur={() => setFocusedField(null)}
                 onClick={playClickSound}
                 placeholder="00.000.000/0000-00"
                 maxLength={18}
@@ -358,28 +383,38 @@ export function MainTab({ clientType, formData, onUpdateFormData }: MainTabProps
         {/* Campos específicos para pessoa jurídica */}
         {clientType === 'company' && (
           <>
-            <div style={modalStyles.formGroup}>
-              <label style={modalStyles.formLabel}>
+            <div style={systemStyles.input.container}>
+              <label style={systemStyles.input.label}>
                 Inscrição Estadual
               </label>
               <input
                 type="text"
-                style={modalStyles.formInput}
+                style={{
+                  ...systemStyles.input.field,
+                  ...(focusedField === 'stateRegistration' ? systemStyles.input.fieldFocus : {})
+                }}
                 value={formData.stateRegistration || ''}
                 onChange={(e) => onUpdateFormData('stateRegistration', e.target.value)}
+                onFocus={() => setFocusedField('stateRegistration')}
+                onBlur={() => setFocusedField(null)}
                 onClick={playClickSound}
                 placeholder="Digite a inscrição estadual"
               />
             </div>
-            <div style={modalStyles.formGroup}>
-              <label style={modalStyles.formLabel}>
+            <div style={systemStyles.input.container}>
+              <label style={systemStyles.input.label}>
                 Inscrição Municipal
               </label>
               <input
                 type="text"
-                style={modalStyles.formInput}
+                style={{
+                  ...systemStyles.input.field,
+                  ...(focusedField === 'municipalRegistration' ? systemStyles.input.fieldFocus : {})
+                }}
                 value={formData.municipalRegistration || ''}
                 onChange={(e) => onUpdateFormData('municipalRegistration', e.target.value)}
+                onFocus={() => setFocusedField('municipalRegistration')}
+                onBlur={() => setFocusedField(null)}
                 onClick={playClickSound}
                 placeholder="Digite a inscrição municipal"
               />
@@ -390,31 +425,52 @@ export function MainTab({ clientType, formData, onUpdateFormData }: MainTabProps
       </div>
 
       {/* Seção de Contatos */}
-      <div style={modalStyles.formSection}>
-        <h4 style={modalStyles.formSectionTitle}>Contatos</h4>
-        <div style={modalStyles.formGrid}>
-        <div style={modalStyles.formGroup}>
-          <label style={modalStyles.formLabel}>
+      <div>
+        <h4 style={{
+          fontSize: '13px',
+          fontWeight: '600',
+          color: systemColors.text.secondary,
+          textTransform: 'uppercase' as const,
+          letterSpacing: '0.5px',
+          marginBottom: '12px'
+        }}>Contatos</h4>
+        <div style={{
+          display: 'grid',
+          gridTemplateColumns: 'repeat(2, 1fr)',
+          gap: '16px'
+        }}>
+        <div style={systemStyles.input.container}>
+          <label style={systemStyles.input.label}>
             Email
           </label>
           <input
             type="email"
-            style={modalStyles.formInput}
+            style={{
+              ...systemStyles.input.field,
+              ...(focusedField === 'email' ? systemStyles.input.fieldFocus : {})
+            }}
             value={formData.email}
             onChange={(e) => onUpdateFormData('email', e.target.value)}
+            onFocus={() => setFocusedField('email')}
+            onBlur={() => setFocusedField(null)}
             onClick={playClickSound}
             placeholder="Digite o email"
           />
         </div>
-        <div style={modalStyles.formGroup}>
-          <label style={modalStyles.formLabel}>
+        <div style={systemStyles.input.container}>
+          <label style={systemStyles.input.label}>
             Telefone
           </label>
           <input
             type="tel"
-            style={modalStyles.formInput}
+            style={{
+              ...systemStyles.input.field,
+              ...(focusedField === 'phone' ? systemStyles.input.fieldFocus : {})
+            }}
             value={formData.phone}
             onChange={(e) => handlePhoneChange(e.target.value)}
+            onFocus={() => setFocusedField('phone')}
+            onBlur={() => setFocusedField(null)}
             onClick={playClickSound}
             placeholder="(11) 99999-9999"
             maxLength={15}

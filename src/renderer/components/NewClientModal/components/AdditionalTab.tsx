@@ -1,5 +1,5 @@
-import React from 'react';
-import { modalStyles } from '../../../styles/modalStyles';
+import React, { useState } from 'react';
+import { systemStyles, systemColors } from '../../../styles/systemStyle';
 
 // Interface para dados do formulário
 interface FormData {
@@ -30,18 +30,34 @@ interface AdditionalTabProps {
 // Aba adicional do modal de cliente
 // Contém campos opcionais como observações e informações extras
 export function AdditionalTab({ formData, onUpdateFormData }: AdditionalTabProps): JSX.Element {
+  const [focusedField, setFocusedField] = useState<string | null>(null);
+  
   return (
     <div>
-      <div style={modalStyles.formSection}>
-        <h4 style={modalStyles.formSectionTitle}>Informações Adicionais</h4>
-        <div style={modalStyles.formGroup}>
-          <label style={modalStyles.formLabel}>
+      <div style={{ marginBottom: '24px' }}>
+        <h4 style={{
+          fontSize: '13px',
+          fontWeight: '600',
+          color: systemColors.text.secondary,
+          textTransform: 'uppercase' as const,
+          letterSpacing: '0.5px',
+          marginBottom: '12px'
+        }}>Informações Adicionais</h4>
+        <div style={systemStyles.input.container}>
+          <label style={systemStyles.input.label}>
             Observações
           </label>
           <textarea
-            style={modalStyles.formTextarea}
+            style={{
+              ...systemStyles.input.field,
+              minHeight: '120px',
+              resize: 'vertical' as const,
+              ...(focusedField === 'notes' ? systemStyles.input.fieldFocus : {})
+            }}
             value={formData.notes}
             onChange={(e) => onUpdateFormData('notes', e.target.value)}
+            onFocus={() => setFocusedField('notes')}
+            onBlur={() => setFocusedField(null)}
             placeholder="Digite observações sobre o cliente..."
           />
         </div>

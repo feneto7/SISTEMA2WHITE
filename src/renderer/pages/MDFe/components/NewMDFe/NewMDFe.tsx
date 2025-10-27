@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { modalStyles } from '../../../../styles/modalStyles';
+import { systemStyles, systemColors } from '../../../../styles/systemStyle';
 import { useClickSound } from '../../../../hooks/useClickSound';
 import { DocumentsTab, TransportTab, DriversTab, RouteTab, FreightTab, InsuranceTab, TotalizersTab } from './components';
 
@@ -238,81 +238,170 @@ export function NewMDFe({ isOpen, onClose, onSave }: NewMDFeProps): JSX.Element 
 
   if (!isOpen) return null;
 
+  const styles = {
+    overlay: {
+      position: 'fixed' as const,
+      top: 0,
+      left: 0,
+      right: 0,
+      bottom: 0,
+      backgroundColor: 'rgba(0, 0, 0, 0.4)',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      zIndex: 1000
+    },
+    container: {
+      ...systemStyles.window,
+      width: '90vw',
+      maxWidth: '1200px',
+      height: '90vh',
+      display: 'flex',
+      flexDirection: 'column' as const,
+      overflow: 'hidden'
+    },
+    titleBar: {
+      ...systemStyles.titleBar,
+      position: 'relative' as const
+    },
+    title: {
+      ...systemStyles.titleBarTitle
+    },
+    typeSelector: {
+      padding: '16px 20px',
+      background: systemColors.background.primary,
+      borderBottom: `1px solid ${systemColors.border.light}`
+    },
+    typeLabel: {
+      ...systemStyles.input.label,
+      marginBottom: '8px'
+    },
+    checkboxGroup: {
+      display: 'flex',
+      gap: '16px'
+    },
+    checkboxItem: {
+      display: 'flex',
+      alignItems: 'center',
+      gap: '6px',
+      cursor: 'pointer'
+    },
+    tabsContainer: {
+      ...systemStyles.tabs.container
+    },
+    tab: {
+      ...systemStyles.tabs.tab
+    },
+    tabActive: {
+      ...systemStyles.tabs.tabActive
+    },
+    tabContent: {
+      flex: 1,
+      padding: '20px',
+      background: systemColors.background.content,
+      overflow: 'auto'
+    },
+    footer: {
+      padding: '12px 16px',
+      background: systemColors.background.primary,
+      borderTop: `1px solid ${systemColors.border.light}`,
+      display: 'flex',
+      justifyContent: 'space-between',
+      alignItems: 'center'
+    }
+  };
+
   return (
-    <div style={modalStyles.overlay} onClick={handleClose}>
-      <div style={modalStyles.container} onClick={(e) => e.stopPropagation()}>
+    <div style={styles.overlay} onClick={handleClose}>
+      <div style={styles.container} onClick={(e) => e.stopPropagation()}>
         {/* Modal header */}
-        <div style={modalStyles.header}>
-          <div style={modalStyles.trafficLights}>
-            <div style={{...modalStyles.trafficLight, ...modalStyles.trafficLightRed}} onClick={handleClose}></div>
-            <div style={{...modalStyles.trafficLight, ...modalStyles.trafficLightYellow}}></div>
-            <div style={{...modalStyles.trafficLight, ...modalStyles.trafficLightGreen}}></div>
+        <div style={styles.titleBar}>
+          <div style={systemStyles.trafficLights.container}>
+            <button style={{...systemStyles.trafficLights.button, ...systemStyles.trafficLights.red}} onClick={handleClose}></button>
+            <button style={{...systemStyles.trafficLights.button, ...systemStyles.trafficLights.yellow}}></button>
+            <button style={{...systemStyles.trafficLights.button, ...systemStyles.trafficLights.green}}></button>
           </div>
-          <div style={modalStyles.title}>Nova MDF-e</div>
+          <div style={styles.title}>Nova MDF-e</div>
           <div style={{ width: '60px' }}></div>
         </div>
 
         {/* Seletor de tipo de MDF-e */}
-        <div style={modalStyles.typeSelector}>
-          <label style={modalStyles.typeLabel}>Tipo de MDF-e</label>
-          <div style={modalStyles.checkboxGroup}>
+        <div style={styles.typeSelector}>
+          <label style={styles.typeLabel}>Tipo de MDF-e</label>
+          <div style={styles.checkboxGroup}>
             <div 
-              style={modalStyles.checkboxItem}
+              style={styles.checkboxItem}
               onClick={() => handleMDFeTypeChange('rodoviario')}
             >
               <div style={{
-                ...modalStyles.checkbox,
-                ...(mdfeType === 'rodoviario' ? modalStyles.checkboxChecked : {})
+                ...systemStyles.checkbox.box,
+                ...(mdfeType === 'rodoviario' ? systemStyles.checkbox.boxChecked : {})
               }}>
-                {mdfeType === 'rodoviario' && <div style={modalStyles.checkboxDot}></div>}
+                {mdfeType === 'rodoviario' && (
+                  <svg viewBox="0 0 10 10" style={systemStyles.checkbox.checkmark}>
+                    <path d="M2 5 L4 7 L8 2" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
+                  </svg>
+                )}
               </div>
-              <span style={modalStyles.checkboxLabel}>Rodoviário</span>
+              <span style={systemStyles.checkbox.label}>Rodoviário</span>
             </div>
             <div 
-              style={modalStyles.checkboxItem}
+              style={styles.checkboxItem}
               onClick={() => handleMDFeTypeChange('aereo')}
             >
               <div style={{
-                ...modalStyles.checkbox,
-                ...(mdfeType === 'aereo' ? modalStyles.checkboxChecked : {})
+                ...systemStyles.checkbox.box,
+                ...(mdfeType === 'aereo' ? systemStyles.checkbox.boxChecked : {})
               }}>
-                {mdfeType === 'aereo' && <div style={modalStyles.checkboxDot}></div>}
+                {mdfeType === 'aereo' && (
+                  <svg viewBox="0 0 10 10" style={systemStyles.checkbox.checkmark}>
+                    <path d="M2 5 L4 7 L8 2" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
+                  </svg>
+                )}
               </div>
-              <span style={modalStyles.checkboxLabel}>Aéreo</span>
+              <span style={systemStyles.checkbox.label}>Aéreo</span>
             </div>
             <div 
-              style={modalStyles.checkboxItem}
+              style={styles.checkboxItem}
               onClick={() => handleMDFeTypeChange('aquaviario')}
             >
               <div style={{
-                ...modalStyles.checkbox,
-                ...(mdfeType === 'aquaviario' ? modalStyles.checkboxChecked : {})
+                ...systemStyles.checkbox.box,
+                ...(mdfeType === 'aquaviario' ? systemStyles.checkbox.boxChecked : {})
               }}>
-                {mdfeType === 'aquaviario' && <div style={modalStyles.checkboxDot}></div>}
+                {mdfeType === 'aquaviario' && (
+                  <svg viewBox="0 0 10 10" style={systemStyles.checkbox.checkmark}>
+                    <path d="M2 5 L4 7 L8 2" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
+                  </svg>
+                )}
               </div>
-              <span style={modalStyles.checkboxLabel}>Aquaviário</span>
+              <span style={systemStyles.checkbox.label}>Aquaviário</span>
             </div>
             <div 
-              style={modalStyles.checkboxItem}
+              style={styles.checkboxItem}
               onClick={() => handleMDFeTypeChange('ferroviario')}
             >
               <div style={{
-                ...modalStyles.checkbox,
-                ...(mdfeType === 'ferroviario' ? modalStyles.checkboxChecked : {})
+                ...systemStyles.checkbox.box,
+                ...(mdfeType === 'ferroviario' ? systemStyles.checkbox.boxChecked : {})
               }}>
-                {mdfeType === 'ferroviario' && <div style={modalStyles.checkboxDot}></div>}
+                {mdfeType === 'ferroviario' && (
+                  <svg viewBox="0 0 10 10" style={systemStyles.checkbox.checkmark}>
+                    <path d="M2 5 L4 7 L8 2" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
+                  </svg>
+                )}
               </div>
-              <span style={modalStyles.checkboxLabel}>Ferroviário</span>
+              <span style={systemStyles.checkbox.label}>Ferroviário</span>
             </div>
           </div>
         </div>
 
         {/* Tab system */}
-        <div style={modalStyles.tabsContainer}>
+        <div style={styles.tabsContainer}>
           <button
             style={{
-              ...modalStyles.tab,
-              ...(activeTab === 'documents' ? modalStyles.tabActive : {})
+              ...styles.tab,
+              ...(activeTab === 'documents' ? styles.tabActive : {})
             }}
             onClick={() => {
               playClickSound();
@@ -323,8 +412,8 @@ export function NewMDFe({ isOpen, onClose, onSave }: NewMDFeProps): JSX.Element 
           </button>
           <button
             style={{
-              ...modalStyles.tab,
-              ...(activeTab === 'transport' ? modalStyles.tabActive : {})
+              ...styles.tab,
+              ...(activeTab === 'transport' ? styles.tabActive : {})
             }}
             onClick={() => {
               playClickSound();
@@ -335,8 +424,8 @@ export function NewMDFe({ isOpen, onClose, onSave }: NewMDFeProps): JSX.Element 
           </button>
           <button
             style={{
-              ...modalStyles.tab,
-              ...(activeTab === 'drivers' ? modalStyles.tabActive : {})
+              ...styles.tab,
+              ...(activeTab === 'drivers' ? styles.tabActive : {})
             }}
             onClick={() => {
               playClickSound();
@@ -347,8 +436,8 @@ export function NewMDFe({ isOpen, onClose, onSave }: NewMDFeProps): JSX.Element 
           </button>
           <button
             style={{
-              ...modalStyles.tab,
-              ...(activeTab === 'route' ? modalStyles.tabActive : {})
+              ...styles.tab,
+              ...(activeTab === 'route' ? styles.tabActive : {})
             }}
             onClick={() => {
               playClickSound();
@@ -359,8 +448,8 @@ export function NewMDFe({ isOpen, onClose, onSave }: NewMDFeProps): JSX.Element 
           </button>
           <button
             style={{
-              ...modalStyles.tab,
-              ...(activeTab === 'freight' ? modalStyles.tabActive : {})
+              ...styles.tab,
+              ...(activeTab === 'freight' ? styles.tabActive : {})
             }}
             onClick={() => {
               playClickSound();
@@ -371,8 +460,8 @@ export function NewMDFe({ isOpen, onClose, onSave }: NewMDFeProps): JSX.Element 
           </button>
           <button
             style={{
-              ...modalStyles.tab,
-              ...(activeTab === 'insurance' ? modalStyles.tabActive : {})
+              ...styles.tab,
+              ...(activeTab === 'insurance' ? styles.tabActive : {})
             }}
             onClick={() => {
               playClickSound();
@@ -383,8 +472,8 @@ export function NewMDFe({ isOpen, onClose, onSave }: NewMDFeProps): JSX.Element 
           </button>
           <button
             style={{
-              ...modalStyles.tab,
-              ...(activeTab === 'totalizers' ? modalStyles.tabActive : {})
+              ...styles.tab,
+              ...(activeTab === 'totalizers' ? styles.tabActive : {})
             }}
             onClick={() => {
               playClickSound();
@@ -396,7 +485,7 @@ export function NewMDFe({ isOpen, onClose, onSave }: NewMDFeProps): JSX.Element 
         </div>
 
         {/* Tab content */}
-        <div style={modalStyles.tabContent}>
+        <div style={styles.tabContent}>
           {activeTab === 'documents' && (
             <DocumentsTab
               formData={formData}
@@ -448,9 +537,9 @@ export function NewMDFe({ isOpen, onClose, onSave }: NewMDFeProps): JSX.Element 
         </div>
 
         {/* Modal footer */}
-        <div style={modalStyles.footer}>
+        <div style={styles.footer}>
           <button
-            style={modalStyles.button}
+            style={systemStyles.button.default}
             onClick={handleClose}
           >
             Cancelar
@@ -458,7 +547,7 @@ export function NewMDFe({ isOpen, onClose, onSave }: NewMDFeProps): JSX.Element 
           <div style={{ display: 'flex', gap: '8px' }}>
             <button
               style={{
-                ...modalStyles.button,
+                ...systemStyles.button.default,
                 background: 'linear-gradient(to bottom, #34C759, #28A745)',
                 color: 'white',
                 border: '1px solid #34C759',
@@ -473,10 +562,7 @@ export function NewMDFe({ isOpen, onClose, onSave }: NewMDFeProps): JSX.Element 
               Validar
             </button>
             <button
-              style={{
-                ...modalStyles.button,
-                ...modalStyles.buttonPrimary
-              }}
+              style={systemStyles.button.primary}
               onClick={() => {
                 playClickSound();
                 handleSave();

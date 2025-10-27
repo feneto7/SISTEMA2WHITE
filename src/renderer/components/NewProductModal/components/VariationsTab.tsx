@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { modalStyles } from '../../../styles/modalStyles';
+import { systemStyles, systemColors } from '../../../styles/systemStyle';
 import { useClickSound } from '../../../hooks/useClickSound';
 
 // Componente da aba Variações - Sistema flexível para diferentes tipos de variações
@@ -138,28 +138,33 @@ export function VariationsTab({ onFormDataChange }: VariationsTabProps): JSX.Ele
   // Renderizar campo de input baseado no tipo do atributo
   const renderAtributoInput = (atributo: VariationAttribute, value: string, onChange: (value: string) => void) => {
     const baseStyle = {
-      ...modalStyles.formInput,
-      ...(focusedField === `atributo_${atributo.id}` ? modalStyles.formInputFocus : {})
+      ...systemStyles.input.field,
+      ...(focusedField === `atributo_${atributo.id}` ? systemStyles.input.fieldFocus : {})
     };
 
     switch (atributo.tipo) {
       case 'dropdown':
         return (
-          <select
-            style={baseStyle}
-            value={value}
-            onChange={(e) => {
-              playClickSound();
-              onChange(e.target.value);
-            }}
-            onFocus={() => setFocusedField(`atributo_${atributo.id}`)}
-            onBlur={() => setFocusedField(null)}
-          >
-            <option value="">Selecione</option>
-            {atributo.opcoes?.map(opcao => (
-              <option key={opcao} value={opcao}>{opcao}</option>
-            ))}
-          </select>
+          <div style={{ position: 'relative' as const }}>
+            <select
+              style={{ ...baseStyle, width: '100%' }}
+              value={value}
+              onChange={(e) => {
+                playClickSound();
+                onChange(e.target.value);
+              }}
+              onFocus={() => setFocusedField(`atributo_${atributo.id}`)}
+              onBlur={() => setFocusedField(null)}
+            >
+              <option value="">Selecione</option>
+              {atributo.opcoes?.map(opcao => (
+                <option key={opcao} value={opcao}>{opcao}</option>
+              ))}
+            </select>
+            <div style={systemStyles.select.arrow}>
+              <div style={systemStyles.select.arrowIcon} />
+            </div>
+          </div>
         );
       
       case 'numero':
@@ -211,13 +216,27 @@ export function VariationsTab({ onFormDataChange }: VariationsTabProps): JSX.Ele
 
   return (
     <div>
-      <h3 style={modalStyles.tabContentTitle}>
+      <h3 style={{
+        fontSize: '15px',
+        fontWeight: '600',
+        color: systemColors.text.primary,
+        marginBottom: '20px',
+        fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, Helvetica, Arial, sans-serif'
+      }}>
         Variações do Produto
       </h3>
       
       {/* Seção de configuração de atributos */}
-      <div style={modalStyles.formSection}>
-        <h4 style={modalStyles.formSectionTitle}>Configurar Tipos de Variação</h4>
+      <div style={{ marginBottom: '24px' }}>
+        <h4 style={{
+          fontSize: '13px',
+          fontWeight: '600',
+          color: systemColors.text.secondary,
+          textTransform: 'uppercase' as const,
+          letterSpacing: '0.5px',
+          marginBottom: '12px',
+          fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, Helvetica, Arial, sans-serif'
+        }}>Configurar Tipos de Variação</h4>
         
         <div style={{
           fontSize: '12px',
@@ -241,19 +260,16 @@ export function VariationsTab({ onFormDataChange }: VariationsTabProps): JSX.Ele
           gap: '12px',
           marginBottom: '16px',
           padding: '16px',
-          backgroundColor: '#f8f8f8',
-          borderRadius: '6px',
-          border: '1px solid #d0d0d0',
           alignItems: 'end'
         }}>
           {/* Nome do Atributo */}
           <div>
-            <label style={modalStyles.formLabel}>Nome do Atributo:</label>
+            <label style={systemStyles.input.label}>Nome do Atributo:</label>
             <input
               type="text"
               style={{
-                ...modalStyles.formInput,
-                ...(focusedField === 'novoAtributoNome' ? modalStyles.formInputFocus : {})
+                ...systemStyles.input.field,
+                ...(focusedField === 'novoAtributoNome' ? systemStyles.input.fieldFocus : {})
               }}
               value={novoAtributoNome}
               onChange={(e) => setNovoAtributoNome(e.target.value)}
@@ -264,36 +280,42 @@ export function VariationsTab({ onFormDataChange }: VariationsTabProps): JSX.Ele
           </div>
 
           {/* Tipo do Atributo */}
-          <div>
-            <label style={modalStyles.formLabel}>Tipo:</label>
-            <select
-              style={{
-                ...modalStyles.formSelect,
-                ...(focusedField === 'novoAtributoTipo' ? modalStyles.formInputFocus : {})
-              }}
-              value={novoAtributoTipo}
-              onChange={(e) => {
-                playClickSound();
-                setNovoAtributoTipo(e.target.value as any);
-              }}
-              onFocus={() => setFocusedField('novoAtributoTipo')}
-              onBlur={() => setFocusedField(null)}
-            >
-              <option value="texto">Texto</option>
-              <option value="numero">Número</option>
-              <option value="moeda">Moeda</option>
-              <option value="dropdown">Lista</option>
-            </select>
+          <div style={{ position: 'relative' as const }}>
+            <label style={systemStyles.input.label}>Tipo:</label>
+            <div style={{ position: 'relative' as const }}>
+              <select
+                style={{
+                  ...systemStyles.select.field,
+                  ...(focusedField === 'novoAtributoTipo' ? systemStyles.select.fieldFocus : {}),
+                  width: '100%'
+                }}
+                value={novoAtributoTipo}
+                onChange={(e) => {
+                  playClickSound();
+                  setNovoAtributoTipo(e.target.value as any);
+                }}
+                onFocus={() => setFocusedField('novoAtributoTipo')}
+                onBlur={() => setFocusedField(null)}
+              >
+                <option value="texto">Texto</option>
+                <option value="numero">Número</option>
+                <option value="moeda">Moeda</option>
+                <option value="dropdown">Lista</option>
+              </select>
+              <div style={systemStyles.select.arrow}>
+                <div style={systemStyles.select.arrowIcon} />
+              </div>
+            </div>
           </div>
 
           {/* Opções (apenas para dropdown) */}
           <div>
-            <label style={modalStyles.formLabel}>Opções (separadas por vírgula):</label>
+            <label style={systemStyles.input.label}>Opções (separadas por vírgula):</label>
             <input
               type="text"
               style={{
-                ...modalStyles.formInput,
-                ...(focusedField === 'novoAtributoOpcoes' ? modalStyles.formInputFocus : {}),
+                ...systemStyles.input.field,
+                ...(focusedField === 'novoAtributoOpcoes' ? systemStyles.input.fieldFocus : {}),
                 ...(novoAtributoTipo !== 'dropdown' ? { opacity: 0.5, cursor: 'not-allowed' } : {})
               }}
               value={novoAtributoOpcoes}
@@ -306,28 +328,27 @@ export function VariationsTab({ onFormDataChange }: VariationsTabProps): JSX.Ele
           </div>
 
           {/* Obrigatório */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginTop: '20px' }}>
             <input
               type="checkbox"
               checked={novoAtributoObrigatorio}
               onChange={(e) => setNovoAtributoObrigatorio(e.target.checked)}
-              style={{ margin: 0 }}
+              style={{ margin: 0, width: '14px', height: '14px' }}
             />
-            <label style={{ ...modalStyles.formLabel, margin: 0, fontSize: '12px' }}>Obrigatório</label>
+            <label style={{ fontSize: '11px', fontWeight: '400', color: systemColors.text.primary, margin: 0 }}>Obrigatório</label>
           </div>
 
           {/* Botão Adicionar */}
           <button
             type="button"
             style={{
-              ...modalStyles.button,
+              ...systemStyles.button.primary,
+              minWidth: '80px',
+              height: '28px',
+              alignSelf: 'flex-end',
               backgroundColor: '#34C759',
-              color: 'white',
-              border: '1px solid #34C759',
-              fontSize: '12px',
-              padding: '6px 12px',
-              height: '32px',
-              minWidth: '80px'
+              background: 'linear-gradient(to bottom, #34C759, #2FAD4F)',
+              border: '0.5px solid #2FAD4F'
             }}
             onClick={adicionarAtributo}
             disabled={!novoAtributoNome}
@@ -339,7 +360,15 @@ export function VariationsTab({ onFormDataChange }: VariationsTabProps): JSX.Ele
         {/* Lista de atributos configurados */}
         {atributosVariacao.length > 0 && (
           <div style={{ marginBottom: '20px' }}>
-            <h5 style={{ ...modalStyles.formSectionTitle, fontSize: '14px', marginBottom: '8px' }}>
+            <h5 style={{
+              fontSize: '13px',
+              fontWeight: '600',
+              color: systemColors.text.secondary,
+              textTransform: 'uppercase' as const,
+              letterSpacing: '0.5px',
+              marginBottom: '8px',
+              fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, Helvetica, Arial, sans-serif'
+            }}>
               Atributos Configurados:
             </h5>
             <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
@@ -393,8 +422,16 @@ export function VariationsTab({ onFormDataChange }: VariationsTabProps): JSX.Ele
 
       {/* Seção de cadastro de variações */}
       {atributosVariacao.length > 0 && (
-        <div style={modalStyles.formSection}>
-          <h4 style={modalStyles.formSectionTitle}>Cadastrar Variações</h4>
+        <div style={{ marginBottom: '24px' }}>
+          <h4 style={{
+            fontSize: '13px',
+            fontWeight: '600',
+            color: systemColors.text.secondary,
+            textTransform: 'uppercase' as const,
+            letterSpacing: '0.5px',
+            marginBottom: '12px',
+            fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, Helvetica, Arial, sans-serif'
+          }}>Cadastrar Variações</h4>
           
           {/* Campos para nova variação */}
           <div style={{
@@ -402,15 +439,12 @@ export function VariationsTab({ onFormDataChange }: VariationsTabProps): JSX.Ele
             gridTemplateColumns: `repeat(${atributosVariacao.length}, 1fr) 1fr 1fr 1fr`,
             gap: '12px',
             marginBottom: '16px',
-            padding: '16px',
-            backgroundColor: '#f8f8f8',
-            borderRadius: '6px',
-            border: '1px solid #d0d0d0'
+            padding: '16px'
           }}>
             {/* Campos dinâmicos para atributos */}
             {atributosVariacao.map((atributo) => (
               <div key={atributo.id}>
-                <label style={modalStyles.formLabel}>{atributo.nome}:</label>
+                <label style={systemStyles.input.label}>{atributo.nome}:</label>
                 {renderAtributoInput(
                   atributo,
                   novaVariacaoAtributos[atributo.nome] || '',
@@ -421,12 +455,12 @@ export function VariationsTab({ onFormDataChange }: VariationsTabProps): JSX.Ele
 
             {/* Preço */}
             <div>
-              <label style={modalStyles.formLabel}>Preço:</label>
+              <label style={systemStyles.input.label}>Preço:</label>
               <input
                 type="text"
                 style={{
-                  ...modalStyles.formInput,
-                  ...(focusedField === 'novoPreco' ? modalStyles.formInputFocus : {})
+                  ...systemStyles.input.field,
+                  ...(focusedField === 'novoPreco' ? systemStyles.input.fieldFocus : {})
                 }}
                 value={novoPreco}
                 onChange={(e) => {
@@ -441,12 +475,12 @@ export function VariationsTab({ onFormDataChange }: VariationsTabProps): JSX.Ele
 
             {/* Estoque */}
             <div>
-              <label style={modalStyles.formLabel}>Estoque:</label>
+              <label style={systemStyles.input.label}>Estoque:</label>
               <input
                 type="text"
                 style={{
-                  ...modalStyles.formInput,
-                  ...(focusedField === 'novoEstoque' ? modalStyles.formInputFocus : {})
+                  ...systemStyles.input.field,
+                  ...(focusedField === 'novoEstoque' ? systemStyles.input.fieldFocus : {})
                 }}
                 value={novoEstoque}
                 onChange={(e) => {
@@ -461,12 +495,12 @@ export function VariationsTab({ onFormDataChange }: VariationsTabProps): JSX.Ele
 
             {/* Código de Barras */}
             <div>
-              <label style={modalStyles.formLabel}>Código:</label>
+              <label style={systemStyles.input.label}>Código:</label>
               <input
                 type="text"
                 style={{
-                  ...modalStyles.formInput,
-                  ...(focusedField === 'novoCodigoBarras' ? modalStyles.formInputFocus : {})
+                  ...systemStyles.input.field,
+                  ...(focusedField === 'novoCodigoBarras' ? systemStyles.input.fieldFocus : {})
                 }}
                 value={novoCodigoBarras}
                 onChange={(e) => setNovoCodigoBarras(e.target.value)}
@@ -482,13 +516,9 @@ export function VariationsTab({ onFormDataChange }: VariationsTabProps): JSX.Ele
             <button
               type="button"
               style={{
-                ...modalStyles.button,
-                backgroundColor: '#007aff',
-                color: 'white',
-                border: '1px solid #007aff',
-                fontSize: '12px',
+                ...systemStyles.button.primary,
                 padding: '8px 24px',
-                height: '36px',
+                height: '32px',
                 minWidth: '120px'
               }}
               onClick={adicionarVariacao}
@@ -632,13 +662,21 @@ export function VariationsTab({ onFormDataChange }: VariationsTabProps): JSX.Ele
 
       {/* Seção de exemplo */}
       <div style={{
-        ...modalStyles.formSection,
+        marginBottom: '24px',
         backgroundColor: '#f0f8ff',
-        borderColor: '#b0d4f1'
+        borderColor: '#b0d4f1',
+        padding: '16px',
+        borderRadius: '6px',
+        border: '1px solid #b0d4f1'
       }}>
         <h4 style={{
-          ...modalStyles.formSectionTitle,
-          color: '#0066cc'
+          fontSize: '13px',
+          fontWeight: '600',
+          color: '#0066cc',
+          textTransform: 'uppercase' as const,
+          letterSpacing: '0.5px',
+          marginBottom: '12px',
+          fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, Helvetica, Arial, sans-serif'
         }}>
           Exemplos Práticos
         </h4>

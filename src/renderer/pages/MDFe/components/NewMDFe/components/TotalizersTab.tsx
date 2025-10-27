@@ -1,6 +1,6 @@
 import React, { useState, useRef } from 'react';
 import { useClickSound } from '../../../../../hooks/useClickSound';
-import { modalStyles } from '../../../../../styles/modalStyles';
+import { systemStyles, systemColors } from '../../../../../styles/systemStyle';
 import { useElementScrollbarStyles } from '../../../../../hooks/useScrollbarStyles';
 import { AddButton } from '../../../../../components/AddButton/AddButton';
 
@@ -52,8 +52,8 @@ export function TotalizersTab({ formData, onUpdateFormData }: TotalizersTabProps
   };
 
   const getInputStyle = (field: string) => {
-    const baseStyle = modalStyles.formInput;
-    const focusStyle = focusedField === field ? modalStyles.formInputFocus : {};
+    const baseStyle = systemStyles.input.field;
+    const focusStyle = focusedField === field ? systemStyles.input.fieldFocus : {};
     return { ...baseStyle, ...focusStyle };
   };
 
@@ -123,7 +123,21 @@ export function TotalizersTab({ formData, onUpdateFormData }: TotalizersTabProps
     container: {
       height: '100%',
       overflow: 'auto' as const,
-      padding: '0'
+      padding: '20px'
+    },
+    section: {
+      marginBottom: '24px'
+    },
+    sectionTitle: {
+      fontSize: '14px',
+      fontWeight: '600',
+      color: systemColors.text.primary,
+      margin: '0 0 16px 0',
+      fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, Helvetica, Arial, sans-serif',
+      textTransform: 'uppercase' as const,
+      letterSpacing: '0.5px',
+      borderBottom: `1px solid ${systemColors.border.light}`,
+      paddingBottom: '8px'
     },
     formGrid: {
       display: 'grid',
@@ -156,32 +170,32 @@ export function TotalizersTab({ formData, onUpdateFormData }: TotalizersTabProps
     lacreList: {
       marginTop: '16px',
       padding: '12px',
-      background: 'rgba(255, 255, 255, 0.4)',
+      background: systemColors.background.content,
       borderRadius: '6px',
-      border: '1px solid rgba(0, 0, 0, 0.1)',
+      border: `1px solid ${systemColors.border.light}`,
       minHeight: '100px',
       display: 'flex',
       alignItems: 'center',
       justifyContent: 'center',
       fontSize: '14px',
       fontWeight: '600',
-      color: 'var(--text-secondary)',
+      color: systemColors.text.secondary,
       fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, Helvetica, Arial, sans-serif',
       textTransform: 'uppercase' as const
     },
     autorizadoList: {
       marginTop: '16px',
       padding: '12px',
-      background: 'rgba(255, 255, 255, 0.4)',
+      background: systemColors.background.content,
       borderRadius: '6px',
-      border: '1px solid rgba(0, 0, 0, 0.1)',
+      border: `1px solid ${systemColors.border.light}`,
       minHeight: '100px',
       display: 'flex',
       alignItems: 'center',
       justifyContent: 'center',
       fontSize: '14px',
       fontWeight: '600',
-      color: 'var(--text-secondary)',
+      color: systemColors.text.secondary,
       fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, Helvetica, Arial, sans-serif',
       textTransform: 'uppercase' as const
     },
@@ -190,7 +204,7 @@ export function TotalizersTab({ formData, onUpdateFormData }: TotalizersTabProps
       justifyContent: 'space-between',
       alignItems: 'center',
       padding: '8px',
-      background: 'rgba(255, 255, 255, 0.6)',
+      background: systemColors.background.white,
       borderRadius: '4px',
       marginBottom: '8px',
       fontSize: '12px',
@@ -201,7 +215,7 @@ export function TotalizersTab({ formData, onUpdateFormData }: TotalizersTabProps
       justifyContent: 'space-between',
       alignItems: 'center',
       padding: '8px',
-      background: 'rgba(255, 255, 255, 0.6)',
+      background: systemColors.background.white,
       borderRadius: '4px',
       marginBottom: '8px',
       fontSize: '12px',
@@ -234,19 +248,33 @@ export function TotalizersTab({ formData, onUpdateFormData }: TotalizersTabProps
       width: '16px',
       height: '16px',
       cursor: 'pointer',
-      color: 'var(--text-secondary)',
+      color: systemColors.text.secondary,
       marginLeft: '8px'
-    }
+    },
+    textarea: {
+      ...systemStyles.input.field,
+      height: 'auto',
+      minHeight: '60px',
+      resize: 'vertical' as const
+    },
+    select: {
+      ...systemStyles.select.field,
+      cursor: 'pointer'
+    },
+    selectFocus: {
+      ...systemStyles.select.fieldFocus
+    },
+    label: systemStyles.input.label
   };
 
   return (
     <div ref={formContainerRef} style={styles.container}>
       {/* Seção de Totais de Fornecimento */}
-      <div style={modalStyles.formSection}>
-        <h4 style={modalStyles.formSectionTitle}>Totais de Fornecimento</h4>
+      <div style={styles.section}>
+        <h4 style={styles.sectionTitle}>Totais de Fornecimento</h4>
         <div style={styles.formGrid}>
           <div style={styles.formGroup}>
-            <label style={modalStyles.formLabel}>Qnt. total de NF-e relacionadas</label>
+            <label style={styles.label}>Qnt. total de NF-e relacionadas</label>
             <input
               type="text"
               style={getInputStyle('qntTotalNFe')}
@@ -259,7 +287,7 @@ export function TotalizersTab({ formData, onUpdateFormData }: TotalizersTabProps
             />
           </div>
           <div style={styles.formGroup}>
-            <label style={modalStyles.formLabel}>Valor Total da Carga</label>
+            <label style={styles.label}>Valor Total da Carga</label>
             <input
               type="text"
               style={getInputStyle('valorTotalCarga')}
@@ -278,7 +306,7 @@ export function TotalizersTab({ formData, onUpdateFormData }: TotalizersTabProps
             )}
           </div>
           <div style={styles.formGroup}>
-            <label style={modalStyles.formLabel}>Cod. Unidade de Medida da Carga</label>
+            <label style={styles.label}>Cod. Unidade de Medida da Carga</label>
             <input
               type="text"
               style={getInputStyle('codUnidadeMedidaCarga')}
@@ -291,7 +319,7 @@ export function TotalizersTab({ formData, onUpdateFormData }: TotalizersTabProps
             />
           </div>
           <div style={styles.formGroup}>
-            <label style={modalStyles.formLabel}>Peso Total da Carga</label>
+            <label style={styles.label}>Peso Total da Carga</label>
             <input
               type="text"
               style={getInputStyle('pesoTotalCarga')}
@@ -307,13 +335,13 @@ export function TotalizersTab({ formData, onUpdateFormData }: TotalizersTabProps
       </div>
 
       {/* Seção de Lacres */}
-      <div style={modalStyles.formSection}>
-        <h4 style={modalStyles.formSectionTitle}>Lacres</h4>
+      <div style={styles.section}>
+        <h4 style={styles.sectionTitle}>Lacres</h4>
         
         {/* Formulário para adicionar lacre */}
         <div style={styles.lacreFormGrid}>
           <div style={styles.formGroup}>
-            <label style={modalStyles.formLabel}>Nº Lacre</label>
+            <label style={styles.label}>Nº Lacre</label>
             <div style={{display: 'flex', alignItems: 'center'}}>
               <input
                 type="text"
@@ -339,7 +367,7 @@ export function TotalizersTab({ formData, onUpdateFormData }: TotalizersTabProps
         <div style={styles.lacreList}>
           {lacreList.length > 0 ? (
             <div style={{width: '100%'}}>
-              <div style={{fontSize: '12px', fontWeight: '600', marginBottom: '8px', color: 'var(--text-secondary)'}}>
+                              <div style={{fontSize: '12px', fontWeight: '600', marginBottom: '8px', color: systemColors.text.secondary}}>
                 Lacres Adicionados:
               </div>
               {lacreList.map((lacre) => (
@@ -364,13 +392,13 @@ export function TotalizersTab({ formData, onUpdateFormData }: TotalizersTabProps
       </div>
 
       {/* Seção de Autorizados para Download do XML do MDF-e */}
-      <div style={modalStyles.formSection}>
-        <h4 style={modalStyles.formSectionTitle}>Autorizados para Download do XML do MDF-e</h4>
+      <div style={styles.section}>
+        <h4 style={styles.sectionTitle}>Autorizados para Download do XML do MDF-e</h4>
         
         {/* Formulário para adicionar autorizado */}
         <div style={styles.autorizadoFormGrid}>
           <div style={styles.formGroup}>
-            <label style={modalStyles.formLabel}>CPF/CNPJ</label>
+            <label style={styles.label}>CPF/CNPJ</label>
             <div style={{display: 'flex', alignItems: 'center'}}>
               <input
                 type="text"
@@ -396,9 +424,9 @@ export function TotalizersTab({ formData, onUpdateFormData }: TotalizersTabProps
         <div style={styles.autorizadoList}>
           {autorizadoList.length > 0 ? (
             <div style={{width: '100%'}}>
-              <div style={{fontSize: '12px', fontWeight: '600', marginBottom: '8px', color: 'var(--text-secondary)'}}>
-                Autorizados Adicionados:
-              </div>
+                            <div style={{fontSize: '12px', fontWeight: '600', marginBottom: '8px', color: systemColors.text.secondary}}>
+              Autorizados Adicionados:
+            </div>
               {autorizadoList.map((autorizado) => (
                 <div key={autorizado.id} style={styles.autorizadoItem}>
                   <div>
@@ -421,16 +449,20 @@ export function TotalizersTab({ formData, onUpdateFormData }: TotalizersTabProps
       </div>
 
       {/* Seção de Produto Predominante */}
-      <div style={modalStyles.formSection}>
-        <h4 style={modalStyles.formSectionTitle}>Produto Predominante</h4>
+      <div style={styles.section}>
+        <h4 style={styles.sectionTitle}>Produto Predominante</h4>
         <div style={styles.formGrid}>
           <div style={styles.formGroup}>
-            <label style={modalStyles.formLabel}>Tipo da Carga</label>
-            <select
-              style={{
-                ...modalStyles.formSelect,
-                ...(focusedField === 'tipoCarga' ? modalStyles.formInputFocus : {})
-              }}
+            <label style={styles.label}>Tipo da Carga</label>
+            <div style={{ position: 'relative' }}>
+              <select
+                style={{
+                  ...styles.select,
+                  ...(focusedField === 'tipoCarga' ? styles.selectFocus : {}),
+                  appearance: 'none' as const,
+                  WebkitAppearance: 'none' as const,
+                  MozAppearance: 'none' as const
+                }}
               value={formData.tipoCarga || ''}
               onChange={(e) => {
                 playClickSound();
@@ -452,14 +484,18 @@ export function TotalizersTab({ formData, onUpdateFormData }: TotalizersTabProps
               <option value="Perigosa (carga frigorificada)">Perigosa (carga frigorificada)</option>
               <option value="Perigosa (conteinerizada)">Perigosa (conteinerizada)</option>
               <option value="Perigosa (carga geral)">Perigosa (carga geral)</option>
-            </select>
+              </select>
+              <div style={systemStyles.select.arrow}>
+                <div style={systemStyles.select.arrowIcon}></div>
+              </div>
+            </div>
           </div>
           <div style={{...styles.formGroup, ...styles.formGroupFull}}>
-            <label style={modalStyles.formLabel}>Descrição do Produto</label>
+            <label style={styles.label}>Descrição do Produto</label>
             <textarea
               style={{
-                ...modalStyles.formTextarea,
-                ...(focusedField === 'descricaoProduto' ? modalStyles.formInputFocus : {})
+                ...styles.textarea,
+                ...(focusedField === 'descricaoProduto' ? styles.selectFocus : {})
               }}
               value={formData.descricaoProduto || ''}
               onChange={(e) => handleInputChange('descricaoProduto', e.target.value)}
@@ -471,7 +507,7 @@ export function TotalizersTab({ formData, onUpdateFormData }: TotalizersTabProps
             />
           </div>
           <div style={styles.formGroup}>
-            <label style={{...modalStyles.formLabel, height: '32px', display: 'flex', alignItems: 'center'}}>GTIN (Global Trade Item Number)</label>
+            <label style={{...styles.label, height: '32px', display: 'flex', alignItems: 'center'}}>GTIN (Global Trade Item Number)</label>
             <input
               type="text"
               style={getInputStyle('gtin')}
@@ -484,7 +520,7 @@ export function TotalizersTab({ formData, onUpdateFormData }: TotalizersTabProps
             />
           </div>
           <div style={styles.formGroup}>
-            <label style={{...modalStyles.formLabel, height: '32px', display: 'flex', alignItems: 'center'}}>Código NCM</label>
+            <label style={{...styles.label, height: '32px', display: 'flex', alignItems: 'center'}}>Código NCM</label>
             <input
               type="text"
               style={getInputStyle('codigoNCM')}
@@ -500,11 +536,11 @@ export function TotalizersTab({ formData, onUpdateFormData }: TotalizersTabProps
       </div>
 
       {/* Seção de Inf. Lotação */}
-      <div style={modalStyles.formSection}>
-        <h4 style={modalStyles.formSectionTitle}>Inf. Lotação</h4>
+      <div style={styles.section}>
+        <h4 style={styles.sectionTitle}>Inf. Lotação</h4>
         <div style={styles.formGrid}>
           <div style={styles.formGroup}>
-            <label style={modalStyles.formLabel}>CEP Local de Carregamento</label>
+            <label style={styles.label}>CEP Local de Carregamento</label>
             <input
               type="text"
               style={getInputStyle('cepLocalCarregamento')}
@@ -517,7 +553,7 @@ export function TotalizersTab({ formData, onUpdateFormData }: TotalizersTabProps
             />
           </div>
           <div style={styles.formGroup}>
-            <label style={modalStyles.formLabel}>CEP Local de Descarregamento</label>
+            <label style={styles.label}>CEP Local de Descarregamento</label>
             <input
               type="text"
               style={getInputStyle('cepLocalDescarregamento')}

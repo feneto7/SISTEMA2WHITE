@@ -1,27 +1,29 @@
 import React, { useState } from 'react';
-import { 
-  UsersIcon, 
-  ClientsIcon, 
-  SuppliersIcon, 
-  EntriesIcon, 
-  SettingsIcon 
-} from '../../../components/Icons/Icons';
+import { AppIcons } from '../../../components/Icons/AppIcons';
 import { useClickSound } from '../../../hooks/useClickSound';
 import { Tooltip } from '../../../components/Tooltip';
+import { systemStyles, systemColors } from '../../../styles/systemStyle';
+import { useNavigation } from '../../../router/Navigation';
+import { AppIconButton } from '../../../components/AppIconButton';
 
 interface MenuButtonProps {
   icon: React.ComponentType<{ size?: number; color?: string }>;
   label: string;
+  onClick?: () => void;
 }
 
-function MenuButton({ icon: Icon, label }: MenuButtonProps): JSX.Element {
+function MenuButton({ icon: Icon, label, onClick }: MenuButtonProps): JSX.Element {
   const [isHovered, setIsHovered] = useState(false);
   const playClickSound = useClickSound();
 
   const handleClick = () => {
     playClickSound();
-    // Aqui você pode adicionar a lógica específica de cada botão
-    console.log(`Clicou em: ${label}`);
+    if (onClick) {
+      onClick();
+    } else {
+      // Aqui você pode adicionar a lógica específica de cada botão
+      console.log(`Clicou em: ${label}`);
+    }
   };
 
   return (
@@ -32,7 +34,7 @@ function MenuButton({ icon: Icon, label }: MenuButtonProps): JSX.Element {
         onMouseLeave={() => setIsHovered(false)}
         onClick={handleClick}
       >
-        <Icon size={18} color="var(--text-primary)" />
+        <Icon size={18} color={systemColors.text.primary} />
       </button>
       <Tooltip text={label} visible={isHovered} position="bottom" />
     </div>
@@ -40,30 +42,38 @@ function MenuButton({ icon: Icon, label }: MenuButtonProps): JSX.Element {
 }
 
 export function TopMenu(): JSX.Element {
+  const { navigate } = useNavigation();
+
   return (
     <div style={topMenuContainer}>
       <div style={menuContent}>
-        <div style={menuLeft}>
-          <MenuButton icon={UsersIcon} label="Usuários" />
-          <MenuButton icon={ClientsIcon} label="Clientes" />
-          <MenuButton icon={SuppliersIcon} label="Fornecedores" />
-          <MenuButton icon={EntriesIcon} label="Entradas" />
-          <MenuButton icon={SettingsIcon} label="Configurações" />
+        {/* Menu dropdown no canto esquerdo */}
+        <AppIconButton />
+
+        {/* Menu centralizado */}
+        <div style={menuCenter}>
+          <MenuButton 
+            icon={AppIcons.Users} 
+            label="Usuários" 
+            onClick={() => navigate('users')}
+          />
+          <MenuButton 
+            icon={AppIcons.Settings} 
+            label="Configurações" 
+            onClick={() => navigate('settings')}
+          />
         </div>
+
+        {/* Espaço vazio à direita para manter simetria */}
+        <div style={menuRight}></div>
       </div>
     </div>
   );
 }
 
 const topMenuContainer: React.CSSProperties = {
-  height: 36,
-  background: 'rgba(246, 246, 246, 0.95)',
-  borderBottom: '1px solid rgba(0, 0, 0, 0.1)',
-  boxShadow: '0 2px 10px rgba(0, 0, 0, 0.15)',
-  display: 'flex',
-  alignItems: 'center',
-  padding: '0 8px',
-  position: 'relative',
+  ...systemStyles.toolbar.container,
+  position: 'relative' as const,
   zIndex: 100
 };
 
@@ -71,16 +81,26 @@ const menuContent: React.CSSProperties = {
   height: '100%',
   display: 'flex',
   alignItems: 'center',
-  justifyContent: 'flex-start',
+  justifyContent: 'space-between',
   padding: '0 4px',
-  color: 'rgba(0, 0, 0, 0.8)',
+  color: systemColors.text.primary,
   width: '100%'
 };
 
-const menuLeft: React.CSSProperties = {
+const menuCenter: React.CSSProperties = {
   display: 'flex',
-  gap: 4,
-  alignItems: 'center'
+  gap: 8,
+  alignItems: 'center',
+  flex: '1 1 auto',
+  justifyContent: 'center'
+};
+
+const menuRight: React.CSSProperties = {
+  display: 'flex',
+  gap: 8,
+  alignItems: 'center',
+  flex: '0 0 auto',
+  minWidth: '48px' // Mesma largura do botão de logout para manter simetria
 };
 
 const tooltipContainer: React.CSSProperties = {
@@ -88,28 +108,9 @@ const tooltipContainer: React.CSSProperties = {
   display: 'inline-block'
 };
 
-const menuButton: React.CSSProperties = {
-  width: 32,
-  height: 32,
-  borderRadius: 4,
-  border: 'none',
-  background: 'transparent',
-  cursor: 'pointer',
-  transition: 'all 0.15s ease',
-  display: 'flex',
-  alignItems: 'center',
-  justifyContent: 'center',
-  opacity: 0.6,
-  boxShadow: 'none',
-  filter: 'none',
-  fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, Helvetica, Arial, sans-serif'
-};
+const menuButton: React.CSSProperties = systemStyles.toolbar.button;
 
 const menuButtonHover: React.CSSProperties = {
-  ...menuButton,
-  background: 'rgba(0, 0, 0, 0.08)',
-  opacity: 1,
-  transform: 'scale(1.1)',
-  boxShadow: 'none',
-  filter: 'none'
+  ...systemStyles.toolbar.button,
+  ...systemStyles.toolbar.buttonHover
 };

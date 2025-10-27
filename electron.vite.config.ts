@@ -28,6 +28,7 @@ export default defineConfig({
       },
       rollupOptions: {
         output: {
+          format: 'cjs',
           entryFileNames: 'index.cjs'
         }
       }

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { modalStyles } from '../../../styles/modalStyles';
+import { systemStyles, systemColors } from '../../../styles/systemStyle';
 import { useClickSound } from '../../../hooks/useClickSound';
 
 // Componente da aba Atacado - Lista de preços por quantidade
@@ -77,13 +77,27 @@ export function WholesaleTab({ onFormDataChange }: WholesaleTabProps): JSX.Eleme
 
   return (
     <div>
-      <h3 style={modalStyles.tabContentTitle}>
+      <h3 style={{
+        fontSize: '15px',
+        fontWeight: '600',
+        color: systemColors.text.primary,
+        marginBottom: '20px',
+        fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, Helvetica, Arial, sans-serif'
+      }}>
         Preços de Atacado
       </h3>
       
       {/* Seção de configuração */}
-      <div style={modalStyles.formSection}>
-        <h4 style={modalStyles.formSectionTitle}>Lista de Preços por Quantidade</h4>
+      <div style={{ marginBottom: '24px' }}>
+        <h4 style={{
+          fontSize: '13px',
+          fontWeight: '600',
+          color: systemColors.text.secondary,
+          textTransform: 'uppercase' as const,
+          letterSpacing: '0.5px',
+          marginBottom: '12px',
+          fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, Helvetica, Arial, sans-serif'
+        }}>Lista de Preços por Quantidade</h4>
         
         <div style={{
           fontSize: '12px',
@@ -106,19 +120,16 @@ export function WholesaleTab({ onFormDataChange }: WholesaleTabProps): JSX.Eleme
           gap: '12px',
           alignItems: 'flex-end',
           marginBottom: '16px',
-          padding: '16px',
-          backgroundColor: '#f8f8f8',
-          borderRadius: '6px',
-          border: '1px solid #d0d0d0'
+          padding: '16px'
         }}>
           {/* Campo Quantidade */}
           <div style={{ flex: 1 }}>
-            <label style={modalStyles.formLabel}>Quantidade:</label>
+            <label style={systemStyles.input.label}>Quantidade:</label>
             <input
               type="text"
               style={{
-                ...modalStyles.formInput,
-                ...(focusedField === 'novaQuantidade' ? modalStyles.formInputFocus : {})
+                ...systemStyles.input.field,
+                ...(focusedField === 'novaQuantidade' ? systemStyles.input.fieldFocus : {})
               }}
               value={novaQuantidade}
               onChange={(e) => {
@@ -133,12 +144,12 @@ export function WholesaleTab({ onFormDataChange }: WholesaleTabProps): JSX.Eleme
 
           {/* Campo Preço */}
           <div style={{ flex: 1 }}>
-            <label style={modalStyles.formLabel}>Preço Unitário:</label>
+            <label style={systemStyles.input.label}>Preço Unitário:</label>
             <input
               type="text"
               style={{
-                ...modalStyles.formInput,
-                ...(focusedField === 'novoPreco' ? modalStyles.formInputFocus : {})
+                ...systemStyles.input.field,
+                ...(focusedField === 'novoPreco' ? systemStyles.input.fieldFocus : {})
               }}
               value={novoPreco}
               onChange={(e) => {
@@ -155,14 +166,10 @@ export function WholesaleTab({ onFormDataChange }: WholesaleTabProps): JSX.Eleme
           <button
             type="button"
             style={{
-              ...modalStyles.button,
-              backgroundColor: '#007aff',
-              color: 'white',
-              border: '1px solid #007aff',
-              fontSize: '12px',
-              padding: '6px 16px',
-              height: '32px',
-              minWidth: '100px'
+              ...systemStyles.button.primary,
+              minWidth: '100px',
+              height: '28px',
+              alignSelf: 'flex-end'
             }}
             onClick={adicionarPrecoAtacado}
             disabled={!novaQuantidade || !novoPreco}
@@ -267,13 +274,21 @@ export function WholesaleTab({ onFormDataChange }: WholesaleTabProps): JSX.Eleme
 
       {/* Seção de exemplo */}
       <div style={{
-        ...modalStyles.formSection,
+        marginBottom: '24px',
         backgroundColor: '#f0f8ff',
-        borderColor: '#b0d4f1'
+        borderColor: '#b0d4f1',
+        padding: '16px',
+        borderRadius: '6px',
+        border: '1px solid #b0d4f1'
       }}>
         <h4 style={{
-          ...modalStyles.formSectionTitle,
-          color: '#0066cc'
+          fontSize: '13px',
+          fontWeight: '600',
+          color: '#0066cc',
+          textTransform: 'uppercase' as const,
+          letterSpacing: '0.5px',
+          marginBottom: '12px',
+          fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, Helvetica, Arial, sans-serif'
         }}>
           Exemplo Prático
         </h4>

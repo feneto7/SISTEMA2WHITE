@@ -1,6 +1,6 @@
 import React, { useState, useRef } from 'react';
 import { useClickSound } from '../../../../../hooks/useClickSound';
-import { modalStyles } from '../../../../../styles/modalStyles';
+import { systemStyles, systemColors } from '../../../../../styles/systemStyle';
 import { useElementScrollbarStyles } from '../../../../../hooks/useScrollbarStyles';
 import { AddButton } from '../../../../../components/AddButton/AddButton';
 
@@ -43,8 +43,8 @@ export function InsuranceTab({ formData, onUpdateFormData }: InsuranceTabProps):
   };
 
   const getInputStyle = (field: string) => {
-    const baseStyle = modalStyles.formInput;
-    const focusStyle = focusedField === field ? modalStyles.formInputFocus : {};
+    const baseStyle = systemStyles.input.field;
+    const focusStyle = focusedField === field ? systemStyles.input.fieldFocus : {};
     return { ...baseStyle, ...focusStyle };
   };
 
@@ -90,7 +90,21 @@ export function InsuranceTab({ formData, onUpdateFormData }: InsuranceTabProps):
     container: {
       height: '100%',
       overflow: 'auto' as const,
-      padding: '0'
+      padding: '20px'
+    },
+    section: {
+      marginBottom: '24px'
+    },
+    sectionTitle: {
+      fontSize: '14px',
+      fontWeight: '600',
+      color: systemColors.text.primary,
+      margin: '0 0 16px 0',
+      fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, Helvetica, Arial, sans-serif',
+      textTransform: 'uppercase' as const,
+      letterSpacing: '0.5px',
+      borderBottom: `1px solid ${systemColors.border.light}`,
+      paddingBottom: '8px'
     },
     formGrid: {
       display: 'grid',
@@ -116,16 +130,16 @@ export function InsuranceTab({ formData, onUpdateFormData }: InsuranceTabProps):
     averbacaoList: {
       marginTop: '16px',
       padding: '12px',
-      background: 'rgba(255, 255, 255, 0.4)',
+      background: systemColors.background.content,
       borderRadius: '6px',
-      border: '1px solid rgba(0, 0, 0, 0.1)'
+      border: `1px solid ${systemColors.border.light}`
     },
     averbacaoItem: {
       display: 'flex',
       justifyContent: 'space-between',
       alignItems: 'center',
       padding: '8px',
-      background: 'rgba(255, 255, 255, 0.6)',
+      background: systemColors.background.white,
       borderRadius: '4px',
       marginBottom: '8px',
       fontSize: '12px',
@@ -152,9 +166,9 @@ export function InsuranceTab({ formData, onUpdateFormData }: InsuranceTabProps):
       gap: '8px',
       marginTop: '24px',
       padding: '12px',
-      background: 'rgba(255, 255, 255, 0.4)',
+      background: systemColors.background.content,
       borderRadius: '6px',
-      border: '1px solid rgba(0, 0, 0, 0.1)'
+      border: `1px solid ${systemColors.border.light}`
     },
     checkboxItem: {
       display: 'flex',
@@ -162,38 +176,24 @@ export function InsuranceTab({ formData, onUpdateFormData }: InsuranceTabProps):
       gap: '8px',
       cursor: 'pointer'
     },
-    checkbox: {
-      ...modalStyles.checkbox,
-      width: '16px',
-      height: '16px'
-    },
-    checkboxChecked: {
-      ...modalStyles.checkboxChecked
-    },
-    checkboxDot: {
-      ...modalStyles.checkboxDot
-    },
-    checkboxLabel: {
-      ...modalStyles.checkboxLabel,
-      fontSize: '12px'
-    },
     searchIcon: {
       width: '16px',
       height: '16px',
       cursor: 'pointer',
-      color: 'var(--text-secondary)',
+      color: systemColors.text.secondary,
       marginLeft: '8px'
-    }
+    },
+    label: systemStyles.input.label
   };
 
   return (
     <div ref={formContainerRef} style={styles.container}>
       {/* Seção de Informações do Responsável pelo Seguro */}
-      <div style={modalStyles.formSection}>
-        <h4 style={modalStyles.formSectionTitle}>Informações do Responsável pelo Seguro</h4>
+      <div style={styles.section}>
+        <h4 style={styles.sectionTitle}>Informações do Responsável pelo Seguro</h4>
         <div style={styles.formGrid}>
           <div style={styles.formGroup}>
-            <label style={modalStyles.formLabel}>Responsável pelo Seguro</label>
+            <label style={styles.label}>Responsável pelo Seguro</label>
             <input
               type="text"
               style={getInputStyle('responsavelSeguro')}
@@ -206,7 +206,7 @@ export function InsuranceTab({ formData, onUpdateFormData }: InsuranceTabProps):
             />
           </div>
           <div style={styles.formGroup}>
-            <label style={modalStyles.formLabel}>CPF/CNPJ do Responsável pelo Seguro</label>
+            <label style={styles.label}>CPF/CNPJ do Responsável pelo Seguro</label>
             <input
               type="text"
               style={getInputStyle('cpfCnpjResponsavelSeguro')}
@@ -222,11 +222,11 @@ export function InsuranceTab({ formData, onUpdateFormData }: InsuranceTabProps):
       </div>
 
       {/* Seção de Informações da Seguradora */}
-      <div style={modalStyles.formSection}>
-        <h4 style={modalStyles.formSectionTitle}>Informações da Seguradora</h4>
+      <div style={styles.section}>
+        <h4 style={styles.sectionTitle}>Informações da Seguradora</h4>
         <div style={styles.formGrid}>
           <div style={styles.formGroup}>
-            <label style={modalStyles.formLabel}>Nome Seguradora</label>
+            <label style={styles.label}>Nome Seguradora</label>
             <input
               type="text"
               style={getInputStyle('nomeSeguradora')}
@@ -239,7 +239,7 @@ export function InsuranceTab({ formData, onUpdateFormData }: InsuranceTabProps):
             />
           </div>
           <div style={styles.formGroup}>
-            <label style={modalStyles.formLabel}>CNPJ da Seguradora</label>
+            <label style={styles.label}>CNPJ da Seguradora</label>
             <input
               type="text"
               style={getInputStyle('cnpjSeguradora')}
@@ -252,7 +252,7 @@ export function InsuranceTab({ formData, onUpdateFormData }: InsuranceTabProps):
             />
           </div>
           <div style={styles.formGroup}>
-            <label style={modalStyles.formLabel}>Número da Apólice</label>
+            <label style={styles.label}>Número da Apólice</label>
             <input
               type="text"
               style={getInputStyle('numeroApolice')}
@@ -268,13 +268,13 @@ export function InsuranceTab({ formData, onUpdateFormData }: InsuranceTabProps):
       </div>
 
       {/* Seção de Lista de Números de Averbação */}
-      <div style={modalStyles.formSection}>
-        <h4 style={modalStyles.formSectionTitle}>Lista de Números de Averbação</h4>
+      <div style={styles.section}>
+        <h4 style={styles.sectionTitle}>Lista de Números de Averbação</h4>
         
         {/* Formulário para adicionar averbação */}
         <div style={styles.averbacaoFormGrid}>
           <div style={styles.formGroup}>
-            <label style={modalStyles.formLabel}>Número da Averbação</label>
+            <label style={styles.label}>Número da Averbação</label>
             <div style={{display: 'flex', alignItems: 'center'}}>
               <input
                 type="text"
@@ -299,7 +299,7 @@ export function InsuranceTab({ formData, onUpdateFormData }: InsuranceTabProps):
         {/* Lista de averbações adicionadas */}
         {averbacaoList.length > 0 && (
           <div style={styles.averbacaoList}>
-            <div style={{fontSize: '12px', fontWeight: '600', marginBottom: '8px', color: 'var(--text-secondary)'}}>
+            <div style={{fontSize: '12px', fontWeight: '600', marginBottom: '8px', color: systemColors.text.secondary}}>
               Averbações Adicionadas:
             </div>
             {averbacaoList.map((averbacao) => (
@@ -328,13 +328,28 @@ export function InsuranceTab({ formData, onUpdateFormData }: InsuranceTabProps):
         >
           <div 
             style={{
-              ...styles.checkbox,
-              ...(exibirDadosSeguro ? styles.checkboxChecked : {})
+              ...systemStyles.checkbox.box,
+              ...(exibirDadosSeguro ? systemStyles.checkbox.boxChecked : {})
             }}
           >
-            {exibirDadosSeguro && <div style={styles.checkboxDot}></div>}
+            {exibirDadosSeguro && (
+              <svg 
+                viewBox="0 0 14 14" 
+                style={systemStyles.checkbox.checkmark}
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path 
+                  d="M2 7 L5.5 10.5 L12 3.5" 
+                  stroke="currentColor" 
+                  strokeWidth="1.5" 
+                  fill="none" 
+                  strokeLinecap="round" 
+                  strokeLinejoin="round"
+                />
+              </svg>
+            )}
           </div>
-          <span style={styles.checkboxLabel}>
+          <span style={systemStyles.checkbox.label}>
             Exibir dados do Seguro no campo Informações Complementares?
           </span>
         </div>

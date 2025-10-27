@@ -1,7 +1,7 @@
 import React, { useState, useRef } from 'react';
 import { useClickSound } from '../../../../../hooks/useClickSound';
-import { modalStyles } from '../../../../../styles/modalStyles';
-import { PlusIcon, EditIcon, DeleteIcon } from '../../../../../components/Icons';
+import { systemStyles, systemColors } from '../../../../../styles/systemStyle';
+import { AppIcons } from '../../../../../components/Icons/AppIcons';
 import { useElementScrollbarStyles } from '../../../../../hooks/useScrollbarStyles';
 
 interface Document {
@@ -64,27 +64,25 @@ export function DocumentsTab({ formData, onUpdateFormData }: DocumentsTabProps):
       marginBottom: '16px'
     },
     addButton: {
-      borderRadius: '6px',
-      border: '1px solid var(--accent)',
-      background: 'linear-gradient(to bottom, var(--accent), #0056b3)',
-      cursor: 'pointer',
-      transition: 'all 0.15s ease',
+      ...systemStyles.button.primary,
+      padding: '8px 12px',
       display: 'flex',
       alignItems: 'center',
-      justifyContent: 'center',
-      color: 'white',
-      boxShadow: '0 1px 2px rgba(10, 132, 255, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.2)',
-      fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, Helvetica, Arial, sans-serif',
+      gap: '6px'
+    },
+    section: {
+      marginBottom: '24px'
+    },
+    sectionTitle: {
       fontSize: '13px',
-      fontWeight: '500',
-      padding: '8px 12px',
-      gap: '6px',
-      textTransform: 'uppercase' as const
+      fontWeight: '600',
+      color: systemColors.text.primary,
+      margin: '0 0 16px 0'
     },
     listContainer: {
-      background: 'rgba(255, 255, 255, 0.6)',
+      background: systemColors.background.content,
       borderRadius: '8px',
-      border: '1px solid rgba(0, 0, 0, 0.1)',
+      border: `1px solid ${systemColors.border.light}`,
       overflow: 'hidden'
     },
     listHeader: {
@@ -92,16 +90,12 @@ export function DocumentsTab({ formData, onUpdateFormData }: DocumentsTabProps):
       gridTemplateColumns: '1fr 1fr 1fr 1fr 1fr 80px',
       gap: '16px',
       padding: '12px 16px',
-      background: 'rgba(246, 246, 246, 0.95)',
-      borderBottom: '1px solid rgba(0, 0, 0, 0.1)',
-      fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, Helvetica, Arial, sans-serif'
+      background: systemColors.background.primary,
+      borderBottom: `1px solid ${systemColors.border.light}`,
+      ...systemStyles.list.headerCell
     },
     headerCell: {
-      fontSize: '11px',
-      fontWeight: '600',
-      color: 'var(--text-secondary)',
-      textTransform: 'uppercase' as const,
-      letterSpacing: '0.5px'
+      ...systemStyles.list.headerCell
     },
     listContent: {
       maxHeight: '400px',
@@ -112,14 +106,13 @@ export function DocumentsTab({ formData, onUpdateFormData }: DocumentsTabProps):
       gridTemplateColumns: '1fr 1fr 1fr 1fr 1fr 80px',
       gap: '16px',
       padding: '12px 16px',
-      borderBottom: '1px solid rgba(0, 0, 0, 0.05)',
+      borderBottom: `1px solid ${systemColors.border.divider}`,
       transition: 'all 0.15s ease',
-      cursor: 'pointer',
-      fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, Helvetica, Arial, sans-serif'
+      cursor: 'pointer'
     },
     rowCell: {
       fontSize: '12px',
-      color: 'var(--text-primary)',
+      color: systemColors.text.primary,
       display: 'flex',
       alignItems: 'center'
     },
@@ -130,23 +123,10 @@ export function DocumentsTab({ formData, onUpdateFormData }: DocumentsTabProps):
       alignItems: 'center'
     },
     actionButton: {
-      borderRadius: '4px',
-      border: '1px solid rgba(0, 0, 0, 0.2)',
-      background: 'linear-gradient(to bottom, #f5f5f5, #e8e8e8)',
-      cursor: 'pointer',
-      transition: 'all 0.15s ease',
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'center',
-      color: 'rgba(0, 0, 0, 0.7)',
-      boxShadow: '0 1px 2px rgba(0, 0, 0, 0.1), inset 0 1px 0 rgba(255, 255, 255, 0.3)',
-      fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, Helvetica, Arial, sans-serif',
-      fontSize: '12px',
-      fontWeight: '500',
+      ...systemStyles.button.default,
       padding: '4px',
       width: '24px',
-      height: '24px',
-      textTransform: 'uppercase' as const
+      height: '24px'
     },
     emptyState: {
       display: 'flex',
@@ -154,31 +134,40 @@ export function DocumentsTab({ formData, onUpdateFormData }: DocumentsTabProps):
       alignItems: 'center',
       justifyContent: 'center',
       padding: '40px',
-      color: 'var(--text-secondary)',
-      fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, Helvetica, Arial, sans-serif'
+      color: systemColors.text.secondary
     },
     emptyText: {
       fontSize: '14px',
-      margin: 0,
-      textTransform: 'uppercase' as const
+      margin: 0
+    },
+    infoSection: {
+      marginTop: '16px',
+      padding: '16px',
+      background: systemColors.background.content,
+      borderRadius: '8px',
+      border: `1px solid ${systemColors.border.light}`
+    },
+    infoSectionTitle: {
+      fontSize: '13px',
+      fontWeight: '600',
+      color: systemColors.text.primary,
+      marginBottom: '12px'
     },
     summaryRow: {
       display: 'flex',
       justifyContent: 'space-between',
       alignItems: 'center',
       padding: '8px 0',
-      borderBottom: '1px solid rgba(0, 0, 0, 0.05)',
-      fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, Helvetica, Arial, sans-serif'
+      borderBottom: `1px solid ${systemColors.border.divider}`
     },
     summaryLabel: {
       fontSize: '12px',
-      color: 'var(--text-secondary)',
-      textTransform: 'uppercase' as const
+      color: systemColors.text.secondary
     },
     summaryValue: {
       fontSize: '12px',
       fontWeight: '600',
-      color: 'var(--text-primary)'
+      color: systemColors.text.primary
     },
     totalRow: {
       display: 'flex',
@@ -186,19 +175,17 @@ export function DocumentsTab({ formData, onUpdateFormData }: DocumentsTabProps):
       alignItems: 'center',
       padding: '12px 0 0 0',
       marginTop: '8px',
-      borderTop: '2px solid rgba(0, 0, 0, 0.1)',
-      fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, Helvetica, Arial, sans-serif'
+      borderTop: `2px solid ${systemColors.border.light}`
     },
     totalLabel: {
       fontSize: '14px',
       fontWeight: '600',
-      color: 'var(--text-primary)',
-      textTransform: 'uppercase' as const
+      color: systemColors.text.primary
     },
     totalValue: {
       fontSize: '16px',
       fontWeight: '700',
-      color: 'var(--text-primary)'
+      color: systemColors.text.primary
     }
   };
 
@@ -207,14 +194,14 @@ export function DocumentsTab({ formData, onUpdateFormData }: DocumentsTabProps):
   return (
     <div>
       {/* Seção de Documentos Anexados */}
-      <div style={modalStyles.formSection}>
+      <div style={styles.section}>
         <div style={styles.header}>
-          <h4 style={modalStyles.formSectionTitle}>Documentos Anexados</h4>
+          <h4 style={styles.sectionTitle}>Documentos Anexados</h4>
           <button
             style={styles.addButton}
             onClick={handleAddDocument}
           >
-            <PlusIcon size={14} />
+            <AppIcons.Add size={14} />
             Adicionar Documento
           </button>
         </div>
@@ -258,14 +245,14 @@ export function DocumentsTab({ formData, onUpdateFormData }: DocumentsTabProps):
                     onClick={() => handleEditDocument(document)}
                     title="Editar"
                   >
-                    <EditIcon size={12} />
+                    <AppIcons.Edit size={12} />
                   </button>
                   <button
                     style={styles.actionButton}
                     onClick={() => handleDeleteDocument(document.id)}
                     title="Excluir"
                   >
-                    <DeleteIcon size={12} />
+                    <AppIcons.Delete size={12} />
                   </button>
                 </div>
               </div>
@@ -277,8 +264,8 @@ export function DocumentsTab({ formData, onUpdateFormData }: DocumentsTabProps):
 
       {/* Resumo dos Documentos */}
       {documents.length > 0 && (
-        <div style={modalStyles.formSectionInfo}>
-          <h4 style={modalStyles.formSectionInfoTitle}>Resumo dos Documentos</h4>
+        <div style={styles.infoSection}>
+          <h4 style={styles.infoSectionTitle}>Resumo dos Documentos</h4>
           <div style={styles.summaryRow}>
             <span style={styles.summaryLabel}>Quantidade de Documentos:</span>
             <span style={styles.summaryValue}>{documents.length}</span>

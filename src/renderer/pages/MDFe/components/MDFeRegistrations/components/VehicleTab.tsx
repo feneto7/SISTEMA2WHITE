@@ -1,7 +1,7 @@
 import React, { useState, useRef } from 'react';
 import { useClickSound } from '../../../../../hooks/useClickSound';
-import { modalStyles } from '../../../../../styles/modalStyles';
-import { PlusIcon, EditIcon, DeleteIcon } from '../../../../../components/Icons';
+import { systemStyles, systemColors } from '../../../../../styles/systemStyle';
+import { AppIcons } from '../../../../../components/Icons/AppIcons';
 import { NewVehicleModal } from './index';
 import { useElementScrollbarStyles } from '../../../../../hooks/useScrollbarStyles';
 
@@ -77,38 +77,23 @@ export function VehicleTab({ formData, onUpdateFormData }: VehicleTabProps): JSX
       alignItems: 'center',
       marginBottom: '20px',
       paddingBottom: '12px',
-      borderBottom: '1px solid rgba(0, 0, 0, 0.1)'
+      borderBottom: `1px solid ${systemColors.border.light}`
     },
     title: {
-      fontSize: '16px',
-      fontWeight: '600',
-      color: 'var(--text-primary)',
-      margin: 0,
-      fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, Helvetica, Arial, sans-serif',
-      textTransform: 'uppercase' as const
+      ...systemStyles.page.title,
+      fontSize: '16px'
     },
     newButton: {
-      borderRadius: '6px',
-      border: '1px solid rgba(0, 0, 0, 0.2)',
-      background: 'linear-gradient(to bottom, #f5f5f5, #e8e8e8)',
-      cursor: 'pointer',
-      transition: 'all 0.15s ease',
+      ...systemStyles.button.default,
+      padding: '8px 12px',
       display: 'flex',
       alignItems: 'center',
-      justifyContent: 'center',
-      color: 'rgba(0, 0, 0, 0.7)',
-      boxShadow: '0 1px 2px rgba(0, 0, 0, 0.1), inset 0 1px 0 rgba(255, 255, 255, 0.3)',
-      fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, Helvetica, Arial, sans-serif',
-      fontSize: '13px',
-      fontWeight: '500',
-      padding: '8px 12px',
-      gap: '6px',
-      textTransform: 'uppercase' as const
+      gap: '6px'
     },
     listContainer: {
-      background: 'rgba(255, 255, 255, 0.6)',
+      background: systemColors.background.content,
       borderRadius: '8px',
-      border: '1px solid rgba(0, 0, 0, 0.1)',
+      border: `1px solid ${systemColors.border.light}`,
       overflow: 'hidden'
     },
     listHeader: {
@@ -116,16 +101,12 @@ export function VehicleTab({ formData, onUpdateFormData }: VehicleTabProps): JSX
       gridTemplateColumns: '1fr 1fr 1fr 1fr 80px',
       gap: '16px',
       padding: '12px 16px',
-      background: 'rgba(246, 246, 246, 0.95)',
-      borderBottom: '1px solid rgba(0, 0, 0, 0.1)',
-      fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, Helvetica, Arial, sans-serif'
+      background: systemColors.background.primary,
+      borderBottom: `1px solid ${systemColors.border.light}`,
+      ...systemStyles.list.headerCell
     },
     headerCell: {
-      fontSize: '11px',
-      fontWeight: '600',
-      color: 'var(--text-secondary)',
-      textTransform: 'uppercase' as const,
-      letterSpacing: '0.5px'
+      ...systemStyles.list.headerCell
     },
     listContent: {
       maxHeight: '300px',
@@ -133,20 +114,19 @@ export function VehicleTab({ formData, onUpdateFormData }: VehicleTabProps): JSX
     },
     listRow: {
       display: 'grid',
-      gridTemplateColumns: '1fr 1fr 1fr 1fr',
+      gridTemplateColumns: '1fr 1fr 1fr 1fr 80px',
       gap: '16px',
       padding: '12px 16px',
-      borderBottom: '1px solid rgba(0, 0, 0, 0.05)',
+      borderBottom: `1px solid ${systemColors.border.divider}`,
       transition: 'all 0.15s ease',
-      cursor: 'pointer',
-      fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, Helvetica, Arial, sans-serif'
+      cursor: 'pointer'
     },
     listRowHover: {
-      background: 'rgba(0, 0, 0, 0.02)'
+      background: systemColors.control.hover
     },
     rowCell: {
       fontSize: '12px',
-      color: 'var(--text-primary)',
+      color: systemColors.text.primary,
       display: 'flex',
       alignItems: 'center'
     },
@@ -157,23 +137,10 @@ export function VehicleTab({ formData, onUpdateFormData }: VehicleTabProps): JSX
       alignItems: 'center'
     },
     actionButton: {
-      borderRadius: '4px',
-      border: '1px solid rgba(0, 0, 0, 0.2)',
-      background: 'linear-gradient(to bottom, #f5f5f5, #e8e8e8)',
-      cursor: 'pointer',
-      transition: 'all 0.15s ease',
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'center',
-      color: 'rgba(0, 0, 0, 0.7)',
-      boxShadow: '0 1px 2px rgba(0, 0, 0, 0.1), inset 0 1px 0 rgba(255, 255, 255, 0.3)',
-      fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, Helvetica, Arial, sans-serif',
-      fontSize: '12px',
-      fontWeight: '500',
+      ...systemStyles.button.default,
       padding: '4px',
       width: '24px',
-      height: '24px',
-      textTransform: 'uppercase' as const
+      height: '24px'
     },
     emptyState: {
       display: 'flex',
@@ -181,18 +148,16 @@ export function VehicleTab({ formData, onUpdateFormData }: VehicleTabProps): JSX
       alignItems: 'center',
       justifyContent: 'center',
       padding: '40px',
-      color: 'var(--text-secondary)',
-      fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, Helvetica, Arial, sans-serif'
+      color: systemColors.text.secondary
     },
     emptyText: {
       fontSize: '14px',
-      margin: 0,
-      textTransform: 'uppercase' as const
+      margin: 0
     }
   };
 
   return (
-    <div style={modalStyles.tabContent}>
+    <div style={{ padding: '20px' }}>
       {/* Header com título e botão Novo */}
       <div style={styles.header}>
         <h3 style={styles.title}>Veículos Cadastrados</h3>
@@ -203,7 +168,7 @@ export function VehicleTab({ formData, onUpdateFormData }: VehicleTabProps): JSX
             handleNewVehicle();
           }}
         >
-          <PlusIcon size={14} />
+          <AppIcons.Add size={14} />
           Novo Veículo
         </button>
       </div>
@@ -248,7 +213,7 @@ export function VehicleTab({ formData, onUpdateFormData }: VehicleTabProps): JSX
                     }}
                     title="Editar"
                   >
-                    <EditIcon size={12} />
+                    <AppIcons.Edit size={12} />
                   </button>
                   <button
                     style={styles.actionButton}
@@ -258,7 +223,7 @@ export function VehicleTab({ formData, onUpdateFormData }: VehicleTabProps): JSX
                     }}
                     title="Excluir"
                   >
-                    <DeleteIcon size={12} />
+                    <AppIcons.Delete size={12} />
                   </button>
                 </div>
               </div>

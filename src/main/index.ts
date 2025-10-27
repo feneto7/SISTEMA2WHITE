@@ -1,5 +1,6 @@
 import path from 'node:path';
-import { app, BrowserWindow, nativeTheme } from 'electron';
+import { app, BrowserWindow, nativeTheme, ipcMain } from 'electron';
+import { getInstalledCertificates } from './handlers/certificateHandler';
 
 let mainWindow: BrowserWindow | null = null;
 
@@ -16,7 +17,7 @@ const createWindow = () => {
     visualEffectState: 'active',
     transparent: true,
     webPreferences: {
-      preload: path.join(__dirname, '../preload/index.mjs'),
+      preload: path.join(__dirname, '../preload/index.cjs'),
       contextIsolation: true,
       nodeIntegration: false
     }
@@ -30,6 +31,13 @@ const createWindow = () => {
 };
 
 app.whenReady().then(() => {
+  // Handler para buscar certificados digitais instalados
+  ipcMain.handle('get-installed-certificates', async () => {
+    return await getInstalledCertificates();
+  });
+
+  console.log('IPC handler registrado');
+  
   nativeTheme.themeSource = 'light';
   createWindow();
   app.on('activate', () => {

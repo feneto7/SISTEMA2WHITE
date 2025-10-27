@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
-import { macStyles } from '../../styles/style';
+import { systemStyles, systemColors } from '../../styles/systemStyle';
 import { MDFeList, MDFe, NewMDFe } from './components';
 import { useNavigation } from '../../router/Navigation';
 import { useClickSound } from '../../hooks/useClickSound';
 import { BackButton } from '../../components/BackButton';
 import { MDFeRegistrations } from './components/MDFeRegistrations';
-import { PlusIcon } from '../../components/Icons';
+import { AppIcons } from '../../components/Icons/AppIcons';
 
 // Página de MDF-e do sistema
 // Permite visualizar e gerenciar MDF-es emitidas
@@ -115,31 +115,19 @@ export function MDFePage(): JSX.Element {
       flexDirection: 'column' as const,
       padding: '20px',
       gap: '20px',
-      overflow: 'hidden'
+      overflow: 'hidden',
+      background: systemColors.background.content
     },
     header: {
-      background: 'rgba(255, 255, 255, 0.8)',
-      backdropFilter: 'blur(20px) saturate(180%)',
-      WebkitBackdropFilter: 'blur(20px) saturate(180%)',
-      borderRadius: 'var(--border-radius-large)',
-      border: '1px solid rgba(255, 255, 255, 0.9)',
-      boxShadow: '0 4px 16px rgba(0, 0, 0, 0.08)',
-      padding: '20px',
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'space-between'
+      ...systemStyles.page.header
     },
     title: {
-      fontSize: '20px',
-      fontWeight: '600',
-      color: 'var(--text-primary)',
-      margin: 0,
-      fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, Helvetica, Arial, sans-serif',
+      ...systemStyles.page.title,
       textTransform: 'uppercase' as const,
       letterSpacing: '0.5px'
     },
     newButton: {
-      ...macStyles.modal.button,
+      ...systemStyles.button.default,
       padding: '8px 16px',
       display: 'flex',
       alignItems: 'center',
@@ -147,7 +135,7 @@ export function MDFePage(): JSX.Element {
       fontSize: '13px'
     },
     newButtonHover: {
-      ...macStyles.modal.buttonHover
+      ...systemStyles.button.defaultHover
     },
     buttonGroup: {
       display: 'flex',
@@ -161,8 +149,8 @@ export function MDFePage(): JSX.Element {
       {/* Header com título e botões */}
       <div style={styles.header}>
         <BackButton 
-          onClick={() => navigate('fiscal')} 
-          label="Voltar para Menu Fiscal" 
+          onClick={() => navigate('home')} 
+          label="Voltar para Home" 
         />
         <h1 style={styles.title}>MDF-e</h1>
         <div style={styles.buttonGroup}>
@@ -186,7 +174,7 @@ export function MDFePage(): JSX.Element {
             onMouseLeave={() => setIsNewMDFeHovered(false)}
             onClick={handleNewMDFe}
           >
-            <PlusIcon size={14} />
+            <AppIcons.Add size={14} />
             Nova MDF-e
           </button>
         </div>

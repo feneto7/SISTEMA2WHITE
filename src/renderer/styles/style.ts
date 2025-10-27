@@ -11,9 +11,10 @@ export const globalStyles = {
     '--text-light': 'rgba(255,255,255,0.7)',
     '--text-white': '#fff',
     
-    // Cores de painéis e vidro fosco
-    '--panel': 'rgba(248,248,248,0.9)',
-    '--panel-stroke': 'rgba(255,255,255,0.8)',
+    // Cores de painéis
+    '--panel': '#e8e8e8',
+    '--panel-gradient': 'linear-gradient(to bottom, #f0f0f0, #e0e0e0)',
+    '--panel-stroke': '#c0c0c0',
     '--glass-bg': 'rgba(248,248,248,0.8)',
     '--glass-border': 'rgba(255,255,255,0.9)',
     '--glass-shadow': 'rgba(0,0,0,0.5) 0px 3px 20px',
@@ -48,13 +49,53 @@ export const globalStyles = {
 
 // Estilos para componentes do sistema macOS
 export const macStyles = {
+  // Header padrão do sistema - 3 colunas (BackButton | Título | Controles)
+  pageHeader: {
+    container: {
+      height: 44,
+      background: 'var(--panel-gradient)',
+      backgroundColor: 'var(--panel)',
+      borderBottom: '1px solid var(--panel-stroke)',
+      boxShadow: 'var(--shadow-light)',
+      display: 'grid',
+      gridTemplateColumns: '1fr auto 1fr',
+      alignItems: 'center',
+      padding: '0 16px',
+      position: 'relative' as const,
+      zIndex: 10,
+      marginBottom: '20px'
+    },
+    leftColumn: {
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'flex-start'
+    },
+    centerColumn: {
+      textAlign: 'center' as const
+    },
+    rightColumn: {
+      display: 'flex',
+      alignItems: 'center',
+      gap: '16px',
+      justifyContent: 'flex-end'
+    },
+    title: {
+      color: 'var(--text-primary)',
+      fontSize: '2.2rem',
+      fontWeight: '600',
+      margin: 0,
+      textAlign: 'center' as const,
+      textShadow: '0 2px 4px rgba(0, 0, 0, 0.3)',
+      fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, Helvetica, Arial, sans-serif',
+      textTransform: 'uppercase' as const
+    }
+  },
   topMenu: {
     container: {
       height: 44,
-      background: 'var(--panel)',
+      background: 'var(--panel-gradient)',
+      backgroundColor: 'var(--panel)',
       borderBottom: '1px solid var(--panel-stroke)',
-      backdropFilter: 'blur(22px) saturate(160%)',
-      WebkitBackdropFilter: 'blur(22px) saturate(160%)',
       boxShadow: 'var(--shadow-light)'
     },
     content: {
@@ -151,6 +192,41 @@ export const macStyles = {
   },
   // Estilos para páginas do sistema
   pages: {
+    // Estilos compartilhados de header para todas as páginas
+    common: {
+      pageHeader: {
+        background: '#e8e8e8',
+        backgroundImage: 'linear-gradient(to bottom, #f0f0f0, #e0e0e0)',
+        backdropFilter: 'blur(20px) saturate(180%)',
+        WebkitBackdropFilter: 'blur(20px) saturate(180%)',
+        borderRadius: 'var(--border-radius-large)',
+        border: '1px solid #c0c0c0',
+        boxShadow: '0 4px 16px rgba(0, 0, 0, 0.08)',
+        padding: '20px',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'space-between'
+      },
+      pageTitle: {
+        fontSize: '20px',
+        fontWeight: '600',
+        color: 'var(--text-primary)',
+        margin: 0,
+        fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, Helvetica, Arial, sans-serif',
+        textTransform: 'uppercase' as const,
+        letterSpacing: '0.5px'
+      },
+      contentContainer: {
+        background: '#e8e8e8',
+        backgroundImage: 'linear-gradient(to bottom, #f0f0f0, #e0e0e0)',
+        backdropFilter: 'blur(20px) saturate(180%)',
+        WebkitBackdropFilter: 'blur(20px) saturate(180%)',
+        borderRadius: 'var(--border-radius-large)',
+        border: '1px solid #c0c0c0',
+        boxShadow: '0 4px 16px rgba(0, 0, 0, 0.08)',
+        overflow: 'hidden'
+      }
+    },
     products: {
       container: {
         height: '100%',
@@ -161,16 +237,17 @@ export const macStyles = {
         overflow: 'hidden'
       },
       searchContainer: {
-        background: 'rgba(255, 255, 255, 0.8)',
+        background: '#e8e8e8',
         backdropFilter: 'blur(20px) saturate(180%)',
         WebkitBackdropFilter: 'blur(20px) saturate(180%)',
         borderRadius: 'var(--border-radius-large)',
-        border: '1px solid rgba(255, 255, 255, 0.9)',
+        border: '1px solid #c0c0c0',
         boxShadow: '0 4px 16px rgba(0, 0, 0, 0.08)',
         padding: '20px',
         display: 'flex',
         flexDirection: 'column' as const,
-        gap: '12px'
+        gap: '12px',
+        backgroundImage: 'linear-gradient(to bottom, #f0f0f0, #e0e0e0)'
       },
       searchStats: {
         display: 'flex',
@@ -185,23 +262,25 @@ export const macStyles = {
       },
       listContainer: {
         flex: 1,
-        background: 'rgba(255, 255, 255, 0.8)',
+        background: '#e8e8e8',
         backdropFilter: 'blur(20px) saturate(180%)',
         WebkitBackdropFilter: 'blur(20px) saturate(180%)',
         borderRadius: 'var(--border-radius-large)',
-        border: '1px solid rgba(255, 255, 255, 0.9)',
+        border: '1px solid #c0c0c0',
         boxShadow: '0 4px 16px rgba(0, 0, 0, 0.08)',
         overflow: 'hidden',
         display: 'flex',
-        flexDirection: 'column' as const
+        flexDirection: 'column' as const,
+        backgroundImage: 'linear-gradient(to bottom, #f0f0f0, #e0e0e0)'
       },
       listHeader: {
         display: 'grid',
         gridTemplateColumns: '2fr 1fr 0.8fr 0.8fr 1fr 80px',
         gap: '16px',
         padding: '16px 20px',
-        background: 'rgba(246, 246, 246, 0.95)',
-        borderBottom: '1px solid rgba(0, 0, 0, 0.1)',
+        background: '#e8e8e8',
+        backgroundImage: 'linear-gradient(to bottom, #f0f0f0, #e0e0e0)',
+        borderBottom: '1px solid #c0c0c0',
         fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, Helvetica, Arial, sans-serif'
       },
       headerCell: {
@@ -412,16 +491,17 @@ export const macStyles = {
         overflow: 'hidden'
       },
       searchContainer: {
-        background: 'rgba(255, 255, 255, 0.8)',
+        background: '#e8e8e8',
         backdropFilter: 'blur(20px) saturate(180%)',
         WebkitBackdropFilter: 'blur(20px) saturate(180%)',
         borderRadius: 'var(--border-radius-large)',
-        border: '1px solid rgba(255, 255, 255, 0.9)',
+        border: '1px solid #c0c0c0',
         boxShadow: '0 4px 16px rgba(0, 0, 0, 0.08)',
         padding: '20px',
         display: 'flex',
         flexDirection: 'column' as const,
-        gap: '12px'
+        gap: '12px',
+        backgroundImage: 'linear-gradient(to bottom, #f0f0f0, #e0e0e0)'
       },
       searchHeaderRow: {
         display: 'flex',
@@ -442,23 +522,25 @@ export const macStyles = {
       },
       listContainer: {
         flex: 1,
-        background: 'rgba(255, 255, 255, 0.8)',
+        background: '#e8e8e8',
         backdropFilter: 'blur(20px) saturate(180%)',
         WebkitBackdropFilter: 'blur(20px) saturate(180%)',
         borderRadius: 'var(--border-radius-large)',
-        border: '1px solid rgba(255, 255, 255, 0.9)',
+        border: '1px solid #c0c0c0',
         boxShadow: '0 4px 16px rgba(0, 0, 0, 0.08)',
         overflow: 'hidden',
         display: 'flex',
-        flexDirection: 'column' as const
+        flexDirection: 'column' as const,
+        backgroundImage: 'linear-gradient(to bottom, #f0f0f0, #e0e0e0)'
       },
       listHeader: {
         display: 'grid',
         gridTemplateColumns: '2fr 1fr 1fr 1fr 0.8fr 80px',
         gap: '16px',
         padding: '16px 20px',
-        background: 'rgba(246, 246, 246, 0.95)',
-        borderBottom: '1px solid rgba(0, 0, 0, 0.1)',
+        background: '#e8e8e8',
+        backgroundImage: 'linear-gradient(to bottom, #f0f0f0, #e0e0e0)',
+        borderBottom: '1px solid #c0c0c0',
         fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, Helvetica, Arial, sans-serif'
       },
       headerCell: {

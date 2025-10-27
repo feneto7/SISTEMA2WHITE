@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { modalStyles } from '../../../styles/modalStyles';
+import { systemStyles, systemColors } from '../../../styles/systemStyle';
 import { useClickSound } from '../../../hooks/useClickSound';
 
 // Componente da aba Fiscal - Campos fiscais do produto
@@ -36,23 +36,41 @@ export function TaxTab({ onFormDataChange }: TaxTabProps): JSX.Element {
 
   return (
     <div>
-      <h3 style={modalStyles.tabContentTitle}>
+      <h3 style={{
+        fontSize: '15px',
+        fontWeight: '600',
+        color: systemColors.text.primary,
+        marginBottom: '20px',
+        fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, Helvetica, Arial, sans-serif'
+      }}>
         Informações Fiscais
       </h3>
       
       {/* Seção de Códigos Fiscais */}
-      <div style={modalStyles.formSection}>
-        <h4 style={modalStyles.formSectionTitle}>Códigos Fiscais</h4>
+      <div style={{ marginBottom: '24px' }}>
+        <h4 style={{
+          fontSize: '13px',
+          fontWeight: '600',
+          color: systemColors.text.secondary,
+          textTransform: 'uppercase' as const,
+          letterSpacing: '0.5px',
+          marginBottom: '12px',
+          fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, Helvetica, Arial, sans-serif'
+        }}>Códigos Fiscais</h4>
         
-        <div style={modalStyles.formGrid}>
+        <div style={{
+          display: 'grid',
+          gridTemplateColumns: 'repeat(2, 1fr)',
+          gap: '16px'
+        }}>
           {/* NCM */}
-          <div style={modalStyles.formGroup}>
-            <label style={modalStyles.formLabel}>NCM:</label>
+          <div>
+            <label style={systemStyles.input.label}>NCM:</label>
             <input
               type="text"
               style={{
-                ...modalStyles.formInput,
-                ...(focusedField === 'ncm' ? modalStyles.formInputFocus : {})
+                ...systemStyles.input.field,
+                ...(focusedField === 'ncm' ? systemStyles.input.fieldFocus : {})
               }}
               value={formData.ncm}
               onChange={(e) => {
@@ -69,13 +87,13 @@ export function TaxTab({ onFormDataChange }: TaxTabProps): JSX.Element {
           </div>
 
           {/* CEST */}
-          <div style={modalStyles.formGroup}>
-            <label style={modalStyles.formLabel}>CEST:</label>
+          <div>
+            <label style={systemStyles.input.label}>CEST:</label>
             <input
               type="text"
               style={{
-                ...modalStyles.formInput,
-                ...(focusedField === 'cest' ? modalStyles.formInputFocus : {})
+                ...systemStyles.input.field,
+                ...(focusedField === 'cest' ? systemStyles.input.fieldFocus : {})
               }}
               value={formData.cest}
               onChange={(e) => {
@@ -95,13 +113,21 @@ export function TaxTab({ onFormDataChange }: TaxTabProps): JSX.Element {
 
       {/* Informações sobre os códigos */}
       <div style={{
-        ...modalStyles.formSection,
+        marginBottom: '24px',
         backgroundColor: '#f0f8ff',
-        borderColor: '#b0d4f1'
+        borderColor: '#b0d4f1',
+        padding: '16px',
+        borderRadius: '6px',
+        border: '1px solid #b0d4f1'
       }}>
         <h4 style={{
-          ...modalStyles.formSectionTitle,
-          color: '#0066cc'
+          fontSize: '13px',
+          fontWeight: '600',
+          color: '#0066cc',
+          textTransform: 'uppercase' as const,
+          letterSpacing: '0.5px',
+          marginBottom: '12px',
+          fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, Helvetica, Arial, sans-serif'
         }}>
           Informações sobre os Códigos
         </h4>

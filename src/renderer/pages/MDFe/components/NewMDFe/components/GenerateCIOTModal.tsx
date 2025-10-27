@@ -1,5 +1,5 @@
 import React, { useState, useRef } from 'react';
-import { modalStyles } from '../../../../../styles/modalStyles';
+import { systemStyles, systemColors } from '../../../../../styles/systemStyle';
 import { useClickSound } from '../../../../../hooks/useClickSound';
 import { useElementScrollbarStyles } from '../../../../../hooks/useScrollbarStyles';
 import { AddButton } from '../../../../../components/AddButton/AddButton';
@@ -70,8 +70,8 @@ export function GenerateCIOTModal({ isOpen, onClose, onSave }: GenerateCIOTModal
   };
 
   const getInputStyle = (field: string) => {
-    const baseStyle = modalStyles.formInput;
-    const focusStyle = focusedField === field ? modalStyles.formInputFocus : {};
+    const baseStyle = systemStyles.input.field;
+    const focusStyle = focusedField === field ? systemStyles.input.fieldFocus : {};
     return { ...baseStyle, ...focusStyle };
   };
 
@@ -174,16 +174,16 @@ export function GenerateCIOTModal({ isOpen, onClose, onSave }: GenerateCIOTModal
     vehicleList: {
       marginTop: '16px',
       padding: '12px',
-      background: 'rgba(255, 255, 255, 0.4)',
+      background: systemColors.background.content,
       borderRadius: '6px',
-      border: '1px solid rgba(0, 0, 0, 0.1)'
+      border: `1px solid ${systemColors.border.light}`
     },
     vehicleItem: {
       display: 'flex',
       justifyContent: 'space-between',
       alignItems: 'center',
       padding: '8px',
-      background: 'rgba(255, 255, 255, 0.6)',
+      background: systemColors.background.white,
       borderRadius: '4px',
       marginBottom: '8px',
       fontSize: '12px',
@@ -220,22 +220,59 @@ export function GenerateCIOTModal({ isOpen, onClose, onSave }: GenerateCIOTModal
       fontWeight: '500',
       padding: '8px 16px',
       textTransform: 'uppercase' as const
-    }
+    },
+    section: {
+      marginBottom: '24px'
+    },
+    sectionTitle: {
+      fontSize: '14px',
+      fontWeight: '600',
+      color: systemColors.text.primary,
+      margin: '0 0 16px 0',
+      fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, Helvetica, Arial, sans-serif',
+      textTransform: 'uppercase' as const,
+      letterSpacing: '0.5px',
+      borderBottom: `1px solid ${systemColors.border.light}`,
+      paddingBottom: '8px'
+    },
+    label: systemStyles.input.label
   };
 
   if (!isOpen) return null;
 
   return (
-    <div style={modalStyles.overlay} onClick={handleClose}>
-      <div style={modalStyles.container} onClick={(e) => e.stopPropagation()}>
+    <div style={{
+      position: 'fixed' as const,
+      top: 0,
+      left: 0,
+      right: 0,
+      bottom: 0,
+      backgroundColor: 'rgba(0, 0, 0, 0.4)',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      zIndex: 1000
+    }} onClick={handleClose}>
+      <div style={{
+        ...systemStyles.window,
+        width: '90vw',
+        maxWidth: '800px',
+        height: '90vh',
+        display: 'flex',
+        flexDirection: 'column' as const,
+        overflow: 'hidden'
+      }} onClick={(e) => e.stopPropagation()}>
         {/* Modal header */}
-        <div style={modalStyles.header}>
-          <div style={modalStyles.trafficLights}>
-            <div style={{...modalStyles.trafficLight, ...modalStyles.trafficLightRed}} onClick={handleClose}></div>
-            <div style={{...modalStyles.trafficLight, ...modalStyles.trafficLightYellow}}></div>
-            <div style={{...modalStyles.trafficLight, ...modalStyles.trafficLightGreen}}></div>
+        <div style={{
+          ...systemStyles.titleBar,
+          position: 'relative' as const
+        }}>
+          <div style={systemStyles.trafficLights.container}>
+            <button style={{...systemStyles.trafficLights.button, ...systemStyles.trafficLights.red}} onClick={handleClose}></button>
+            <button style={{...systemStyles.trafficLights.button, ...systemStyles.trafficLights.yellow}}></button>
+            <button style={{...systemStyles.trafficLights.button, ...systemStyles.trafficLights.green}}></button>
           </div>
-          <div style={modalStyles.title}>Gerar CIOT</div>
+          <div style={systemStyles.titleBarTitle}>Gerar CIOT</div>
           <div style={{ width: '60px' }}></div>
         </div>
 
@@ -243,18 +280,15 @@ export function GenerateCIOTModal({ isOpen, onClose, onSave }: GenerateCIOTModal
         <div ref={formContainerRef} style={{
           flex: 1,
           padding: '24px',
-          backgroundColor: '#ffffff',
-          overflow: 'auto',
-          minHeight: '400px',
-          borderTop: '1px solid #c0c0c0',
-          marginTop: '-1px'
+          backgroundColor: systemColors.background.content,
+          overflow: 'auto'
         }}>
           {/* Seção Gerar CIOT */}
-          <div style={modalStyles.formSection}>
-            <h4 style={modalStyles.formSectionTitle}>Gerar CIOT</h4>
+          <div style={styles.section}>
+            <h4 style={styles.sectionTitle}>Gerar CIOT</h4>
             <div style={styles.formGrid}>
               <div style={styles.formGroup}>
-                <label style={modalStyles.formLabel}>Tipo de Viagem</label>
+                <label style={styles.label}>Tipo de Viagem</label>
                 <input
                   type="text"
                   style={getInputStyle('tipoViagem')}
@@ -266,7 +300,7 @@ export function GenerateCIOTModal({ isOpen, onClose, onSave }: GenerateCIOTModal
                 />
               </div>
               <div style={styles.formGroup}>
-                <label style={modalStyles.formLabel}>CPF/CNPJ do Contratante</label>
+                <label style={styles.label}>CPF/CNPJ do Contratante</label>
                 <input
                   type="text"
                   style={getInputStyle('cpfCnpjContratante')}
@@ -279,7 +313,7 @@ export function GenerateCIOTModal({ isOpen, onClose, onSave }: GenerateCIOTModal
                 />
               </div>
               <div style={styles.formGroup}>
-                <label style={modalStyles.formLabel}>CPF/CNPJ do Contratado</label>
+                <label style={styles.label}>CPF/CNPJ do Contratado</label>
                 <input
                   type="text"
                   style={getInputStyle('cpfCnpjContratado')}
@@ -292,7 +326,7 @@ export function GenerateCIOTModal({ isOpen, onClose, onSave }: GenerateCIOTModal
                 />
               </div>
               <div style={styles.formGroup}>
-                <label style={modalStyles.formLabel}>RNTRC do Contratado</label>
+                <label style={styles.label}>RNTRC do Contratado</label>
                 <input
                   type="text"
                   style={getInputStyle('rntrcContratado')}
@@ -307,11 +341,11 @@ export function GenerateCIOTModal({ isOpen, onClose, onSave }: GenerateCIOTModal
           </div>
 
           {/* Seção Veículos */}
-          <div style={modalStyles.formSection}>
-            <h4 style={modalStyles.formSectionTitle}>Veículos (máximo 5)</h4>
+          <div style={styles.section}>
+            <h4 style={styles.sectionTitle}>Veículos (máximo 5)</h4>
             <div style={styles.vehicleFormGrid}>
               <div style={styles.formGroup}>
-                <label style={modalStyles.formLabel}>Placa</label>
+                <label style={styles.label}>Placa</label>
                 <input
                   type="text"
                   style={getInputStyle('placa')}
@@ -324,7 +358,7 @@ export function GenerateCIOTModal({ isOpen, onClose, onSave }: GenerateCIOTModal
                 />
               </div>
               <div style={styles.formGroup}>
-                <label style={modalStyles.formLabel}>RNTRC</label>
+                <label style={styles.label}>RNTRC</label>
                 <input
                   type="text"
                   style={getInputStyle('rntrc')}
@@ -344,7 +378,7 @@ export function GenerateCIOTModal({ isOpen, onClose, onSave }: GenerateCIOTModal
             {/* Lista de veículos */}
             {vehicles.length > 0 && (
               <div style={styles.vehicleList}>
-                <div style={{fontSize: '12px', fontWeight: '600', marginBottom: '8px', color: 'var(--text-secondary)'}}>
+                <div style={{fontSize: '12px', fontWeight: '600', marginBottom: '8px', color: systemColors.text.secondary}}>
                   Veículos Adicionados:
                 </div>
                 {vehicles.map((vehicle) => (
@@ -367,11 +401,11 @@ export function GenerateCIOTModal({ isOpen, onClose, onSave }: GenerateCIOTModal
           </div>
 
           {/* Seção Destinatário e Carga */}
-          <div style={modalStyles.formSection}>
-            <h4 style={modalStyles.formSectionTitle}>Destinatário e Carga</h4>
+          <div style={styles.section}>
+            <h4 style={styles.sectionTitle}>Destinatário e Carga</h4>
             <div style={styles.formGrid}>
               <div style={styles.formGroup}>
-                <label style={modalStyles.formLabel}>CPF/CNPJ do Destinatário</label>
+                <label style={styles.label}>CPF/CNPJ do Destinatário</label>
                 <input
                   type="text"
                   style={getInputStyle('cpfCnpjDestinatario')}
@@ -384,7 +418,7 @@ export function GenerateCIOTModal({ isOpen, onClose, onSave }: GenerateCIOTModal
                 />
               </div>
               <div style={styles.formGroup}>
-                <label style={modalStyles.formLabel}>Município de Origem</label>
+                <label style={styles.label}>Município de Origem</label>
                 <input
                   type="text"
                   style={getInputStyle('municipioOrigem')}
@@ -396,7 +430,7 @@ export function GenerateCIOTModal({ isOpen, onClose, onSave }: GenerateCIOTModal
                 />
               </div>
               <div style={styles.formGroup}>
-                <label style={modalStyles.formLabel}>Município de Destino</label>
+                <label style={styles.label}>Município de Destino</label>
                 <input
                   type="text"
                   style={getInputStyle('municipioDestino')}
@@ -408,7 +442,7 @@ export function GenerateCIOTModal({ isOpen, onClose, onSave }: GenerateCIOTModal
                 />
               </div>
               <div style={styles.formGroup}>
-                <label style={modalStyles.formLabel}>Código da Natureza da Carga</label>
+                <label style={styles.label}>Código da Natureza da Carga</label>
                 <input
                   type="text"
                   style={getInputStyle('codigoNaturezaCarga')}
@@ -424,11 +458,11 @@ export function GenerateCIOTModal({ isOpen, onClose, onSave }: GenerateCIOTModal
           </div>
 
           {/* Seção Peso e Datas */}
-          <div style={modalStyles.formSection}>
-            <h4 style={modalStyles.formSectionTitle}>Peso e Datas</h4>
+          <div style={styles.section}>
+            <h4 style={styles.sectionTitle}>Peso e Datas</h4>
             <div style={styles.formGrid}>
               <div style={styles.formGroup}>
-                <label style={modalStyles.formLabel}>Peso da Carga</label>
+                <label style={styles.label}>Peso da Carga</label>
                 <input
                   type="text"
                   style={getInputStyle('pesoCarga')}
@@ -440,7 +474,7 @@ export function GenerateCIOTModal({ isOpen, onClose, onSave }: GenerateCIOTModal
                 />
               </div>
               <div style={styles.formGroup}>
-                <label style={modalStyles.formLabel}>Data Início da Viagem</label>
+                <label style={styles.label}>Data Início da Viagem</label>
                 <input
                   type="date"
                   style={getInputStyle('dataInicioViagem')}
@@ -452,7 +486,7 @@ export function GenerateCIOTModal({ isOpen, onClose, onSave }: GenerateCIOTModal
                 />
               </div>
               <div style={styles.formGroup}>
-                <label style={modalStyles.formLabel}>Data Fim da Viagem</label>
+                <label style={styles.label}>Data Fim da Viagem</label>
                 <input
                   type="date"
                   style={getInputStyle('dataFimViagem')}
@@ -467,11 +501,11 @@ export function GenerateCIOTModal({ isOpen, onClose, onSave }: GenerateCIOTModal
           </div>
 
           {/* Seção Tarifas */}
-          <div style={modalStyles.formSection}>
-            <h4 style={modalStyles.formSectionTitle}>Tarifas</h4>
+          <div style={styles.section}>
+            <h4 style={styles.sectionTitle}>Tarifas</h4>
             <div style={styles.formGrid}>
               <div style={styles.formGroup}>
-                <label style={modalStyles.formLabel}>Qntd. de Tarifas</label>
+                <label style={styles.label}>Qntd. de Tarifas</label>
                 <input
                   type="text"
                   style={getInputStyle('qntdTarifas')}
@@ -483,7 +517,7 @@ export function GenerateCIOTModal({ isOpen, onClose, onSave }: GenerateCIOTModal
                 />
               </div>
               <div style={styles.formGroup}>
-                <label style={modalStyles.formLabel}>Valor das Tarifas</label>
+                <label style={styles.label}>Valor das Tarifas</label>
                 <input
                   type="text"
                   style={getInputStyle('valorTarifas')}
@@ -495,7 +529,7 @@ export function GenerateCIOTModal({ isOpen, onClose, onSave }: GenerateCIOTModal
                 />
               </div>
               <div style={styles.formGroup}>
-                <label style={modalStyles.formLabel}>Valor Bruto</label>
+                <label style={styles.label}>Valor Bruto</label>
                 <input
                   type="text"
                   style={getInputStyle('valorBruto')}
@@ -507,7 +541,7 @@ export function GenerateCIOTModal({ isOpen, onClose, onSave }: GenerateCIOTModal
                 />
               </div>
               <div style={styles.formGroup}>
-                <label style={modalStyles.formLabel}>Valor à Pagar</label>
+                <label style={styles.label}>Valor à Pagar</label>
                 <input
                   type="text"
                   style={getInputStyle('valorPagar')}
@@ -519,7 +553,7 @@ export function GenerateCIOTModal({ isOpen, onClose, onSave }: GenerateCIOTModal
                 />
               </div>
               <div style={styles.formGroup}>
-                <label style={modalStyles.formLabel}>Valor do Adiantamento</label>
+                <label style={styles.label}>Valor do Adiantamento</label>
                 <input
                   type="text"
                   style={getInputStyle('valorAdiantamento')}
@@ -531,7 +565,7 @@ export function GenerateCIOTModal({ isOpen, onClose, onSave }: GenerateCIOTModal
                 />
               </div>
               <div style={styles.formGroup}>
-                <label style={modalStyles.formLabel}>Valor do Pago</label>
+                <label style={styles.label}>Valor do Pago</label>
                 <input
                   type="text"
                   style={getInputStyle('valorPago')}
@@ -543,7 +577,7 @@ export function GenerateCIOTModal({ isOpen, onClose, onSave }: GenerateCIOTModal
                 />
               </div>
               <div style={styles.formGroup}>
-                <label style={modalStyles.formLabel}>Valor SEST</label>
+                <label style={styles.label}>Valor SEST</label>
                 <input
                   type="text"
                   style={getInputStyle('valorSEST')}
@@ -555,7 +589,7 @@ export function GenerateCIOTModal({ isOpen, onClose, onSave }: GenerateCIOTModal
                 />
               </div>
               <div style={styles.formGroup}>
-                <label style={modalStyles.formLabel}>Valor do INSS</label>
+                <label style={styles.label}>Valor do INSS</label>
                 <input
                   type="text"
                   style={getInputStyle('valorINSS')}
@@ -567,7 +601,7 @@ export function GenerateCIOTModal({ isOpen, onClose, onSave }: GenerateCIOTModal
                 />
               </div>
               <div style={styles.formGroup}>
-                <label style={modalStyles.formLabel}>Vale Pedágio</label>
+                <label style={styles.label}>Vale Pedágio</label>
                 <input
                   type="text"
                   style={getInputStyle('valePedagio')}
@@ -579,7 +613,7 @@ export function GenerateCIOTModal({ isOpen, onClose, onSave }: GenerateCIOTModal
                 />
               </div>
               <div style={styles.formGroup}>
-                <label style={modalStyles.formLabel}>Vale Combustível</label>
+                <label style={styles.label}>Vale Combustível</label>
                 <input
                   type="text"
                   style={getInputStyle('valeCombustivel')}
@@ -591,7 +625,7 @@ export function GenerateCIOTModal({ isOpen, onClose, onSave }: GenerateCIOTModal
                 />
               </div>
               <div style={styles.formGroup}>
-                <label style={modalStyles.formLabel}>Vale do IRRF</label>
+                <label style={styles.label}>Vale do IRRF</label>
                 <input
                   type="text"
                   style={getInputStyle('valeIRRF')}
@@ -607,18 +641,22 @@ export function GenerateCIOTModal({ isOpen, onClose, onSave }: GenerateCIOTModal
         </div>
 
         {/* Modal footer */}
-        <div style={modalStyles.footer}>
+        <div style={{
+          padding: '12px 16px',
+          background: systemColors.background.primary,
+          borderTop: `1px solid ${systemColors.border.light}`,
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center'
+        }}>
           <button
-            style={modalStyles.button}
+            style={systemStyles.button.default}
             onClick={handleClose}
           >
             Cancelar
           </button>
           <button
-            style={{
-              ...modalStyles.button,
-              ...modalStyles.buttonPrimary
-            }}
+            style={systemStyles.button.primary}
             onClick={handleSave}
           >
             Gerar CIOT
