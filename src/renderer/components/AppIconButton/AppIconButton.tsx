@@ -12,6 +12,8 @@ import iconImage from '../../../main/img/icon.png';
 
 export function AppIconButton(): JSX.Element {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [isHovered, setHovered] = useState(false);
+  const [isPressed, setPressed] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const playClickSound = useClickSound();
   const { navigate } = useNavigation();
@@ -49,22 +51,28 @@ export function AppIconButton(): JSX.Element {
       <div style={{ position: 'relative' }}>
         <button
           onClick={handleDropdownToggle}
-          style={isDropdownOpen ? styles.buttonActive : styles.button}
+          style={(isHovered || isDropdownOpen) ? systemStyles.appIconButton.buttonHover : systemStyles.appIconButton.button}
           onMouseEnter={(e) => {
-            if (!isDropdownOpen) {
-              Object.assign(e.currentTarget.style, styles.buttonHover);
-            }
+            setHovered(true);
           }}
           onMouseLeave={(e) => {
-            if (!isDropdownOpen) {
-              Object.assign(e.currentTarget.style, styles.button);
-            }
+            setHovered(false);
+            setPressed(false);
           }}
+          onMouseDown={() => setPressed(true)}
+          onMouseUp={() => setPressed(false)}
         >
-          <img 
-            src={iconImage} 
-            alt="Menu" 
-            style={styles.icon}
+          {/* Ícone da app: sempre branco; hover/click com brilho */}
+          <img
+            src={iconImage}
+            alt="Menu"
+            style={
+              (isDropdownOpen || isPressed)
+                ? systemStyles.appIconButton.iconActive
+                : isHovered
+                ? systemStyles.appIconButton.iconHover
+                : systemStyles.appIconButton.icon
+            }
           />
         </button>
 
@@ -97,16 +105,6 @@ const styles = {
     alignItems: 'center',
     flex: '0 0 auto'
   },
-  button: systemStyles.appIconButton.button,
-  buttonHover: {
-    ...systemStyles.appIconButton.button,
-    ...systemStyles.appIconButton.buttonHover
-  },
-  buttonActive: {
-    ...systemStyles.appIconButton.button,
-    ...systemStyles.appIconButton.buttonActive
-  },
-  icon: systemStyles.appIconButton.icon,
   dropdownMenu: {
     position: 'absolute' as const,
     top: '40px',
@@ -160,7 +158,7 @@ const styles = {
   }
 };
 
-// Injetar animação CSS do dropdown
+// Injetar animações CSS
 if (typeof document !== 'undefined') {
   const style = document.createElement('style');
   style.textContent = `
@@ -172,6 +170,15 @@ if (typeof document !== 'undefined') {
       100% {
         opacity: 1;
         transform: translateY(0) scale(1);
+      }
+    }
+    
+    @keyframes gradientSlide {
+      0% {
+        background-position: 0%;
+      }
+      100% {
+        background-position: 400%;
       }
     }
   `;

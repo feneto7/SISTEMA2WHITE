@@ -148,7 +148,7 @@ export function Login(): JSX.Element {
       border: '3px solid #ffffff',
       boxShadow: 'rgba(0, 0, 0, 0.4) 0px 2px 4px, inset rgba(0, 0, 0, 0.4) 0px 3px 2px',
       overflow: 'hidden' as const,
-      background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.9) 0%, rgba(255, 255, 255, 0.3) 50%, rgba(255, 255, 255, 0) 50%), #007AFF',
+      background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.9) 0%, rgba(255, 255, 255, 0.3) 50%, rgba(255, 255, 255, 0) 50%),rgb(203, 203, 203)',
       backgroundSize: 'auto, 100%',
       position: 'relative' as const
     },

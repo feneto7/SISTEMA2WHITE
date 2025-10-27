@@ -14,6 +14,7 @@ interface MenuButtonProps {
 
 function MenuButton({ icon: Icon, label, onClick }: MenuButtonProps): JSX.Element {
   const [isHovered, setIsHovered] = useState(false);
+  const [isPressed, setIsPressed] = useState(false);
   const playClickSound = useClickSound();
 
   const handleClick = () => {
@@ -29,9 +30,18 @@ function MenuButton({ icon: Icon, label, onClick }: MenuButtonProps): JSX.Elemen
   return (
     <div style={tooltipContainer}>
       <button
-        style={isHovered ? menuButtonHover : menuButton}
+        style={{
+          ...menuButton,
+          ...(isHovered ? menuButtonHover : {}),
+          ...(isPressed ? systemStyles.toolbar.buttonActive : {})
+        }}
         onMouseEnter={() => setIsHovered(true)}
-        onMouseLeave={() => setIsHovered(false)}
+        onMouseLeave={() => {
+          setIsHovered(false);
+          setIsPressed(false);
+        }}
+        onMouseDown={() => setIsPressed(true)}
+        onMouseUp={() => setIsPressed(false)}
         onClick={handleClick}
       >
         <Icon size={18} color={systemColors.text.primary} />

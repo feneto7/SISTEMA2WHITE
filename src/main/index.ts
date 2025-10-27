@@ -5,22 +5,43 @@ import { getInstalledCertificates } from './handlers/certificateHandler';
 let mainWindow: BrowserWindow | null = null;
 
 const createWindow = () => {
+  // Configurações específicas por plataforma
+  const isMac = process.platform === 'darwin';
+  
   mainWindow = new BrowserWindow({
     width: 1280,
     height: 800,
-    minWidth: 1024,
-    minHeight: 700,
-    titleBarStyle: 'hiddenInset',
-    trafficLightPosition: { x: 12, y: 12 },
-    backgroundColor: '#00000000',
-    vibrancy: 'under-window',
-    visualEffectState: 'active',
-    transparent: true,
+    minWidth: 800,
+    minHeight: 600,
+    resizable: true,
+    maximizable: true,
+    minimizable: true,
+    fullscreenable: true,
+    show: false, // Não mostrar até estar pronto
+    // Configurações específicas do macOS
+    ...(isMac && {
+      titleBarStyle: 'hiddenInset',
+      trafficLightPosition: { x: 12, y: 12 },
+      vibrancy: 'under-window',
+      visualEffectState: 'active'
+    }),
+    // Configurações específicas do Windows
+    ...(!isMac && {
+      frame: true,
+      autoHideMenuBar: true
+    }),
+    backgroundColor: isMac ? '#00000000' : '#ECECEC',
+    transparent: isMac,
     webPreferences: {
       preload: path.join(__dirname, '../preload/index.cjs'),
       contextIsolation: true,
       nodeIntegration: false
     }
+  });
+
+  // Mostrar janela apenas quando estiver pronta para evitar tela preta
+  mainWindow.once('ready-to-show', () => {
+    mainWindow?.show();
   });
 
   if (process.env.ELECTRON_RENDERER_URL) {

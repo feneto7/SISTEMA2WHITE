@@ -188,7 +188,7 @@ export function LaunchpadOperations({ isOpen, onClose, onSelectOperation }: Laun
                 onMouseLeave={() => setHoveredIndex(null)}
               >
                 <div style={systemStyles.launchpad.iconWrapper}>
-                  <Icon size={64} color={operation.color} />
+                  <Icon size={64} color={'#FFFFFF'} />
                 </div>
                 <div style={systemStyles.launchpad.iconLabel}>{operation.title}</div>
               </div>

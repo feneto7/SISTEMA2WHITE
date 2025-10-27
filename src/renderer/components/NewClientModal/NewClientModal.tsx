@@ -139,6 +139,7 @@ export function NewClientModal({ isOpen, onClose, onSave }: NewClientModalProps)
       <div style={{
         ...systemStyles.window,
         width: '800px',
+        height: '600px',
         maxWidth: '90vw',
         maxHeight: '90vh',
         display: 'flex',

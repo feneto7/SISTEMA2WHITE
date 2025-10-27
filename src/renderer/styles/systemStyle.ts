@@ -155,28 +155,31 @@ export const systemStyles = {
     button: {
       width: '32px',
       height: '32px',
-      borderRadius: '6px',
+      borderRadius: '8px',
       border: 'none',
-      background: 'transparent',
+      background: systemColors.background.primary,
       display: 'flex',
       alignItems: 'center',
       justifyContent: 'center',
       cursor: 'pointer',
       transition: 'all 0.15s ease',
-      opacity: 0.65
+      padding: '4px',
+      boxShadow: '3px 3px 6px rgba(0, 0, 0, 0.1), -3px -3px 6px rgba(255, 255, 255, 0.8)'
     },
     buttonHover: {
-      background: 'rgba(0, 0, 0, 0.06)',
-      opacity: 1
+      background: systemColors.background.primary,
+      boxShadow: '3px 3px 6px rgba(0, 0, 0, 0.1), -3px -3px 6px rgba(255, 255, 255, 0.8)'
     },
     buttonActive: {
-      background: 'rgba(0, 0, 0, 0.1)',
-      opacity: 1
+      background: systemColors.background.primary,
+      boxShadow: 'inset 2px 2px 4px rgba(0, 0, 0, 0.12), inset -2px -2px 4px rgba(255, 255, 255, 0.7)',
+      transform: 'scale(0.98)'
     }
   },
 
   // App Icon Button (botão do ícone da aplicação - menu dropdown)
   appIconButton: {
+    // Botão recipiente. Mantém-se transparente, apenas com leve feedback no hover
     button: {
       width: '32px',
       height: '32px',
@@ -187,31 +190,57 @@ export const systemStyles = {
       alignItems: 'center',
       justifyContent: 'center',
       cursor: 'pointer',
-      transition: 'all 0.2s cubic-bezier(0.4, 0, 0.2, 1)',
+      transition: 'background 0.15s ease',
       padding: '4px',
       position: 'relative' as const,
-      filter: 'brightness(1) drop-shadow(0 0 0 rgba(255, 255, 255, 0))',
-      WebkitFilter: 'brightness(1) drop-shadow(0 0 0 rgba(255, 255, 255, 0))'
+      boxShadow: 'none'
     },
     buttonHover: {
-      background: 'rgba(0, 0, 0, 0.06)',
-      filter: 'brightness(1.8) drop-shadow(0 0 12px rgba(255, 255, 255, 1)) drop-shadow(0 0 20px rgba(255, 255, 255, 0.6)) drop-shadow(0 0 30px rgba(255, 255, 255, 0.3))',
-      WebkitFilter: 'brightness(1.8) drop-shadow(0 0 12px rgba(255, 255, 255, 1)) drop-shadow(0 0 20px rgba(255, 255, 255, 0.6)) drop-shadow(0 0 30px rgba(255, 255, 255, 0.3))',
-      transform: 'scale(1.05)',
-      boxShadow: '0 0 20px rgba(255, 255, 255, 0.5), inset 0 0 20px rgba(255, 255, 255, 0.2)'
+      width: '32px',
+      height: '32px',
+      borderRadius: '6px',
+      border: 'none',
+      background: 'transparent',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      cursor: 'pointer',
+      transition: 'background 0.15s ease',
+      padding: '4px',
+      position: 'relative' as const,
+      boxShadow: 'none'
     },
-    buttonActive: {
-      background: 'rgba(0, 0, 0, 0.1)',
-      filter: 'brightness(1.8) drop-shadow(0 0 12px rgba(255, 255, 255, 1)) drop-shadow(0 0 20px rgba(255, 255, 255, 0.6)) drop-shadow(0 0 30px rgba(255, 255, 255, 0.3))',
-      WebkitFilter: 'brightness(1.8) drop-shadow(0 0 12px rgba(255, 255, 255, 1)) drop-shadow(0 0 20px rgba(255, 255, 255, 0.6)) drop-shadow(0 0 30px rgba(255, 255, 255, 0.3))',
-      boxShadow: '0 0 20px rgba(255, 255, 255, 0.5), inset 0 0 20px rgba(255, 255, 255, 0.2)',
-      transform: 'scale(1.05)'
-    },
+    // Ícone sempre branco (filtrado) – imagem original é colorida
     icon: {
       width: '24px',
       height: '24px',
       objectFit: 'contain' as const,
-      pointerEvents: 'none' as const
+      pointerEvents: 'none' as const,
+      // Torna o conteúdo do PNG branco, preservando transparência
+      filter: 'brightness(0) invert(1)',
+      WebkitFilter: 'brightness(0) invert(1)',
+      transition: 'filter 0.15s ease, transform 0.1s ease'
+    },
+    // Hover: brilho branco suave (estilo macOS)
+    iconHover: {
+      width: '24px',
+      height: '24px',
+      objectFit: 'contain' as const,
+      pointerEvents: 'none' as const,
+      filter: 'brightness(0) invert(1) drop-shadow(0 0 6px rgba(255,255,255,0.9)) drop-shadow(0 0 14px rgba(255,255,255,0.55)) drop-shadow(0 0 22px rgba(255,255,255,0.35))',
+      WebkitFilter: 'brightness(0) invert(1) drop-shadow(0 0 6px rgba(255,255,255,0.9)) drop-shadow(0 0 14px rgba(255,255,255,0.55)) drop-shadow(0 0 22px rgba(255,255,255,0.35))',
+      transition: 'filter 0.15s ease, transform 0.1s ease'
+    },
+    // Active/Pressed: brilho mais intenso, levemente pressionado
+    iconActive: {
+      width: '24px',
+      height: '24px',
+      objectFit: 'contain' as const,
+      pointerEvents: 'none' as const,
+      filter: 'brightness(0) invert(1) drop-shadow(0 0 10px rgba(255,255,255,1)) drop-shadow(0 0 20px rgba(255,255,255,0.7)) drop-shadow(0 0 30px rgba(255,255,255,0.5))',
+      WebkitFilter: 'brightness(0) invert(1) drop-shadow(0 0 10px rgba(255,255,255,1)) drop-shadow(0 0 20px rgba(255,255,255,0.7)) drop-shadow(0 0 30px rgba(255,255,255,0.5))',
+      transform: 'scale(0.98)',
+      transition: 'filter 0.1s ease, transform 0.1s ease'
     }
   },
 
@@ -877,10 +906,16 @@ export const systemStyles = {
       borderRadius: '16px',
       padding: '16px',
       opacity: 1,
-      transition: 'transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1)'
+      transition: 'all 0.15s ease',
+      background: 'rgba(255, 255, 255, 0.15)',
+      boxShadow: '4px 4px 8px rgba(0, 0, 0, 0.1), -4px -4px 8px rgba(255, 255, 255, 0.3)'
     },
     iconContainerHover: {
-      transform: 'scale(1.1) translateY(-8px)'
+      boxShadow: '4px 4px 8px rgba(0, 0, 0, 0.1), -4px -4px 8px rgba(255, 255, 255, 0.3)'
+    },
+    iconContainerActive: {
+      boxShadow: 'inset 3px 3px 6px rgba(0, 0, 0, 0.15), inset -3px -3px 6px rgba(255, 255, 255, 0.3)',
+      transform: 'scale(0.98)'
     },
     iconWrapper: {
       width: '80px',
