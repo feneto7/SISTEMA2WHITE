@@ -112,10 +112,7 @@ export function Tooltip({ text, visible, position = 'bottom' }: TooltipProps): J
       ...tooltipBase,
       ...getPositionStyles(),
       visibility: visible ? 'visible' : 'hidden',
-      opacity: visible ? 1 : 0,
-      transform: visible 
-        ? (position === 'top' ? 'translateX(-50%) translateY(0)' : 'translateX(-50%)')
-        : (position === 'top' ? 'translateX(-50%) translateY(4px)' : 'translateX(-50%)')
+      opacity: visible ? 1 : 0
     }}>
       {text}
       <div style={{
@@ -137,7 +134,7 @@ const tooltipBase: React.CSSProperties = {
   fontWeight: '500',
   fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, Helvetica, Arial, sans-serif',
   whiteSpace: 'nowrap',
-  transition: 'all 0.15s cubic-bezier(0.4, 0, 0.2, 1)',
+  transition: 'opacity 0.1s ease',
   boxShadow: '0 3px 12px rgba(0, 0, 0, 0.2), 0 1px 3px rgba(0, 0, 0, 0.1)',
   backdropFilter: 'blur(20px) saturate(180%)',
   WebkitBackdropFilter: 'blur(20px) saturate(180%)',

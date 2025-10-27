@@ -1,8 +1,9 @@
-import React, { Suspense, lazy } from 'react';
+import React, { Suspense, lazy, useState, useEffect } from 'react';
 import { globalStyles } from './styles/style';
 import { sharedStyles, applyScrollbarStyles } from './styles/shared';
 import { globalInputFocusStyles } from './styles/styleModal';
 import { NavigationProvider, useNavigation } from './router/Navigation';
+import { SplashScreen } from './components/SplashScreen';
 
 // Lazy loading das páginas para melhor performance
 // Carrega apenas quando necessário, reduzindo o bundle inicial
@@ -96,10 +97,26 @@ function AppContent(): JSX.Element {
 }
 
 export function App(): JSX.Element {
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    // Simula carregamento inicial
+    const timer = setTimeout(() => {
+      setIsLoading(false);
+    }, 2500);
+
+    return () => clearTimeout(timer);
+  }, []);
+
   return (
-    <NavigationProvider>
-      <AppContent />
-    </NavigationProvider>
+    <>
+      {isLoading && <SplashScreen />}
+      {!isLoading && (
+        <NavigationProvider>
+          <AppContent />
+        </NavigationProvider>
+      )}
+    </>
   );
 }
 
