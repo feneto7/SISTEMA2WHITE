@@ -102,7 +102,7 @@ export function NewRoleModal({ isOpen, onClose, onSave }: NewRoleModalProps): JS
   };
 
   return (
-    <div style={styles.overlay} onClick={handleClose}>
+    <div style={styles.overlay}>
       <div style={{
         ...systemStyles.window,
         width: '600px',
@@ -111,7 +111,7 @@ export function NewRoleModal({ isOpen, onClose, onSave }: NewRoleModalProps): JS
         display: 'flex',
         flexDirection: 'column' as const,
         overflow: 'hidden'
-      }} onClick={(e) => e.stopPropagation()}>
+      }}>
         {/* Header do modal */}
         <div style={{
           ...systemStyles.titleBar,

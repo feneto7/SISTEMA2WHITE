@@ -29,6 +29,8 @@ export function SettingsSidebar({ activeTab, onSelectTab }: SettingsSidebarProps
   const settingsItems: SettingsItem[] = [
     { id: 'empresa', label: 'Empresa', icon: AppIcons.Document },
     { id: 'fiscal', label: 'Fiscal', icon: AppIcons.Invoice },
+    { id: 'email', label: 'Email', icon: AppIcons.Mail },
+    { id: 'recebimentos', label: 'Recebimentos', icon: AppIcons.Dollar },
     { id: 'pagamento', label: 'Formas de Pagamento', icon: AppIcons.Invoice },
     { id: 'impressoras', label: 'Impressoras', icon: AppIcons.Settings },
     { id: 'balanca', label: 'Balança', icon: AppIcons.Config },

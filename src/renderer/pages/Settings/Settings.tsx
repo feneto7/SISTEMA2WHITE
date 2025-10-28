@@ -12,7 +12,7 @@ import { FiscalTab } from './components/FiscalTab';
 import { ParametrosTab } from './components/ParametrosTab';
 import { systemStyles, systemColors } from '../../styles/systemStyle';
 
-export type SettingsTab = 'empresa' | 'fiscal' | 'pagamento' | 'impressoras' | 'balanca' | 'gaveta' | 'dock' | 'parametros';
+export type SettingsTab = 'empresa' | 'fiscal' | 'email' | 'recebimentos' | 'pagamento' | 'impressoras' | 'balanca' | 'gaveta' | 'dock' | 'parametros';
 
 function Settings(): JSX.Element {
   const { navigate } = useNavigation();
@@ -24,6 +24,10 @@ function Settings(): JSX.Element {
         return <CompanyForm />;
       case 'fiscal':
         return <FiscalTab />;
+      case 'email':
+        return <div style={styles.placeholder}>Configurações de Email</div>;
+      case 'recebimentos':
+        return <div style={styles.placeholder}>Configurações de Recebimentos</div>;
       case 'pagamento':
         return <div style={styles.placeholder}>Formas de Pagamento</div>;
       case 'impressoras':

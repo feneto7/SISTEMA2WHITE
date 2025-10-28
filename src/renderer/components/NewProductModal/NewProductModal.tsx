@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { modalStyles } from '../../styles/modalStyles';
 import { systemStyles, systemColors } from '../../styles/systemStyle';
 import { useClickSound } from '../../hooks/useClickSound';
 import { MainTab, TaxTab, WholesaleTab, IngredientsTab, VariationsTab } from './components';
@@ -30,8 +29,6 @@ export function NewProductModal({ isOpen, onClose }: NewProductModalProps): JSX.
 
   if (!isOpen) return null;
 
-  const styles = modalStyles;
-
   // Definir abas disponíveis baseado no tipo de produto
   const availableTabs: { key: TabType; label: string }[] = [
     { key: 'principal', label: 'Principal' },
@@ -44,12 +41,6 @@ export function NewProductModal({ isOpen, onClose }: NewProductModalProps): JSX.
   if (productType === 'variation') {
     availableTabs.push({ key: 'variacoes', label: 'Variações' });
   }
-
-  const handleOverlayClick = (e: React.MouseEvent) => {
-    if (e.target === e.currentTarget) {
-      onClose();
-    }
-  };
 
   const renderTabContent = () => {
     switch (activeTab) {
@@ -69,16 +60,23 @@ export function NewProductModal({ isOpen, onClose }: NewProductModalProps): JSX.
   };
 
   return (
-    <div style={styles.overlay} onClick={handleOverlayClick}>
+    <div style={systemStyles.modal.overlay}>
       <div style={{
-        ...styles.container,
         ...systemStyles.window,
-        background: systemColors.background.window
+        background: systemColors.background.window,
+        width: '900px',
+        maxWidth: '90vw',
+        height: '85vh',
+        maxHeight: '85vh',
+        display: 'flex',
+        flexDirection: 'column' as const,
+        overflow: 'hidden'
       }}>
         {/* Header com botões de controle macOS */}
         <div style={{
           ...systemStyles.titleBar,
-          position: 'relative'
+          position: 'relative',
+          flexShrink: 0
         }}>
           {/* Botões de controle (traffic lights) */}
           <div style={systemStyles.trafficLights.container}>
@@ -130,7 +128,8 @@ export function NewProductModal({ isOpen, onClose }: NewProductModalProps): JSX.
           borderBottom: `1px solid ${systemColors.border.light}`,
           display: 'flex',
           alignItems: 'center',
-          gap: '16px'
+          gap: '16px',
+          flexShrink: 0
         }}>
           <span style={{
             fontSize: '13px',
@@ -167,7 +166,10 @@ export function NewProductModal({ isOpen, onClose }: NewProductModalProps): JSX.
         </div>
 
         {/* Abas */}
-        <div style={systemStyles.tabs.container}>
+        <div style={{
+          ...systemStyles.tabs.container,
+          flexShrink: 0
+        }}>
           {availableTabs.map((tab) => (
             <button
               key={tab.key}
@@ -187,11 +189,11 @@ export function NewProductModal({ isOpen, onClose }: NewProductModalProps): JSX.
 
         {/* Conteúdo da aba */}
         <div style={{
-          ...styles.tabContent,
           background: systemColors.background.content,
           flex: 1,
           overflow: 'auto',
-          padding: '20px'
+          padding: '20px',
+          minHeight: 0
         }}>
           {renderTabContent()}
         </div>
@@ -203,7 +205,8 @@ export function NewProductModal({ isOpen, onClose }: NewProductModalProps): JSX.
           borderTop: `1px solid ${systemColors.border.light}`,
           display: 'flex',
           justifyContent: 'flex-end',
-          gap: '12px'
+          gap: '12px',
+          flexShrink: 0
         }}>
           <button 
             style={{

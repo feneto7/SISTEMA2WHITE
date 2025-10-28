@@ -1,17 +1,11 @@
 import { useEffect } from 'react';
-import { applyScrollbarStyles, removeScrollbarStyles } from '../styles/shared';
 
 // Hook para aplicar estilos de scrollbar específicos
 // Permite aplicar diferentes variantes de scrollbar em componentes específicos
 export const useScrollbarStyles = (variant: 'global' | 'dark' | 'modal' | 'list' = 'global') => {
   useEffect(() => {
-    // Aplicar estilos quando o componente monta
-    applyScrollbarStyles(variant);
-    
-    // Cleanup: remover estilos quando o componente desmonta
-    return () => {
-      removeScrollbarStyles();
-    };
+    // Este hook não é mais necessário - os estilos de scrollbar estão definidos no systemStyle.ts
+    // Mantido para compatibilidade com código existente
   }, [variant]);
 };
 

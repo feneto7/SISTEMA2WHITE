@@ -1,6 +1,6 @@
 // Hook para otimização de imagens e assets
 // Implementa lazy loading, compressão e cache para melhor performance
-import { useState, useEffect, useRef, useCallback } from 'react';
+import React, { useState, useEffect, useRef, useCallback, useMemo } from 'react';
 
 interface OptimizedImageProps {
   src: string;
@@ -278,3 +278,4 @@ export function useDataCompression() {
     decompressData
   };
 }
+

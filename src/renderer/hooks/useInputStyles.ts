@@ -1,9 +1,9 @@
-import { useState, useCallback } from 'react';
-import { sharedStyles } from '../styles/shared';
+import React, { useState, useCallback } from 'react';
+import { systemStyles } from '../styles/systemStyle';
 
 // Hook para inputs com estilos automáticos de focus
 // Aplica automaticamente os estilos de focus quando o input recebe foco
-export const useInputStyles = (variant: 'base' | 'compact' | 'large' = 'base') => {
+export const useInputStyles = () => {
   const [isFocused, setIsFocused] = useState(false);
 
   const handleFocus = useCallback(() => {
@@ -14,11 +14,10 @@ export const useInputStyles = (variant: 'base' | 'compact' | 'large' = 'base') =
     setIsFocused(false);
   }, []);
 
-  // Combinar estilos base + variante + focus
+  // Combinar estilos base + focus
   const inputStyle = {
-    ...sharedStyles.input.base,
-    ...sharedStyles.input[variant],
-    ...(isFocused ? sharedStyles.input.focus : {})
+    ...systemStyles.input.field,
+    ...(isFocused ? systemStyles.input.fieldFocus : {})
   };
 
   return {
@@ -55,8 +54,8 @@ export const useValidatedInput = (
 
   // Estilos baseados no estado de validação
   const inputStyle = {
-    ...sharedStyles.input.base,
-    ...(isFocused ? sharedStyles.input.focus : {}),
+    ...systemStyles.input.field,
+    ...(isFocused ? systemStyles.input.fieldFocus : {}),
     ...(value && !isValid ? {
       borderColor: '#FF3B30',
       boxShadow: 'inset 0 1px 2px rgba(0, 0, 0, 0.1), 0 0 0 2px rgba(255, 59, 48, 0.2)'
@@ -75,45 +74,5 @@ export const useValidatedInput = (
   };
 };
 
-// Componente de Input reutilizável com estilos automáticos
-interface MacInputProps {
-  type?: 'text' | 'email' | 'password' | 'number' | 'tel' | 'url' | 'search' | 'date' | 'time';
-  value: string;
-  onChange: (value: string) => void;
-  placeholder?: string;
-  variant?: 'base' | 'compact' | 'large';
-  onClick?: () => void;
-  required?: boolean;
-  disabled?: boolean;
-  className?: string;
-}
-
-export const MacInput: React.FC<MacInputProps> = ({
-  type = 'text',
-  value,
-  onChange,
-  placeholder,
-  variant = 'base',
-  onClick,
-  required = false,
-  disabled = false,
-  className
-}) => {
-  const { inputStyle, handleFocus, handleBlur } = useInputStyles(variant);
-
-  return (
-    <input
-      type={type}
-      value={value}
-      onChange={(e) => onChange(e.target.value)}
-      onFocus={handleFocus}
-      onBlur={handleBlur}
-      onClick={onClick}
-      placeholder={placeholder}
-      required={required}
-      disabled={disabled}
-      className={className}
-      style={inputStyle}
-    />
-  );
-};
+// Componente MacInput removido - hooks não devem exportar componentes React
+// Use os hooks useInputStyles ou useValidatedInput diretamente nos seus componentes

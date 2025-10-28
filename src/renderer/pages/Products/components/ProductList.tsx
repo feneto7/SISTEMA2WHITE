@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useRef, useMemo, useCallback } from 'react';
 import { SearchIcon, EditIcon, DeleteIcon } from '../../../components/Icons/Icons';
-import { macStyles } from '../../../styles/style';
 import { systemStyles, systemColors } from '../../../styles/systemStyle';
 import { useClickSound } from '../../../hooks/useClickSound';
 import { VirtualList, useListPerformance, useDebounce } from '../../../hooks/useVirtualization';
@@ -27,7 +26,6 @@ interface ProductListProps {
 }
 
 export const ProductList = React.memo<ProductListProps>(({ products, formatCurrency, nameColumnWidth, onEditProduct, onDeleteProduct }) => {
-  const styles = macStyles.pages.products;
   const [selectedIndex, setSelectedIndex] = useState<number>(-1);
   const listRef = useRef<HTMLDivElement>(null);
   const selectedItemRef = useRef<HTMLDivElement>(null);
@@ -110,14 +108,36 @@ export const ProductList = React.memo<ProductListProps>(({ products, formatCurre
     setSelectedIndex(-1);
   }, [products]);
 
+  // Estilos inline para estado vazio
+  const emptyStateStyles = {
+    emptyState: {
+      display: 'flex',
+      flexDirection: 'column' as const,
+      alignItems: 'center',
+      justifyContent: 'center',
+      padding: '60px 20px',
+      color: systemColors.text.secondary
+    },
+    emptyText: {
+      fontSize: '16px',
+      fontWeight: '500',
+      marginTop: '16px',
+      marginBottom: '8px'
+    },
+    emptySubtext: {
+      fontSize: '14px',
+      opacity: 0.7
+    }
+  };
+
   // Memoizar estado vazio para evitar recriações
   const emptyState = useMemo(() => (
-    <div style={styles.emptyState}>
+    <div style={emptyStateStyles.emptyState}>
       <SearchIcon size={48} color="rgba(0, 0, 0, 0.2)" />
-      <p style={styles.emptyText}>Nenhum produto encontrado</p>
-      <p style={styles.emptySubtext}>Tente buscar com outros termos</p>
+      <p style={emptyStateStyles.emptyText}>Nenhum produto encontrado</p>
+      <p style={emptyStateStyles.emptySubtext}>Tente buscar com outros termos</p>
     </div>
-  ), [styles.emptyState, styles.emptyText, styles.emptySubtext]);
+  ), []);
 
   // Função para renderizar item individual
   const renderProductItem = useCallback((product: Product, index: number) => (
@@ -148,17 +168,14 @@ export const ProductList = React.memo<ProductListProps>(({ products, formatCurre
         renderItem={renderProductItem}
         overscan={5}
         className="list-content"
-        style={styles.listContent}
+        style={systemStyles.list.content}
       />
     );
   }
 
   // Renderização normal para listas pequenas
   return (
-    <div style={{
-      ...styles.listContent,
-      background: systemColors.background.content
-    }} className="list-content" ref={listRef}>
+    <div style={systemStyles.list.content} className="list-content" ref={listRef}>
       {products.map((product, index) => renderProductItem(product, index))}
     </div>
   );
@@ -186,17 +203,22 @@ const ProductRow = React.memo(React.forwardRef<HTMLDivElement, ProductRowProps>(
   onDeleteProduct
 }, ref) => {
   const [isHovered, setIsHovered] = useState(false);
-  const styles = macStyles.pages.products;
   const playClickSound = useClickSound();
 
   // Memoizar estilo da linha para evitar recálculos desnecessários
   const rowStyle = useMemo(() => {
     const baseStyle = {
-      ...styles.listRow,
       gridTemplateColumns: `${nameColumnWidth}px 1fr 0.8fr 0.8fr 1fr 80px`,
+      padding: '16px 12px',
+      borderBottom: `1px solid ${systemColors.border.divider}`,
+      display: 'grid',
+      gap: '16px',
       animationDelay: `${index * 0.05}s`,
+      animation: 'fadeIn 0.3s ease forwards',
+      opacity: 0,
       cursor: 'pointer',
-      transition: 'all 0.15s ease'
+      transition: 'all 0.15s ease',
+      fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, Helvetica, Arial, sans-serif'
     };
 
     // Aplicar estilo de hover ou seleção
@@ -216,7 +238,7 @@ const ProductRow = React.memo(React.forwardRef<HTMLDivElement, ProductRowProps>(
     }
     
     return baseStyle;
-  }, [styles.listRow, styles.listRowHover, nameColumnWidth, index, isSelected, isHovered]);
+  }, [nameColumnWidth, index, isSelected, isHovered]);
 
   // Memoizar callbacks para evitar recriações
   const handleEdit = useCallback((e: React.MouseEvent) => {
@@ -235,6 +257,12 @@ const ProductRow = React.memo(React.forwardRef<HTMLDivElement, ProductRowProps>(
     console.log('Produto clicado:', product);
   }, [product]);
 
+  // Estilos inline consistentes com ClientList
+  const cellStyle = {
+    display: 'flex',
+    alignItems: 'center'
+  };
+
   return (
     <div
       ref={ref}
@@ -243,31 +271,70 @@ const ProductRow = React.memo(React.forwardRef<HTMLDivElement, ProductRowProps>(
       onMouseLeave={() => setIsHovered(false)}
       onClick={handleClick}
     >
-      <div style={styles.rowCell} className="cell-name">
-        <div style={styles.productName}>{product.name}</div>
+      <div style={cellStyle} className="cell-name">
+        <div style={{
+          fontSize: '14px',
+          fontWeight: '500',
+          color: systemColors.text.primary,
+          whiteSpace: 'nowrap',
+          overflow: 'hidden',
+          textOverflow: 'ellipsis'
+        }}>{product.name}</div>
       </div>
-      <div style={styles.rowCell} className="cell-category">
-        <span style={styles.categoryBadge}>{product.category}</span>
+      <div style={cellStyle} className="cell-category">
+        <span style={{
+          fontSize: '11px',
+          fontWeight: '600',
+          color: systemColors.text.secondary,
+          background: systemColors.control.background,
+          padding: '4px 10px',
+          borderRadius: '6px',
+          border: `1px solid ${systemColors.border.light}`
+        }}>{product.category}</span>
       </div>
-      <div style={styles.rowCell} className="cell-type">
-        <span style={product.type === 'product' ? styles.typeBadgeProduct : styles.typeBadgeService}>
+      <div style={cellStyle} className="cell-type">
+        <span style={{
+          fontSize: '11px',
+          fontWeight: '600',
+          color: product.type === 'product' ? '#1976D2' : '#7B1FA2',
+          background: product.type === 'product' ? 'rgba(25, 118, 210, 0.1)' : 'rgba(123, 31, 162, 0.1)',
+          padding: '4px 10px',
+          borderRadius: '6px'
+        }}>
           {product.type === 'product' ? 'Produto' : 'Serviço'}
         </span>
       </div>
-      <div style={styles.rowCell} className="cell-stock">
+      <div style={cellStyle} className="cell-stock">
         {product.stock !== undefined ? (
-          <span style={product.stock > 10 ? styles.stockGood : product.stock > 0 ? styles.stockLow : styles.stockOut}>
+          <span style={{
+            fontSize: '13px',
+            fontWeight: '500',
+            color: product.stock > 10 ? '#2E7D32' : product.stock > 0 ? '#F57C00' : '#C62828'
+          }}>
             {product.stock} un.
           </span>
         ) : (
-          <span style={styles.stockNA}>N/A</span>
+          <span style={{
+            fontSize: '13px',
+            color: systemColors.text.tertiary,
+            fontStyle: 'italic'
+          }}>N/A</span>
         )}
       </div>
-      <div style={styles.rowCell} className="cell-price">
-        <span style={styles.priceText}>{formatCurrency(product.price)}</span>
+      <div style={cellStyle} className="cell-price">
+        <span style={{
+          fontSize: '13px',
+          fontWeight: '500',
+          color: systemColors.text.primary
+        }}>{formatCurrency(product.price)}</span>
       </div>
-      <div style={styles.rowCell} className="cell-actions">
-        <div style={styles.actionButtons}>
+      <div style={cellStyle} className="cell-actions">
+        <div style={{
+          display: 'flex',
+          gap: '8px',
+          justifyContent: 'center',
+          alignItems: 'center'
+        }}>
           {onEditProduct && (
             <ActionButton
               icon={<EditIcon size={16} color={systemColors.text.secondary} />}

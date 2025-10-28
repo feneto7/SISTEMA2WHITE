@@ -2,7 +2,7 @@
 // SUB-ABA DE NFS-e
 // Configurações de numeração e série para NFS-e
 //--------------------------------------------------------------------
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { systemColors, systemStyles } from '../../../../styles/systemStyle';
 
 interface FormData {
@@ -10,14 +10,25 @@ interface FormData {
   numero: string;
 }
 
+const ENVIRONMENT_KEY = 'fiscal_environment';
+
 export function NFSeSubTab(): JSX.Element {
   const [producao, setProducao] = useState<FormData>({ serie: '', numero: '' });
   const [homologacao, setHomologacao] = useState<FormData>({ serie: '', numero: '' });
+  const [activeEnvironment, setActiveEnvironment] = useState<'producao' | 'homologacao'>('homologacao');
 
   const [isProducaoSerieFocused, setIsProducaoSerieFocused] = useState(false);
   const [isProducaoNumeroFocused, setIsProducaoNumeroFocused] = useState(false);
   const [isHomologacaoSerieFocused, setIsHomologacaoSerieFocused] = useState(false);
   const [isHomologacaoNumeroFocused, setIsHomologacaoNumeroFocused] = useState(false);
+
+  // Carregar ambiente ativo
+  useEffect(() => {
+    const savedEnv = localStorage.getItem(ENVIRONMENT_KEY) as 'producao' | 'homologacao' | null;
+    if (savedEnv) {
+      setActiveEnvironment(savedEnv);
+    }
+  }, []);
 
   const getInputStyle = (isFocused: boolean) => ({
     ...systemStyles.input.field,
@@ -26,6 +37,32 @@ export function NFSeSubTab(): JSX.Element {
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '30px' }}>
+      {/* Indicador de Ambiente Ativo */}
+      <div style={{
+        padding: '12px 16px',
+        background: activeEnvironment === 'producao' ? '#FFF3E0' : '#E3F2FD',
+        border: `1px solid ${activeEnvironment === 'producao' ? '#FF9800' : '#2196F3'}`,
+        borderRadius: '6px',
+        display: 'flex',
+        alignItems: 'center',
+        gap: '8px'
+      }}>
+        <div style={{
+          width: '8px',
+          height: '8px',
+          borderRadius: '50%',
+          background: activeEnvironment === 'producao' ? '#FF9800' : '#2196F3'
+        }}></div>
+        <span style={{
+          fontSize: '12px',
+          color: systemColors.text.primary,
+          fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, Helvetica, Arial, sans-serif',
+          fontWeight: '600'
+        }}>
+          Ambiente Ativo: {activeEnvironment === 'producao' ? 'PRODUÇÃO' : 'HOMOLOGAÇÃO'}
+        </span>
+      </div>
+
       <p style={{ 
         fontSize: '13px', 
         color: systemColors.text.secondary,
@@ -35,7 +72,13 @@ export function NFSeSubTab(): JSX.Element {
       </p>
 
       {/* Ambiente de Produção */}
-      <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+      <div style={{ 
+        display: 'flex', 
+        flexDirection: 'column', 
+        gap: '16px',
+        opacity: activeEnvironment === 'producao' ? 1 : 0.5,
+        position: 'relative'
+      }}>
         <h3 style={{
           fontSize: '14px',
           fontWeight: '600',
@@ -82,7 +125,13 @@ export function NFSeSubTab(): JSX.Element {
       </div>
 
       {/* Ambiente de Homologação */}
-      <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+      <div style={{ 
+        display: 'flex', 
+        flexDirection: 'column', 
+        gap: '16px',
+        opacity: activeEnvironment === 'homologacao' ? 1 : 0.5,
+        position: 'relative'
+      }}>
         <h3 style={{
           fontSize: '14px',
           fontWeight: '600',

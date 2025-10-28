@@ -10,7 +10,8 @@ import {
   HiOutlineCog,
   HiOutlineFolder,
   HiOutlineDocumentText,
-  HiOutlineUser
+  HiOutlineUser,
+  HiOutlineMail
 } from 'react-icons/hi';
 import {
   // Feather/Lucide Icons (estilo moderno e minimalista)
@@ -26,7 +27,8 @@ import {
   FiTrash2,
   FiSave,
   FiTool,
-  FiLogOut
+  FiLogOut,
+  FiDollarSign
 } from 'react-icons/fi';
 import {
   // Material Design Icons (estilo clean e moderno)
@@ -60,11 +62,15 @@ export const FolderIcon = createIcon(HiOutlineFolder);
 export const ToolsIcon = createIcon(FiTool);
 export const DocumentIcon = createIcon(HiOutlineDocumentText);
 export const UsersIcon = createIcon(HiOutlineUser);
+export const MailIcon = createIcon(HiOutlineMail);
 
 // Ícones de Documentos
 export const FileIcon = createIcon(HiOutlineDocumentText);
 export const InvoiceIcon = createIcon(MdReceipt);
 export const ClipboardIcon = createIcon(FiClipboard);
+
+// Ícones Financeiros
+export const DollarIcon = createIcon(FiDollarSign);
 
 // Ícones Comerciais
 export const ShoppingCartIcon = createIcon(FiShoppingCart);
@@ -95,6 +101,7 @@ export const AppIcons = {
   Search: SearchIcon,
   Folder: FolderIcon,
   Tools: ToolsIcon,
+  Mail: MailIcon,
   
   // Documentos
   Document: DocumentIcon,
@@ -105,6 +112,9 @@ export const AppIcons = {
   // Comercial
   ShoppingCart: ShoppingCartIcon,
   Products: ProductsIcon,
+  
+  // Financeiro
+  Dollar: DollarIcon,
   
   // Transporte
   Truck: TruckIcon,

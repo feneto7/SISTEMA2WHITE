@@ -252,7 +252,7 @@ export function GenerateCIOTModal({ isOpen, onClose, onSave }: GenerateCIOTModal
       alignItems: 'center',
       justifyContent: 'center',
       zIndex: 1000
-    }} onClick={handleClose}>
+    }}>
       <div style={{
         ...systemStyles.window,
         width: '90vw',
@@ -261,7 +261,7 @@ export function GenerateCIOTModal({ isOpen, onClose, onSave }: GenerateCIOTModal
         display: 'flex',
         flexDirection: 'column' as const,
         overflow: 'hidden'
-      }} onClick={(e) => e.stopPropagation()}>
+      }}>
         {/* Modal header */}
         <div style={{
           ...systemStyles.titleBar,

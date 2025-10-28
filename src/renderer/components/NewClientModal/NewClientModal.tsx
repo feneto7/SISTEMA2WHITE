@@ -135,7 +135,7 @@ export function NewClientModal({ isOpen, onClose, onSave }: NewClientModalProps)
   };
 
   return (
-    <div style={styles.overlay} onClick={handleClose}>
+    <div style={styles.overlay}>
       <div style={{
         ...systemStyles.window,
         width: '800px',
@@ -145,7 +145,7 @@ export function NewClientModal({ isOpen, onClose, onSave }: NewClientModalProps)
         display: 'flex',
         flexDirection: 'column' as const,
         overflow: 'hidden'
-      }} onClick={(e) => e.stopPropagation()}>
+      }}>
         {/* Header do modal */}
         <div style={{
           ...systemStyles.titleBar,

@@ -1,6 +1,6 @@
 //--------------------------------------------------------------------
 // SUB-ABA DE CERTIFICADO DIGITAL
-// Configurações do certificado digital A1 ou A3
+// Configurações do certificado digital A1 ou A3 e ambiente fiscal
 //--------------------------------------------------------------------
 import React, { useState, useEffect } from 'react';
 import { systemColors, systemStyles } from '../../../../styles/systemStyle';
@@ -15,6 +15,7 @@ declare global {
 }
 
 const STORAGE_KEY = 'selected_certificate';
+const ENVIRONMENT_KEY = 'fiscal_environment';
 
 export function CertificateSubTab(): JSX.Element {
   const [selectedCertificate, setSelectedCertificate] = useState('');
@@ -23,13 +24,21 @@ export function CertificateSubTab(): JSX.Element {
   const [isSelectFocused, setIsSelectFocused] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [showSuccessMessage, setShowSuccessMessage] = useState(false);
+  const [environment, setEnvironment] = useState<'producao' | 'homologacao'>('homologacao');
+  const [savedEnvironment, setSavedEnvironment] = useState<'producao' | 'homologacao'>('homologacao');
 
-  // Carregar certificado salvo ao montar o componente
+  // Carregar certificado e ambiente salvos ao montar o componente
   useEffect(() => {
     const saved = localStorage.getItem(STORAGE_KEY);
     if (saved) {
       setSavedCertificate(saved);
       setSelectedCertificate(saved);
+    }
+
+    const savedEnv = localStorage.getItem(ENVIRONMENT_KEY) as 'producao' | 'homologacao' | null;
+    if (savedEnv) {
+      setSavedEnvironment(savedEnv);
+      setEnvironment(savedEnv);
     }
   }, []);
 
@@ -69,6 +78,8 @@ export function CertificateSubTab(): JSX.Element {
     if (selectedCertificate) {
       localStorage.setItem(STORAGE_KEY, selectedCertificate);
       setSavedCertificate(selectedCertificate);
+      localStorage.setItem(ENVIRONMENT_KEY, environment);
+      setSavedEnvironment(environment);
       setShowSuccessMessage(true);
       
       // Ocultar mensagem após 3 segundos
@@ -78,7 +89,7 @@ export function CertificateSubTab(): JSX.Element {
     }
   };
 
-  const hasChanges = selectedCertificate !== savedCertificate;
+  const hasChanges = selectedCertificate !== savedCertificate || environment !== savedEnvironment;
 
   const getSelectStyle = (isFocused: boolean) => ({
     ...systemStyles.select.field,
@@ -93,8 +104,87 @@ export function CertificateSubTab(): JSX.Element {
         color: systemColors.text.secondary,
         fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, Helvetica, Arial, sans-serif'
       }}>
-        Selecione o certificado digital A1 ou A3 para assinatura de documentos fiscais.
+        Selecione o certificado digital A1 ou A3 para assinatura de documentos fiscais e defina o ambiente fiscal.
       </p>
+
+      {/* Seleção de Ambiente Fiscal */}
+      <div style={{ 
+        display: 'flex', 
+        flexDirection: 'column', 
+        gap: '16px',
+        padding: '20px',
+        background: systemColors.background.secondary,
+        border: `1px solid ${systemColors.border.light}`,
+        borderRadius: '8px'
+      }}>
+        <label style={{
+          ...systemStyles.input.label,
+          marginBottom: '8px'
+        }}>
+          Ambiente Fiscal *
+        </label>
+        
+        <div style={{ display: 'flex', gap: '24px' }}>
+          {/* Opção Produção */}
+          <label style={systemStyles.radio.container}>
+            <div 
+              style={{
+                ...systemStyles.radio.circle,
+                ...(environment === 'producao' ? systemStyles.radio.circleChecked : {})
+              }}
+              onClick={() => setEnvironment('producao')}
+            >
+              {environment === 'producao' && (
+                <div style={systemStyles.radio.dot}></div>
+              )}
+            </div>
+            <span style={systemStyles.radio.label}>Produção</span>
+          </label>
+
+          {/* Opção Homologação */}
+          <label style={systemStyles.radio.container}>
+            <div 
+              style={{
+                ...systemStyles.radio.circle,
+                ...(environment === 'homologacao' ? systemStyles.radio.circleChecked : {})
+              }}
+              onClick={() => setEnvironment('homologacao')}
+            >
+              {environment === 'homologacao' && (
+                <div style={systemStyles.radio.dot}></div>
+              )}
+            </div>
+            <span style={systemStyles.radio.label}>Homologação</span>
+          </label>
+        </div>
+
+        {/* Indicador visual do ambiente selecionado */}
+        <div style={{
+          padding: '12px 16px',
+          background: environment === 'producao' ? '#FFF3E0' : '#E3F2FD',
+          border: `1px solid ${environment === 'producao' ? '#FF9800' : '#2196F3'}`,
+          borderRadius: '6px',
+          display: 'flex',
+          alignItems: 'center',
+          gap: '8px'
+        }}>
+          <div style={{
+            width: '8px',
+            height: '8px',
+            borderRadius: '50%',
+            background: environment === 'producao' ? '#FF9800' : '#2196F3'
+          }}></div>
+          <span style={{
+            fontSize: '12px',
+            color: systemColors.text.primary,
+            fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, Helvetica, Arial, sans-serif'
+          }}>
+            {environment === 'producao' 
+              ? 'Sistema configurado para PRODUÇÃO - Documentos fiscais serão válidos.' 
+              : 'Sistema configurado para HOMOLOGAÇÃO - Documentos fiscais serão apenas para testes.'}
+          </span>
+        </div>
+      </div>
 
       {/* Campo de seleção do certificado */}
       <div style={systemStyles.input.container}>
@@ -193,13 +283,16 @@ export function CertificateSubTab(): JSX.Element {
         </div>
       )}
 
-      {/* Informações do certificado salvo */}
+      {/* Informações do certificado e ambiente salvos */}
       {savedCertificate && !showSuccessMessage && (
         <div style={{
-          padding: '12px',
+          padding: '16px',
           background: systemColors.selection.background,
           border: `1px solid ${systemColors.selection.border}`,
-          borderRadius: '6px'
+          borderRadius: '6px',
+          display: 'flex',
+          flexDirection: 'column',
+          gap: '8px'
         }}>
           <p style={{
             fontSize: '12px',
@@ -208,6 +301,14 @@ export function CertificateSubTab(): JSX.Element {
             margin: 0
           }}>
             <strong>Certificado selecionado:</strong> {savedCertificate}
+          </p>
+          <p style={{
+            fontSize: '12px',
+            color: systemColors.text.primary,
+            fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, Helvetica, Arial, sans-serif',
+            margin: 0
+          }}>
+            <strong>Ambiente ativo:</strong> {savedEnvironment === 'producao' ? 'Produção' : 'Homologação'}
           </p>
         </div>
       )}

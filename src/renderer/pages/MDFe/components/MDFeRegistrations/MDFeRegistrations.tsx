@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { modalStyles } from '../../../../styles/modalStyles';
 import { systemStyles, systemColors } from '../../../../styles/systemStyle';
 import { useClickSound } from '../../../../hooks/useClickSound';
 import { VehicleTab, DriverTab, RoutesTab, SettingsTab } from './components';
@@ -180,16 +179,24 @@ export function MDFeRegistrations({ isOpen, onClose }: MDFeRegistrationsProps): 
   if (!isOpen) return null;
 
   return (
-    <div style={modalStyles.overlay} onClick={handleClose}>
+    <div style={systemStyles.modal.overlay}>
       <div style={{
-        ...modalStyles.container,
         ...systemStyles.window,
-        background: systemColors.background.window
-      }} onClick={(e) => e.stopPropagation()}>
+        background: systemColors.background.window,
+        width: '900px',
+        maxWidth: '90vw',
+        height: '85vh',
+        maxHeight: '85vh',
+        display: 'flex',
+        flexDirection: 'column' as const,
+        overflow: 'hidden',
+        boxSizing: 'border-box' as const
+      }}>
         {/* Modal header */}
         <div style={{
           ...systemStyles.titleBar,
-          position: 'relative'
+          position: 'relative',
+          flexShrink: 0
         }}>
           <div style={systemStyles.trafficLights.container}>
             <button
@@ -233,7 +240,7 @@ export function MDFeRegistrations({ isOpen, onClose }: MDFeRegistrationsProps): 
         </div>
 
         {/* Tab system */}
-        <div style={systemStyles.tabs.container}>
+        <div style={{...systemStyles.tabs.container, flexShrink: 0}}>
           <button
             style={{
               ...systemStyles.tabs.tab,
@@ -286,11 +293,10 @@ export function MDFeRegistrations({ isOpen, onClose }: MDFeRegistrationsProps): 
 
         {/* Tab content */}
         <div style={{
-          ...modalStyles.tabContent,
           background: systemColors.background.content,
           flex: 1,
           overflow: 'auto',
-          padding: '20px'
+          minHeight: 0
         }}>
           {activeTab === 'vehicle' && (
             <VehicleTab
@@ -328,7 +334,8 @@ export function MDFeRegistrations({ isOpen, onClose }: MDFeRegistrationsProps): 
           borderTop: `1px solid ${systemColors.border.light}`,
           display: 'flex',
           justifyContent: 'flex-end',
-          gap: '12px'
+          gap: '12px',
+          flexShrink: 0
         }}>
           <button
             style={{
