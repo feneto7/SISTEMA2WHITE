@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { useClickSound } from '../../../../../hooks/useClickSound';
 import { systemStyles, systemColors } from '../../../../../styles/systemStyle';
 import { useElementScrollbarStyles } from '../../../../../hooks/useScrollbarStyles';
@@ -38,6 +38,16 @@ export function TotalizersTab({ formData, onUpdateFormData }: TotalizersTabProps
 
   // Aplicar estilos de scrollbar específicos para formulários
   useElementScrollbarStyles(formContainerRef, 'modal');
+
+  // Sincroniza listas com formData quando o componente monta ou quando muda
+  useEffect(() => {
+    if (formData.lacreList && Array.isArray(formData.lacreList)) {
+      setLacreList(formData.lacreList);
+    }
+    if (formData.autorizadoList && Array.isArray(formData.autorizadoList)) {
+      setAutorizadoList(formData.autorizadoList);
+    }
+  }, [formData.lacreList, formData.autorizadoList]);
 
   const handleInputChange = (field: string, value: string) => {
     onUpdateFormData(field, value);

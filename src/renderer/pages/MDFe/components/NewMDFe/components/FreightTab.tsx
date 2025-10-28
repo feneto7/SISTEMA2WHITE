@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { useClickSound } from '../../../../../hooks/useClickSound';
 import { systemStyles, systemColors } from '../../../../../styles/systemStyle';
 import { useElementScrollbarStyles } from '../../../../../hooks/useScrollbarStyles';
@@ -48,6 +48,16 @@ export function FreightTab({ formData, onUpdateFormData }: FreightTabProps): JSX
 
   // Aplicar estilos de scrollbar específicos para formulários
   useElementScrollbarStyles(formContainerRef, 'modal');
+
+  // Sincroniza listas com formData quando o componente monta ou quando muda
+  useEffect(() => {
+    if (formData.valePedagioList && Array.isArray(formData.valePedagioList)) {
+      setValePedagioList(formData.valePedagioList);
+    }
+    if (formData.ciotList && Array.isArray(formData.ciotList)) {
+      setCiotList(formData.ciotList);
+    }
+  }, [formData.valePedagioList, formData.ciotList]);
 
   // Categorias de combinação veicular
   const categoriasVeiculares = [

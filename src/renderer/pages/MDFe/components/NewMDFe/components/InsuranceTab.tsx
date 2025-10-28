@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { useClickSound } from '../../../../../hooks/useClickSound';
 import { systemStyles, systemColors } from '../../../../../styles/systemStyle';
 import { useElementScrollbarStyles } from '../../../../../hooks/useScrollbarStyles';
@@ -29,6 +29,16 @@ export function InsuranceTab({ formData, onUpdateFormData }: InsuranceTabProps):
 
   // Aplicar estilos de scrollbar específicos para formulários
   useElementScrollbarStyles(formContainerRef, 'modal');
+
+  // Sincroniza lista com formData quando o componente monta ou quando muda
+  useEffect(() => {
+    if (formData.averbacaoList && Array.isArray(formData.averbacaoList)) {
+      setAverbacaoList(formData.averbacaoList);
+    }
+    if (formData.exibirDadosSeguro !== undefined) {
+      setExibirDadosSeguro(formData.exibirDadosSeguro);
+    }
+  }, [formData.averbacaoList, formData.exibirDadosSeguro]);
 
   const handleInputChange = (field: string, value: string) => {
     onUpdateFormData(field, value);

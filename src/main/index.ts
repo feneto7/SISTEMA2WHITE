@@ -1,6 +1,7 @@
 import path from 'node:path';
-import { app, BrowserWindow, nativeTheme, ipcMain } from 'electron';
+import { app, BrowserWindow, nativeTheme, ipcMain, dialog } from 'electron';
 import { getInstalledCertificates } from './handlers/certificateHandler';
+import { importNFEXMLs, importNFEXMLsFromFiles } from './handlers/xmlImportHandler';
 
 let mainWindow: BrowserWindow | null = null;
 
@@ -57,7 +58,40 @@ app.whenReady().then(() => {
     return await getInstalledCertificates();
   });
 
-  console.log('IPC handler registrado');
+  // Handler para importar XMLs de notas fiscais de uma pasta
+  ipcMain.handle('import-nfe-xmls', async (event, folderPath) => {
+    try {
+      const xmlData = await importNFEXMLs(folderPath);
+      return xmlData;
+    } catch (error) {
+      console.error('Erro ao importar XMLs:', error);
+      throw error;
+    }
+  });
+
+  // Handler para importar XMLs de notas fiscais de arquivos selecionados
+  ipcMain.handle('import-nfe-xmls-from-files', async (event, filePaths) => {
+    try {
+      const xmlData = await importNFEXMLsFromFiles(filePaths);
+      return xmlData;
+    } catch (error) {
+      console.error('Erro ao importar XMLs de arquivos:', error);
+      throw error;
+    }
+  });
+
+  // Handler para abrir dialog de seleção de arquivos/pastas
+  ipcMain.handle('show-open-dialog', async (event, options) => {
+    try {
+      const result = await dialog.showOpenDialog(mainWindow!, options);
+      return result.filePaths;
+    } catch (error) {
+      console.error('Erro ao abrir dialog:', error);
+      throw error;
+    }
+  });
+
+  console.log('IPC handlers registrados');
   
   nativeTheme.themeSource = 'light';
   createWindow();
