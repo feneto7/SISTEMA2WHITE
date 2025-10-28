@@ -3,4 +3,5 @@ export { SalesSidebar } from './SalesSidebar';
 export { ProductInput } from './ProductInput';
 export { ProductList } from './ProductList';
 export { SalesFooter } from './SalesFooter';
+export { ClientSelectModal } from './ClientSelectModal';
 

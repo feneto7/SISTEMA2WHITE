@@ -3,17 +3,27 @@
 // Sistema de Ponto de Venda - Interface principal para vendas
 // Integra todos os componentes do sistema de vendas
 //--------------------------------------------------------------------
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigation } from '../../router/Navigation';
 import { BackButton } from '../../components/BackButton';
-import { SalesSidebar, ProductInput, ProductList, SalesFooter } from './components';
+import { SalesSidebar, ProductInput, ProductList, SalesFooter, ClientSelectModal } from './components';
 import { SaleProduct } from './components/ProductList';
 import { convertReaisToCents } from '../../utils/money';
 import { systemStyles, systemColors } from '../../styles/systemStyle';
 
+interface Client {
+  id: string;
+  name: string;
+  cpfCnpj: string;
+  phone?: string;
+  city?: string;
+}
+
 function Sales(): JSX.Element {
   const { navigate } = useNavigation();
   const [products, setProducts] = useState<SaleProduct[]>([]);
+  const [isClientModalOpen, setIsClientModalOpen] = useState(false);
+  const [selectedClient, setSelectedClient] = useState<Client | null>(null);
 
   // Calcula totais da venda
   const subtotal = products.reduce((sum, product) => sum + product.subtotal, 0);
@@ -42,6 +52,25 @@ function Sales(): JSX.Element {
   const handleRemoveProduct = (id: string) => {
     setProducts(products.filter(product => product.id !== id));
   };
+
+  // Handler para selecionar cliente
+  const handleSelectClient = (client: Client) => {
+    setSelectedClient(client);
+    console.log('Cliente selecionado:', client);
+  };
+
+  // Listener de teclado para abrir modal de cliente (CTRL+I)
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.ctrlKey && e.key.toLowerCase() === 'i') {
+        e.preventDefault();
+        setIsClientModalOpen(true);
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, []);
 
   const styles = {
     container: {
@@ -144,6 +173,13 @@ function Sales(): JSX.Element {
       <div style={styles.footer}>
         <SalesFooter />
       </div>
+
+      {/* Modal de seleção de cliente */}
+      <ClientSelectModal
+        isOpen={isClientModalOpen}
+        onClose={() => setIsClientModalOpen(false)}
+        onSelectClient={handleSelectClient}
+      />
     </div>
   );
 }

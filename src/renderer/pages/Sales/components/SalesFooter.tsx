@@ -8,14 +8,7 @@ import { systemStyles, systemColors } from '../../../styles/systemStyle';
 
 export function SalesFooter(): JSX.Element {
   const shortcuts = [
-    { key: 'F1', label: 'Pesquisar Cliente' },
-    { key: 'Ctrl+F3', label: 'Pesquisar Produto' },
-    { key: 'Ctrl+R', label: 'Remover/Editar' },
-    { key: 'Ctrl+F2', label: 'Desconto/Acréscimo' },
-    { key: 'Ctrl+N', label: 'CPF' },
-    { key: 'F2', label: 'Pagamentos' },
-    { key: 'Del', label: 'Limpar Pagamentos' },
-    { key: 'ESC', label: 'Cancelar' }
+    { key: 'Ctrl+I', label: 'Informar Cliente' }
   ];
 
   const styles = {

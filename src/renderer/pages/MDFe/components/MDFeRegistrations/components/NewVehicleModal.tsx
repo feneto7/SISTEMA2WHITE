@@ -184,10 +184,12 @@ export function NewVehicleModal({ isOpen, onClose, onSave, editingVehicle }: New
       maxHeight: '90vh',
       display: 'flex',
       flexDirection: 'column' as const,
-      overflow: 'hidden'
+      overflow: 'hidden',
+      boxSizing: 'border-box' as const
     },
     titleBar: {
-      ...systemStyles.titleBar
+      ...systemStyles.titleBar,
+      flexShrink: 0
     },
     title: {
       ...systemStyles.titleBarTitle
@@ -196,7 +198,8 @@ export function NewVehicleModal({ isOpen, onClose, onSave, editingVehicle }: New
       flex: 1,
       padding: '16px',
       background: systemColors.background.content,
-      overflow: 'auto'
+      overflow: 'auto',
+      minHeight: 0
     },
     section: {
       marginBottom: '16px'
@@ -229,20 +232,34 @@ export function NewVehicleModal({ isOpen, onClose, onSave, editingVehicle }: New
       background: systemColors.background.primary,
       borderTop: `1px solid ${systemColors.border.light}`,
       display: 'flex',
-      justifyContent: 'flex-end',
-      gap: '8px'
+      justifyContent: 'space-between',
+      alignItems: 'center',
+      flexShrink: 0
     }
   };
 
   return (
-    <div style={styles.overlay} onClick={handleClose}>
-      <div style={styles.container} onClick={(e) => e.stopPropagation()}>
+    <div style={styles.overlay}>
+      <div style={styles.container}>
         {/* Modal header */}
         <div style={styles.titleBar}>
           <div style={systemStyles.trafficLights.container}>
-            <button style={{...systemStyles.trafficLights.button, ...systemStyles.trafficLights.red}} onClick={handleClose}></button>
-            <button style={{...systemStyles.trafficLights.button, ...systemStyles.trafficLights.yellow}}></button>
-            <button style={{...systemStyles.trafficLights.button, ...systemStyles.trafficLights.green}}></button>
+            <button 
+              style={{...systemStyles.trafficLights.button, ...systemStyles.trafficLights.red}} 
+              onClick={() => {
+                playClickSound();
+                handleClose();
+              }}
+              title="Fechar"
+            />
+            <button 
+              style={{...systemStyles.trafficLights.button, ...systemStyles.trafficLights.yellow}}
+              title="Minimizar"
+            />
+            <button 
+              style={{...systemStyles.trafficLights.button, ...systemStyles.trafficLights.green}}
+              title="Maximizar"
+            />
           </div>
           <div style={styles.title}>
             {editingVehicle ? 'Editar Veículo' : 'Novo Veículo'}
@@ -334,18 +351,28 @@ export function NewVehicleModal({ isOpen, onClose, onSave, editingVehicle }: New
 
         {/* Modal footer */}
         <div style={styles.footer}>
-          <button style={systemStyles.button.default} onClick={handleClose}>
-            Cancelar
-          </button>
-          <button
-            style={systemStyles.button.primary}
-            onClick={() => {
-              playClickSound();
-              handleSave();
-            }}
-          >
-            {editingVehicle ? 'Atualizar' : 'Salvar'}
-          </button>
+          <div style={systemStyles.modal.footerLeft}>
+            <button 
+              style={systemStyles.button.default} 
+              onClick={() => {
+                playClickSound();
+                handleClose();
+              }}
+            >
+              Cancelar
+            </button>
+          </div>
+          <div style={systemStyles.modal.footerRight}>
+            <button
+              style={systemStyles.button.primary}
+              onClick={() => {
+                playClickSound();
+                handleSave();
+              }}
+            >
+              {editingVehicle ? 'Atualizar' : 'Salvar'}
+            </button>
+          </div>
         </div>
       </div>
     </div>

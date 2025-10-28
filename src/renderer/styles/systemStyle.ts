@@ -96,7 +96,8 @@ export const systemStyles = {
     justifyContent: 'center',
     padding: '0 20px',
     borderTopLeftRadius: '10px',
-    borderTopRightRadius: '10px'
+    borderTopRightRadius: '10px',
+    position: 'relative' as const
   },
 
   titleBarTitle: {
@@ -365,7 +366,7 @@ export const systemStyles = {
     },
     boxChecked: {
       background: systemColors.selection.blue,
-      borderColor: systemColors.selection.blueDark,
+      border: `0.5px solid ${systemColors.selection.blueDark}`,
       boxShadow: 'inset 0 0.5px 1px rgba(0, 0, 0, 0.15), 0 0.5px 0 rgba(255, 255, 255, 0.5)'
     },
     checkmark: {
@@ -403,7 +404,7 @@ export const systemStyles = {
       boxShadow: 'inset 0 1px 2px rgba(0, 0, 0, 0.05)'
     },
     circleChecked: {
-      borderColor: systemColors.selection.blue,
+      border: `1px solid ${systemColors.selection.blue}`,
       background: systemColors.control.background
     },
     dot: {
@@ -443,7 +444,7 @@ export const systemStyles = {
       boxShadow: 'inset 0 0.5px 2px rgba(0, 0, 0, 0.12), 0 0.5px 0 rgba(255, 255, 255, 0.5)'
     },
     fieldFocus: {
-      borderColor: '#6CB4FB',
+      border: '0.5px solid #6CB4FB',
       boxShadow: `0 0 0 3px rgba(108, 180, 251, 0.3), inset 0 0.5px 2px rgba(0, 0, 0, 0.12)`
     },
     label: {
@@ -471,9 +472,7 @@ export const systemStyles = {
       fontSize: '13px',
       color: systemColors.text.primary,
       background: systemColors.control.background,
-      borderWidth: '1px',
-      borderStyle: 'solid',
-      borderColor: systemColors.control.border,
+      border: `1px solid ${systemColors.control.border}`,
       borderRadius: '5px',
       fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, Helvetica, Arial, sans-serif',
       outline: 'none',
@@ -481,7 +480,7 @@ export const systemStyles = {
       boxShadow: 'inset 0 1px 2px rgba(0, 0, 0, 0.05)'
     },
     fieldFocus: {
-      borderColor: systemColors.selection.border,
+      border: `1px solid ${systemColors.selection.border}`,
       boxShadow: `0 0 0 3px ${systemColors.selection.background}, inset 0 1px 2px rgba(0, 0, 0, 0.05)`
     },
     icon: {
@@ -492,7 +491,10 @@ export const systemStyles = {
       width: '14px',
       height: '14px',
       color: systemColors.text.tertiary,
-      pointerEvents: 'none' as const
+      pointerEvents: 'none' as const,
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center'
     }
   },
 
@@ -520,9 +522,7 @@ export const systemStyles = {
       fontSize: '11px',
       color: systemColors.text.primary,
       background: 'linear-gradient(to bottom, #FFFFFF, #F8F8F8)',
-      borderWidth: '0.5px',
-      borderStyle: 'solid',
-      borderColor: '#BABABA',
+      border: '0.5px solid #BABABA',
       borderRadius: '4px',
       fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, Helvetica, Arial, sans-serif',
       outline: 'none',
@@ -534,7 +534,7 @@ export const systemStyles = {
       boxShadow: 'inset 0 0.5px 1px rgba(0, 0, 0, 0.06), 0 0.5px 0 rgba(255, 255, 255, 0.5)'
     },
     fieldFocus: {
-      borderColor: '#6CB4FB',
+      border: '0.5px solid #6CB4FB',
       boxShadow: `0 0 0 3px rgba(108, 180, 251, 0.3), inset 0 0.5px 1px rgba(0, 0, 0, 0.06)`
     },
     arrow: {
@@ -581,7 +581,7 @@ export const systemStyles = {
     },
     defaultHover: {
       background: 'linear-gradient(to bottom, #FAFAFA, #E8E8E8)',
-      borderColor: systemColors.border.medium,
+      border: `0.5px solid ${systemColors.border.medium}`,
       boxShadow: '0 0.5px 2px rgba(0, 0, 0, 0.08)'
     },
     defaultActive: {
@@ -847,7 +847,10 @@ export const systemStyles = {
     },
     rowSelected: {
       background: systemColors.selection.background,
-      border: `1px solid ${systemColors.selection.border}`
+      borderWidth: '1px',
+      borderStyle: 'solid',
+      borderColor: systemColors.selection.border,
+      borderBottomWidth: '1px'
     }
   },
 
@@ -869,6 +872,239 @@ export const systemStyles = {
     containerSelected: {
       background: systemColors.selection.background,
       color: systemColors.selection.blue
+    }
+  },
+
+  // Modal (Padrão de modais do sistema)
+
+  modal: {
+    overlay: {
+      position: 'fixed' as const,
+      top: 0,
+      left: 0,
+      right: 0,
+      bottom: 0,
+      backgroundColor: 'rgba(0, 0, 0, 0.4)',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      zIndex: 10000,
+      backdropFilter: 'blur(4px)'
+    },
+    container: {
+      background: systemColors.background.content,
+      borderRadius: '10px',
+      border: `1px solid ${systemColors.border.light}`,
+      boxShadow: '0 20px 60px rgba(0, 0, 0, 0.3)',
+      display: 'flex',
+      flexDirection: 'column' as const,
+      overflow: 'hidden',
+      height: '70vh',
+      maxHeight: '70vh'
+    },
+    titleBar: {
+      height: '52px',
+      background: systemColors.background.primary,
+      borderBottom: `1px solid ${systemColors.border.light}`,
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      padding: '0 20px',
+      borderTopLeftRadius: '10px',
+      borderTopRightRadius: '10px',
+      position: 'relative' as const
+    },
+    title: {
+      fontSize: '13px',
+      fontWeight: '600',
+      color: systemColors.text.primary,
+      textAlign: 'center' as const,
+      fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, Helvetica, Arial, sans-serif'
+    },
+    content: {
+      flex: 1,
+      overflow: 'auto',
+      padding: '20px',
+      background: systemColors.background.content
+    },
+    footer: {
+      padding: '12px 16px',
+      background: systemColors.background.primary,
+      borderTop: `1px solid ${systemColors.border.light}`,
+      display: 'flex',
+      justifyContent: 'space-between',
+      alignItems: 'center'
+    },
+    footerLeft: {
+      display: 'flex',
+      gap: '8px'
+    },
+    footerRight: {
+      display: 'flex',
+      gap: '8px'
+    }
+  },
+
+  // Login Card (Card de autenticação)
+  loginCard: {
+    container: {
+      width: '340px',
+      height: '400px',
+      position: 'relative' as const
+    },
+    card: {
+      display: 'block',
+      padding: '80px 50px 40px',
+      position: 'absolute' as const,
+      background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.15) 0%, rgba(255, 255, 255, 0.05) 100%)',
+      backdropFilter: 'blur(10px)',
+      WebkitBackdropFilter: 'blur(10px)',
+      borderRadius: '50px',
+      border: '1px solid rgba(255, 255, 255, 0.3)',
+      boxShadow: '0 8px 32px 0 rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.4), inset 0 -1px 0 rgba(0, 0, 0, 0.1)',
+      textAlign: 'center' as const,
+      width: '100%',
+      overflow: 'hidden' as const
+    },
+    glassReflection: {
+      position: 'absolute' as const,
+      top: 0,
+      left: 0,
+      right: 0,
+      height: '50%',
+      background: 'linear-gradient(180deg, rgba(255, 255, 255, 0.3) 0%, transparent 100%)',
+      pointerEvents: 'none' as const,
+      zIndex: 1
+    },
+    avatar: {
+      display: 'block',
+      margin: '0 auto 15px',
+      width: 'auto',
+      height: 'auto',
+      overflow: 'hidden' as const,
+      position: 'relative' as const
+    },
+    avatarInner: {
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      width: '100%',
+      height: '100%'
+    },
+    logoImage: {
+      width: '80px',
+      height: 'auto',
+      objectFit: 'contain' as const
+    },
+    userLabel: {
+      padding: '10px 0',
+      fontSize: '0.95em',
+      color: systemColors.text.primary,
+      textShadow: 'rgba(255, 255, 255, 0.7) 0px 1px 0px',
+      fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, Helvetica, Arial, sans-serif',
+      wordBreak: 'break-all' as const,
+      transition: 'opacity 0.3s ease-in-out, transform 0.3s ease-in-out'
+    },
+    userLabelTransitioning: {
+      opacity: 0,
+      transform: 'scale(0.95)'
+    },
+    form: {
+      position: 'relative' as const,
+      marginTop: '20px',
+      transition: 'opacity 0.3s ease-in-out, transform 0.3s ease-in-out'
+    },
+    formTransitioning: {
+      opacity: 0,
+      transform: 'translateX(20px)'
+    },
+    inputWrapper: {
+      position: 'relative' as const,
+      width: '240px',
+      margin: '20px auto'
+    },
+    input: {
+      display: 'block',
+      width: '100%',
+      padding: '10px 40px 10px 18px',
+      borderRadius: '20px',
+      border: `1px solid ${systemColors.control.border}`,
+      background: 'transparent',
+      color: systemColors.text.primary,
+      fontSize: '15px',
+      fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, Helvetica, Arial, sans-serif',
+      outline: 'none',
+      transition: 'border-color 0.15s ease',
+      textTransform: 'none' as const,
+      boxSizing: 'border-box' as const
+    },
+    inputFocus: {
+      border: `1px solid ${systemColors.selection.blue}`,
+      boxShadow: `0 0 0 3px ${systemColors.selection.background}`
+    },
+    eyeButton: {
+      position: 'absolute' as const,
+      right: '12px',
+      top: '50%',
+      transform: 'translateY(-50%)',
+      background: 'none',
+      border: 'none',
+      cursor: 'pointer',
+      color: systemColors.text.secondary,
+      fontSize: '18px',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      padding: '4px',
+      transition: 'color 0.2s ease'
+    },
+    hint: {
+      marginTop: '8px',
+      padding: '0',
+      color: systemColors.text.primary,
+      fontSize: '12px',
+      fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, Helvetica, Arial, sans-serif',
+      textShadow: 'rgba(255, 255, 255, 0.7) 0px 1px 0px',
+      whiteSpace: 'nowrap' as const,
+      textAlign: 'center' as const,
+      transition: 'opacity 0.3s ease-in-out'
+    },
+    hintTransitioning: {
+      opacity: 0
+    },
+    footer: {
+      position: 'absolute' as const,
+      bottom: '-80px',
+      left: '50%',
+      transform: 'translateX(-50%)',
+      textAlign: 'center' as const,
+      color: systemColors.background.white,
+      textShadow: '0px 1px 5px rgba(0, 0, 0, 1)',
+      fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, Helvetica, Arial, sans-serif',
+      width: '100%'
+    },
+    footerTitle: {
+      fontSize: '16px',
+      fontWeight: '600',
+      margin: '0 0 4px 0'
+    },
+    footerSubtitle: {
+      fontSize: '13px',
+      fontWeight: '400',
+      margin: '0 0 8px 0',
+      opacity: 0.9
+    },
+    footerLink: {
+      fontSize: '12px',
+      color: systemColors.background.white,
+      textDecoration: 'none',
+      opacity: 0.8,
+      transition: 'opacity 0.2s ease',
+      cursor: 'pointer'
+    },
+    footerLinkHover: {
+      opacity: 1,
+      textDecoration: 'underline'
     }
   },
 

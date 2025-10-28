@@ -1,7 +1,4 @@
 import React, { Suspense, lazy, useState, useEffect } from 'react';
-import { globalStyles } from './styles/style';
-import { sharedStyles, applyScrollbarStyles } from './styles/shared';
-import { globalInputFocusStyles } from './styles/styleModal';
 import { NavigationProvider, useNavigation } from './router/Navigation';
 import { SplashScreen } from './components/SplashScreen';
 
@@ -34,37 +31,6 @@ const PageLoader = () => (
 );
 
 function AppContent(): JSX.Element {
-  // Apply global CSS variables to document root
-  React.useEffect(() => {
-    const root = document.documentElement;
-    Object.entries(globalStyles.variables).forEach(([key, value]) => {
-      root.style.setProperty(key, value);
-    });
-    
-    // Apply shared styles variables
-    Object.entries(sharedStyles.variables).forEach(([key, value]) => {
-      root.style.setProperty(key, value);
-    });
-    
-    // Inject CSS animations
-    const style = document.createElement('style');
-    style.textContent = Object.values(sharedStyles.animations).join('\n');
-    document.head.appendChild(style);
-    
-    // Inject global input focus styles
-    const focusStyle = document.createElement('style');
-    focusStyle.textContent = globalInputFocusStyles;
-    document.head.appendChild(focusStyle);
-    
-    // Apply macOS scrollbar styles globally
-    applyScrollbarStyles('global');
-    
-    return () => {
-      document.head.removeChild(style);
-      document.head.removeChild(focusStyle);
-    };
-  }, []);
-
   const { route } = useNavigation();
 
   // Renderização condicional com lazy loading
