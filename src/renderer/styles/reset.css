@@ -108,6 +108,19 @@ input[type="text"]:focus {
   outline: none;
 }
 
+/* Remove background dos inputs de login */
+.passwordInputWrapper input[type="email"],
+.passwordInputWrapper input[type="password"] {
+  background: transparent !important;
+}
+
+.passwordInputWrapper input[type="email"]:focus,
+.passwordInputWrapper input[type="password"]:focus,
+.passwordInputWrapper input[type="email"]:not(:focus),
+.passwordInputWrapper input[type="password"]:not(:focus) {
+  background: transparent !important;
+}
+
 /* Efeitos específicos para botões de ação - mais sutis */
 .actionButton:hover {
   background: linear-gradient(to bottom, #f8f8f8, #e0e0e0) !important;
@@ -151,6 +164,20 @@ button:hover {
   filter: brightness(1.05);
 }
 
+/* Desabilita efeito hover para botões neumórficos */
+.no-hover-effect:hover {
+  transform: none !important;
+  filter: none !important;
+  /* Mantém a cor de fundo original e o box-shadow neumórfico */
+}
+
+/* Desabilita efeito active para botões neumórficos quando não estiverem pressionados */
+.no-hover-effect:active:not([data-pressed="true"]) {
+  transform: scale(0.95) !important;
+  box-shadow: inset 2px 2px 4px rgba(0, 0, 0, 0.12), inset -2px -2px 4px rgba(255, 255, 255, 0.7) !important;
+  filter: none !important;
+}
+
 /* Efeito de active estilo macOS */
 button:active {
   transform: translateY(0px) scale(0.98);
@@ -160,26 +187,24 @@ button:active {
   outline: none !important;
 }
 
-/* Efeito de foco estilo macOS */
-button:focus {
+/* Desabilita box-shadow de foco para botões neumórficos */
+.no-hover-effect:focus,
+.no-hover-effect:focus-visible {
   outline: none !important;
-  border-color: rgba(10, 132, 255, 0.4) !important;
-  box-shadow: 0 0 0 3px rgba(10, 132, 255, 0.15), 0 2px 8px rgba(0, 0, 0, 0.1) !important;
+  border: none !important;
+  box-shadow: 3px 3px 6px rgba(0, 0, 0, 0.1), -3px -3px 6px rgba(255, 255, 255, 0.8) !important;
 }
 
-/* Remover bordas de foco indesejadas */
+/* Remover bordas de foco indesejadas de TODOS os botões */
 button:focus,
-div[role="button"]:focus,
-[onclick]:focus {
-  outline: none !important;
-  border-color: inherit !important;
-}
-
-/* Garantir que elementos clicáveis não tenham bordas de foco */
 button:focus-visible,
+div[role="button"]:focus,
 div[role="button"]:focus-visible,
+[onclick]:focus,
 [onclick]:focus-visible {
   outline: none !important;
+  border: none !important;
+  box-shadow: none !important;
 }
 
 /* Remover bordas específicas das abas */

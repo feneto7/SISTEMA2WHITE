@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef, useMemo, useCallback } from 'react';
 import { SearchIcon, EditIcon, DeleteIcon } from '../../../components/Icons/Icons';
+import { ActionButton } from '../../../components/ActionButton';
 import { systemStyles, systemColors } from '../../../styles/systemStyle';
 import { useClickSound } from '../../../hooks/useClickSound';
 import { VirtualList, useListPerformance, useDebounce } from '../../../hooks/useVirtualization';
@@ -306,37 +307,18 @@ const ClientRow = React.memo(React.forwardRef<HTMLDivElement, ClientRowProps>(({
           alignItems: 'center'
         }}>
           {onEditClient && (
-            <button
-              style={{
-                ...systemStyles.button.default,
-                padding: '4px 8px',
-                minWidth: 'auto',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center'
-              }}
+            <ActionButton
+              icon={<EditIcon size={16} color={systemColors.text.secondary} />}
               onClick={handleEdit}
               title="Editar cliente"
-            >
-              <EditIcon size={16} color={systemColors.text.secondary} />
-            </button>
+            />
           )}
           {onDeleteClient && (
-            <button
-              style={{
-                ...systemStyles.button.default,
-                padding: '4px 8px',
-                minWidth: 'auto',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                color: '#FF3B30'
-              }}
+            <ActionButton
+              icon={<DeleteIcon size={16} color="#FF3B30" />}
               onClick={handleDelete}
               title="Excluir cliente"
-            >
-              <DeleteIcon size={16} color="#FF3B30" />
-            </button>
+            />
           )}
         </div>
       </div>

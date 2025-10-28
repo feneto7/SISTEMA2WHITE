@@ -71,6 +71,7 @@ export function LaunchpadOperations({ isOpen, onClose, onSelectOperation }: Laun
   const playClickSound = useClickSound();
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
   const [isAnimating, setIsAnimating] = useState(false);
+  const [activeIndex, setActiveIndex] = useState<number | null>(null);
 
   // Injetar animações CSS quando o componente montar
   React.useEffect(() => {
@@ -181,11 +182,17 @@ export function LaunchpadOperations({ isOpen, onClose, onSelectOperation }: Laun
                 key={operation.id}
                 style={{
                   ...systemStyles.launchpad.iconContainer,
-                  ...(isHovered ? systemStyles.launchpad.iconContainerHover : {})
+                  ...(isHovered ? systemStyles.launchpad.iconContainerHover : {}),
+                  ...(activeIndex === index ? systemStyles.launchpad.iconContainerActive : {})
                 }}
                 onClick={() => handleOperationClick(operation.id)}
                 onMouseEnter={() => setHoveredIndex(index)}
-                onMouseLeave={() => setHoveredIndex(null)}
+                onMouseLeave={() => {
+                  setHoveredIndex(null);
+                  setActiveIndex(null);
+                }}
+                onMouseDown={() => setActiveIndex(index)}
+                onMouseUp={() => setActiveIndex(null)}
               >
                 <div style={systemStyles.launchpad.iconWrapper}>
                   <Icon size={64} color={'#FFFFFF'} />

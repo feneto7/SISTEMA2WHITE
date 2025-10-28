@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef, useMemo, useCallback } from 'react'
 import { AppIcons } from '../../../components/Icons/AppIcons';
 import { systemStyles, systemColors } from '../../../styles/systemStyle';
 import { useClickSound } from '../../../hooks/useClickSound';
+import { ActionButton } from '../../../components/ActionButton';
 
 // Componente de listagem de usuários
 // Modularizado e reutilizável seguindo as regras do projeto
@@ -281,37 +282,18 @@ const UserRow = React.memo(React.forwardRef<HTMLDivElement, UserRowProps>(({
           alignItems: 'center'
         }}>
           {onEditUser && (
-            <button
-              style={{
-                ...systemStyles.button.default,
-                padding: '4px 8px',
-                minWidth: 'auto',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center'
-              }}
+            <ActionButton
+              icon={<AppIcons.Edit size={16} color={systemColors.text.secondary} />}
               onClick={handleEdit}
               title="Editar usuário"
-            >
-              <AppIcons.Edit size={16} color={systemColors.text.secondary} />
-            </button>
+            />
           )}
           {onDeleteUser && (
-            <button
-              style={{
-                ...systemStyles.button.default,
-                padding: '4px 8px',
-                minWidth: 'auto',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                color: '#FF3B30'
-              }}
+            <ActionButton
+              icon={<AppIcons.Delete size={16} color="#FF3B30" />}
               onClick={handleDelete}
               title="Excluir usuário"
-            >
-              <AppIcons.Delete size={16} color="#FF3B30" />
-            </button>
+            />
           )}
         </div>
       </div>

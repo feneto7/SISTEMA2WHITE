@@ -9,9 +9,10 @@ import { BackButton } from '../../components/BackButton';
 import { SettingsSidebar } from './components/SettingsSidebar';
 import { CompanyForm } from './components/CompanyForm';
 import { FiscalTab } from './components/FiscalTab';
+import { ParametrosTab } from './components/ParametrosTab';
 import { systemStyles, systemColors } from '../../styles/systemStyle';
 
-export type SettingsTab = 'empresa' | 'fiscal' | 'pagamento' | 'impressoras' | 'balanca' | 'gaveta' | 'dock';
+export type SettingsTab = 'empresa' | 'fiscal' | 'pagamento' | 'impressoras' | 'balanca' | 'gaveta' | 'dock' | 'parametros';
 
 function Settings(): JSX.Element {
   const { navigate } = useNavigation();
@@ -33,6 +34,8 @@ function Settings(): JSX.Element {
         return <div style={styles.placeholder}>Configurações de Gaveta</div>;
       case 'dock':
         return <div style={styles.placeholder}>Configurações do Dock</div>;
+      case 'parametros':
+        return <ParametrosTab />;
       default:
         return null;
     }

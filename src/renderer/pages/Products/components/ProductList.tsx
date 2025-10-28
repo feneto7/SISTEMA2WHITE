@@ -4,6 +4,7 @@ import { macStyles } from '../../../styles/style';
 import { systemStyles, systemColors } from '../../../styles/systemStyle';
 import { useClickSound } from '../../../hooks/useClickSound';
 import { VirtualList, useListPerformance, useDebounce } from '../../../hooks/useVirtualization';
+import { ActionButton } from '../../../components/ActionButton';
 
 // Componente de listagem de produtos/serviços
 // Modularizado e reutilizável seguindo as regras do projeto
@@ -268,37 +269,18 @@ const ProductRow = React.memo(React.forwardRef<HTMLDivElement, ProductRowProps>(
       <div style={styles.rowCell} className="cell-actions">
         <div style={styles.actionButtons}>
           {onEditProduct && (
-            <button
-              style={{
-                ...systemStyles.button.default,
-                padding: '4px 8px',
-                minWidth: 'auto',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center'
-              }}
+            <ActionButton
+              icon={<EditIcon size={16} color={systemColors.text.secondary} />}
               onClick={handleEdit}
               title="Editar produto"
-            >
-              <EditIcon size={16} color={systemColors.text.secondary} />
-            </button>
+            />
           )}
           {onDeleteProduct && (
-            <button
-              style={{
-                ...systemStyles.button.default,
-                padding: '4px 8px',
-                minWidth: 'auto',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                color: '#FF3B30'
-              }}
+            <ActionButton
+              icon={<DeleteIcon size={16} color="#FF3B30" />}
               onClick={handleDelete}
               title="Excluir produto"
-            >
-              <DeleteIcon size={16} color="#FF3B30" />
-            </button>
+            />
           )}
         </div>
       </div>
