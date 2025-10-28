@@ -33,7 +33,8 @@ export function SettingsSidebar({ activeTab, onSelectTab }: SettingsSidebarProps
     { id: 'impressoras', label: 'Impressoras', icon: AppIcons.Settings },
     { id: 'balanca', label: 'Balança', icon: AppIcons.Config },
     { id: 'gaveta', label: 'Gaveta', icon: AppIcons.Folder },
-    { id: 'dock', label: 'Dock', icon: AppIcons.Settings }
+    { id: 'dock', label: 'Dock', icon: AppIcons.Settings },
+    { id: 'parametros', label: 'Parâmetros', icon: AppIcons.Config }
   ];
 
   const handleItemClick = (tab: SettingsTab) => {

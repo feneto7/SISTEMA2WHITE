@@ -13,8 +13,8 @@ import { AppIcons } from '../../components/Icons/AppIcons';
 export function MDFePage(): JSX.Element {
   const { navigate } = useNavigation();
   const playClickSound = useClickSound();
-  const [isNewMDFeHovered, setIsNewMDFeHovered] = useState(false);
-  const [isCadastrosHovered, setIsCadastrosHovered] = useState(false);
+  const [isNewMDFePressed, setIsNewMDFePressed] = useState(false);
+  const [isCadastrosPressed, setIsCadastrosPressed] = useState(false);
   const [isCadastrosModalOpen, setIsCadastrosModalOpen] = useState(false);
   const [isNewMDFeModalOpen, setIsNewMDFeModalOpen] = useState(false);
   
@@ -127,15 +127,25 @@ export function MDFePage(): JSX.Element {
       letterSpacing: '0.5px'
     },
     newButton: {
-      ...systemStyles.button.default,
       padding: '8px 16px',
       display: 'flex',
       alignItems: 'center',
       gap: '6px',
-      fontSize: '13px'
+      fontSize: '13px',
+      fontWeight: '500',
+      color: systemColors.text.primary,
+      background: systemColors.background.primary,
+      border: 'none',
+      borderRadius: '8px',
+      cursor: 'pointer',
+      transition: 'none',
+      fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, Helvetica, Arial, sans-serif',
+      boxShadow: '3px 3px 6px rgba(0, 0, 0, 0.1), -3px -3px 6px rgba(255, 255, 255, 0.8)'
     },
-    newButtonHover: {
-      ...systemStyles.button.defaultHover
+    newButtonActive: {
+      background: systemColors.background.primary,
+      boxShadow: 'inset 2px 2px 4px rgba(0, 0, 0, 0.12), inset -2px -2px 4px rgba(255, 255, 255, 0.7)',
+      transform: 'scale(0.97)'
     },
     buttonGroup: {
       display: 'flex',
@@ -155,23 +165,31 @@ export function MDFePage(): JSX.Element {
         <h1 style={styles.title}>MDF-e</h1>
         <div style={styles.buttonGroup}>
           <button
+            className="no-hover-effect"
             style={{
               ...styles.newButton,
-              ...(isCadastrosHovered ? styles.newButtonHover : {})
+              ...(isCadastrosPressed ? styles.newButtonActive : {})
             }}
-            onMouseEnter={() => setIsCadastrosHovered(true)}
-            onMouseLeave={() => setIsCadastrosHovered(false)}
+            onMouseLeave={() => {
+              setIsCadastrosPressed(false);
+            }}
+            onMouseDown={() => setIsCadastrosPressed(true)}
+            onMouseUp={() => setIsCadastrosPressed(false)}
             onClick={handleCadastros}
           >
             Cadastros
           </button>
           <button
+            className="no-hover-effect"
             style={{
               ...styles.newButton,
-              ...(isNewMDFeHovered ? styles.newButtonHover : {})
+              ...(isNewMDFePressed ? styles.newButtonActive : {})
             }}
-            onMouseEnter={() => setIsNewMDFeHovered(true)}
-            onMouseLeave={() => setIsNewMDFeHovered(false)}
+            onMouseLeave={() => {
+              setIsNewMDFePressed(false);
+            }}
+            onMouseDown={() => setIsNewMDFePressed(true)}
+            onMouseUp={() => setIsNewMDFePressed(false)}
             onClick={handleNewMDFe}
           >
             <AppIcons.Add size={14} />

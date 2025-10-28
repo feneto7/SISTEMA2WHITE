@@ -17,6 +17,7 @@ export function Login(): JSX.Element {
   const [isShaking, setIsShaking] = useState(false);
   const [step, setStep] = useState<'email' | 'password'>('email');
   const [isTransitioning, setIsTransitioning] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
   const emailInputRef = useRef<HTMLInputElement>(null);
   const passwordInputRef = useRef<HTMLInputElement>(null);
   const { navigate } = useNavigation();
@@ -99,17 +100,6 @@ export function Login(): JSX.Element {
     }
   };
 
-  // Voltar para etapa de email
-  const handleBack = () => {
-    setIsTransitioning(true);
-    setTimeout(() => {
-      setStep('email');
-      setPassword('');
-      setShowArrow(false);
-      setIsTransitioning(false);
-    }, 300);
-  };
-
   const styles = {
     container: {
       position: 'fixed' as const,
@@ -123,33 +113,41 @@ export function Login(): JSX.Element {
       zIndex: 1
     },
     loginWrap: {
-      width: '290px',
-      height: '320px',
+      width: '340px',
+      height: '400px',
       position: 'relative' as const,
       ...(isShaking ? { animation: 'shake 0.7s ease-in-out' } : {})
     },
     login: {
       display: 'block',
-      padding: '40px 40px 30px',
+      padding: '80px 50px 40px',
       position: 'absolute' as const,
-      background: 'linear-gradient(to bottom, #f0f0f0, #ddd)',
-      borderRadius: '5px',
-      border: '1px solid #ffffff',
-      boxShadow: 'rgba(0, 0, 0, 0.5) 0px 3px 20px',
+      background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.15) 0%, rgba(255, 255, 255, 0.05) 100%)',
+      backdropFilter: 'blur(10px)',
+      WebkitBackdropFilter: 'blur(10px)',
+      borderRadius: '50px',
+      border: '1px solid rgba(255, 255, 255, 0.3)',
+      boxShadow: '0 8px 32px 0 rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.4), inset 0 -1px 0 rgba(0, 0, 0, 0.1)',
       textAlign: 'center' as const,
-      width: '100%'
+      width: '100%',
+      overflow: 'hidden' as const
+    },
+    glassReflection: {
+      position: 'absolute' as const,
+      top: 0,
+      left: 0,
+      right: 0,
+      height: '50%',
+      background: 'linear-gradient(180deg, rgba(255, 255, 255, 0.3) 0%, transparent 100%)',
+      pointerEvents: 'none' as const,
+      zIndex: 1
     },
     avatar: {
       display: 'block',
       margin: '0 auto 15px',
-      width: '100px',
-      height: '100px',
-      borderRadius: '50%',
-      border: '3px solid #ffffff',
-      boxShadow: 'rgba(0, 0, 0, 0.4) 0px 2px 4px, inset rgba(0, 0, 0, 0.4) 0px 3px 2px',
+      width: 'auto',
+      height: 'auto',
       overflow: 'hidden' as const,
-      background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.9) 0%, rgba(255, 255, 255, 0.3) 50%, rgba(255, 255, 255, 0) 50%),rgb(203, 203, 203)',
-      backgroundSize: 'auto, 100%',
       position: 'relative' as const
     },
     avatarInner: {
@@ -160,8 +158,8 @@ export function Login(): JSX.Element {
       height: '100%'
     },
     logoImage: {
-      width: '60%',
-      height: '60%',
+      width: '80px',
+      height: 'auto',
       objectFit: 'contain' as const
     },
     user: {
@@ -188,14 +186,16 @@ export function Login(): JSX.Element {
     },
     pass: {
       display: 'block',
-      width: '170px',
+      width: '240px',
       margin: '20px auto',
-      padding: '10px 25px 10px 10px',
-      borderRadius: '3px',
+      padding: '14px 18px',
+      borderRadius: '12px',
       borderWidth: '1px',
       borderStyle: 'solid',
       borderColor: '#CCC',
-      fontSize: '14px',
+      background: 'transparent',
+      color: systemColors.text.primary,
+      fontSize: '15px',
       fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, Helvetica, Arial, sans-serif',
       outline: 'none',
       transition: 'border-color 0.15s ease',
@@ -204,6 +204,27 @@ export function Login(): JSX.Element {
     passFocus: {
       borderColor: systemColors.selection.blue,
       boxShadow: `0 0 0 3px ${systemColors.selection.background}`
+    },
+    eyeButton: {
+      position: 'absolute' as const,
+      right: '12px',
+      top: '50%',
+      transform: 'translateY(-50%)',
+      background: 'none',
+      border: 'none',
+      cursor: 'pointer',
+      color: systemColors.text.secondary,
+      fontSize: '18px',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      padding: '4px',
+      transition: 'color 0.2s ease'
+    },
+    passwordInputWrapper: {
+      position: 'relative' as const,
+      width: '240px',
+      margin: '20px auto'
     },
     arrow: {
       position: 'absolute' as const,
@@ -222,16 +243,12 @@ export function Login(): JSX.Element {
       color: systemColors.selection.blue
     },
     hint: {
-      position: 'absolute' as const,
-      bottom: '50px',
-      left: '50%',
-      transform: 'translateX(-50%)',
-      padding: '10px 20px',
-      color: '#ffffff',
-      textShadow: '#000 0px 1px 5px',
-      fontSize: '13px',
+      marginTop: '8px',
+      padding: '0',
+      color: systemColors.text.secondary,
+      fontSize: '12px',
       fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, Helvetica, Arial, sans-serif',
-      opacity: 0.8,
+      opacity: 0.7,
       whiteSpace: 'nowrap' as const,
       textAlign: 'center' as const,
       transition: 'opacity 0.3s ease-in-out'
@@ -321,8 +338,11 @@ export function Login(): JSX.Element {
       {/* Card de login */}
       <div style={styles.loginWrap}>
         <div style={styles.login}>
-          {/* Avatar */}
-          <div style={styles.avatar}>
+          {/* Efeito de reflexo de vidro */}
+          <div style={styles.glassReflection} />
+          
+          {/* Logo */}
+          <div style={{...styles.avatar, position: 'relative' as const, zIndex: 2}}>
             <div style={styles.avatarInner}>
               <img 
                 src={logoImage} 
@@ -335,7 +355,9 @@ export function Login(): JSX.Element {
           {/* Nome do usuário - mostra email quando na etapa de senha */}
           <span style={{
             ...styles.user,
-            ...(isTransitioning ? styles.userTransitioning : {})
+            ...(isTransitioning ? styles.userTransitioning : {}),
+            position: 'relative' as const,
+            zIndex: 2
           }}>
             {step === 'password' ? email : 'Usuário'}
           </span>
@@ -343,11 +365,13 @@ export function Login(): JSX.Element {
           {/* Formulário */}
           <form onSubmit={handleSubmit} style={{
             ...styles.loginForm,
-            ...(isTransitioning ? styles.loginFormTransitioning : {})
+            ...(isTransitioning ? styles.loginFormTransitioning : {}),
+            position: 'relative' as const,
+            zIndex: 2
           }}>
             {step === 'email' ? (
               // Campo de email
-              <>
+              <div className="passwordInputWrapper" style={styles.passwordInputWrapper}>
                 <input
                   ref={emailInputRef}
                   type="email"
@@ -360,80 +384,56 @@ export function Login(): JSX.Element {
                     ...(email.length > 0 ? styles.passFocus : {})
                   }}
                 />
-                {showArrow && (
-                  <span
-                    style={styles.arrow}
-                    onMouseEnter={(e) => {
-                      e.currentTarget.style.color = systemColors.selection.blue;
-                    }}
-                    onMouseLeave={(e) => {
-                      e.currentTarget.style.color = '#999';
-                    }}
-                    onClick={handleSubmit}
-                  >
-                    →
-                  </span>
-                )}
-              </>
+              </div>
             ) : (
-              // Campo de senha
-              <>
+              // Campo de senha com botão de revelar senha
+              <div className="passwordInputWrapper" style={styles.passwordInputWrapper}>
                 <input
                   ref={passwordInputRef}
-                  type="password"
+                  type={showPassword ? 'text' : 'password'}
                   placeholder="senha"
                   value={password}
                   onChange={handlePasswordChange}
                   onKeyPress={handleKeyPress}
                   style={{
                     ...styles.pass,
-                    ...(password.length > 0 ? styles.passFocus : {})
+                    ...(password.length > 0 ? styles.passFocus : {}),
+                    paddingRight: '40px'
                   }}
                 />
-                {showArrow && (
-                  <span
-                    style={styles.arrow}
-                    onMouseEnter={(e) => {
-                      e.currentTarget.style.color = systemColors.selection.blue;
-                    }}
-                    onMouseLeave={(e) => {
-                      e.currentTarget.style.color = '#999';
-                    }}
-                    onClick={handleSubmit}
-                  >
-                    →
-                  </span>
-                )}
-              </>
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  style={styles.eyeButton}
+                  title={showPassword ? 'Ocultar senha' : 'Mostrar senha'}
+                >
+                  {showPassword ? (
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                      <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+                      <circle cx="12" cy="12" r="3"/>
+                      <line x1="1" y1="1" x2="23" y2="23"/>
+                    </svg>
+                  ) : (
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                      <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/>
+                      <line x1="1" y1="1" x2="23" y2="23"/>
+                    </svg>
+                  )}
+                </button>
+              </div>
             )}
+            
+            {/* Hint dentro do formulário */}
+            <div style={{
+              ...styles.hint,
+              ...(isTransitioning ? styles.hintTransitioning : {}),
+              position: 'relative' as const,
+              zIndex: 2
+            }}>
+              {step === 'email' ? 'Digite seu e-mail' : 'Digite sua senha'}
+            </div>
           </form>
         </div>
-
-        {/* Hint */}
-        <div style={{
-          ...styles.hint,
-          ...(isTransitioning ? styles.hintTransitioning : {})
-        }}>
-          {step === 'email' ? 'Digite seu e-mail' : 'Digite sua senha'}
-        </div>
-
-        {/* Botão de voltar - apenas na etapa de senha */}
-        {step === 'password' && (
-          <button
-            type="button"
-            onClick={handleBack}
-            style={styles.backButton}
-            onMouseEnter={(e) => {
-              Object.assign(e.currentTarget.style, styles.backButtonHover);
-            }}
-            onMouseLeave={(e) => {
-              Object.assign(e.currentTarget.style, styles.backButton);
-            }}
-            title="Voltar (ESC)"
-          >
-            ←
-          </button>
-        )}
 
         {/* Footer com informações da empresa */}
         <div style={styles.footer}>

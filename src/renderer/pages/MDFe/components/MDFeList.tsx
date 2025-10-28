@@ -4,6 +4,7 @@ import { systemStyles, systemColors } from '../../../styles/systemStyle';
 import { useClickSound } from '../../../hooks/useClickSound';
 import { VirtualList, useListPerformance, useDebounce } from '../../../hooks/useVirtualization';
 import { useElementScrollbarStyles } from '../../../hooks/useScrollbarStyles';
+import { ActionButton } from '../../../components/ActionButton';
 
 // Interface para MDFe
 export interface MDFe {
@@ -113,7 +114,7 @@ export const MDFeList = React.memo<MDFeListProps>(({ mdfes, onCloseMDFe, onDetai
     },
     actionButtons: {
       display: 'flex',
-      gap: '4px'
+      gap: '8px'
     },
     actionButton: {
       width: '28px',
@@ -423,7 +424,7 @@ const MDFeRow = React.memo<MDFeRowProps>(({
     },
     actionButtons: {
       display: 'flex',
-      gap: '4px'
+      gap: '8px'
     },
     actionButton: {
       width: '28px',
@@ -532,25 +533,21 @@ const MDFeRow = React.memo<MDFeRowProps>(({
           {mdfe.status.toUpperCase()}
         </span>
       </div>
-      <div style={styles.rowCell} className="cell-actions">
+      <div style={{ display: 'flex', alignItems: 'center' }} className="cell-actions">
         <div style={styles.actionButtons}>
           {onCloseMDFe && (
-            <button
-              style={styles.actionButton}
+            <ActionButton
+              icon={<AppIcons.Delete size={16} color="rgba(255, 149, 0, 0.8)" />}
               onClick={handleClose}
               title="Encerrar MDF-e"
-            >
-              <AppIcons.Delete size={16} color="rgba(255, 149, 0, 0.8)" />
-            </button>
+            />
           )}
           {onDetailMDFe && (
-            <button
-              style={styles.actionButton}
+            <ActionButton
+              icon={<AppIcons.Edit size={16} color="rgba(0, 0, 0, 0.6)" />}
               onClick={handleDetail}
               title="Detalhar MDF-e"
-            >
-              <AppIcons.Edit size={16} color="rgba(0, 0, 0, 0.6)" />
-            </button>
+            />
           )}
         </div>
       </div>

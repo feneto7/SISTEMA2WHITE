@@ -658,6 +658,28 @@ export const systemStyles = {
     }
   },
 
+  // Action Button (botões de ação nas listas - estilo neomorfismo)
+  actionButton: {
+    container: {
+      width: '28px',
+      height: '28px',
+      borderRadius: '6px',
+      border: 'none',
+      background: systemColors.background.content,
+      cursor: 'pointer',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      transition: 'none',
+      boxShadow: '3px 3px 6px rgba(0, 0, 0, 0.1), -3px -3px 6px rgba(255, 255, 255, 0.8)'
+    },
+    containerActive: {
+      background: systemColors.background.content,
+      boxShadow: 'inset 2px 2px 4px rgba(0, 0, 0, 0.12), inset -2px -2px 4px rgba(255, 255, 255, 0.7)',
+      transform: 'scale(0.95)'
+    }
+  },
+
   // Segmented Control
   segmentedControl: {
     container: {

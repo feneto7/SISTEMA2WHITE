@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { systemStyles, systemColors } from '../../../../styles/systemStyle';
 import { useClickSound } from '../../../../hooks/useClickSound';
 import { DocumentsTab, TransportTab, DriversTab, RouteTab, FreightTab, InsuranceTab, TotalizersTab } from './components';
+import { validateMDFe, generateMDFeXML, ValidationError } from '../../../../utils/mdfeValidator';
 
 // New MDF-e modal
 // Modularized component following project rules
@@ -19,6 +20,8 @@ export function NewMDFe({ isOpen, onClose, onSave }: NewMDFeProps): JSX.Element 
   const playClickSound = useClickSound();
   const [activeTab, setActiveTab] = useState<TabType>('documents');
   const [mdfeType, setMdfeType] = useState<MDFeType>('rodoviario');
+  const [validationErrors, setValidationErrors] = useState<ValidationError[]>([]);
+  const [showValidationResult, setShowValidationResult] = useState(false);
   const [formData, setFormData] = useState({
     // Documents data
     notasFiscais: [],
@@ -217,11 +220,65 @@ export function NewMDFe({ isOpen, onClose, onSave }: NewMDFeProps): JSX.Element 
     onClose();
   };
 
-  // Function to save MDF-e
+  // Function to validate MDF-e
+  const handleValidate = () => {
+    playClickSound();
+    const errors = validateMDFe(formData);
+    setValidationErrors(errors);
+    setShowValidationResult(true);
+
+    if (errors.length === 0) {
+      alert('✅ MDF-e validado com sucesso! Todos os campos obrigatórios estão preenchidos corretamente.');
+    } else {
+      alert(`❌ MDF-e contém ${errors.length} erro(s) de validação. Verifique os campos obrigatórios.\n\n` +
+            errors.map(e => `• ${e.tab}: ${e.message}`).join('\n'));
+      
+      // Navegar para a primeira aba com erro
+      if (errors.length > 0) {
+        const errorTab = errors[0].tab;
+        const tabMap: Record<string, TabType> = {
+          'Documentos': 'documents',
+          'Transporte': 'transport',
+          'Condutores': 'drivers',
+          'Rota': 'route',
+          'Frete': 'freight',
+          'Seguro': 'insurance',
+          'Totalizadores': 'totalizers'
+        };
+        setActiveTab(tabMap[errorTab] || 'documents');
+      }
+    }
+  };
+
+  // Function to save MDF-e and generate XML
   const handleSave = () => {
-    // TODO: Implement validation and saving
-    console.log('Saving new MDF-e:', formData);
-    onSave(formData);
+    playClickSound();
+    
+    // Validar antes de gerar
+    const errors = validateMDFe(formData);
+    
+    if (errors.length > 0) {
+      alert(`❌ Não é possível criar o MDF-e. Por favor, corrija os erros primeiro.\n\n` +
+            errors.map(e => `• ${e.tab}: ${e.message}`).join('\n'));
+      return;
+    }
+
+    // Gerar XML
+    const xmlContent = generateMDFeXML(formData);
+    
+    console.log('MDF-e XML gerado:', xmlContent);
+    
+    // TODO: Enviar XML para API da SEFAZ
+    // Aqui você implementaria a comunicação com a SEFAZ
+    
+    // Salvar dados do formulário junto com o XML
+    const mdfeDataWithXML = {
+      ...formData,
+      xml: xmlContent,
+      status: 'gerado'
+    };
+
+    onSave(mdfeDataWithXML);
     handleClose();
   };
 
@@ -553,20 +610,13 @@ export function NewMDFe({ isOpen, onClose, onSave }: NewMDFeProps): JSX.Element 
                 border: '1px solid #34C759',
                 boxShadow: '0 1px 2px rgba(52, 199, 89, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.2)'
               }}
-              onClick={() => {
-                playClickSound();
-                // TODO: Implementar validação do MDF-e
-                console.log('Validando MDF-e:', formData);
-              }}
+              onClick={handleValidate}
             >
               Validar
             </button>
             <button
               style={systemStyles.button.primary}
-              onClick={() => {
-                playClickSound();
-                handleSave();
-              }}
+              onClick={handleSave}
             >
               Criar MDF-e
             </button>
