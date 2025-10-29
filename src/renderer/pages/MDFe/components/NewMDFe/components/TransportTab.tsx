@@ -30,7 +30,7 @@ interface TransportTabProps {
 export function TransportTab({ formData, onUpdateFormData }: TransportTabProps): JSX.Element {
   const playClickSound = useClickSound();
   const [focusedField, setFocusedField] = useState<string | null>(null);
-  const [proprietarioNaoEmitente, setProprietarioNaoEmitente] = useState(false);
+  const [proprietarioNaoEmitente, setProprietarioNaoEmitente] = useState(!!formData.proprietarioNaoEmitente);
   const formContainerRef = useRef<HTMLDivElement>(null);
 
   // Adicionar animação CSS para o formulário adicional
@@ -170,7 +170,9 @@ export function TransportTab({ formData, onUpdateFormData }: TransportTabProps):
 
   const handleCheckboxChange = () => {
     playClickSound();
-    setProprietarioNaoEmitente(!proprietarioNaoEmitente);
+    const newValue = !proprietarioNaoEmitente;
+    setProprietarioNaoEmitente(newValue);
+    onUpdateFormData('proprietarioNaoEmitente', newValue);
   };
 
   const styles = {
@@ -319,7 +321,7 @@ export function TransportTab({ formData, onUpdateFormData }: TransportTabProps):
         <div style={styles.formGrid}>
           <div style={styles.formGroup}>
             <label style={styles.label}>Placa *</label>
-            <input {...getInputProps('placa', 'ABC-1234')} />
+            <input {...getInputProps('placa', 'ABC1234')} />
           </div>
           <div style={styles.formGroup}>
             <label style={styles.label}>RENAVAM</label>
