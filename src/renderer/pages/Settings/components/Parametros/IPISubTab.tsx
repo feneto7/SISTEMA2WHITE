@@ -4,7 +4,7 @@
 // Permite cadastrar cards de configuração tributária por departamento
 //--------------------------------------------------------------------
 import React, { useState } from 'react';
-import { systemStyles, systemColors } from '../../../../styles/systemStyle';
+import { useTheme } from '../../../../styles/ThemeProvider';
 import { TaxCard } from './TaxCard';
 import { TaxFormIPI } from './TaxFormIPI';
 
@@ -17,6 +17,7 @@ interface IPIConfig {
 
 export function IPISubTab(): JSX.Element {
   const [configs, setConfigs] = useState<IPIConfig[]>([]);
+  const { systemStyles, systemColors } = useTheme();
 
   const handleAddConfig = (data: IPIConfig) => {
     setConfigs([...configs, data]);

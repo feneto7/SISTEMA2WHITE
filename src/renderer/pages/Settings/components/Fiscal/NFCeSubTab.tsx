@@ -3,7 +3,7 @@
 // Configurações de numeração e credenciais para NFC-e
 //--------------------------------------------------------------------
 import React, { useState, useEffect } from 'react';
-import { systemColors, systemStyles } from '../../../../styles/systemStyle';
+import { useTheme } from '../../../../styles/ThemeProvider';
 import { formatMoneyInput } from '../../../../utils/money';
 
 interface ProducaoFormData {
@@ -23,6 +23,7 @@ interface HomologacaoFormData {
 const ENVIRONMENT_KEY = 'fiscal_environment';
 
 export function NFCeSubTab(): JSX.Element {
+  const { systemColors, systemStyles } = useTheme();
   const [producao, setProducao] = useState<ProducaoFormData>({ 
     serie: '1', 
     valorMaximo: '0,00',

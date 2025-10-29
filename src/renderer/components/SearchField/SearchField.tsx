@@ -5,7 +5,7 @@
 //--------------------------------------------------------------------
 import React, { useState } from 'react';
 import { AppIcons } from '../Icons/AppIcons';
-import { systemStyles, systemColors } from '../../styles/systemStyle';
+import { useTheme } from '../../styles/ThemeProvider';
 
 interface SearchFieldProps {
   value: string;
@@ -16,6 +16,7 @@ interface SearchFieldProps {
 
 export function SearchField({ value, onChange, placeholder = 'Buscar', disabled = false }: SearchFieldProps): JSX.Element {
   const [isFocused, setIsFocused] = useState(false);
+  const { systemStyles, systemColors } = useTheme();
 
   const styles = {
     container: {

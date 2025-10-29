@@ -3,7 +3,7 @@
 // Configurações de numeração e série para MDF-e
 //--------------------------------------------------------------------
 import React, { useState, useEffect } from 'react';
-import { systemColors, systemStyles } from '../../../../styles/systemStyle';
+import { useTheme } from '../../../../styles/ThemeProvider';
 
 interface FormData {
   serie: string;
@@ -13,6 +13,7 @@ interface FormData {
 const ENVIRONMENT_KEY = 'fiscal_environment';
 
 export function MDFeSubTab(): JSX.Element {
+  const { systemColors, systemStyles } = useTheme();
   const [producao, setProducao] = useState<FormData>({ serie: '', numero: '' });
   const [homologacao, setHomologacao] = useState<FormData>({ serie: '', numero: '' });
   const [activeEnvironment, setActiveEnvironment] = useState<'producao' | 'homologacao'>('homologacao');

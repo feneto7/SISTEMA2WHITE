@@ -45,6 +45,16 @@ export const bgHomeStyles = {
   }
 };
 
+// Retorna o estilo do container conforme o tema
+export function getBgHomeContainer(theme: 'light' | 'dark') {
+  const light = 'linear-gradient(315deg, rgba(101,0,94,1) 3%, rgba(60,132,206,1) 38%, rgba(48,238,226,1) 68%, rgba(255,25,25,1) 98%)';
+  const dark = 'linear-gradient(315deg, rgba(9,9,12,1) 3%, rgba(24,32,54,1) 38%, rgba(24,84,112,1) 68%, rgba(46,46,64,1) 98%)';
+  return {
+    ...bgHomeStyles.container,
+    background: theme === 'dark' ? dark : light
+  } as const;
+}
+
 // CSS Animations como string para injetar no head
 export const bgHomeAnimations = `
 @keyframes gradient {

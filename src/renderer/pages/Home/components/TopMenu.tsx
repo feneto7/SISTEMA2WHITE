@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { AppIcons } from '../../../components/Icons/AppIcons';
 import { useClickSound } from '../../../hooks/useClickSound';
 import { Tooltip } from '../../../components/Tooltip';
-import { systemStyles, systemColors } from '../../../styles/systemStyle';
+import { useTheme } from '../../../styles/ThemeProvider';
 import { useNavigation } from '../../../router/Navigation';
 import { AppIconButton } from '../../../components/AppIconButton';
 
@@ -16,6 +16,7 @@ function MenuButton({ icon: Icon, label, onClick }: MenuButtonProps): JSX.Elemen
   const [isHovered, setIsHovered] = useState(false);
   const [isPressed, setIsPressed] = useState(false);
   const playClickSound = useClickSound();
+  const { systemStyles, systemColors } = useTheme();
 
   const handleClick = () => {
     playClickSound();
@@ -31,8 +32,8 @@ function MenuButton({ icon: Icon, label, onClick }: MenuButtonProps): JSX.Elemen
     <div style={tooltipContainer}>
       <button
         style={{
-          ...menuButton,
-          ...(isHovered ? menuButtonHover : {}),
+          ...systemStyles.toolbar.button,
+          // Neumorfismo: sem efeito de hover; apenas estado pressionado
           ...(isPressed ? systemStyles.toolbar.buttonActive : {})
         }}
         onMouseEnter={() => setIsHovered(true)}
@@ -53,10 +54,19 @@ function MenuButton({ icon: Icon, label, onClick }: MenuButtonProps): JSX.Elemen
 
 export function TopMenu(): JSX.Element {
   const { navigate } = useNavigation();
+  const { systemStyles, systemColors } = useTheme();
 
   return (
-    <div style={topMenuContainer}>
-      <div style={menuContent}>
+    <div style={{ ...systemStyles.toolbar.container, position: 'relative', zIndex: 100 }}>
+      <div style={{
+        height: '100%',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        padding: '0 4px',
+        color: systemColors.text.primary,
+        width: '100%'
+      }}>
         {/* Menu dropdown no canto esquerdo */}
         <AppIconButton />
 
@@ -81,22 +91,6 @@ export function TopMenu(): JSX.Element {
   );
 }
 
-const topMenuContainer: React.CSSProperties = {
-  ...systemStyles.toolbar.container,
-  position: 'relative' as const,
-  zIndex: 100
-};
-
-const menuContent: React.CSSProperties = {
-  height: '100%',
-  display: 'flex',
-  alignItems: 'center',
-  justifyContent: 'space-between',
-  padding: '0 4px',
-  color: systemColors.text.primary,
-  width: '100%'
-};
-
 const menuCenter: React.CSSProperties = {
   display: 'flex',
   gap: 8,
@@ -118,9 +112,4 @@ const tooltipContainer: React.CSSProperties = {
   display: 'inline-block'
 };
 
-const menuButton: React.CSSProperties = systemStyles.toolbar.button;
-
-const menuButtonHover: React.CSSProperties = {
-  ...systemStyles.toolbar.button,
-  ...systemStyles.toolbar.buttonHover
-};
+// estilos dependentes de tema foram movidos para dentro do componente

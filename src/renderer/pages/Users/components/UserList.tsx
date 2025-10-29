@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef, useMemo, useCallback } from 'react';
 import { AppIcons } from '../../../components/Icons/AppIcons';
-import { systemStyles, systemColors } from '../../../styles/systemStyle';
+import { useTheme } from '../../../styles/ThemeProvider';
 import { useClickSound } from '../../../hooks/useClickSound';
 import { ActionButton } from '../../../components/ActionButton';
 
@@ -23,6 +23,7 @@ interface UserListProps {
 }
 
 export const UserList = React.memo<UserListProps>(({ users, nameColumnWidth, onEditUser, onDeleteUser }) => {
+  const { systemColors } = useTheme();
   const [selectedIndex, setSelectedIndex] = useState<number>(-1);
   const listRef = useRef<HTMLDivElement>(null);
   const selectedItemRef = useRef<HTMLDivElement>(null);
@@ -121,12 +122,12 @@ export const UserList = React.memo<UserListProps>(({ users, nameColumnWidth, onE
       }}>Nenhum usuário encontrado</p>
       <p style={{
         fontSize: '13px',
-        color: 'rgba(0, 0, 0, 0.4)',
+        color: systemColors.text.tertiary,
         margin: 0,
         fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, Helvetica, Arial, sans-serif'
       }}>Tente buscar com outros termos</p>
     </div>
-  ), []);
+  ), [systemColors.text.tertiary, systemColors.text.secondary]);
 
   // Função para renderizar item individual
   const renderUserItem = useCallback((user: User, index: number) => (
@@ -172,6 +173,7 @@ const UserRow = React.memo(React.forwardRef<HTMLDivElement, UserRowProps>(({
   onEditUser,
   onDeleteUser
 }, ref) => {
+  const { systemStyles, systemColors } = useTheme();
   const [isHovered, setIsHovered] = useState(false);
   const playClickSound = useClickSound();
 
@@ -181,6 +183,7 @@ const UserRow = React.memo(React.forwardRef<HTMLDivElement, UserRowProps>(({
       gridTemplateColumns: `${nameColumnWidth}px 1fr 1fr 0.8fr 80px`,
       padding: '16px 12px',
       borderBottom: `1px solid ${systemColors.border.divider}`,
+      background: systemColors.background.content,
       display: 'grid',
       gap: '16px',
       animationDelay: `${index * 0.05}s`,
@@ -194,20 +197,17 @@ const UserRow = React.memo(React.forwardRef<HTMLDivElement, UserRowProps>(({
     if (isSelected) {
       return {
         ...baseStyle,
-        background: systemColors.selection.background,
-        border: `1px solid ${systemColors.selection.border}`,
-        transform: 'translateX(4px)',
-        boxShadow: '0 2px 8px rgba(10, 132, 255, 0.2)'
+        ...systemStyles.list.rowSelected
       };
     } else if (isHovered) {
       return { 
         ...baseStyle, 
-        background: systemColors.control.hover
+        ...systemStyles.list.rowHover
       };
     }
     
     return baseStyle;
-  }, [nameColumnWidth, index, isSelected, isHovered]);
+  }, [nameColumnWidth, index, isSelected, isHovered, systemColors.border.divider, systemColors.background.content, systemStyles.list.rowSelected, systemStyles.list.rowHover]);
 
   // Callbacks
   const handleEdit = useCallback((e: React.MouseEvent) => {

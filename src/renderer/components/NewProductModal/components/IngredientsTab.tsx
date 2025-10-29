@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { systemStyles, systemColors } from '../../../styles/systemStyle';
+import { useTheme } from '../../../styles/ThemeProvider';
 import { useClickSound } from '../../../hooks/useClickSound';
 
 // Componente da aba Insumos - Lista de ingredientes/insumos necessários para produzir o produto
@@ -17,6 +17,7 @@ interface Ingredient {
 
 export function IngredientsTab({ onFormDataChange }: IngredientsTabProps): JSX.Element {
   const playClickSound = useClickSound();
+  const { systemStyles, systemColors } = useTheme();
   
   // Estados dos ingredientes/insumos
   const [ingredientes, setIngredientes] = useState<Ingredient[]>([]);

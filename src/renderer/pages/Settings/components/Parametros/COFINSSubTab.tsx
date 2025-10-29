@@ -4,7 +4,7 @@
 // Permite cadastrar cards de configuração tributária por departamento
 //--------------------------------------------------------------------
 import React, { useState } from 'react';
-import { systemStyles, systemColors } from '../../../../styles/systemStyle';
+import { useTheme } from '../../../../styles/ThemeProvider';
 import { TaxCard } from './TaxCard';
 import { TaxFormCOFINS } from './TaxFormCOFINS';
 
@@ -17,6 +17,7 @@ interface COFINSConfig {
 
 export function COFINSSubTab(): JSX.Element {
   const [configs, setConfigs] = useState<COFINSConfig[]>([]);
+  const { systemStyles, systemColors } = useTheme();
 
   const handleAddConfig = (data: COFINSConfig) => {
     setConfigs([...configs, data]);

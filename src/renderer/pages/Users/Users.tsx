@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { systemStyles, systemColors } from '../../styles/systemStyle';
+import { useTheme } from '../../styles/ThemeProvider';
 import { UserSearchBox, UserList, NewUserModal } from './components';
 import { useNavigation } from '../../router/Navigation';
 import { useClickSound } from '../../hooks/useClickSound';
@@ -18,6 +18,7 @@ interface User {
 // Página de Usuários do sistema
 // Permite buscar, visualizar e gerenciar usuários cadastrados
 export function Users(): JSX.Element {
+  const { systemStyles, systemColors } = useTheme();
   const { navigate } = useNavigation();
   const playClickSound = useClickSound();
   const [searchTerm, setSearchTerm] = useState('');
@@ -103,7 +104,8 @@ export function Users(): JSX.Element {
       padding: '20px',
       gap: '20px',
       overflow: 'hidden',
-      position: 'relative'
+      position: 'relative',
+      background: systemColors.background.content
     }}>
       {/* Header com botão voltar */}
       <div style={systemStyles.page.header}>

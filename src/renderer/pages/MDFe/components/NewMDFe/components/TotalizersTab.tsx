@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useClickSound } from '../../../../../hooks/useClickSound';
-import { systemStyles, systemColors } from '../../../../../styles/systemStyle';
+import { useTheme } from '../../../../../styles/ThemeProvider';
 import { AddButton } from '../../../../../components/AddButton/AddButton';
 
 // Totalizers tab for NewMDFe modal
@@ -22,6 +22,7 @@ interface AutorizadoDownload {
 
 export function TotalizersTab({ formData, onUpdateFormData }: TotalizersTabProps): JSX.Element {
   const playClickSound = useClickSound();
+  const { systemStyles, systemColors } = useTheme();
   const [focusedField, setFocusedField] = useState<string | null>(null);
   const [lacreList, setLacreList] = useState<Lacre[]>([]);
   const [currentLacre, setCurrentLacre] = useState<Lacre>({
@@ -211,7 +212,7 @@ export function TotalizersTab({ formData, onUpdateFormData }: TotalizersTabProps
       justifyContent: 'space-between',
       alignItems: 'center',
       padding: '8px',
-      background: systemColors.background.white,
+      background: systemColors.background.primary,
       borderRadius: '4px',
       marginBottom: '8px',
       fontSize: '12px',
@@ -222,7 +223,7 @@ export function TotalizersTab({ formData, onUpdateFormData }: TotalizersTabProps
       justifyContent: 'space-between',
       alignItems: 'center',
       padding: '8px',
-      background: systemColors.background.white,
+      background: systemColors.background.primary,
       borderRadius: '4px',
       marginBottom: '8px',
       fontSize: '12px',
@@ -232,14 +233,14 @@ export function TotalizersTab({ formData, onUpdateFormData }: TotalizersTabProps
       width: '20px',
       height: '20px',
       borderRadius: '4px',
-      border: '1px solid rgba(0, 0, 0, 0.2)',
-      background: 'linear-gradient(to bottom, #ff5f57, #ff3b30)',
+      border: `1px solid ${systemColors.border.light}`,
+      background: systemColors.background.primary,
       cursor: 'pointer',
       transition: 'all 0.15s ease',
       display: 'flex',
       alignItems: 'center',
       justifyContent: 'center',
-      color: 'white',
+      color: systemColors.text.primary,
       fontSize: '10px',
       fontWeight: 'bold'
     },

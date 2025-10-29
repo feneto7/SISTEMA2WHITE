@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { systemStyles, systemColors } from '../../../../styles/systemStyle';
+import { useTheme } from '../../../../styles/ThemeProvider';
 import { useClickSound } from '../../../../hooks/useClickSound';
 import { VehicleTab, DriverTab, RoutesTab, SettingsTab } from './components';
 
@@ -14,6 +14,7 @@ type TabType = 'vehicle' | 'driver' | 'routes' | 'settings';
 
 export function MDFeRegistrations({ isOpen, onClose }: MDFeRegistrationsProps): JSX.Element | null {
   const playClickSound = useClickSound();
+  const { systemStyles, systemColors } = useTheme();
   const [activeTab, setActiveTab] = useState<TabType>('vehicle');
   const [isCloseHovered, setIsCloseHovered] = useState(false);
   const [isCancelHovered, setIsCancelHovered] = useState(false);

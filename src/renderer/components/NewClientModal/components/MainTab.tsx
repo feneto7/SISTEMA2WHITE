@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useClickSound } from '../../../hooks/useClickSound';
-import { systemStyles, systemColors } from '../../../styles/systemStyle';
+import { useTheme } from '../../../styles/ThemeProvider';
 
 // Interface para dados do formulário
 interface FormData {
@@ -81,6 +81,7 @@ interface MainTabProps {
 // Contém os campos básicos de identificação do cliente
 export function MainTab({ clientType, formData, onUpdateFormData }: MainTabProps): JSX.Element {
   const playClickSound = useClickSound();
+  const { systemStyles, systemColors } = useTheme();
   const [isLoadingCNPJ, setIsLoadingCNPJ] = useState(false);
   const [focusedField, setFocusedField] = useState<string | null>(null);
 

@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef, useMemo, useCallback } from 'react';
 import { AppIcons } from '../../../components/Icons/AppIcons';
-import { systemStyles, systemColors } from '../../../styles/systemStyle';
+import { useTheme } from '../../../styles/ThemeProvider';
 import { useClickSound } from '../../../hooks/useClickSound';
 import { VirtualList, useListPerformance, useDebounce } from '../../../hooks/useVirtualization';
 import { ActionButton } from '../../../components/ActionButton';
@@ -37,6 +37,7 @@ export const MDFeList = React.memo<MDFeListProps>(({ mdfes, onCloseMDFe, onDetai
   const [selectedIndex, setSelectedIndex] = useState<number>(-1);
   const listRef = useRef<HTMLDivElement>(null);
   const selectedItemRef = useRef<HTMLDivElement>(null);
+  const { systemStyles, systemColors } = useTheme();
 
 
   // Verificar se precisa de virtualização
@@ -375,6 +376,7 @@ const MDFeRow = React.memo<MDFeRowProps>(({
   onDetailMDFe
 }) => {
   const [isHovered, setIsHovered] = useState(false);
+  const { systemStyles, systemColors } = useTheme();
   const styles = {
     listRow: {
       padding: '12px 16px',

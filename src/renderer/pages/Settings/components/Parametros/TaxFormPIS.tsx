@@ -3,7 +3,7 @@
 // Campos específicos do Programa de Integração Social
 //--------------------------------------------------------------------
 import React, { useState } from 'react';
-import { systemStyles, systemColors } from '../../../../styles/systemStyle';
+import { useTheme } from '../../../../styles/ThemeProvider';
 import { AddButton } from '../../../../components/AddButton/AddButton';
 import { formatPercentageInput } from '../../../../utils/percentageFormatter';
 
@@ -60,6 +60,7 @@ export function TaxFormPIS({ onSubmit }: TaxFormPISProps): JSX.Element {
     aliquota: '',
     aliquotaPorUnidade: ''
   });
+  const { systemStyles, systemColors } = useTheme();
 
   const styles = {
     formContainer: {

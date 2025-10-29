@@ -5,7 +5,7 @@
 //--------------------------------------------------------------------
 import React from 'react';
 import { formatMoneyInput } from '../../../utils/money';
-import { systemStyles, systemColors } from '../../../styles/systemStyle';
+import { useTheme } from '../../../styles/ThemeProvider';
 
 interface CurrencyInputProps {
   value: string;
@@ -19,6 +19,7 @@ interface CurrencyInputProps {
 
 export const CurrencyInput = React.forwardRef<HTMLInputElement, CurrencyInputProps>(
   ({ value, onChange, placeholder = '0,00', label, disabled = false, onKeyPress }, ref) => {
+    const { systemStyles, systemColors } = useTheme();
     
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
       const formatted = formatMoneyInput(e.target.value);

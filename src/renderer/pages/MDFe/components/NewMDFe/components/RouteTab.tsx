@@ -1,5 +1,5 @@
 import React, { useState, useRef } from 'react';
-import { systemStyles, systemColors } from '../../../../../styles/systemStyle';
+import { useTheme } from '../../../../../styles/ThemeProvider';
 import { useClickSound } from '../../../../../hooks/useClickSound';
 import { AddButton } from '../../../../../components/AddButton';
 
@@ -23,6 +23,7 @@ interface Municipio {
 
 export function RouteTab({ formData, onUpdateFormData }: RouteTabProps): JSX.Element {
   const playClickSound = useClickSound();
+  const { systemStyles, systemColors } = useTheme();
   const [focusedField, setFocusedField] = useState<string | null>(null);
   const [novaUF, setNovaUF] = useState('');
   const [municipiosCarregamento, setMunicipiosCarregamento] = useState<Municipio[]>([]);
@@ -198,7 +199,7 @@ export function RouteTab({ formData, onUpdateFormData }: RouteTabProps): JSX.Ele
       justifyContent: 'space-between',
       alignItems: 'center',
       padding: '12px 16px',
-      backgroundColor: systemColors.background.white,
+      backgroundColor: systemColors.background.primary,
       border: `1px solid ${systemColors.border.light}`,
       borderRadius: '6px',
       boxShadow: '0 1px 2px rgba(0, 0, 0, 0.05)',

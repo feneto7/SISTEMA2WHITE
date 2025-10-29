@@ -1,6 +1,6 @@
 import React from 'react';
 import { useClickSound } from '../../../../../hooks/useClickSound';
-import { systemStyles, systemColors } from '../../../../../styles/systemStyle';
+import { useTheme } from '../../../../../styles/ThemeProvider';
 
 interface SettingsTabProps {
   formData: any;
@@ -9,23 +9,24 @@ interface SettingsTabProps {
 
 export function SettingsTab({ formData, onUpdateFormData }: SettingsTabProps): JSX.Element {
   const playClickSound = useClickSound();
+  const { systemStyles, systemColors } = useTheme();
 
   const handleInputChange = (field: string, value: string) => {
     onUpdateFormData(field, value);
   };
 
   return (
-    <div style={{ flex: 1, padding: '24px', overflow: 'auto' }}>
-      <h3 style={{ fontSize: '20px', fontWeight: '600', margin: '0 0 24px 0', paddingBottom: '16px', borderBottom: '1px solid #C8C8C8', fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, Helvetica, Arial, sans-serif' }}>Configurações do Sistema</h3>
+    <div style={{ flex: 1, padding: '24px', overflow: 'auto', background: systemColors.background.content }}>
+      <h3 style={{ fontSize: '20px', fontWeight: '600', margin: '0 0 24px 0', paddingBottom: '16px', borderBottom: `1px solid ${systemColors.border.light}`, color: systemColors.text.primary, fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, Helvetica, Arial, sans-serif' }}>Configurações do Sistema</h3>
       
       {/* Environment Settings */}
-      <div style={{ backgroundColor: '#FBFBFB', border: '1px solid #B4B4B4', borderRadius: '4px', padding: '12px', marginBottom: '16px' }}>
-        <h4 style={{ fontSize: '13px', fontWeight: '600', margin: '0 0 8px 0', fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, Helvetica, Arial, sans-serif' }}>Ambiente</h4>
+      <div style={{ background: systemColors.background.primary, border: `1px solid ${systemColors.border.light}`, borderRadius: '4px', padding: '12px', marginBottom: '16px' }}>
+        <h4 style={{ fontSize: '13px', fontWeight: '600', margin: '0 0 8px 0', color: systemColors.text.primary, fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, Helvetica, Arial, sans-serif' }}>Ambiente</h4>
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
           <div style={{ marginBottom: '20px' }}>
             <label style={systemStyles.input.label}>Ambiente</label>
             <select
-              style={systemStyles.input.field}
+              style={systemStyles.select.field}
               value={formData.ambiente}
               onChange={(e) => handleInputChange('ambiente', e.target.value)}
               onClick={() => playClickSound()}
@@ -60,8 +61,8 @@ export function SettingsTab({ formData, onUpdateFormData }: SettingsTabProps): J
       </div>
 
       {/* Digital Certificate */}
-      <div style={{ backgroundColor: '#FBFBFB', border: '1px solid #B4B4B4', borderRadius: '4px', padding: '12px', marginBottom: '16px' }}>
-        <h4 style={{ fontSize: '13px', fontWeight: '600', margin: '0 0 8px 0', fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, Helvetica, Arial, sans-serif' }}>Certificado Digital</h4>
+      <div style={{ background: systemColors.background.primary, border: `1px solid ${systemColors.border.light}`, borderRadius: '4px', padding: '12px', marginBottom: '16px' }}>
+        <h4 style={{ fontSize: '13px', fontWeight: '600', margin: '0 0 8px 0', color: systemColors.text.primary, fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, Helvetica, Arial, sans-serif' }}>Certificado Digital</h4>
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
           <div style={{ marginBottom: '20px' }}>
             <label style={systemStyles.input.label}>Caminho do Certificado</label>
@@ -99,8 +100,8 @@ export function SettingsTab({ formData, onUpdateFormData }: SettingsTabProps): J
       </div>
 
       {/* Issuer Information */}
-      <div style={{ backgroundColor: '#FBFBFB', border: '1px solid #B4B4B4', borderRadius: '4px', padding: '12px', marginBottom: '16px' }}>
-        <h4 style={{ fontSize: '13px', fontWeight: '600', margin: '0 0 8px 0', fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, Helvetica, Arial, sans-serif' }}>Dados do Emitente</h4>
+      <div style={{ background: systemColors.background.primary, border: `1px solid ${systemColors.border.light}`, borderRadius: '4px', padding: '12px', marginBottom: '16px' }}>
+        <h4 style={{ fontSize: '13px', fontWeight: '600', margin: '0 0 8px 0', color: systemColors.text.primary, fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, Helvetica, Arial, sans-serif' }}>Dados do Emitente</h4>
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
           <div style={{ marginBottom: '20px' }}>
             <label style={systemStyles.input.label}>Nome/Razão Social</label>
@@ -194,8 +195,8 @@ export function SettingsTab({ formData, onUpdateFormData }: SettingsTabProps): J
       </div>
 
       {/* System Settings */}
-      <div style={{ backgroundColor: '#FBFBFB', border: '1px solid #B4B4B4', borderRadius: '4px', padding: '12px', marginBottom: '16px' }}>
-        <h4 style={{ fontSize: '13px', fontWeight: '600', margin: '0 0 8px 0', fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, Helvetica, Arial, sans-serif' }}>Configurações do Sistema</h4>
+      <div style={{ background: systemColors.background.primary, border: `1px solid ${systemColors.border.light}`, borderRadius: '4px', padding: '12px', marginBottom: '16px' }}>
+        <h4 style={{ fontSize: '13px', fontWeight: '600', margin: '0 0 8px 0', color: systemColors.text.primary, fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, Helvetica, Arial, sans-serif' }}>Configurações do Sistema</h4>
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
           <div style={{ marginBottom: '20px' }}>
             <label style={systemStyles.input.label}>Timeout (segundos)</label>

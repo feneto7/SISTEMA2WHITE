@@ -4,7 +4,7 @@
 // Usado na página de vendas (Sales)
 //--------------------------------------------------------------------
 import React from 'react';
-import { systemStyles, systemColors } from '../../../styles/systemStyle';
+import { useTheme } from '../../../styles/ThemeProvider';
 
 interface SalesSidebarProps {
   subtotal: number;
@@ -14,6 +14,7 @@ interface SalesSidebarProps {
 }
 
 export function SalesSidebar({ subtotal, discount, total, itemsCount }: SalesSidebarProps): JSX.Element {
+  const { systemStyles, systemColors } = useTheme();
   // Formata valores para exibição em moeda brasileira
   const formatCurrency = (value: number): string => {
     return new Intl.NumberFormat('pt-BR', {

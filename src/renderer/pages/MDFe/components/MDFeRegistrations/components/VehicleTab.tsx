@@ -1,6 +1,6 @@
 import React, { useState, useRef } from 'react';
 import { useClickSound } from '../../../../../hooks/useClickSound';
-import { systemStyles, systemColors } from '../../../../../styles/systemStyle';
+import { useTheme } from '../../../../../styles/ThemeProvider';
 import { AppIcons } from '../../../../../components/Icons/AppIcons';
 import { NewVehicleModal } from './index';
 
@@ -31,6 +31,7 @@ interface VehicleTabProps {
 
 export function VehicleTab({ formData, onUpdateFormData }: VehicleTabProps): JSX.Element {
   const playClickSound = useClickSound();
+  const { systemStyles, systemColors } = useTheme();
   const [vehicles, setVehicles] = useState<Vehicle[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingVehicle, setEditingVehicle] = useState<Vehicle | null>(null);
@@ -191,7 +192,7 @@ export function VehicleTab({ formData, onUpdateFormData }: VehicleTabProps): JSX
                 key={vehicle.id}
                 style={styles.listRow}
                 onMouseEnter={(e) => {
-                  e.currentTarget.style.background = 'rgba(0, 0, 0, 0.02)';
+                  e.currentTarget.style.background = systemColors.control.hover as string;
                 }}
                 onMouseLeave={(e) => {
                   e.currentTarget.style.background = 'transparent';

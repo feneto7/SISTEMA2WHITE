@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { systemStyles, systemColors } from '../../../styles/systemStyle';
+import { useTheme } from '../../../styles/ThemeProvider';
 
 interface Permission {
   id: string;
@@ -28,6 +28,7 @@ function Checkbox({
   label: string;
 }): JSX.Element {
   const [isHovered, setIsHovered] = useState(false);
+  const { systemStyles } = useTheme();
 
   return (
     <div 
@@ -75,6 +76,7 @@ export function RoleForm({
   onTogglePermission 
 }: RoleFormProps): JSX.Element {
   const [isNameFocused, setIsNameFocused] = useState(false);
+  const { systemStyles, systemColors } = useTheme();
 
   // Estilo padrão para inputs - o foco é aplicado globalmente via CSS
   const getInputStyle = () => ({
@@ -110,7 +112,7 @@ export function RoleForm({
           display: 'flex',
           flexDirection: 'column',
           gap: '8px',
-          background: systemColors.background.white,
+          background: systemColors.background.content,
           border: `1px solid ${systemColors.border.light}`,
           borderRadius: '8px',
           padding: '12px'

@@ -1,6 +1,6 @@
 import React from 'react';
 import { AppIcons } from '../../../components/Icons/AppIcons';
-import { systemStyles, systemColors } from '../../../styles/systemStyle';
+import { useTheme } from '../../../styles/ThemeProvider';
 
 // Componente de busca para usuários
 // Modularizado e reutilizável seguindo as regras do projeto
@@ -19,6 +19,7 @@ export function UserSearchBox({
   resultsCount,
   onNewUserClick
 }: UserSearchBoxProps): JSX.Element {
+  const { systemStyles, systemColors } = useTheme();
   return (
     <div style={systemStyles.searchBox.container}>
       <div style={searchHeaderRow}>
@@ -31,7 +32,13 @@ export function UserSearchBox({
             placeholder={placeholder}
             value={searchTerm}
             onChange={(e) => onSearchChange(e.target.value)}
-            style={searchInputStyle}
+            style={{
+              ...systemStyles.searchField.field,
+              width: '100%',
+              height: '28px',
+              paddingLeft: '32px',
+              paddingRight: '10px'
+            }}
           />
         </div>
         {onNewUserClick && (
@@ -99,13 +106,7 @@ const searchIconWrapper: React.CSSProperties = {
   zIndex: 1
 };
 
-const searchInputStyle: React.CSSProperties = {
-  ...systemStyles.searchField.field,
-  width: '100%',
-  height: '28px',
-  paddingLeft: '32px',
-  paddingRight: '10px'
-};
+// Estilo do input agora vem do tema via useTheme
 
 // Componente de ícone plus
 const PlusIcon = ({ size = 16, color = 'currentColor' }: { size?: number; color?: string }) => (

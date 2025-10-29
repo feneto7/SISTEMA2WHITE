@@ -3,7 +3,7 @@
 // Permite configurar parâmetros fiscais (ICMS, PIS, COFINS e IPI)
 //--------------------------------------------------------------------
 import React, { useState } from 'react';
-import { systemStyles, systemColors } from '../../../styles/systemStyle';
+import { useTheme } from '../../../styles/ThemeProvider';
 import { useClickSound } from '../../../hooks/useClickSound';
 import { ICMSSubTab, PISSubTab, COFINSSubTab, IPISubTab } from './Parametros';
 
@@ -12,6 +12,7 @@ type ParametrosSubTab = 'icms' | 'pis' | 'cofins' | 'ipi';
 export function ParametrosTab(): JSX.Element {
   const playClickSound = useClickSound();
   const [activeTab, setActiveTab] = useState<ParametrosSubTab>('icms');
+  const { systemStyles, systemColors } = useTheme();
 
   const tabs: { key: ParametrosSubTab; label: string }[] = [
     { key: 'icms', label: 'ICMS' },

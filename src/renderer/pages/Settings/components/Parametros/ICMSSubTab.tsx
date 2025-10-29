@@ -4,7 +4,7 @@
 // Permite cadastrar cards de configuração tributária por tipo de departamento
 //--------------------------------------------------------------------
 import React, { useState } from 'react';
-import { systemStyles, systemColors } from '../../../../styles/systemStyle';
+import { useTheme } from '../../../../styles/ThemeProvider';
 import { TaxCardICMS } from './TaxCardICMS';
 import { TaxFormICMS } from './TaxFormICMS';
 
@@ -19,6 +19,7 @@ interface ICMSConfig {
 
 export function ICMSSubTab(): JSX.Element {
   const [configs, setConfigs] = useState<ICMSConfig[]>([]);
+  const { systemStyles, systemColors } = useTheme();
 
   const tipos = [
     'Consumidor Final',

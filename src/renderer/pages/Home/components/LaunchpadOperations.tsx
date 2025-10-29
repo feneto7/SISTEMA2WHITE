@@ -5,7 +5,7 @@
 //--------------------------------------------------------------------
 
 import React, { useState } from 'react';
-import { systemColors, systemStyles } from '../../../styles/systemStyle';
+import { useTheme } from '../../../styles/ThemeProvider';
 import { useClickSound } from '../../../hooks/useClickSound';
 
 // Ícones SVG customizados para operações
@@ -69,6 +69,7 @@ interface LaunchpadOperationsProps {
 
 export function LaunchpadOperations({ isOpen, onClose, onSelectOperation }: LaunchpadOperationsProps): JSX.Element | null {
   const playClickSound = useClickSound();
+  const { systemColors, systemStyles } = useTheme();
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
   const [isAnimating, setIsAnimating] = useState(false);
   const [activeIndex, setActiveIndex] = useState<number | null>(null);

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { systemStyles, systemColors } from '../../../styles/systemStyle';
+import { useTheme } from '../../../styles/ThemeProvider';
 import { AddButton } from '../../../components/AddButton/AddButton';
 import { NewRoleModal } from './NewRoleModal';
 
@@ -41,6 +41,7 @@ export function UserForm({ formData, onFormDataChange }: UserFormProps): JSX.Ele
   const [isRoleModalOpen, setIsRoleModalOpen] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const { systemStyles, systemColors } = useTheme();
 
   // Estilo padrão para inputs - o foco é aplicado globalmente via CSS
   const getInputStyle = () => ({

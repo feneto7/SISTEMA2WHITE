@@ -1,5 +1,5 @@
 import React, { useState, lazy, Suspense } from 'react';
-import { systemStyles, systemColors } from '../../styles/systemStyle';
+import { useTheme } from '../../styles/ThemeProvider';
 import { SearchBox, ProductList } from './components';
 import { useNavigation } from '../../router/Navigation';
 import { useClickSound } from '../../hooks/useClickSound';
@@ -58,6 +58,7 @@ interface Product {
 export function Products(): JSX.Element {
   const { navigate } = useNavigation();
   const playClickSound = useClickSound();
+  const { systemStyles, systemColors } = useTheme();
   const [searchTerm, setSearchTerm] = useState('');
   const [products] = useState<Product[]>([
     {
@@ -137,9 +138,7 @@ export function Products(): JSX.Element {
 
   return (
     <div style={{
-      height: '100%',
-      display: 'flex',
-      flexDirection: 'column',
+      ...systemStyles.page.container,
       padding: '20px',
       gap: '20px',
       overflow: 'hidden'
@@ -154,7 +153,7 @@ export function Products(): JSX.Element {
         <div style={{ width: '80px' }} />
       </div>
 
-      {/* Barra de pesquisa */}
+      {/* Barra de pesquisa (container já usa tema via systemStyles.searchBox.container) */}
       <SearchBox
         searchTerm={searchTerm}
         onSearchChange={setSearchTerm}

@@ -3,13 +3,15 @@ import { TopMenu } from './components/TopMenu';
 import { DockMenu } from './components/DockMenu';
 import { LaunchpadOperations } from './components/LaunchpadOperations';
 import { LaunchpadFiscal } from './components/LaunchpadFiscal';
-import { AnimatedWaves, useAnimatedBackground, bgHomeStyles } from '../../styles/bgHome';
+import { AnimatedWaves, useAnimatedBackground, getBgHomeContainer } from '../../styles/bgHome';
+import { useTheme } from '../../styles/ThemeProvider';
 import { useNavigation } from '../../router/Navigation';
 
 export function Home(): JSX.Element {
   // Injeta as animações CSS no head
   useAnimatedBackground();
   const { navigate } = useNavigation();
+  const { theme } = useTheme();
   const [isLaunchpadOpen, setIsLaunchpadOpen] = useState(false);
   const [isLaunchpadFiscalOpen, setIsLaunchpadFiscalOpen] = useState(false);
 
@@ -84,7 +86,7 @@ export function Home(): JSX.Element {
   return (
     <div style={layoutRoot}>
       {/* Background animado com gradiente */}
-      <div style={bgHomeStyles.container}>
+      <div style={getBgHomeContainer(theme)}>
         <AnimatedWaves />
       </div>
 

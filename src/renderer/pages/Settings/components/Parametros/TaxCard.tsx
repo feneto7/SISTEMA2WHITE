@@ -4,7 +4,7 @@
 // Usado para tributos que têm estrutura similar (Nome, ST, Alíquota, Alíquota por Unidade)
 //--------------------------------------------------------------------
 import React from 'react';
-import { systemStyles, systemColors } from '../../../../styles/systemStyle';
+import { useTheme } from '../../../../styles/ThemeProvider';
 import { AppIcons } from '../../../../components/Icons/AppIcons';
 import { useClickSound } from '../../../../hooks/useClickSound';
 
@@ -25,6 +25,7 @@ export function TaxCard({
 }: TaxCardProps): JSX.Element {
   const [isHovered, setIsHovered] = React.useState(false);
   const playClickSound = useClickSound();
+  const { systemColors } = useTheme();
 
   const styles = {
     container: {

@@ -5,7 +5,7 @@
 //--------------------------------------------------------------------
 
 import React, { useState, useEffect } from 'react';
-import { systemStyles, systemColors } from '../../../styles/systemStyle';
+import { useTheme } from '../../../styles/ThemeProvider';
 import { SearchField } from '../../../components/SearchField';
 import { NewProductModal } from '../../../components/NewProductModal/NewProductModal';
 
@@ -25,6 +25,7 @@ interface ProductSelectModalProps {
 }
 
 export function ProductSelectModal({ isOpen, onClose, onSelectProduct }: ProductSelectModalProps): JSX.Element | null {
+  const { systemStyles, systemColors } = useTheme();
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedIndex, setSelectedIndex] = useState(0);
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);

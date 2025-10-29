@@ -1,7 +1,7 @@
 import React from 'react';
 import { SearchIcon } from '../../../components/Icons/Icons';
 import { BackButton } from '../../../components/BackButton';
-import { systemStyles, systemColors } from '../../../styles/systemStyle';
+import { useTheme } from '../../../styles/ThemeProvider';
 
 // Componente de busca para páginas do sistema
 // Reutilizável e modularizado seguindo as regras do projeto
@@ -22,6 +22,14 @@ export function SearchBox({
   onBackClick,
   additionalButton
 }: SearchBoxProps): JSX.Element {
+  const { systemStyles, systemColors } = useTheme();
+  const searchInputStyle: React.CSSProperties = {
+    ...systemStyles.searchField.field,
+    width: '100%',
+    height: '28px',
+    paddingLeft: '32px',
+    paddingRight: '10px'
+  };
   return (
     <div style={systemStyles.searchBox.container}>
       <div style={searchHeaderRow}>
@@ -92,10 +100,4 @@ const searchIconWrapper: React.CSSProperties = {
   zIndex: 1
 };
 
-const searchInputStyle: React.CSSProperties = {
-  ...systemStyles.searchField.field,
-  width: '100%',
-  height: '28px',
-  paddingLeft: '32px',
-  paddingRight: '10px'
-};
+// Removido estilo estático antigo: o input usa o estilo montado dentro do componente via useTheme

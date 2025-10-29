@@ -4,7 +4,7 @@
 // Permite cadastrar cards de configuração tributária por departamento
 //--------------------------------------------------------------------
 import React, { useState } from 'react';
-import { systemStyles, systemColors } from '../../../../styles/systemStyle';
+import { useTheme } from '../../../../styles/ThemeProvider';
 import { TaxCard } from './TaxCard';
 import { TaxFormPIS } from './TaxFormPIS';
 
@@ -17,6 +17,7 @@ interface PISConfig {
 
 export function PISSubTab(): JSX.Element {
   const [configs, setConfigs] = useState<PISConfig[]>([]);
+  const { systemStyles, systemColors } = useTheme();
 
   const handleAddConfig = (data: PISConfig) => {
     setConfigs([...configs, data]);

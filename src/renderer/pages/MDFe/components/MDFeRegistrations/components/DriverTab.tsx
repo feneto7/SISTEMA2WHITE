@@ -1,6 +1,6 @@
 import React, { useState, useRef } from 'react';
 import { useClickSound } from '../../../../../hooks/useClickSound';
-import { systemStyles, systemColors } from '../../../../../styles/systemStyle';
+import { useTheme } from '../../../../../styles/ThemeProvider';
 import { AppIcons } from '../../../../../components/Icons/AppIcons';
 import { NewDriverModal } from './NewDriverModal';
 
@@ -31,6 +31,7 @@ interface DriverTabProps {
 
 export function DriverTab({ formData, onUpdateFormData }: DriverTabProps): JSX.Element {
   const playClickSound = useClickSound();
+  const { systemStyles, systemColors } = useTheme();
   const [drivers, setDrivers] = useState<Driver[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingDriver, setEditingDriver] = useState<Driver | null>(null);
@@ -191,7 +192,7 @@ export function DriverTab({ formData, onUpdateFormData }: DriverTabProps): JSX.E
                 key={driver.id}
                 style={styles.listRow}
                 onMouseEnter={(e) => {
-                  e.currentTarget.style.background = 'rgba(0, 0, 0, 0.02)';
+                  e.currentTarget.style.background = systemColors.control.hover as string;
                 }}
                 onMouseLeave={(e) => {
                   e.currentTarget.style.background = 'transparent';
