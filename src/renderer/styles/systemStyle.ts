@@ -60,6 +60,19 @@ export const systemColors = {
     gradient: 'linear-gradient(to bottom, #FFFFFF, #F0F0F0)'  // Gradiente padrão
   },
   
+  // Cores de status
+  status: {
+    authorized: { color: '#34C759', background: 'rgba(52, 199, 89, 0.1)' },
+    canceled: { color: '#FF3B30', background: 'rgba(255, 59, 48, 0.1)' },
+    closed: { color: '#5856D6', background: 'rgba(88, 86, 214, 0.1)' },
+    rejected: { color: '#FF3B30', background: 'rgba(255, 59, 48, 0.1)' },
+    editing: { color: '#FF9500', background: 'rgba(255, 149, 0, 0.1)' },
+    waiting: { color: '#007AFF', background: 'rgba(0, 122, 255, 0.1)' },
+    closingPending: { color: '#AF52DE', background: 'rgba(175, 82, 222, 0.1)' },
+    transmissionError: { color: '#FF3B30', background: 'rgba(255, 59, 48, 0.1)' },
+    voided: { color: '#8E8E93', background: 'rgba(142, 142, 147, 0.1)' }
+  },
+  
   // Cores do Dock
   dock: {
     background: 'rgba(255, 255, 255, 0.25)',  // Fundo translúcido

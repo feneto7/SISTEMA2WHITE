@@ -31,6 +31,7 @@ export interface MDFeFormData {
   cidadeProprietario: string;
   ufProprietario: string;
   cepProprietario: string;
+  proprietarioNaoEmitente: boolean;
   rntrc: string;
   tipoProprietario: string;
   ie: string;
@@ -138,7 +139,12 @@ export function validateMDFe(formData: MDFeFormData): ValidationError[] {
     });
   }
 
-  if (!formData.placa || formData.placa.length !== 7) {
+  // Normaliza a placa removendo caracteres não alfanuméricos e aplicando maiúsculas
+  const normalizedPlate = (formData.placa || '').replace(/[^a-zA-Z0-9]/g, '').toUpperCase();
+  const isOldPattern = /^[A-Z]{3}[0-9]{4}$/.test(normalizedPlate); // ABC1234
+  const isMercosulPattern = /^[A-Z]{3}[0-9][A-Z][0-9]{2}$/.test(normalizedPlate); // ABC1D23
+
+  if (!normalizedPlate || normalizedPlate.length !== 7 || !(isOldPattern || isMercosulPattern)) {
     errors.push({
       field: 'placa',
       message: 'Placa do veículo é obrigatória e deve ter 7 caracteres (formato ABC1234 ou ABC1D23)',
@@ -154,28 +160,31 @@ export function validateMDFe(formData: MDFeFormData): ValidationError[] {
     });
   }
 
-  if (!formData.tipoProprietario || !formData.proprietario) {
-    errors.push({
-      field: 'proprietario',
-      message: 'Proprietário do veículo é obrigatório',
-      tab: 'Transporte'
-    });
-  }
+  // Dados do proprietário só são obrigatórios quando o proprietário NÃO é o emitente
+  if (formData.proprietarioNaoEmitente) {
+    if (!formData.tipoProprietario || !formData.proprietario) {
+      errors.push({
+        field: 'proprietario',
+        message: 'Proprietário do veículo é obrigatório',
+        tab: 'Transporte'
+      });
+    }
 
-  if (!formData.cpfCnpjProprietario) {
-    errors.push({
-      field: 'cpfCnpjProprietario',
-      message: 'CPF/CNPJ do proprietário é obrigatório',
-      tab: 'Transporte'
-    });
-  }
+    if (!formData.cpfCnpjProprietario) {
+      errors.push({
+        field: 'cpfCnpjProprietario',
+        message: 'CPF/CNPJ do proprietário é obrigatório',
+        tab: 'Transporte'
+      });
+    }
 
-  if (!formData.ufProprietario) {
-    errors.push({
-      field: 'ufProprietario',
-      message: 'UF do proprietário é obrigatório',
-      tab: 'Transporte'
-    });
+    if (!formData.ufProprietario) {
+      errors.push({
+        field: 'ufProprietario',
+        message: 'UF do proprietário é obrigatório',
+        tab: 'Transporte'
+      });
+    }
   }
 
   // Validação da aba Condutores
@@ -185,31 +194,6 @@ export function validateMDFe(formData: MDFeFormData): ValidationError[] {
       message: 'Pelo menos um condutor deve ser adicionado',
       tab: 'Condutores'
     });
-  } else {
-    // Validar dados do condutor selecionado
-    if (!formData.nomeCondutor) {
-      errors.push({
-        field: 'nomeCondutor',
-        message: 'Nome do condutor é obrigatório',
-        tab: 'Condutores'
-      });
-    }
-
-    if (!formData.cpfCondutor || formData.cpfCondutor.length !== 11) {
-      errors.push({
-        field: 'cpfCondutor',
-        message: 'CPF do condutor é obrigatório e deve ter 11 dígitos',
-        tab: 'Condutores'
-      });
-    }
-
-    if (!formData.ufCondutor) {
-      errors.push({
-        field: 'ufCondutor',
-        message: 'UF do condutor é obrigatória',
-        tab: 'Condutores'
-      });
-    }
   }
 
   // Validação da aba Rota

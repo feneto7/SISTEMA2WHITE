@@ -28,7 +28,7 @@ export function MDFePage(): JSX.Element {
       emitente: 'Tech Solutions Ltda',
       destinatario: 'Digital Marketing Corp',
       valor: 1500.00,
-      status: 'autorizada',
+      status: 'autorizado',
       dataEmissao: '2024-01-15',
       dataAutorizacao: '2024-01-15'
     },
@@ -40,7 +40,7 @@ export function MDFePage(): JSX.Element {
       emitente: 'Tech Solutions Ltda',
       destinatario: 'João Silva Santos',
       valor: 850.50,
-      status: 'pendente',
+      status: 'transmitidoAguardando',
       dataEmissao: '2024-01-20'
     },
     {
@@ -51,7 +51,7 @@ export function MDFePage(): JSX.Element {
       emitente: 'Tech Solutions Ltda',
       destinatario: 'Maria Oliveira Costa',
       valor: 2200.75,
-      status: 'autorizada',
+      status: 'autorizado',
       dataEmissao: '2024-02-01',
       dataAutorizacao: '2024-02-01'
     },
@@ -63,7 +63,7 @@ export function MDFePage(): JSX.Element {
       emitente: 'Tech Solutions Ltda',
       destinatario: 'Pedro Almeida',
       valor: 1200.00,
-      status: 'cancelada',
+      status: 'cancelado',
       dataEmissao: '2024-02-10',
       dataAutorizacao: '2024-02-10'
     },
@@ -75,7 +75,7 @@ export function MDFePage(): JSX.Element {
       emitente: 'Tech Solutions Ltda',
       destinatario: 'Digital Marketing Corp',
       valor: 3000.00,
-      status: 'rejeitada',
+      status: 'rejeitado',
       dataEmissao: '2024-02-15'
     }
   ]);

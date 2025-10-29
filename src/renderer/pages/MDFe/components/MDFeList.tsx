@@ -4,6 +4,12 @@ import { systemStyles, systemColors } from '../../../styles/systemStyle';
 import { useClickSound } from '../../../hooks/useClickSound';
 import { VirtualList, useListPerformance, useDebounce } from '../../../hooks/useVirtualization';
 import { ActionButton } from '../../../components/ActionButton';
+import {
+  MDFeStatus,
+  getMDFeStatusStyle,
+  getMDFeStatusLabel,
+  isValidMDFeStatus
+} from '../types/mdfeStatus';
 
 // Interface para MDFe
 export interface MDFe {
@@ -14,7 +20,7 @@ export interface MDFe {
   emitente: string;
   destinatario: string;
   valor: number;
-  status: 'pendente' | 'autorizada' | 'cancelada' | 'rejeitada';
+  status: MDFeStatus;
   dataEmissao: string;
   dataAutorizacao?: string;
 }
@@ -481,19 +487,30 @@ const MDFeRow = React.memo<MDFeRowProps>(({
     console.log('MDFe clicado:', mdfe);
   }, [mdfe]);
 
-  const getStatusStyle = (status: string) => {
-    switch (status) {
-      case 'autorizada':
-        return styles.typeBadgeIndividual; // Verde
-      case 'pendente':
-        return styles.typeBadgeCompany; // Laranja
-      case 'cancelada':
-        return { ...styles.typeBadgeCompany, color: '#FF3B30', background: 'rgba(255, 59, 48, 0.1)' };
-      case 'rejeitada':
-        return { ...styles.typeBadgeCompany, color: '#FF3B30', background: 'rgba(255, 59, 48, 0.1)' };
-      default:
-        return styles.typeBadgeCompany;
+  // Função para obter estilo do status usando o módulo de status
+  const getStatusStyle = (status: MDFeStatus) => {
+    if (isValidMDFeStatus(status)) {
+      const statusStyle = getMDFeStatusStyle(status);
+      return {
+        padding: '4px 8px',
+        borderRadius: '4px',
+        fontSize: '10px',
+        fontWeight: '600',
+        color: statusStyle.color,
+        background: statusStyle.background,
+        textTransform: 'uppercase' as const
+      };
     }
+    // Fallback para status desconhecido
+    return {
+      padding: '4px 8px',
+      borderRadius: '4px',
+      fontSize: '10px',
+      fontWeight: '600',
+      color: '#8E8E93',
+      background: 'rgba(142, 142, 147, 0.1)',
+      textTransform: 'uppercase' as const
+    };
   };
 
   const formatCurrency = (value: number) => {
@@ -527,7 +544,7 @@ const MDFeRow = React.memo<MDFeRowProps>(({
       </div>
       <div style={styles.rowCell} className="cell-status">
         <span style={getStatusStyle(mdfe.status)}>
-          {mdfe.status.toUpperCase()}
+          {getMDFeStatusLabel(mdfe.status)}
         </span>
       </div>
       <div style={{ display: 'flex', alignItems: 'center' }} className="cell-actions">

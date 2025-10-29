@@ -46,6 +46,7 @@ export function NewMDFe({ isOpen, onClose, onSave }: NewMDFeProps): JSX.Element 
     cidadeProprietario: '',
     ufProprietario: '',
     cepProprietario: '',
+    proprietarioNaoEmitente: false,
     // Campos adicionais do proprietário quando não é emitente
     rntrc: '',
     tipoProprietario: '',
@@ -152,6 +153,7 @@ export function NewMDFe({ isOpen, onClose, onSave }: NewMDFeProps): JSX.Element 
       cidadeProprietario: '',
       ufProprietario: '',
       cepProprietario: '',
+      proprietarioNaoEmitente: false,
       rntrc: '',
       tipoProprietario: '',
       ie: '',
