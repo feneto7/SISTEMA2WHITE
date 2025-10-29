@@ -160,7 +160,6 @@ export function IngredientsTab({ onFormDataChange }: IngredientsTabProps): JSX.E
               <select
                 style={{
                   ...systemStyles.select.field,
-                  ...(focusedField === 'novoProduto' ? systemStyles.select.fieldFocus : {}),
                   width: '100%'
                 }}
                 value={novoProduto}
@@ -188,8 +187,7 @@ export function IngredientsTab({ onFormDataChange }: IngredientsTabProps): JSX.E
             <input
               type="text"
               style={{
-                ...systemStyles.input.field,
-                ...(focusedField === 'novaQuantidade' ? systemStyles.input.fieldFocus : {})
+                ...systemStyles.input.field
               }}
               value={novaQuantidade}
               onChange={(e) => {
@@ -208,7 +206,6 @@ export function IngredientsTab({ onFormDataChange }: IngredientsTabProps): JSX.E
               <select
                 style={{
                   ...systemStyles.select.field,
-                  ...(focusedField === 'novaUnidade' ? systemStyles.select.fieldFocus : {}),
                   width: '100%'
                 }}
                 value={novaUnidade}

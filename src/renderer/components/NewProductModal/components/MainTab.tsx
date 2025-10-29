@@ -174,8 +174,7 @@ export function MainTab({ onFormDataChange }: MainTabProps): JSX.Element {
             <input
               type="text"
                style={{
-                 ...systemStyles.input.field,
-                 ...(focusedField === 'descricao' ? systemStyles.input.fieldFocus : {})
+                 ...systemStyles.input.field
                }}
               value={formData.descricao}
               onChange={(e) => {
@@ -194,8 +193,7 @@ export function MainTab({ onFormDataChange }: MainTabProps): JSX.Element {
             <div style={systemStyles.select.container}>
               <select
                  style={{
-                   ...systemStyles.select.field,
-                   ...(focusedField === 'categoria' ? systemStyles.select.fieldFocus : {})
+                   ...systemStyles.select.field
                  }}
                 value={formData.categoria}
                 onChange={(e) => {
@@ -222,8 +220,7 @@ export function MainTab({ onFormDataChange }: MainTabProps): JSX.Element {
             <div style={systemStyles.select.container}>
               <select
                  style={{
-                   ...systemStyles.select.field,
-                   ...(focusedField === 'unidadeMedida' ? systemStyles.select.fieldFocus : {})
+                   ...systemStyles.select.field
                  }}
                 value={formData.unidadeMedida}
                 onChange={(e) => {
@@ -250,8 +247,7 @@ export function MainTab({ onFormDataChange }: MainTabProps): JSX.Element {
             <input
               type="text"
                style={{
-                 ...systemStyles.input.field,
-                 ...(focusedField === 'codigoBarras' ? systemStyles.input.fieldFocus : {})
+                 ...systemStyles.input.field
                }}
               value={formData.codigoBarras}
               onChange={(e) => {
@@ -270,8 +266,7 @@ export function MainTab({ onFormDataChange }: MainTabProps): JSX.Element {
             <input
               type="text"
                style={{
-                 ...systemStyles.input.field,
-                 ...(focusedField === 'referencia' ? systemStyles.input.fieldFocus : {})
+                 ...systemStyles.input.field
                }}
               value={formData.referencia}
               onChange={(e) => {
@@ -311,8 +306,7 @@ export function MainTab({ onFormDataChange }: MainTabProps): JSX.Element {
             <input
               type="text"
                style={{
-                 ...systemStyles.input.field,
-                 ...(focusedField === 'precoCusto' ? systemStyles.input.fieldFocus : {})
+                 ...systemStyles.input.field
                }}
               value={formData.precoCusto}
               onChange={(e) => {
@@ -341,8 +335,7 @@ export function MainTab({ onFormDataChange }: MainTabProps): JSX.Element {
             <input
               type="text"
                style={{
-                 ...systemStyles.input.field,
-                 ...(focusedField === 'margem' ? systemStyles.input.fieldFocus : {})
+                 ...systemStyles.input.field
                }}
               value={formData.margem}
               onChange={(e) => {
@@ -369,8 +362,7 @@ export function MainTab({ onFormDataChange }: MainTabProps): JSX.Element {
             <input
               type="text"
                style={{
-                 ...systemStyles.input.field,
-                 ...(focusedField === 'precoVenda' ? systemStyles.input.fieldFocus : {})
+                 ...systemStyles.input.field
                }}
               value={formData.precoVenda}
               onChange={(e) => {
@@ -411,8 +403,7 @@ export function MainTab({ onFormDataChange }: MainTabProps): JSX.Element {
             <div style={systemStyles.select.container}>
               <select
                  style={{
-                   ...systemStyles.select.field,
-                   ...(focusedField === 'marca' ? systemStyles.select.fieldFocus : {})
+                   ...systemStyles.select.field
                  }}
                 value={formData.marca}
                 onChange={(e) => {
@@ -439,8 +430,7 @@ export function MainTab({ onFormDataChange }: MainTabProps): JSX.Element {
             <div style={systemStyles.select.container}>
               <select
                  style={{
-                   ...systemStyles.select.field,
-                   ...(focusedField === 'fornecedor' ? systemStyles.select.fieldFocus : {})
+                   ...systemStyles.select.field
                  }}
                 value={formData.fornecedor}
                 onChange={(e) => {

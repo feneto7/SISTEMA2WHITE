@@ -42,10 +42,9 @@ export function UserForm({ formData, onFormDataChange }: UserFormProps): JSX.Ele
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
-  // Função para obter estilo do input baseado no foco
-  const getInputStyle = (isFocused: boolean) => ({
-    ...systemStyles.input.field,
-    ...(isFocused ? systemStyles.input.fieldFocus : {})
+  // Estilo padrão para inputs - o foco é aplicado globalmente via CSS
+  const getInputStyle = () => ({
+    ...systemStyles.input.field
   });
 
   return (
@@ -60,7 +59,7 @@ export function UserForm({ formData, onFormDataChange }: UserFormProps): JSX.Ele
           onFocus={() => setIsNameFocused(true)}
           onBlur={() => setIsNameFocused(false)}
           placeholder="Digite o nome completo"
-          style={getInputStyle(isNameFocused)}
+          style={getInputStyle()}
         />
       </div>
 
@@ -74,7 +73,7 @@ export function UserForm({ formData, onFormDataChange }: UserFormProps): JSX.Ele
           onFocus={() => setIsEmailFocused(true)}
           onBlur={() => setIsEmailFocused(false)}
           placeholder="usuario@email.com"
-          style={getInputStyle(isEmailFocused)}
+          style={getInputStyle()}
         />
       </div>
 
@@ -124,7 +123,7 @@ export function UserForm({ formData, onFormDataChange }: UserFormProps): JSX.Ele
             onFocus={() => setIsPasswordFocused(true)}
             onBlur={() => setIsPasswordFocused(false)}
             placeholder="Mínimo 6 caracteres"
-            style={getInputStyle(isPasswordFocused)}
+            style={getInputStyle()}
           />
           <button
             type="button"
@@ -164,7 +163,7 @@ export function UserForm({ formData, onFormDataChange }: UserFormProps): JSX.Ele
             onFocus={() => setIsConfirmPasswordFocused(true)}
             onBlur={() => setIsConfirmPasswordFocused(false)}
             placeholder="Digite a senha novamente"
-            style={getInputStyle(isConfirmPasswordFocused)}
+            style={getInputStyle()}
           />
           <button
             type="button"

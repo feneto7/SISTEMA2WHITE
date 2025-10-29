@@ -1,7 +1,6 @@
 import React, { useState, useRef } from 'react';
 import { systemStyles, systemColors } from '../../../../../styles/systemStyle';
 import { useClickSound } from '../../../../../hooks/useClickSound';
-import { useElementScrollbarStyles } from '../../../../../hooks/useScrollbarStyles';
 import { AddButton } from '../../../../../components/AddButton';
 
 // Route tab for NewMDFe modal
@@ -33,8 +32,6 @@ export function RouteTab({ formData, onUpdateFormData }: RouteTabProps): JSX.Ele
   
   const formContainerRef = useRef<HTMLDivElement>(null);
 
-  // Aplicar estilos de scrollbar específicos para formulários
-  useElementScrollbarStyles(formContainerRef, 'modal');
 
   // Lista de UFs brasileiras
   const ufsBrasileiras = [
@@ -86,7 +83,8 @@ export function RouteTab({ formData, onUpdateFormData }: RouteTabProps): JSX.Ele
 
   const getInputStyle = (field: string) => {
     const baseStyle = systemStyles.input.field;
-    const focusStyle = focusedField === field ? systemStyles.input.fieldFocus : {};
+    // Estilos de foco são aplicados globalmente via CSS
+    const focusStyle = {};
     return { ...baseStyle, ...focusStyle };
   };
 
@@ -257,7 +255,7 @@ export function RouteTab({ formData, onUpdateFormData }: RouteTabProps): JSX.Ele
   };
 
   return (
-    <div ref={formContainerRef} style={styles.container}>
+    <div ref={formContainerRef} className="scrollbar-modal" style={styles.container}>
       {/* Seção de Local de Carregamento */}
       <div style={styles.section}>
         <h4 style={styles.sectionTitle}>Local de Carregamento</h4>
@@ -268,7 +266,6 @@ export function RouteTab({ formData, onUpdateFormData }: RouteTabProps): JSX.Ele
               <select
                 style={{
                   ...systemStyles.select.field,
-                  ...(focusedField === 'ufCarregamento' ? systemStyles.select.fieldFocus : {}),
                   appearance: 'none' as const,
                   WebkitAppearance: 'none' as const,
                   MozAppearance: 'none' as const
@@ -307,7 +304,6 @@ export function RouteTab({ formData, onUpdateFormData }: RouteTabProps): JSX.Ele
               <select
                 style={{
                   ...systemStyles.select.field,
-                  ...(focusedField === 'municipioCarregamento' ? systemStyles.select.fieldFocus : {}),
                   appearance: 'none' as const,
                   WebkitAppearance: 'none' as const,
                   MozAppearance: 'none' as const,
@@ -354,7 +350,6 @@ export function RouteTab({ formData, onUpdateFormData }: RouteTabProps): JSX.Ele
               <select
                 style={{
                   ...systemStyles.select.field,
-                  ...(focusedField === 'novaUF' ? systemStyles.select.fieldFocus : {}),
                   appearance: 'none' as const,
                   WebkitAppearance: 'none' as const,
                   MozAppearance: 'none' as const
@@ -426,7 +421,6 @@ export function RouteTab({ formData, onUpdateFormData }: RouteTabProps): JSX.Ele
               <select
                 style={{
                   ...systemStyles.select.field,
-                  ...(focusedField === 'ufDescarregamento' ? systemStyles.select.fieldFocus : {}),
                   appearance: 'none' as const,
                   WebkitAppearance: 'none' as const,
                   MozAppearance: 'none' as const
@@ -465,7 +459,6 @@ export function RouteTab({ formData, onUpdateFormData }: RouteTabProps): JSX.Ele
               <select
                 style={{
                   ...systemStyles.select.field,
-                  ...(focusedField === 'municipioDescarregamento' ? systemStyles.select.fieldFocus : {}),
                   appearance: 'none' as const,
                   WebkitAppearance: 'none' as const,
                   MozAppearance: 'none' as const,

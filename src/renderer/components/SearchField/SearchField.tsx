@@ -23,7 +23,6 @@ export function SearchField({ value, onChange, placeholder = 'Buscar', disabled 
     },
     field: {
       ...systemStyles.searchField.field,
-      ...(isFocused ? systemStyles.searchField.fieldFocus : {}),
       ...(disabled ? { opacity: 0.5, cursor: 'not-allowed' } : {})
     } as React.CSSProperties,
     icon: {

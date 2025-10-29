@@ -443,10 +443,6 @@ export const systemStyles = {
       transition: 'all 0.2s ease',
       boxShadow: 'inset 0 0.5px 2px rgba(0, 0, 0, 0.12), 0 0.5px 0 rgba(255, 255, 255, 0.5)'
     },
-    fieldFocus: {
-      border: '0.5px solid #6CB4FB',
-      boxShadow: `0 0 0 3px rgba(108, 180, 251, 0.3), inset 0 0.5px 2px rgba(0, 0, 0, 0.12)`
-    },
     label: {
       fontSize: '11px',
       fontWeight: '600',
@@ -478,10 +474,6 @@ export const systemStyles = {
       outline: 'none',
       transition: 'all 0.15s ease',
       boxShadow: 'inset 0 1px 2px rgba(0, 0, 0, 0.05)'
-    },
-    fieldFocus: {
-      border: `1px solid ${systemColors.selection.border}`,
-      boxShadow: `0 0 0 3px ${systemColors.selection.background}, inset 0 1px 2px rgba(0, 0, 0, 0.05)`
     },
     icon: {
       position: 'absolute' as const,
@@ -532,10 +524,6 @@ export const systemStyles = {
       MozAppearance: 'none' as any,
       transition: 'all 0.2s ease',
       boxShadow: 'inset 0 0.5px 1px rgba(0, 0, 0, 0.06), 0 0.5px 0 rgba(255, 255, 255, 0.5)'
-    },
-    fieldFocus: {
-      border: '0.5px solid #6CB4FB',
-      boxShadow: `0 0 0 3px rgba(108, 180, 251, 0.3), inset 0 0.5px 1px rgba(0, 0, 0, 0.06)`
     },
     arrow: {
       position: 'absolute' as const,

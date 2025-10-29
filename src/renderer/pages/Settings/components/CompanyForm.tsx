@@ -76,17 +76,11 @@ export function CompanyForm(): JSX.Element {
     input: {
       ...systemStyles.input.field
     },
-    inputFocus: {
-      ...systemStyles.input.fieldFocus
-    },
     selectWrapper: {
       ...systemStyles.select.container
     },
     select: {
       ...systemStyles.select.field
-    },
-    selectFocus: {
-      ...systemStyles.select.fieldFocus
     },
     selectArrow: {
       ...systemStyles.select.arrow

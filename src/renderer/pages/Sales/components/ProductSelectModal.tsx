@@ -1,48 +1,50 @@
 //--------------------------------------------------------------------
-// MODAL DE SELEÇÃO DE CLIENTE
-// Modal para pesquisar e selecionar um cliente na venda
-// Acionado por CTRL+I no PDV
+// MODAL DE SELEÇÃO DE PRODUTO
+// Modal para pesquisar e selecionar um produto na venda
+// Acionado ao pressionar Enter com campo vazio no input de produto
 //--------------------------------------------------------------------
 
 import React, { useState, useEffect } from 'react';
 import { systemStyles, systemColors } from '../../../styles/systemStyle';
 import { SearchField } from '../../../components/SearchField';
-import { NewClientModal } from '../../../components/NewClientModal/NewClientModal';
+import { NewProductModal } from '../../../components/NewProductModal/NewProductModal';
 
-interface Client {
+interface Product {
   id: string;
   name: string;
-  cpfCnpj: string;
-  phone?: string;
-  city?: string;
+  code: string;
+  price: number;
+  stock?: number;
+  unit?: string;
 }
 
-interface ClientSelectModalProps {
+interface ProductSelectModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onSelectClient: (client: Client) => void;
+  onSelectProduct: (product: Product) => void;
 }
 
-export function ClientSelectModal({ isOpen, onClose, onSelectClient }: ClientSelectModalProps): JSX.Element | null {
+export function ProductSelectModal({ isOpen, onClose, onSelectProduct }: ProductSelectModalProps): JSX.Element | null {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedIndex, setSelectedIndex] = useState(0);
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
-  const [isNewClientModalOpen, setIsNewClientModalOpen] = useState(false);
+  const [isNewProductModalOpen, setIsNewProductModalOpen] = useState(false);
   const selectedItemRef = React.useRef<HTMLDivElement>(null);
-  const [clients, setClients] = useState<Client[]>([
-    { id: '1', name: 'João Silva', cpfCnpj: '123.456.789-00', phone: '(11) 99999-9999', city: 'São Paulo' },
-    { id: '2', name: 'Maria Santos', cpfCnpj: '987.654.321-00', phone: '(11) 88888-8888', city: 'São Paulo' },
-    { id: '3', name: 'Pedro Oliveira', cpfCnpj: '456.789.123-00', phone: '(11) 77777-7777', city: 'Rio de Janeiro' },
-    { id: '4', name: 'Ana Costa', cpfCnpj: '789.123.456-00', phone: '(11) 66666-6666', city: 'Belo Horizonte' },
-    { id: '5', name: 'Carlos Ferreira', cpfCnpj: '321.654.987-00', phone: '(11) 55555-5555', city: 'Curitiba' }
+  const [products] = useState<Product[]>([
+    { id: '1', name: 'Camiseta Básica Branca', code: '001', price: 4990, stock: 50, unit: 'UN' },
+    { id: '2', name: 'Calça Jeans Masculina', code: '002', price: 12990, stock: 30, unit: 'UN' },
+    { id: '3', name: 'Tênis Esportivo', code: '003', price: 19990, stock: 20, unit: 'UN' },
+    { id: '4', name: 'Jaqueta de Couro', code: '004', price: 29990, stock: 15, unit: 'UN' },
+    { id: '5', name: 'Boné Personalizado', code: '005', price: 3990, stock: 100, unit: 'UN' },
+    { id: '6', name: 'Mochila Escolar', code: '006', price: 8990, stock: 25, unit: 'UN' },
+    { id: '7', name: 'Relógio Digital', code: '007', price: 15990, stock: 40, unit: 'UN' },
+    { id: '8', name: 'Óculos de Sol', code: '008', price: 9990, stock: 60, unit: 'UN' }
   ]);
 
-  // Filtrar clientes baseado na pesquisa
-  const filteredClients = clients.filter(client =>
-    client.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    client.cpfCnpj.includes(searchTerm) ||
-    client.phone?.includes(searchTerm) ||
-    client.city?.toLowerCase().includes(searchTerm.toLowerCase())
+  // Filtrar produtos baseado na pesquisa
+  const filteredProducts = products.filter(product =>
+    product.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    product.code.includes(searchTerm)
   );
 
   // Resetar índice quando mudar a pesquisa
@@ -63,8 +65,8 @@ export function ClientSelectModal({ isOpen, onClose, onSelectClient }: ClientSel
 
   // Listener de teclado
   useEffect(() => {
-    // Não processa teclas se o modal de novo cliente estiver aberto
-    if (!isOpen || isNewClientModalOpen) return;
+    // Não processa teclas se o modal de novo produto estiver aberto
+    if (!isOpen || isNewProductModalOpen) return;
 
     const handleKeyDown = (e: KeyboardEvent) => {
       switch (e.key) {
@@ -73,7 +75,7 @@ export function ClientSelectModal({ isOpen, onClose, onSelectClient }: ClientSel
           break;
         case 'ArrowDown':
           e.preventDefault();
-          setSelectedIndex(prev => Math.min(prev + 1, filteredClients.length - 1));
+          setSelectedIndex(prev => Math.min(prev + 1, filteredProducts.length - 1));
           break;
         case 'ArrowUp':
           e.preventDefault();
@@ -81,8 +83,8 @@ export function ClientSelectModal({ isOpen, onClose, onSelectClient }: ClientSel
           break;
         case 'Enter':
           e.preventDefault();
-          if (filteredClients[selectedIndex]) {
-            onSelectClient(filteredClients[selectedIndex]);
+          if (filteredProducts[selectedIndex]) {
+            onSelectProduct(filteredProducts[selectedIndex]);
             onClose();
           }
           break;
@@ -91,28 +93,14 @@ export function ClientSelectModal({ isOpen, onClose, onSelectClient }: ClientSel
 
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [isOpen, isNewClientModalOpen, selectedIndex, filteredClients, onClose, onSelectClient]);
+  }, [isOpen, isNewProductModalOpen, selectedIndex, filteredProducts, onClose, onSelectProduct]);
 
-
-  // Função para lidar com o salvamento de um novo cliente
-  const handleSaveNewClient = (newClientData: any) => {
-    const newClient: Client = {
-      id: Date.now().toString(),
-      name: newClientData.name,
-      cpfCnpj: newClientData.document,
-      phone: newClientData.phone,
-      city: newClientData.city || ''
-    };
-    
-    // Adiciona o novo cliente à lista
-    setClients(prev => [...prev, newClient]);
-    
-    // Fecha o modal de novo cliente
-    setIsNewClientModalOpen(false);
-    
-    // Opcional: Seleciona automaticamente o novo cliente
-    onSelectClient(newClient);
-    onClose();
+  // Formatar preço
+  const formatPrice = (priceInCents: number) => {
+    return new Intl.NumberFormat('pt-BR', {
+      style: 'currency',
+      currency: 'BRL'
+    }).format(priceInCents / 100);
   };
 
   if (!isOpen) return null;
@@ -120,7 +108,7 @@ export function ClientSelectModal({ isOpen, onClose, onSelectClient }: ClientSel
   const styles = {
     modal: {
       ...systemStyles.modal.container,
-      width: '800px',
+      width: '900px',
       display: 'flex',
       flexDirection: 'column' as const,
       overflow: 'hidden'
@@ -145,6 +133,17 @@ export function ClientSelectModal({ isOpen, onClose, onSelectClient }: ClientSel
       color: systemColors.text.primary,
       fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, Helvetica, Arial, sans-serif'
     },
+    cellPrice: {
+      fontSize: '14px',
+      fontWeight: '600',
+      color: systemColors.selection.blue,
+      fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, Helvetica, Arial, sans-serif'
+    },
+    cellStock: {
+      fontSize: '13px',
+      color: systemColors.text.secondary,
+      fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, Helvetica, Arial, sans-serif'
+    },
     emptyState: {
       padding: '40px 20px',
       textAlign: 'center' as const,
@@ -154,13 +153,13 @@ export function ClientSelectModal({ isOpen, onClose, onSelectClient }: ClientSel
     }
   };
 
-  const getClientRowStyle = (index: number) => {
+  const getProductRowStyle = (index: number) => {
     const isSelected = index === selectedIndex;
     const isHovered = index === hoveredIndex;
 
     const baseStyle = {
       ...systemStyles.list.row,
-      gridTemplateColumns: '2fr 1.5fr 1.5fr 1fr',
+      gridTemplateColumns: '2fr 1fr 1fr 1fr',
       display: 'grid',
       cursor: 'pointer',
       animationDelay: `${index * 0.05}s`
@@ -196,7 +195,7 @@ export function ClientSelectModal({ isOpen, onClose, onSelectClient }: ClientSel
             <button style={{...systemStyles.trafficLights.button, ...systemStyles.trafficLights.yellow}}></button>
             <button style={{...systemStyles.trafficLights.button, ...systemStyles.trafficLights.green}}></button>
           </div>
-          <div style={systemStyles.modal.title}>Selecionar Cliente</div>
+          <div style={systemStyles.modal.title}>Selecionar Produto</div>
           <div style={{ width: '60px' }}></div>
         </div>
 
@@ -205,55 +204,57 @@ export function ClientSelectModal({ isOpen, onClose, onSelectClient }: ClientSel
           <SearchField
             value={searchTerm}
             onChange={setSearchTerm}
-            placeholder="Pesquisar por nome, CPF/CNPJ, telefone ou cidade"
+            placeholder="Pesquisar por nome ou código do produto"
           />
         </div>
 
         {/* Header da lista */}
         <div style={{
           ...systemStyles.list.header,
-          gridTemplateColumns: '2fr 1.5fr 1.5fr 1fr',
+          gridTemplateColumns: '2fr 1fr 1fr 1fr',
           display: 'grid',
           flexShrink: 0
         }}>
-          <div style={systemStyles.list.headerCell}>Nome</div>
-          <div style={systemStyles.list.headerCell}>CPF/CNPJ</div>
-          <div style={systemStyles.list.headerCell}>Telefone</div>
-          <div style={systemStyles.list.headerCell}>Cidade</div>
+          <div style={systemStyles.list.headerCell}>Produto</div>
+          <div style={systemStyles.list.headerCell}>Código</div>
+          <div style={systemStyles.list.headerCell}>Preço</div>
+          <div style={systemStyles.list.headerCell}>Estoque</div>
         </div>
 
-        {/* Lista de clientes */}
-        <div style={{ ...systemStyles.list.content, flex: 1, minHeight: 0 }}>
-          {filteredClients.length === 0 ? (
+        {/* Lista de produtos */}
+        <div style={{ ...systemStyles.list.content, flex: 1, minHeight: 0 }} className="scrollbar-list">
+          {filteredProducts.length === 0 ? (
             <div style={styles.emptyState}>
               {searchTerm
-                ? 'Nenhum cliente encontrado com os critérios de busca'
-                : 'Nenhum cliente cadastrado'}
+                ? 'Nenhum produto encontrado com os critérios de busca'
+                : 'Nenhum produto cadastrado'}
             </div>
           ) : (
-            filteredClients.map((client, index) => (
+            filteredProducts.map((product, index) => (
               <div
-                key={client.id}
+                key={product.id}
                 ref={index === selectedIndex ? selectedItemRef : null}
-                style={getClientRowStyle(index)}
+                style={getProductRowStyle(index)}
                 onClick={() => {
-                  onSelectClient(client);
+                  onSelectProduct(product);
                   onClose();
                 }}
                 onMouseEnter={() => setHoveredIndex(index)}
                 onMouseLeave={() => setHoveredIndex(null)}
               >
                 <div style={{ display: 'flex', alignItems: 'center' }}>
-                  <div style={styles.cellName}>{client.name}</div>
+                  <div style={styles.cellName}>{product.name}</div>
                 </div>
                 <div style={{ display: 'flex', alignItems: 'center' }}>
-                  <span style={styles.cellText}>{client.cpfCnpj}</span>
+                  <span style={styles.cellText}>{product.code}</span>
                 </div>
                 <div style={{ display: 'flex', alignItems: 'center' }}>
-                  <span style={styles.cellText}>{client.phone || '-'}</span>
+                  <span style={styles.cellPrice}>{formatPrice(product.price)}</span>
                 </div>
                 <div style={{ display: 'flex', alignItems: 'center' }}>
-                  <span style={styles.cellText}>{client.city || '-'}</span>
+                  <span style={styles.cellStock}>
+                    {product.stock || 0} {product.unit || 'UN'}
+                  </span>
                 </div>
               </div>
             ))
@@ -273,7 +274,7 @@ export function ClientSelectModal({ isOpen, onClose, onSelectClient }: ClientSel
           <div style={systemStyles.modal.footerRight}>
             <button
               style={systemStyles.button.primary}
-              onClick={() => setIsNewClientModalOpen(true)}
+              onClick={() => setIsNewProductModalOpen(true)}
             >
               Novo
             </button>
@@ -297,11 +298,10 @@ export function ClientSelectModal({ isOpen, onClose, onSelectClient }: ClientSel
         `}
       </style>
 
-      {/* Modal de Novo Cliente */}
-      <NewClientModal
-        isOpen={isNewClientModalOpen}
-        onClose={() => setIsNewClientModalOpen(false)}
-        onSave={handleSaveNewClient}
+      {/* Modal de Novo Produto */}
+      <NewProductModal
+        isOpen={isNewProductModalOpen}
+        onClose={() => setIsNewProductModalOpen(false)}
       />
     </div>
   );

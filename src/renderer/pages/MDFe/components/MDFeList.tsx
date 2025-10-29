@@ -3,7 +3,6 @@ import { AppIcons } from '../../../components/Icons/AppIcons';
 import { systemStyles, systemColors } from '../../../styles/systemStyle';
 import { useClickSound } from '../../../hooks/useClickSound';
 import { VirtualList, useListPerformance, useDebounce } from '../../../hooks/useVirtualization';
-import { useElementScrollbarStyles } from '../../../hooks/useScrollbarStyles';
 import { ActionButton } from '../../../components/ActionButton';
 
 // Interface para MDFe
@@ -33,8 +32,6 @@ export const MDFeList = React.memo<MDFeListProps>(({ mdfes, onCloseMDFe, onDetai
   const listRef = useRef<HTMLDivElement>(null);
   const selectedItemRef = useRef<HTMLDivElement>(null);
 
-  // Aplicar estilos de scrollbar específicos para listas
-  useElementScrollbarStyles(listRef, 'list');
 
   // Verificar se precisa de virtualização
   const { shouldVirtualize, itemCount } = useListPerformance(mdfes, 50);
@@ -346,7 +343,7 @@ export const MDFeList = React.memo<MDFeListProps>(({ mdfes, onCloseMDFe, onDetai
         <div style={styles.headerCell}>Ações</div>
       </div>
 
-      <div style={styles.listContent} className="list-content" ref={listRef}>
+      <div style={styles.listContent} className="list-content scrollbar-list" ref={listRef}>
         {mdfes.map((mdfe, index) => renderMDFeItem(mdfe, index))}
       </div>
     </div>

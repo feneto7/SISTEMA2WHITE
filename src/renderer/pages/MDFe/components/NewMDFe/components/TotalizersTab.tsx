@@ -1,7 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useClickSound } from '../../../../../hooks/useClickSound';
 import { systemStyles, systemColors } from '../../../../../styles/systemStyle';
-import { useElementScrollbarStyles } from '../../../../../hooks/useScrollbarStyles';
 import { AddButton } from '../../../../../components/AddButton/AddButton';
 
 // Totalizers tab for NewMDFe modal
@@ -36,9 +35,6 @@ export function TotalizersTab({ formData, onUpdateFormData }: TotalizersTabProps
   });
   const formContainerRef = useRef<HTMLDivElement>(null);
 
-  // Aplicar estilos de scrollbar específicos para formulários
-  useElementScrollbarStyles(formContainerRef, 'modal');
-
   // Sincroniza listas com formData quando o componente monta ou quando muda
   useEffect(() => {
     if (formData.lacreList && Array.isArray(formData.lacreList)) {
@@ -63,7 +59,8 @@ export function TotalizersTab({ formData, onUpdateFormData }: TotalizersTabProps
 
   const getInputStyle = (field: string) => {
     const baseStyle = systemStyles.input.field;
-    const focusStyle = focusedField === field ? systemStyles.input.fieldFocus : {};
+    // Estilos de foco são aplicados globalmente via CSS
+    const focusStyle = {};
     return { ...baseStyle, ...focusStyle };
   };
 
@@ -271,14 +268,11 @@ export function TotalizersTab({ formData, onUpdateFormData }: TotalizersTabProps
       ...systemStyles.select.field,
       cursor: 'pointer'
     },
-    selectFocus: {
-      ...systemStyles.select.fieldFocus
-    },
     label: systemStyles.input.label
   };
 
   return (
-    <div ref={formContainerRef} style={styles.container}>
+    <div ref={formContainerRef} className="scrollbar-modal" style={styles.container}>
       {/* Seção de Totais de Fornecimento */}
       <div style={styles.section}>
         <h4 style={styles.sectionTitle}>Totais de Fornecimento</h4>
@@ -468,7 +462,6 @@ export function TotalizersTab({ formData, onUpdateFormData }: TotalizersTabProps
               <select
                 style={{
                   ...styles.select,
-                  ...(focusedField === 'tipoCarga' ? styles.selectFocus : {}),
                   appearance: 'none' as const,
                   WebkitAppearance: 'none' as const,
                   MozAppearance: 'none' as const
@@ -504,8 +497,7 @@ export function TotalizersTab({ formData, onUpdateFormData }: TotalizersTabProps
             <label style={styles.label}>Descrição do Produto</label>
             <textarea
               style={{
-                ...styles.textarea,
-                ...(focusedField === 'descricaoProduto' ? styles.selectFocus : {})
+                ...styles.textarea
               }}
               value={formData.descricaoProduto || ''}
               onChange={(e) => handleInputChange('descricaoProduto', e.target.value)}

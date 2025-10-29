@@ -1,7 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useClickSound } from '../../../../../hooks/useClickSound';
 import { systemStyles, systemColors } from '../../../../../styles/systemStyle';
-import { useElementScrollbarStyles } from '../../../../../hooks/useScrollbarStyles';
 import { AddButton } from '../../../../../components/AddButton/AddButton';
 
 // Insurance tab for NewMDFe modal
@@ -27,8 +26,6 @@ export function InsuranceTab({ formData, onUpdateFormData }: InsuranceTabProps):
   const [exibirDadosSeguro, setExibirDadosSeguro] = useState(false);
   const formContainerRef = useRef<HTMLDivElement>(null);
 
-  // Aplicar estilos de scrollbar específicos para formulários
-  useElementScrollbarStyles(formContainerRef, 'modal');
 
   // Sincroniza lista com formData quando o componente monta ou quando muda
   useEffect(() => {
@@ -54,7 +51,8 @@ export function InsuranceTab({ formData, onUpdateFormData }: InsuranceTabProps):
 
   const getInputStyle = (field: string) => {
     const baseStyle = systemStyles.input.field;
-    const focusStyle = focusedField === field ? systemStyles.input.fieldFocus : {};
+    // Estilos de foco são aplicados globalmente via CSS
+    const focusStyle = {};
     return { ...baseStyle, ...focusStyle };
   };
 
@@ -197,7 +195,7 @@ export function InsuranceTab({ formData, onUpdateFormData }: InsuranceTabProps):
   };
 
   return (
-    <div ref={formContainerRef} style={styles.container}>
+    <div ref={formContainerRef} className="scrollbar-modal" style={styles.container}>
       {/* Seção de Informações do Responsável pelo Seguro */}
       <div style={styles.section}>
         <h4 style={styles.sectionTitle}>Informações do Responsável pelo Seguro</h4>

@@ -2,7 +2,6 @@ import React, { useState, useRef, useEffect } from 'react';
 import { useClickSound } from '../../../../../hooks/useClickSound';
 import { systemStyles, systemColors } from '../../../../../styles/systemStyle';
 import { AppIcons } from '../../../../../components/Icons/AppIcons';
-import { useElementScrollbarStyles } from '../../../../../hooks/useScrollbarStyles';
 
 interface Document {
   id: string;
@@ -28,8 +27,6 @@ export function DocumentsTab({ formData, onUpdateFormData }: DocumentsTabProps):
   const [documents, setDocuments] = useState<Document[]>([]);
   const listContainerRef = useRef<HTMLDivElement>(null);
 
-  // Aplicar estilos de scrollbar específicos para listas
-  useElementScrollbarStyles(listContainerRef, 'list');
 
   // Sincroniza o estado local com formData.notasFiscais quando o componente monta ou quando muda
   useEffect(() => {
@@ -301,7 +298,7 @@ export function DocumentsTab({ formData, onUpdateFormData }: DocumentsTabProps):
         </div>
 
         {/* Lista de Documentos */}
-        <div ref={listContainerRef} style={styles.listContainer}>
+        <div ref={listContainerRef} className="scrollbar-list" style={styles.listContainer}>
         <div style={styles.listHeader}>
           <div style={styles.headerCell}>Tipo</div>
           <div style={styles.headerCell}>Número</div>
