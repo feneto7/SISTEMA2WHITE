@@ -91,9 +91,9 @@ export function CertificateSubTab(): JSX.Element {
 
   const hasChanges = selectedCertificate !== savedCertificate || environment !== savedEnvironment;
 
-  const getSelectStyle = (isFocused: boolean) => ({
+  // Estilo padrão para selects - o foco é aplicado globalmente via CSS
+  const getSelectStyle = () => ({
     ...systemStyles.select.field,
-    ...(isFocused ? systemStyles.select.fieldFocus : {}),
     ...(isLoading ? { opacity: 0.6, cursor: 'wait' } : {})
   });
 

@@ -81,8 +81,7 @@ export function AddressTab({ formData, onUpdateFormData }: AddressTabProps): JSX
           <input
             type="text"
             style={{
-              ...systemStyles.input.field,
-              ...(focusedField === 'address' ? systemStyles.input.fieldFocus : {})
+              ...systemStyles.input.field
             }}
             value={formData.address}
             onChange={(e) => onUpdateFormData('address', e.target.value)}
@@ -106,8 +105,7 @@ export function AddressTab({ formData, onUpdateFormData }: AddressTabProps): JSX
           <input
             type="text"
             style={{
-              ...systemStyles.input.field,
-              ...(focusedField === 'city' ? systemStyles.input.fieldFocus : {})
+              ...systemStyles.input.field
             }}
             value={formData.city}
             onChange={(e) => onUpdateFormData('city', e.target.value)}
@@ -124,8 +122,7 @@ export function AddressTab({ formData, onUpdateFormData }: AddressTabProps): JSX
           <div style={{ position: 'relative' }}>
             <select
               style={{
-                ...systemStyles.select.field,
-                ...(focusedField === 'state' ? systemStyles.select.fieldFocus : {})
+                ...systemStyles.select.field
               }}
               value={formData.state}
               onChange={(e) => {
@@ -153,8 +150,7 @@ export function AddressTab({ formData, onUpdateFormData }: AddressTabProps): JSX
           <input
             type="text"
             style={{
-              ...systemStyles.input.field,
-              ...(focusedField === 'zipCode' ? systemStyles.input.fieldFocus : {})
+              ...systemStyles.input.field
             }}
             value={formData.zipCode}
             onChange={(e) => handleCEPChange(e.target.value)}
@@ -179,8 +175,7 @@ export function AddressTab({ formData, onUpdateFormData }: AddressTabProps): JSX
           <input
             type="text"
             style={{
-              ...systemStyles.input.field,
-              ...(focusedField === 'addressNumber' ? systemStyles.input.fieldFocus : {})
+              ...systemStyles.input.field
             }}
             value={formData.addressNumber || ''}
             onChange={(e) => onUpdateFormData('addressNumber', e.target.value)}
@@ -197,8 +192,7 @@ export function AddressTab({ formData, onUpdateFormData }: AddressTabProps): JSX
           <input
             type="text"
             style={{
-              ...systemStyles.input.field,
-              ...(focusedField === 'neighborhood' ? systemStyles.input.fieldFocus : {})
+              ...systemStyles.input.field
             }}
             value={formData.neighborhood || ''}
             onChange={(e) => onUpdateFormData('neighborhood', e.target.value)}

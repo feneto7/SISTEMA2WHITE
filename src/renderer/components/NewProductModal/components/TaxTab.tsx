@@ -69,8 +69,7 @@ export function TaxTab({ onFormDataChange }: TaxTabProps): JSX.Element {
             <input
               type="text"
               style={{
-                ...systemStyles.input.field,
-                ...(focusedField === 'ncm' ? systemStyles.input.fieldFocus : {})
+                ...systemStyles.input.field
               }}
               value={formData.ncm}
               onChange={(e) => {
@@ -92,8 +91,7 @@ export function TaxTab({ onFormDataChange }: TaxTabProps): JSX.Element {
             <input
               type="text"
               style={{
-                ...systemStyles.input.field,
-                ...(focusedField === 'cest' ? systemStyles.input.fieldFocus : {})
+                ...systemStyles.input.field
               }}
               value={formData.cest}
               onChange={(e) => {

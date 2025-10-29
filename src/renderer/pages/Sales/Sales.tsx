@@ -102,7 +102,41 @@ function Sales(): JSX.Element {
     },
     headerRight: {
       display: 'flex',
-      justifyContent: 'flex-end'
+      justifyContent: 'flex-end',
+      alignItems: 'center'
+    },
+    clientBadge: {
+      display: 'flex',
+      alignItems: 'center',
+      gap: '8px',
+      padding: '6px 12px',
+      background: 'linear-gradient(to bottom, #FFFFFF, #F8F8F8)',
+      border: `0.5px solid ${systemColors.border.medium}`,
+      borderRadius: '6px',
+      fontSize: '11px',
+      fontWeight: '500',
+      color: systemColors.text.primary,
+      fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, Helvetica, Arial, sans-serif',
+      boxShadow: '0 1px 3px rgba(0, 0, 0, 0.08)',
+      transition: 'all 0.2s ease'
+    },
+    clientIcon: {
+      width: '14px',
+      height: '14px',
+      borderRadius: '50%',
+      background: 'linear-gradient(135deg, #5A9EDD, #3B7BC4)',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      color: '#FFFFFF',
+      fontSize: '9px',
+      fontWeight: '600'
+    },
+    clientName: {
+      maxWidth: '200px',
+      overflow: 'hidden',
+      textOverflow: 'ellipsis',
+      whiteSpace: 'nowrap' as const
     },
     title: {
       ...systemStyles.page.title,
@@ -145,7 +179,14 @@ function Sales(): JSX.Element {
           <h1 style={styles.title}>PDV</h1>
         </div>
         <div style={styles.headerRight}>
-          {/* Espaço para controles futuros */}
+          {selectedClient && (
+            <div style={styles.clientBadge}>
+              <div style={styles.clientIcon}>
+                {selectedClient.name.charAt(0).toUpperCase()}
+              </div>
+              <span style={styles.clientName}>{selectedClient.name}</span>
+            </div>
+          )}
         </div>
       </div>
 

@@ -128,8 +128,7 @@ export function WholesaleTab({ onFormDataChange }: WholesaleTabProps): JSX.Eleme
             <input
               type="text"
               style={{
-                ...systemStyles.input.field,
-                ...(focusedField === 'novaQuantidade' ? systemStyles.input.fieldFocus : {})
+                ...systemStyles.input.field
               }}
               value={novaQuantidade}
               onChange={(e) => {
@@ -148,8 +147,7 @@ export function WholesaleTab({ onFormDataChange }: WholesaleTabProps): JSX.Eleme
             <input
               type="text"
               style={{
-                ...systemStyles.input.field,
-                ...(focusedField === 'novoPreco' ? systemStyles.input.fieldFocus : {})
+                ...systemStyles.input.field
               }}
               value={novoPreco}
               onChange={(e) => {

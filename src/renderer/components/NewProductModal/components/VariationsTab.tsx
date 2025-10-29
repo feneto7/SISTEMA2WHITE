@@ -138,8 +138,7 @@ export function VariationsTab({ onFormDataChange }: VariationsTabProps): JSX.Ele
   // Renderizar campo de input baseado no tipo do atributo
   const renderAtributoInput = (atributo: VariationAttribute, value: string, onChange: (value: string) => void) => {
     const baseStyle = {
-      ...systemStyles.input.field,
-      ...(focusedField === `atributo_${atributo.id}` ? systemStyles.input.fieldFocus : {})
+      ...systemStyles.input.field
     };
 
     switch (atributo.tipo) {
@@ -268,8 +267,7 @@ export function VariationsTab({ onFormDataChange }: VariationsTabProps): JSX.Ele
             <input
               type="text"
               style={{
-                ...systemStyles.input.field,
-                ...(focusedField === 'novoAtributoNome' ? systemStyles.input.fieldFocus : {})
+                ...systemStyles.input.field
               }}
               value={novoAtributoNome}
               onChange={(e) => setNovoAtributoNome(e.target.value)}
@@ -286,7 +284,6 @@ export function VariationsTab({ onFormDataChange }: VariationsTabProps): JSX.Ele
               <select
                 style={{
                   ...systemStyles.select.field,
-                  ...(focusedField === 'novoAtributoTipo' ? systemStyles.select.fieldFocus : {}),
                   width: '100%'
                 }}
                 value={novoAtributoTipo}
@@ -315,7 +312,6 @@ export function VariationsTab({ onFormDataChange }: VariationsTabProps): JSX.Ele
               type="text"
               style={{
                 ...systemStyles.input.field,
-                ...(focusedField === 'novoAtributoOpcoes' ? systemStyles.input.fieldFocus : {}),
                 ...(novoAtributoTipo !== 'dropdown' ? { opacity: 0.5, cursor: 'not-allowed' } : {})
               }}
               value={novoAtributoOpcoes}
@@ -459,8 +455,7 @@ export function VariationsTab({ onFormDataChange }: VariationsTabProps): JSX.Ele
               <input
                 type="text"
                 style={{
-                  ...systemStyles.input.field,
-                  ...(focusedField === 'novoPreco' ? systemStyles.input.fieldFocus : {})
+                  ...systemStyles.input.field
                 }}
                 value={novoPreco}
                 onChange={(e) => {
@@ -479,8 +474,7 @@ export function VariationsTab({ onFormDataChange }: VariationsTabProps): JSX.Ele
               <input
                 type="text"
                 style={{
-                  ...systemStyles.input.field,
-                  ...(focusedField === 'novoEstoque' ? systemStyles.input.fieldFocus : {})
+                  ...systemStyles.input.field
                 }}
                 value={novoEstoque}
                 onChange={(e) => {
@@ -499,8 +493,7 @@ export function VariationsTab({ onFormDataChange }: VariationsTabProps): JSX.Ele
               <input
                 type="text"
                 style={{
-                  ...systemStyles.input.field,
-                  ...(focusedField === 'novoCodigoBarras' ? systemStyles.input.fieldFocus : {})
+                  ...systemStyles.input.field
                 }}
                 value={novoCodigoBarras}
                 onChange={(e) => setNovoCodigoBarras(e.target.value)}

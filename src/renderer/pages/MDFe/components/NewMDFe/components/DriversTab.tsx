@@ -1,7 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { systemStyles, systemColors } from '../../../../../styles/systemStyle';
 import { useClickSound } from '../../../../../hooks/useClickSound';
-import { useElementScrollbarStyles } from '../../../../../hooks/useScrollbarStyles';
 import { AddButton } from '../../../../../components/AddButton';
 
 // Drivers tab for NewMDFe modal
@@ -37,9 +36,6 @@ export function DriversTab({ formData, onUpdateFormData }: DriversTabProps): JSX
   });
   
   const formContainerRef = useRef<HTMLDivElement>(null);
-
-  // Aplicar estilos de scrollbar específicos para formulários
-  useElementScrollbarStyles(formContainerRef, 'modal');
 
   // Dados mockados de condutores cadastrados
   const [condutoresCadastrados] = useState<Driver[]>([
@@ -97,7 +93,8 @@ export function DriversTab({ formData, onUpdateFormData }: DriversTabProps): JSX
 
   const getInputStyle = (field: string) => {
     const baseStyle = systemStyles.input.field;
-    const focusStyle = focusedField === field ? systemStyles.input.fieldFocus : {};
+    // Estilos de foco são aplicados globalmente via CSS
+    const focusStyle = {};
     return { ...baseStyle, ...focusStyle };
   };
 
@@ -214,9 +211,6 @@ export function DriversTab({ formData, onUpdateFormData }: DriversTabProps): JSX
       ...systemStyles.select.field,
       cursor: 'pointer'
     },
-    selectFocus: {
-      ...systemStyles.select.fieldFocus
-    },
     selectRow: {
       display: 'flex',
       alignItems: 'center',
@@ -301,7 +295,7 @@ export function DriversTab({ formData, onUpdateFormData }: DriversTabProps): JSX
   };
 
   return (
-    <div ref={formContainerRef} style={styles.container}>
+    <div ref={formContainerRef} className="scrollbar-modal" style={styles.container}>
       {/* Seção de Condutores Cadastrados */}
       <div style={styles.section}>
         <h4 style={styles.sectionTitle}>Condutores Cadastrados</h4>
@@ -312,7 +306,6 @@ export function DriversTab({ formData, onUpdateFormData }: DriversTabProps): JSX
               <select
                 style={{
                   ...styles.select,
-                  ...(focusedField === 'condutorSelecionado' ? styles.selectFocus : {}),
                   paddingRight: '24px',
                   appearance: 'none' as const,
                   WebkitAppearance: 'none' as const,

@@ -78,6 +78,121 @@ button { font-family: inherit; }
   background: rgba(0, 0, 0, 0.3);
 }
 
+/* Variante: Scrollbar para Modais (mais fina - 6px) */
+.scrollbar-modal {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(0, 0, 0, 0.2) transparent;
+  scroll-behavior: smooth;
+}
+
+.scrollbar-modal::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+.scrollbar-modal::-webkit-scrollbar-track {
+  background: transparent;
+  border-radius: 3px;
+}
+
+.scrollbar-modal::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 3px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  transition: all 0.2s ease;
+}
+
+.scrollbar-modal::-webkit-scrollbar-thumb:hover {
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.scrollbar-modal::-webkit-scrollbar-thumb:active {
+  background: rgba(0, 0, 0, 0.4);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.scrollbar-modal::-webkit-scrollbar-corner {
+  background: transparent;
+}
+
+/* Variante: Scrollbar para Listas (média - 7px) */
+.scrollbar-list {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(0, 0, 0, 0.2) transparent;
+  scroll-behavior: smooth;
+}
+
+.scrollbar-list::-webkit-scrollbar {
+  width: 7px;
+  height: 7px;
+}
+
+.scrollbar-list::-webkit-scrollbar-track {
+  background: transparent;
+  border-radius: 3.5px;
+}
+
+.scrollbar-list::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 3.5px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  transition: all 0.2s ease;
+}
+
+.scrollbar-list::-webkit-scrollbar-thumb:hover {
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  transform: scale(1.1);
+}
+
+.scrollbar-list::-webkit-scrollbar-thumb:active {
+  background: rgba(0, 0, 0, 0.4);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.scrollbar-list::-webkit-scrollbar-corner {
+  background: transparent;
+}
+
+/* Variante: Scrollbar Dark (para fundos escuros) */
+.scrollbar-dark {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.3) transparent;
+  scroll-behavior: smooth;
+}
+
+.scrollbar-dark::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+.scrollbar-dark::-webkit-scrollbar-track {
+  background: transparent;
+  border-radius: 4px;
+}
+
+.scrollbar-dark::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.3);
+  border-radius: 4px;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  transition: all 0.2s ease;
+}
+
+.scrollbar-dark::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.4);
+  border: 1px solid rgba(0, 0, 0, 0.2);
+}
+
+.scrollbar-dark::-webkit-scrollbar-thumb:active {
+  background: rgba(255, 255, 255, 0.5);
+  border: 1px solid rgba(0, 0, 0, 0.3);
+}
+
+.scrollbar-dark::-webkit-scrollbar-corner {
+  background: transparent;
+}
+
 /* Estilos globais para campos de input do sistema */
 input[type="text"],
 input[type="email"],
@@ -116,9 +231,8 @@ input[type="password"]:focus,
 input[type="number"]:focus,
 textarea:focus,
 select:focus {
-  background: rgba(0, 0, 0, 0.06);
-  border-color: rgba(10, 132, 255, 0.3);
-  box-shadow: 0 0 0 3px rgba(10, 132, 255, 0.1);
+  border-color: rgba(10, 132, 255, 0.3) !important;
+  box-shadow: 0 0 0 3px rgba(10, 132, 255, 0.1) !important;
 }
 
 /* Container padrão para campos de busca */

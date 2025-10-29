@@ -1,7 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useClickSound } from '../../../../../hooks/useClickSound';
 import { systemStyles, systemColors } from '../../../../../styles/systemStyle';
-import { useElementScrollbarStyles } from '../../../../../hooks/useScrollbarStyles';
 import { AddButton } from '../../../../../components/AddButton/AddButton';
 import { GenerateCIOTModal } from './GenerateCIOTModal';
 
@@ -46,8 +45,6 @@ export function FreightTab({ formData, onUpdateFormData }: FreightTabProps): JSX
   const [isGenerateCIOTModalOpen, setIsGenerateCIOTModalOpen] = useState(false);
   const formContainerRef = useRef<HTMLDivElement>(null);
 
-  // Aplicar estilos de scrollbar específicos para formulários
-  useElementScrollbarStyles(formContainerRef, 'modal');
 
   // Sincroniza listas com formData quando o componente monta ou quando muda
   useEffect(() => {
@@ -87,7 +84,8 @@ export function FreightTab({ formData, onUpdateFormData }: FreightTabProps): JSX
 
   const getInputStyle = (field: string) => {
     const baseStyle = systemStyles.input.field;
-    const focusStyle = focusedField === field ? systemStyles.input.fieldFocus : {};
+    // Estilos de foco são aplicados globalmente via CSS
+    const focusStyle = {};
     return { ...baseStyle, ...focusStyle };
   };
 
@@ -291,7 +289,7 @@ export function FreightTab({ formData, onUpdateFormData }: FreightTabProps): JSX
   };
 
   return (
-    <div ref={formContainerRef} style={styles.container}>
+    <div ref={formContainerRef} className="scrollbar-modal" style={styles.container}>
       {/* Seção de Vale Pedágio */}
       <div style={styles.section}>
         <h4 style={styles.sectionTitle}>Vale Pedágio</h4>
@@ -388,7 +386,6 @@ export function FreightTab({ formData, onUpdateFormData }: FreightTabProps): JSX
             <select
               style={{
                 ...systemStyles.select.field,
-                ...(focusedField === 'categoriaVeicular' ? systemStyles.select.fieldFocus : {}),
                 appearance: 'none' as const,
                 WebkitAppearance: 'none' as const,
                 MozAppearance: 'none' as const
@@ -473,7 +470,6 @@ export function FreightTab({ formData, onUpdateFormData }: FreightTabProps): JSX
                 <select
                   style={{
                     ...systemStyles.select.field,
-                    ...(focusedField === 'formaPagamento' ? systemStyles.select.fieldFocus : {}),
                     appearance: 'none' as const,
                     WebkitAppearance: 'none' as const,
                     MozAppearance: 'none' as const

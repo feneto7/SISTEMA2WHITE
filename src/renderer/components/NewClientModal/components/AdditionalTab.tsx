@@ -51,8 +51,7 @@ export function AdditionalTab({ formData, onUpdateFormData }: AdditionalTabProps
             style={{
               ...systemStyles.input.field,
               minHeight: '120px',
-              resize: 'vertical' as const,
-              ...(focusedField === 'notes' ? systemStyles.input.fieldFocus : {})
+              resize: 'vertical' as const
             }}
             value={formData.notes}
             onChange={(e) => onUpdateFormData('notes', e.target.value)}

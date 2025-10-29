@@ -4,4 +4,5 @@ export { ProductInput } from './ProductInput';
 export { ProductList } from './ProductList';
 export { SalesFooter } from './SalesFooter';
 export { ClientSelectModal } from './ClientSelectModal';
+export { ProductSelectModal } from './ProductSelectModal';
 

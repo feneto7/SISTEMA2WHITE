@@ -1,7 +1,6 @@
 import React, { useState, useRef } from 'react';
 import { useClickSound } from '../../../../../hooks/useClickSound';
 import { systemStyles, systemColors } from '../../../../../styles/systemStyle';
-import { useElementScrollbarStyles } from '../../../../../hooks/useScrollbarStyles';
 
 interface Vehicle {
   id: string;
@@ -56,8 +55,6 @@ export function TransportTab({ formData, onUpdateFormData }: TransportTabProps):
     };
   }, []);
 
-  // Aplicar estilos de scrollbar específicos para formulários
-  useElementScrollbarStyles(formContainerRef, 'modal');
 
   // Lista de UFs brasileiras
   const ufsBrasileiras = [
@@ -141,7 +138,8 @@ export function TransportTab({ formData, onUpdateFormData }: TransportTabProps):
 
   const getInputStyle = (field: string) => {
     const baseStyle = systemStyles.input.field;
-    const focusStyle = focusedField === field ? systemStyles.input.fieldFocus : {};
+    // Estilos de foco são aplicados globalmente via CSS
+    const focusStyle = {};
     return { ...baseStyle, ...focusStyle };
   };
 
@@ -226,9 +224,6 @@ export function TransportTab({ formData, onUpdateFormData }: TransportTabProps):
       ...systemStyles.input.field,
       cursor: 'pointer'
     },
-    selectFocus: {
-      ...systemStyles.input.fieldFocus
-    },
     infoText: {
       fontSize: '11px',
       color: systemColors.text.secondary,
@@ -283,7 +278,7 @@ export function TransportTab({ formData, onUpdateFormData }: TransportTabProps):
   };
 
   return (
-    <div ref={formContainerRef} style={styles.container}>
+    <div ref={formContainerRef} className="scrollbar-modal" style={styles.container}>
       {/* Seção de Seleção de Veículo */}
       <div style={styles.section}>
         <h4 style={styles.sectionTitle}>Veículo Cadastrado</h4>
@@ -293,7 +288,6 @@ export function TransportTab({ formData, onUpdateFormData }: TransportTabProps):
             <select
               style={{
                 ...systemStyles.select.field,
-                ...(focusedField === 'veiculoSelecionado' ? systemStyles.select.fieldFocus : {}),
                 paddingRight: '24px'
               }}
               value={formData.veiculoSelecionado || ''}
@@ -424,8 +418,7 @@ export function TransportTab({ formData, onUpdateFormData }: TransportTabProps):
             <label style={styles.label}>UF</label>
             <select
               style={{
-                ...systemStyles.select.field,
-                ...(focusedField === 'ufProprietario' ? systemStyles.select.fieldFocus : {})
+                ...systemStyles.select.field
               }}
               value={formData.ufProprietario || ''}
               onChange={(e) => {
@@ -476,8 +469,7 @@ export function TransportTab({ formData, onUpdateFormData }: TransportTabProps):
                 <label style={styles.label}>UF</label>
                 <select
                   style={{
-                    ...systemStyles.select.field,
-                    ...(focusedField === 'ufProprietarioCompleto' ? systemStyles.select.fieldFocus : {})
+                    ...systemStyles.select.field
                   }}
                   value={formData.ufProprietarioCompleto || ''}
                   onChange={(e) => {

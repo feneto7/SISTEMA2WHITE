@@ -76,10 +76,9 @@ export function RoleForm({
 }: RoleFormProps): JSX.Element {
   const [isNameFocused, setIsNameFocused] = useState(false);
 
-  // Função para obter estilo do input baseado no foco
-  const getInputStyle = (isFocused: boolean) => ({
-    ...systemStyles.input.field,
-    ...(isFocused ? systemStyles.input.fieldFocus : {})
+  // Estilo padrão para inputs - o foco é aplicado globalmente via CSS
+  const getInputStyle = () => ({
+    ...systemStyles.input.field
   });
 
   return (
@@ -94,7 +93,7 @@ export function RoleForm({
           onFocus={() => setIsNameFocused(true)}
           onBlur={() => setIsNameFocused(false)}
           placeholder="Digite o nome do perfil"
-          style={getInputStyle(isNameFocused)}
+          style={getInputStyle()}
         />
       </div>
 

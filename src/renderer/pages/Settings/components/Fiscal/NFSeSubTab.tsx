@@ -30,9 +30,9 @@ export function NFSeSubTab(): JSX.Element {
     }
   }, []);
 
-  const getInputStyle = (isFocused: boolean) => ({
-    ...systemStyles.input.field,
-    ...(isFocused ? systemStyles.input.fieldFocus : {})
+  // Estilo padrão para inputs - o foco é aplicado globalmente via CSS
+  const getInputStyle = () => ({
+    ...systemStyles.input.field
   });
 
   return (

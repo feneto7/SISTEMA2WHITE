@@ -1,7 +1,6 @@
 import React, { useState, useRef } from 'react';
 import { systemStyles, systemColors } from '../../../../../styles/systemStyle';
 import { useClickSound } from '../../../../../hooks/useClickSound';
-import { useElementScrollbarStyles } from '../../../../../hooks/useScrollbarStyles';
 import { AddButton } from '../../../../../components/AddButton/AddButton';
 
 // Modal para gerar CIOT
@@ -29,8 +28,6 @@ export function GenerateCIOTModal({ isOpen, onClose, onSave }: GenerateCIOTModal
   });
   const formContainerRef = useRef<HTMLDivElement>(null);
 
-  // Aplicar estilos de scrollbar específicos para formulários
-  useElementScrollbarStyles(formContainerRef, 'modal');
 
   const [formData, setFormData] = useState({
     tipoViagem: 'Padrão',
@@ -71,7 +68,8 @@ export function GenerateCIOTModal({ isOpen, onClose, onSave }: GenerateCIOTModal
 
   const getInputStyle = (field: string) => {
     const baseStyle = systemStyles.input.field;
-    const focusStyle = focusedField === field ? systemStyles.input.fieldFocus : {};
+    // Estilos de foco são aplicados globalmente via CSS
+    const focusStyle = {};
     return { ...baseStyle, ...focusStyle };
   };
 
@@ -277,7 +275,7 @@ export function GenerateCIOTModal({ isOpen, onClose, onSave }: GenerateCIOTModal
         </div>
 
         {/* Modal content */}
-        <div ref={formContainerRef} style={{
+        <div ref={formContainerRef} className="scrollbar-modal" style={{
           flex: 1,
           padding: '24px',
           backgroundColor: systemColors.background.content,

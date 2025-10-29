@@ -300,8 +300,7 @@ export function MainTab({ clientType, formData, onUpdateFormData }: MainTabProps
           <input
             type="text"
             style={{
-              ...systemStyles.input.field,
-              ...(focusedField === 'name' ? systemStyles.input.fieldFocus : {})
+              ...systemStyles.input.field
             }}
             value={formData.name}
             onChange={(e) => onUpdateFormData('name', e.target.value)}
@@ -318,8 +317,7 @@ export function MainTab({ clientType, formData, onUpdateFormData }: MainTabProps
           <input
             type="text"
             style={{
-              ...systemStyles.input.field,
-              ...(focusedField === 'cpfFantasy' ? systemStyles.input.fieldFocus : {})
+              ...systemStyles.input.field
             }}
             value={clientType === 'individual' ? formData.document : (formData.fantasyName || '')}
             onChange={(e) => clientType === 'individual' ? handleDocumentChange(e.target.value) : onUpdateFormData('fantasyName', e.target.value)}
@@ -351,7 +349,6 @@ export function MainTab({ clientType, formData, onUpdateFormData }: MainTabProps
                 type="text"
                 style={{
                   ...systemStyles.input.field,
-                  ...(focusedField === 'cnpj' ? systemStyles.input.fieldFocus : {}),
                   opacity: isLoadingCNPJ ? 0.7 : 1,
                   cursor: isLoadingCNPJ ? 'not-allowed' : 'text'
                 }}
@@ -390,8 +387,7 @@ export function MainTab({ clientType, formData, onUpdateFormData }: MainTabProps
               <input
                 type="text"
                 style={{
-                  ...systemStyles.input.field,
-                  ...(focusedField === 'stateRegistration' ? systemStyles.input.fieldFocus : {})
+                  ...systemStyles.input.field
                 }}
                 value={formData.stateRegistration || ''}
                 onChange={(e) => onUpdateFormData('stateRegistration', e.target.value)}
@@ -408,8 +404,7 @@ export function MainTab({ clientType, formData, onUpdateFormData }: MainTabProps
               <input
                 type="text"
                 style={{
-                  ...systemStyles.input.field,
-                  ...(focusedField === 'municipalRegistration' ? systemStyles.input.fieldFocus : {})
+                  ...systemStyles.input.field
                 }}
                 value={formData.municipalRegistration || ''}
                 onChange={(e) => onUpdateFormData('municipalRegistration', e.target.value)}
@@ -446,8 +441,7 @@ export function MainTab({ clientType, formData, onUpdateFormData }: MainTabProps
           <input
             type="email"
             style={{
-              ...systemStyles.input.field,
-              ...(focusedField === 'email' ? systemStyles.input.fieldFocus : {})
+              ...systemStyles.input.field
             }}
             value={formData.email}
             onChange={(e) => onUpdateFormData('email', e.target.value)}
@@ -464,8 +458,7 @@ export function MainTab({ clientType, formData, onUpdateFormData }: MainTabProps
           <input
             type="tel"
             style={{
-              ...systemStyles.input.field,
-              ...(focusedField === 'phone' ? systemStyles.input.fieldFocus : {})
+              ...systemStyles.input.field
             }}
             value={formData.phone}
             onChange={(e) => handlePhoneChange(e.target.value)}

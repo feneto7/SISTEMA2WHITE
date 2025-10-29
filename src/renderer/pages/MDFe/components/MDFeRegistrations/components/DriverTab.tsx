@@ -3,7 +3,6 @@ import { useClickSound } from '../../../../../hooks/useClickSound';
 import { systemStyles, systemColors } from '../../../../../styles/systemStyle';
 import { AppIcons } from '../../../../../components/Icons/AppIcons';
 import { NewDriverModal } from './NewDriverModal';
-import { useElementScrollbarStyles } from '../../../../../hooks/useScrollbarStyles';
 
 interface Driver {
   id: string;
@@ -37,8 +36,6 @@ export function DriverTab({ formData, onUpdateFormData }: DriverTabProps): JSX.E
   const [editingDriver, setEditingDriver] = useState<Driver | null>(null);
   const listContainerRef = useRef<HTMLDivElement>(null);
 
-  // Aplicar estilos de scrollbar específicos para listas
-  useElementScrollbarStyles(listContainerRef, 'list');
 
   const handleSaveDriver = (driverData: Driver) => {
     if (editingDriver) {
@@ -174,7 +171,7 @@ export function DriverTab({ formData, onUpdateFormData }: DriverTabProps): JSX.E
       </div>
 
       {/* Lista de Motoristas */}
-      <div ref={listContainerRef} style={styles.listContainer}>
+        <div ref={listContainerRef} className="scrollbar-list" style={styles.listContainer}>
         <div style={styles.listHeader}>
           <div style={styles.headerCell}>Nome</div>
           <div style={styles.headerCell}>CPF</div>

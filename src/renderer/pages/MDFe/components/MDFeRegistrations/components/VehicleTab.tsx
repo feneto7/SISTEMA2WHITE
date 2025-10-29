@@ -3,7 +3,6 @@ import { useClickSound } from '../../../../../hooks/useClickSound';
 import { systemStyles, systemColors } from '../../../../../styles/systemStyle';
 import { AppIcons } from '../../../../../components/Icons/AppIcons';
 import { NewVehicleModal } from './index';
-import { useElementScrollbarStyles } from '../../../../../hooks/useScrollbarStyles';
 
 interface Vehicle {
   id: string;
@@ -37,8 +36,6 @@ export function VehicleTab({ formData, onUpdateFormData }: VehicleTabProps): JSX
   const [editingVehicle, setEditingVehicle] = useState<Vehicle | null>(null);
   const listContainerRef = useRef<HTMLDivElement>(null);
 
-  // Aplicar estilos de scrollbar específicos para listas
-  useElementScrollbarStyles(listContainerRef, 'list');
 
   const handleSaveVehicle = (vehicleData: Vehicle) => {
     if (editingVehicle) {
@@ -174,7 +171,7 @@ export function VehicleTab({ formData, onUpdateFormData }: VehicleTabProps): JSX
       </div>
 
       {/* Lista de Veículos */}
-      <div ref={listContainerRef} style={styles.listContainer}>
+        <div ref={listContainerRef} className="scrollbar-list" style={styles.listContainer}>
         <div style={styles.listHeader}>
           <div style={styles.headerCell}>Placa</div>
           <div style={styles.headerCell}>Marca/Modelo</div>

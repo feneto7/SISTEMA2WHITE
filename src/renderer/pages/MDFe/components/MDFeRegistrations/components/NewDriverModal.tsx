@@ -93,12 +93,13 @@ export function NewDriverModal({ isOpen, onClose, onSave, editingDriver }: NewDr
 
   const getInputStyle = (field: string) => {
     const baseStyle = systemStyles.input.field;
-    const focusStyle = focusedField === field ? systemStyles.input.fieldFocus : {};
+    // Estilos de foco são aplicados globalmente via CSS
+    const focusStyle = {};
     return { ...baseStyle, ...focusStyle };
   };
 
   const getInputProps = (field: string, placeholder: string, type: string = 'text') => ({
-    type: type as const,
+    type,
     style: getInputStyle(field),
     value: formData[field as keyof Driver] || '',
     onChange: (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => handleInputChange(field, e.target.value),
