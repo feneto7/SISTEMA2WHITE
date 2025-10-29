@@ -3,7 +3,7 @@
 // Campos específicos do Imposto sobre Produtos Industrializados
 //--------------------------------------------------------------------
 import React, { useState } from 'react';
-import { systemStyles, systemColors } from '../../../../styles/systemStyle';
+import { useTheme } from '../../../../styles/ThemeProvider';
 import { AddButton } from '../../../../components/AddButton/AddButton';
 import { formatPercentageInput } from '../../../../utils/percentageFormatter';
 
@@ -38,6 +38,7 @@ export function TaxFormIPI({ onSubmit }: TaxFormIPIProps): JSX.Element {
     aliquota: '',
     aliquotaPorUnidade: ''
   });
+  const { systemStyles, systemColors } = useTheme();
 
   const styles = {
     formContainer: {

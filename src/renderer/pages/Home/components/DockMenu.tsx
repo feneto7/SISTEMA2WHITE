@@ -5,7 +5,7 @@ import {
 import { useClickSound } from '../../../hooks/useClickSound';
 import { useNavigation } from '../../../router/Navigation';
 import { Tooltip } from '../../../components/Tooltip';
-import { systemStyles, systemColors } from '../../../styles/systemStyle';
+import { useTheme } from '../../../styles/ThemeProvider';
 
 interface DockButtonProps {
   icon: React.ComponentType<{ size?: number; color?: string }>;
@@ -16,6 +16,7 @@ interface DockButtonProps {
 function DockButton({ icon: Icon, label, onClick }: DockButtonProps): JSX.Element {
   const [isHovered, setIsHovered] = useState(false);
   const playClickSound = useClickSound();
+  const { systemStyles, systemColors } = useTheme();
 
   const handleClick = () => {
     playClickSound();
@@ -25,7 +26,7 @@ function DockButton({ icon: Icon, label, onClick }: DockButtonProps): JSX.Elemen
   return (
     <div style={dockButtonContainer}>
       <button
-        style={isHovered ? dockButtonHover : dockButton}
+        style={systemStyles.dock.icon}
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
         onClick={handleClick}
@@ -44,6 +45,7 @@ interface DockMenuProps {
 
 export function DockMenu({ onOpenOperations, onOpenFiscal }: DockMenuProps): JSX.Element {
   const { navigate } = useNavigation();
+  const { systemStyles } = useTheme();
   
   const handleOperationsClick = () => {
     if (onOpenOperations) {
@@ -58,7 +60,7 @@ export function DockMenu({ onOpenOperations, onOpenFiscal }: DockMenuProps): JSX
   };
 
   return (
-    <div style={dockContainer}>
+    <div style={systemStyles.dock.container}>
       <div style={dockInner}>
         <DockButton icon={AppIcons.Products} label="Produtos" onClick={() => navigate('products')} />
         <DockButton icon={AppIcons.Users} label="Clientes" onClick={() => navigate('clients')} />
@@ -68,8 +70,6 @@ export function DockMenu({ onOpenOperations, onOpenFiscal }: DockMenuProps): JSX
     </div>
   );
 }
-
-const dockContainer: React.CSSProperties = systemStyles.dock.container;
 
 const dockInner: React.CSSProperties = {
   height: '100%',
@@ -86,9 +86,4 @@ const dockButtonContainer: React.CSSProperties = {
   justifyContent: 'center'
 };
 
-const dockButton: React.CSSProperties = systemStyles.dock.icon;
-
-const dockButtonHover: React.CSSProperties = {
-  ...systemStyles.dock.icon,
-  ...systemStyles.dock.iconHover
-};
+// estilos dependentes de tema foram movidos para dentro dos componentes

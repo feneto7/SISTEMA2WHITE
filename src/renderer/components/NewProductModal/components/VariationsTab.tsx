@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { systemStyles, systemColors } from '../../../styles/systemStyle';
+import { useTheme } from '../../../styles/ThemeProvider';
 import { useClickSound } from '../../../hooks/useClickSound';
 
 // Componente da aba Variações - Sistema flexível para diferentes tipos de variações
@@ -26,6 +26,7 @@ interface ProductVariation {
 
 export function VariationsTab({ onFormDataChange }: VariationsTabProps): JSX.Element {
   const playClickSound = useClickSound();
+  const { systemStyles, systemColors } = useTheme();
   
   // Estados das variações do produto
   const [variacoes, setVariacoes] = useState<ProductVariation[]>([]);

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { systemStyles, systemColors } from '../../../../styles/systemStyle';
+import { useTheme } from '../../../../styles/ThemeProvider';
 import { useClickSound } from '../../../../hooks/useClickSound';
 import { DocumentsTab, TransportTab, DriversTab, RouteTab, FreightTab, InsuranceTab, TotalizersTab } from './components';
 import { validateMDFe, generateMDFeXML, ValidationError } from '../../../../utils/mdfeValidator';
@@ -18,6 +18,7 @@ type MDFeType = 'rodoviario' | 'aereo' | 'aquaviario' | 'ferroviario';
 
 export function NewMDFe({ isOpen, onClose, onSave }: NewMDFeProps): JSX.Element | null {
   const playClickSound = useClickSound();
+  const { systemStyles, systemColors } = useTheme();
   const [activeTab, setActiveTab] = useState<TabType>('documents');
   const [mdfeType, setMdfeType] = useState<MDFeType>('rodoviario');
   const [validationErrors, setValidationErrors] = useState<ValidationError[]>([]);
@@ -605,13 +606,7 @@ export function NewMDFe({ isOpen, onClose, onSave }: NewMDFeProps): JSX.Element 
           </button>
           <div style={{ display: 'flex', gap: '8px' }}>
             <button
-              style={{
-                ...systemStyles.button.default,
-                background: 'linear-gradient(to bottom, #34C759, #28A745)',
-                color: 'white',
-                border: '1px solid #34C759',
-                boxShadow: '0 1px 2px rgba(52, 199, 89, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.2)'
-              }}
+              style={systemStyles.button.default}
               onClick={handleValidate}
             >
               Validar

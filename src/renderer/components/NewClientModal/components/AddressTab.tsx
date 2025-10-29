@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useClickSound } from '../../../hooks/useClickSound';
-import { systemStyles, systemColors } from '../../../styles/systemStyle';
+import { useTheme } from '../../../styles/ThemeProvider';
 
 // Interface para dados do formulário
 interface FormData {
@@ -33,6 +33,7 @@ interface AddressTabProps {
 export function AddressTab({ formData, onUpdateFormData }: AddressTabProps): JSX.Element {
   const playClickSound = useClickSound();
   const [focusedField, setFocusedField] = useState<string | null>(null);
+  const { systemStyles, systemColors } = useTheme();
   
   // Lista completa de UFs brasileiras
   const ufsBrasileiras = [

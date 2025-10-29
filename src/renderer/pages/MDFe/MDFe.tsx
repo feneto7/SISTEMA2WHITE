@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { systemStyles, systemColors } from '../../styles/systemStyle';
+import { useTheme } from '../../styles/ThemeProvider';
 import { MDFeList, MDFe, NewMDFe } from './components';
 import { useNavigation } from '../../router/Navigation';
 import { useClickSound } from '../../hooks/useClickSound';
@@ -13,6 +13,7 @@ import { AppIcons } from '../../components/Icons/AppIcons';
 export function MDFePage(): JSX.Element {
   const { navigate } = useNavigation();
   const playClickSound = useClickSound();
+  const { systemStyles, systemColors } = useTheme();
   const [isNewMDFePressed, setIsNewMDFePressed] = useState(false);
   const [isCadastrosPressed, setIsCadastrosPressed] = useState(false);
   const [isCadastrosModalOpen, setIsCadastrosModalOpen] = useState(false);
@@ -127,25 +128,14 @@ export function MDFePage(): JSX.Element {
       letterSpacing: '0.5px'
     },
     newButton: {
-      padding: '8px 16px',
+      ...systemStyles.button.default,
       display: 'flex',
       alignItems: 'center',
-      gap: '6px',
-      fontSize: '13px',
-      fontWeight: '500',
-      color: systemColors.text.primary,
-      background: systemColors.background.primary,
-      border: 'none',
-      borderRadius: '8px',
-      cursor: 'pointer',
-      transition: 'none',
-      fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, Helvetica, Arial, sans-serif',
-      boxShadow: '3px 3px 6px rgba(0, 0, 0, 0.1), -3px -3px 6px rgba(255, 255, 255, 0.8)'
+      gap: '8px',
+      whiteSpace: 'nowrap' as const
     },
     newButtonActive: {
-      background: systemColors.background.primary,
-      boxShadow: 'inset 2px 2px 4px rgba(0, 0, 0, 0.12), inset -2px -2px 4px rgba(255, 255, 255, 0.7)',
-      transform: 'scale(0.97)'
+      ...systemStyles.button.defaultActive
     },
     buttonGroup: {
       display: 'flex',

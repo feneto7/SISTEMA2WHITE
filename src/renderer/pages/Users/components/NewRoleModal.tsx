@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { systemStyles, systemColors } from '../../../styles/systemStyle';
+import { useTheme } from '../../../styles/ThemeProvider';
 import { useClickSound } from '../../../hooks/useClickSound';
 import { RoleForm } from './RoleForm';
 import { AppIcons } from '../../../components/Icons/AppIcons';
@@ -23,9 +23,8 @@ interface NewRoleModalProps {
 // Permite criar novos perfis de usuário com permissões customizadas
 export function NewRoleModal({ isOpen, onClose, onSave }: NewRoleModalProps): JSX.Element | null {
   const playClickSound = useClickSound();
+  const { systemStyles, systemColors } = useTheme();
   const [isCloseHovered, setIsCloseHovered] = useState(false);
-  const [isSaveHovered, setIsSaveHovered] = useState(false);
-  const [isCancelHovered, setIsCancelHovered] = useState(false);
   const [formData, setFormData] = useState({
     name: '',
     permissions: [] as string[]
@@ -175,11 +174,8 @@ export function NewRoleModal({ isOpen, onClose, onSave }: NewRoleModalProps): JS
           <button
             style={{
               ...systemStyles.button.default,
-              ...(isCancelHovered ? systemStyles.button.defaultHover : {}),
               padding: '6px 20px'
             }}
-            onMouseEnter={() => setIsCancelHovered(true)}
-            onMouseLeave={() => setIsCancelHovered(false)}
             onClick={() => {
               playClickSound();
               handleClose();
@@ -190,14 +186,11 @@ export function NewRoleModal({ isOpen, onClose, onSave }: NewRoleModalProps): JS
           <button
             style={{
               ...systemStyles.button.primary,
-              ...(isSaveHovered ? systemStyles.button.primaryHover : {}),
               padding: '6px 20px',
               display: 'flex',
               alignItems: 'center',
               gap: '6px'
             }}
-            onMouseEnter={() => setIsSaveHovered(true)}
-            onMouseLeave={() => setIsSaveHovered(false)}
             onClick={() => {
               playClickSound();
               handleSave();

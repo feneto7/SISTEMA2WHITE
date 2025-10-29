@@ -10,13 +10,14 @@ import { SettingsSidebar } from './components/SettingsSidebar';
 import { CompanyForm } from './components/CompanyForm';
 import { FiscalTab } from './components/FiscalTab';
 import { ParametrosTab } from './components/ParametrosTab';
-import { systemStyles, systemColors } from '../../styles/systemStyle';
+import { useTheme } from '../../styles/ThemeProvider';
 
 export type SettingsTab = 'empresa' | 'fiscal' | 'email' | 'recebimentos' | 'pagamento' | 'impressoras' | 'balanca' | 'gaveta' | 'dock' | 'parametros';
 
 function Settings(): JSX.Element {
   const { navigate } = useNavigation();
   const [activeTab, setActiveTab] = useState<SettingsTab>('empresa');
+  const { systemStyles, systemColors } = useTheme();
 
   const renderContent = () => {
     switch (activeTab) {

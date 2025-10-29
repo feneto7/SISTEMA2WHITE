@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { systemStyles, systemColors } from '../../../styles/systemStyle';
+import { useTheme } from '../../../styles/ThemeProvider';
 import { useClickSound } from '../../../hooks/useClickSound';
 
 // Componente da aba Atacado - Lista de preços por quantidade
@@ -16,6 +16,7 @@ interface WholesalePrice {
 
 export function WholesaleTab({ onFormDataChange }: WholesaleTabProps): JSX.Element {
   const playClickSound = useClickSound();
+  const { systemStyles, systemColors } = useTheme();
   
   // Estados dos preços de atacado
   const [precosAtacado, setPrecosAtacado] = useState<WholesalePrice[]>([]);

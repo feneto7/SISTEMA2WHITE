@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useClickSound } from '../../../../../hooks/useClickSound';
-import { systemStyles, systemColors } from '../../../../../styles/systemStyle';
+import { useTheme } from '../../../../../styles/ThemeProvider';
 import { AppIcons } from '../../../../../components/Icons/AppIcons';
 
 interface Document {
@@ -24,6 +24,7 @@ interface DocumentsTabProps {
 
 export function DocumentsTab({ formData, onUpdateFormData }: DocumentsTabProps): JSX.Element {
   const playClickSound = useClickSound();
+  const { systemStyles, systemColors } = useTheme();
   const [documents, setDocuments] = useState<Document[]>([]);
   const listContainerRef = useRef<HTMLDivElement>(null);
 
@@ -319,7 +320,7 @@ export function DocumentsTab({ formData, onUpdateFormData }: DocumentsTabProps):
                 key={document.id}
                 style={styles.listRow}
                 onMouseEnter={(e) => {
-                  e.currentTarget.style.background = 'rgba(0, 0, 0, 0.02)';
+                  e.currentTarget.style.background = systemColors.control.hover as string;
                 }}
                 onMouseLeave={(e) => {
                   e.currentTarget.style.background = 'transparent';

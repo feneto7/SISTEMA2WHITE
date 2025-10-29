@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { systemStyles, systemColors } from '../../../../../styles/systemStyle';
+import { useTheme } from '../../../../../styles/ThemeProvider';
 import { useClickSound } from '../../../../../hooks/useClickSound';
 import { AddButton } from '../../../../../components/AddButton';
 
@@ -27,6 +27,7 @@ interface Driver {
 
 export function DriversTab({ formData, onUpdateFormData }: DriversTabProps): JSX.Element {
   const playClickSound = useClickSound();
+  const { systemStyles, systemColors } = useTheme();
   const [focusedField, setFocusedField] = useState<string | null>(null);
   const [condutorSelecionado, setCondutorSelecionado] = useState<string>('');
   const [novoCondutor, setNovoCondutor] = useState({

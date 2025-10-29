@@ -3,7 +3,7 @@
 // Configurações do certificado digital A1 ou A3 e ambiente fiscal
 //--------------------------------------------------------------------
 import React, { useState, useEffect } from 'react';
-import { systemColors, systemStyles } from '../../../../styles/systemStyle';
+import { useTheme } from '../../../../styles/ThemeProvider';
 
 // Tipagem para a API do Electron
 declare global {
@@ -18,6 +18,7 @@ const STORAGE_KEY = 'selected_certificate';
 const ENVIRONMENT_KEY = 'fiscal_environment';
 
 export function CertificateSubTab(): JSX.Element {
+  const { systemColors, systemStyles } = useTheme();
   const [selectedCertificate, setSelectedCertificate] = useState('');
   const [savedCertificate, setSavedCertificate] = useState('');
   const [certificates, setCertificates] = useState<string[]>([]);

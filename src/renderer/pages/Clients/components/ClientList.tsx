@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef, useMemo, useCallback } from 'react';
 import { SearchIcon, EditIcon, DeleteIcon } from '../../../components/Icons/Icons';
 import { ActionButton } from '../../../components/ActionButton';
-import { systemStyles, systemColors } from '../../../styles/systemStyle';
+import { useTheme } from '../../../styles/ThemeProvider';
 import { useClickSound } from '../../../hooks/useClickSound';
 import { VirtualList, useListPerformance, useDebounce } from '../../../hooks/useVirtualization';
 
@@ -29,6 +29,7 @@ export const ClientList = React.memo<ClientListProps>(({ clients, nameColumnWidt
   const [selectedIndex, setSelectedIndex] = useState<number>(-1);
   const listRef = useRef<HTMLDivElement>(null);
   const selectedItemRef = useRef<HTMLDivElement>(null);
+  const { systemStyles, systemColors } = useTheme();
 
   // Verificar se precisa de virtualização
   const { shouldVirtualize, itemCount } = useListPerformance(clients, 50);
@@ -198,6 +199,7 @@ const ClientRow = React.memo(React.forwardRef<HTMLDivElement, ClientRowProps>(({
 }, ref) => {
   const [isHovered, setIsHovered] = useState(false);
   const playClickSound = useClickSound();
+  const { systemColors } = useTheme();
 
   // Memoizar estilo da linha para evitar recálculos desnecessários
   const rowStyle = useMemo(() => {

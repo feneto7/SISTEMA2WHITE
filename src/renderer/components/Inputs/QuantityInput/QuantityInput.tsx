@@ -5,7 +5,7 @@
 //--------------------------------------------------------------------
 import React from 'react';
 import { formatQuantityByUnitType } from '../../../utils/quantityFormater';
-import { systemStyles, systemColors } from '../../../styles/systemStyle';
+import { useTheme } from '../../../styles/ThemeProvider';
 
 interface QuantityInputProps {
   value: string;
@@ -20,6 +20,7 @@ interface QuantityInputProps {
 
 export const QuantityInput = React.forwardRef<HTMLInputElement, QuantityInputProps>(
   ({ value, onChange, placeholder = '1,000', label, disabled = false, unitType = '0', onKeyPress }, ref) => {
+    const { systemStyles, systemColors } = useTheme();
     
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
       const formatted = formatQuantityByUnitType(e.target.value, unitType);

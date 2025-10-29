@@ -1,6 +1,6 @@
 import React from 'react';
 import { useClickSound } from '../../../../../hooks/useClickSound';
-import { systemStyles, systemColors } from '../../../../../styles/systemStyle';
+import { useTheme } from '../../../../../styles/ThemeProvider';
 
 interface RoutesTabProps {
   formData: any;
@@ -9,6 +9,7 @@ interface RoutesTabProps {
 
 export function RoutesTab({ formData, onUpdateFormData }: RoutesTabProps): JSX.Element {
   const playClickSound = useClickSound();
+  const { systemStyles, systemColors } = useTheme();
 
   const handleInputChange = (field: string, value: string) => {
     onUpdateFormData(field, value);

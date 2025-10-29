@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { systemStyles, systemColors } from '../../../styles/systemStyle';
+import { useTheme } from '../../../styles/ThemeProvider';
 import { useClickSound } from '../../../hooks/useClickSound';
 
 // Componente da aba Fiscal - Campos fiscais do produto
@@ -10,6 +10,7 @@ interface TaxTabProps {
 
 export function TaxTab({ onFormDataChange }: TaxTabProps): JSX.Element {
   const playClickSound = useClickSound();
+  const { systemStyles, systemColors } = useTheme();
   
   // Estados dos campos do formulário fiscal
   const [formData, setFormData] = useState({

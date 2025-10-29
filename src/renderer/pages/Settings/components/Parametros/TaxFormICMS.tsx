@@ -3,7 +3,7 @@
 // Formulário para cadastrar novos cards de configuração de ICMS
 //--------------------------------------------------------------------
 import React, { useState } from 'react';
-import { systemStyles, systemColors } from '../../../../styles/systemStyle';
+import { useTheme } from '../../../../styles/ThemeProvider';
 import { AddButton } from '../../../../components/AddButton/AddButton';
 import { formatPercentageInput, removePercentageSymbol } from '../../../../utils/percentageFormatter';
 
@@ -53,6 +53,7 @@ export function TaxFormICMS({ tipos, cstLabel, onSubmit }: TaxFormICMSProps): JS
     reducao: '0,00',
     aliquotaFinal: ''
   });
+  const { systemStyles, systemColors } = useTheme();
 
   // Seleciona opções de CST ou CSOSN baseado no label
   const cstOptions = cstLabel.includes('CSOSN') ? CSOSN_OPTIONS : CST_OPTIONS;

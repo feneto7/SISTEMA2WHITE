@@ -1,6 +1,6 @@
 import React, { useState, useRef } from 'react';
 import { useClickSound } from '../../../../../hooks/useClickSound';
-import { systemStyles, systemColors } from '../../../../../styles/systemStyle';
+import { useTheme } from '../../../../../styles/ThemeProvider';
 
 interface Vehicle {
   id: string;
@@ -29,6 +29,7 @@ interface TransportTabProps {
 
 export function TransportTab({ formData, onUpdateFormData }: TransportTabProps): JSX.Element {
   const playClickSound = useClickSound();
+  const { systemStyles, systemColors } = useTheme();
   const [focusedField, setFocusedField] = useState<string | null>(null);
   const [proprietarioNaoEmitente, setProprietarioNaoEmitente] = useState(!!formData.proprietarioNaoEmitente);
   const formContainerRef = useRef<HTMLDivElement>(null);
@@ -187,12 +188,12 @@ export function TransportTab({ formData, onUpdateFormData }: TransportTabProps):
     sectionTitle: {
       fontSize: '14px',
       fontWeight: '600',
-      color: 'var(--text-primary)',
+      color: systemColors.text.primary,
       margin: '0 0 16px 0',
       fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, Helvetica, Arial, sans-serif',
       textTransform: 'uppercase' as const,
       letterSpacing: '0.5px',
-      borderBottom: '1px solid rgba(0, 0, 0, 0.1)',
+      borderBottom: `1px solid ${systemColors.border.light}`,
       paddingBottom: '8px'
     },
     formGrid: {
@@ -215,9 +216,9 @@ export function TransportTab({ formData, onUpdateFormData }: TransportTabProps):
       gap: '8px',
       marginBottom: '20px',
       padding: '16px',
-      background: 'rgba(255, 255, 255, 0.6)',
+      background: systemColors.background.content,
       borderRadius: '8px',
-      border: '1px solid rgba(0, 0, 0, 0.1)'
+      border: `1px solid ${systemColors.border.light}`
     },
     selectLabel: {
       ...systemStyles.input.label
@@ -239,9 +240,9 @@ export function TransportTab({ formData, onUpdateFormData }: TransportTabProps):
       gap: '8px',
       marginBottom: '16px',
       padding: '12px',
-      background: 'rgba(255, 255, 255, 0.4)',
+      background: systemColors.background.content,
       borderRadius: '6px',
-      border: '1px solid rgba(0, 0, 0, 0.1)'
+      border: `1px solid ${systemColors.border.light}`
     },
     checkboxItem: {
       display: 'flex',
@@ -264,9 +265,9 @@ export function TransportTab({ formData, onUpdateFormData }: TransportTabProps):
     additionalForm: {
       marginTop: '16px',
       padding: '16px',
-      background: 'rgba(255, 255, 255, 0.6)',
+      background: systemColors.background.content,
       borderRadius: '8px',
-      border: '1px solid rgba(0, 0, 0, 0.1)',
+      border: `1px solid ${systemColors.border.light}`,
       animation: 'slideDown 0.3s ease-out'
     },
     additionalFormGrid: {

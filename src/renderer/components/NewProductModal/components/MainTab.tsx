@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { systemStyles, systemColors } from '../../../styles/systemStyle';
+import { useTheme } from '../../../styles/ThemeProvider';
 import { useClickSound } from '../../../hooks/useClickSound';
 
 // Componente da aba Principal - Formulário de cadastro básico de produto
@@ -10,6 +10,7 @@ interface MainTabProps {
 
 export function MainTab({ onFormDataChange }: MainTabProps): JSX.Element {
   const playClickSound = useClickSound();
+  const { systemStyles, systemColors } = useTheme();
   
   // Estados dos campos do formulário
   const [formData, setFormData] = useState({

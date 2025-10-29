@@ -4,7 +4,7 @@
 // Usado na página de vendas (Sales)
 //--------------------------------------------------------------------
 import React, { useState } from 'react';
-import { systemStyles, systemColors } from '../../../styles/systemStyle';
+import { useTheme } from '../../../styles/ThemeProvider';
 
 export interface SaleProduct {
   id: string;
@@ -21,6 +21,7 @@ interface ProductListProps {
 
 export function ProductList({ products, onRemoveProduct }: ProductListProps): JSX.Element {
   const [hoveredRow, setHoveredRow] = useState<string | null>(null);
+  const { systemStyles, systemColors } = useTheme();
 
   // Formata valores para exibição em moeda brasileira
   const formatCurrency = (value: number): string => {

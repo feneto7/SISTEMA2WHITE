@@ -3,7 +3,7 @@
 // Permite configurar certificado digital e numeração de documentos fiscais
 //--------------------------------------------------------------------
 import React, { useState } from 'react';
-import { systemStyles, systemColors } from '../../../styles/systemStyle';
+import { useTheme } from '../../../styles/ThemeProvider';
 import { useClickSound } from '../../../hooks/useClickSound';
 import { AppIcons } from '../../../components/Icons/AppIcons';
 import { CertificateSubTab, NFESubTab, NFCeSubTab, NFSeSubTab, MDFeSubTab } from './Fiscal';
@@ -13,6 +13,7 @@ type FiscalSubTab = 'certificado' | 'nfe' | 'nfce' | 'nfse' | 'mdfe';
 export function FiscalTab(): JSX.Element {
   const playClickSound = useClickSound();
   const [activeTab, setActiveTab] = useState<FiscalSubTab>('certificado');
+  const { systemStyles, systemColors } = useTheme();
 
   const tabs: { key: FiscalSubTab; label: string }[] = [
     { key: 'certificado', label: 'Certificado Digital' },

@@ -4,9 +4,10 @@
 // Usado na página de vendas (Sales)
 //--------------------------------------------------------------------
 import React from 'react';
-import { systemStyles, systemColors } from '../../../styles/systemStyle';
+import { useTheme } from '../../../styles/ThemeProvider';
 
 export function SalesFooter(): JSX.Element {
+  const { systemStyles, systemColors } = useTheme();
   const shortcuts = [
     { key: 'Ctrl+I', label: 'Informar Cliente' }
   ];

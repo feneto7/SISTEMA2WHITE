@@ -6,7 +6,7 @@
 import React, { useState } from 'react';
 import { AppIcons } from '../../../components/Icons/AppIcons';
 import { SearchField } from '../../../components/SearchField';
-import { systemStyles, systemColors } from '../../../styles/systemStyle';
+import { useTheme } from '../../../styles/ThemeProvider';
 import { useClickSound } from '../../../hooks/useClickSound';
 import { SettingsTab } from '../Settings';
 
@@ -25,6 +25,7 @@ export function SettingsSidebar({ activeTab, onSelectTab }: SettingsSidebarProps
   const [hoveredItem, setHoveredItem] = useState<string | null>(null);
   const [searchTerm, setSearchTerm] = useState('');
   const playClickSound = useClickSound();
+  const { systemStyles, systemColors } = useTheme();
 
   const settingsItems: SettingsItem[] = [
     { id: 'empresa', label: 'Empresa', icon: AppIcons.Document },

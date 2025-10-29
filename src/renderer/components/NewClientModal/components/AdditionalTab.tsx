@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { systemStyles, systemColors } from '../../../styles/systemStyle';
+import { useTheme } from '../../../styles/ThemeProvider';
 
 // Interface para dados do formulário
 interface FormData {
@@ -31,6 +31,7 @@ interface AdditionalTabProps {
 // Contém campos opcionais como observações e informações extras
 export function AdditionalTab({ formData, onUpdateFormData }: AdditionalTabProps): JSX.Element {
   const [focusedField, setFocusedField] = useState<string | null>(null);
+  const { systemStyles, systemColors } = useTheme();
   
   return (
     <div>

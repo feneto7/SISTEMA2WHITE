@@ -4,10 +4,11 @@
 // Seguindo o padrão de estilo macOS
 //--------------------------------------------------------------------
 import React, { useState } from 'react';
-import { systemStyles, systemColors } from '../../../styles/systemStyle';
+import { useTheme } from '../../../styles/ThemeProvider';
 import { AppIcons } from '../../../components/Icons/AppIcons';
 
 export function CompanyForm(): JSX.Element {
+  const { systemStyles, systemColors } = useTheme();
   const [empresaData, setEmpresaData] = useState({
     nomeEmpresarial: '',
     nomeFantasia: '',

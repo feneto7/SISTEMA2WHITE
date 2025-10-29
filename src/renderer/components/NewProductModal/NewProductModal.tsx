@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { systemStyles, systemColors } from '../../styles/systemStyle';
+import { useTheme } from '../../styles/ThemeProvider';
 import { useClickSound } from '../../hooks/useClickSound';
 import { MainTab, TaxTab, WholesaleTab, IngredientsTab, VariationsTab } from './components';
 
@@ -15,6 +15,7 @@ type TabType = 'principal' | 'fiscal' | 'atacado' | 'insumos' | 'variacoes';
 
 export function NewProductModal({ isOpen, onClose }: NewProductModalProps): JSX.Element | null {
   const playClickSound = useClickSound();
+  const { systemStyles, systemColors } = useTheme();
   const [productType, setProductType] = useState<ProductType>('simple');
   const [activeTab, setActiveTab] = useState<TabType>('principal');
   const [isCloseHovered, setIsCloseHovered] = useState(false);
@@ -204,17 +205,14 @@ export function NewProductModal({ isOpen, onClose }: NewProductModalProps): JSX.
           background: systemColors.background.primary,
           borderTop: `1px solid ${systemColors.border.light}`,
           display: 'flex',
-          justifyContent: 'flex-end',
-          gap: '12px',
+          justifyContent: 'space-between',
+          alignItems: 'center',
           flexShrink: 0
         }}>
           <button 
             style={{
-              ...systemStyles.button.default,
-              ...(isCancelHovered ? systemStyles.button.defaultHover : {})
+              ...systemStyles.button.default
             }}
-            onMouseEnter={() => setIsCancelHovered(true)}
-            onMouseLeave={() => setIsCancelHovered(false)}
             onClick={() => {
               playClickSound();
               onClose();
@@ -224,11 +222,8 @@ export function NewProductModal({ isOpen, onClose }: NewProductModalProps): JSX.
           </button>
           <button 
             style={{
-              ...systemStyles.button.primary,
-              ...(isSaveHovered ? systemStyles.button.primaryHover : {})
+              ...systemStyles.button.primary
             }}
-            onMouseEnter={() => setIsSaveHovered(true)}
-            onMouseLeave={() => setIsSaveHovered(false)}
             onClick={() => {
               playClickSound();
               

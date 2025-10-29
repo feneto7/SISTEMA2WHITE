@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { systemStyles, systemColors } from '../../styles/systemStyle';
+import { useTheme } from '../../styles/ThemeProvider';
 import { useClickSound } from '../../hooks/useClickSound';
 import { MainTab, AddressTab, AdditionalTab } from './components';
 
@@ -26,6 +26,7 @@ interface NewClientModalProps {
 // Utiliza os estilos do systemStyles.ts para consistência visual
 export function NewClientModal({ isOpen, onClose, onSave }: NewClientModalProps): JSX.Element | null {
   const playClickSound = useClickSound();
+  const { systemStyles, systemColors } = useTheme();
   const [activeTab, setActiveTab] = useState<'main' | 'address' | 'additional'>('main');
   const [clientType, setClientType] = useState<'individual' | 'company'>('individual');
   const [isCancelHovered, setIsCancelHovered] = useState(false);
@@ -330,27 +331,21 @@ export function NewClientModal({ isOpen, onClose, onSave }: NewClientModalProps)
           background: systemColors.background.primary,
           borderTop: `1px solid ${systemColors.border.light}`,
           display: 'flex',
-          justifyContent: 'flex-end',
-          gap: '12px'
+          justifyContent: 'space-between',
+          alignItems: 'center'
         }}>
           <button
             style={{
-              ...systemStyles.button.default,
-              ...(isCancelHovered ? systemStyles.button.defaultHover : {})
+              ...systemStyles.button.default
             }}
-            onMouseEnter={() => setIsCancelHovered(true)}
-            onMouseLeave={() => setIsCancelHovered(false)}
             onClick={handleClose}
           >
             Cancelar
           </button>
           <button
             style={{
-              ...systemStyles.button.primary,
-              ...(isSaveHovered ? systemStyles.button.primaryHover : {})
+              ...systemStyles.button.primary
             }}
-            onMouseEnter={() => setIsSaveHovered(true)}
-            onMouseLeave={() => setIsSaveHovered(false)}
             onClick={handleSave}
           >
             Salvar Cliente

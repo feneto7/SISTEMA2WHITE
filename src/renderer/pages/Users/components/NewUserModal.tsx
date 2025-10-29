@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { systemStyles, systemColors } from '../../../styles/systemStyle';
+import { useTheme } from '../../../styles/ThemeProvider';
 import { useClickSound } from '../../../hooks/useClickSound';
 import { UserForm } from './UserForm';
 import { AppIcons } from '../../../components/Icons/AppIcons';
@@ -20,9 +20,8 @@ interface NewUserModalProps {
 // Permite criar novos usuários com permissões e dados básicos
 export function NewUserModal({ isOpen, onClose, onSave }: NewUserModalProps): JSX.Element | null {
   const playClickSound = useClickSound();
+  const { systemStyles, systemColors } = useTheme();
   const [isCloseHovered, setIsCloseHovered] = useState(false);
-  const [isSaveHovered, setIsSaveHovered] = useState(false);
-  const [isCancelHovered, setIsCancelHovered] = useState(false);
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -160,11 +159,8 @@ export function NewUserModal({ isOpen, onClose, onSave }: NewUserModalProps): JS
           <button
             style={{
               ...systemStyles.button.default,
-              ...(isCancelHovered ? systemStyles.button.defaultHover : {}),
               padding: '6px 20px'
             }}
-            onMouseEnter={() => setIsCancelHovered(true)}
-            onMouseLeave={() => setIsCancelHovered(false)}
             onClick={() => {
               playClickSound();
               handleClose();
@@ -175,14 +171,11 @@ export function NewUserModal({ isOpen, onClose, onSave }: NewUserModalProps): JS
           <button
             style={{
               ...systemStyles.button.primary,
-              ...(isSaveHovered ? systemStyles.button.primaryHover : {}),
               padding: '6px 20px',
               display: 'flex',
               alignItems: 'center',
               gap: '6px'
             }}
-            onMouseEnter={() => setIsSaveHovered(true)}
-            onMouseLeave={() => setIsSaveHovered(false)}
             onClick={() => {
               playClickSound();
               handleSave();

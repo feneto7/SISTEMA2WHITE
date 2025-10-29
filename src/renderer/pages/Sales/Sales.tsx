@@ -9,7 +9,7 @@ import { BackButton } from '../../components/BackButton';
 import { SalesSidebar, ProductInput, ProductList, SalesFooter, ClientSelectModal } from './components';
 import { SaleProduct } from './components/ProductList';
 import { convertReaisToCents } from '../../utils/money';
-import { systemStyles, systemColors } from '../../styles/systemStyle';
+import { useTheme } from '../../styles/ThemeProvider';
 
 interface Client {
   id: string;
@@ -21,6 +21,7 @@ interface Client {
 
 function Sales(): JSX.Element {
   const { navigate } = useNavigation();
+  const { systemStyles, systemColors } = useTheme();
   const [products, setProducts] = useState<SaleProduct[]>([]);
   const [isClientModalOpen, setIsClientModalOpen] = useState(false);
   const [selectedClient, setSelectedClient] = useState<Client | null>(null);
@@ -110,8 +111,8 @@ function Sales(): JSX.Element {
       alignItems: 'center',
       gap: '8px',
       padding: '6px 12px',
-      background: 'linear-gradient(to bottom, #FFFFFF, #F8F8F8)',
-      border: `0.5px solid ${systemColors.border.medium}`,
+      background: systemColors.background.primary,
+      border: `1px solid ${systemColors.border.light}`,
       borderRadius: '6px',
       fontSize: '11px',
       fontWeight: '500',

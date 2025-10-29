@@ -6,7 +6,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { AddButton } from '../../../components/AddButton';
 import { CurrencyInput, QuantityInput } from '../../../components/Inputs';
-import { systemStyles, systemColors } from '../../../styles/systemStyle';
+import { useTheme } from '../../../styles/ThemeProvider';
 import { ProductSelectModal } from './ProductSelectModal';
 
 interface ProductInputProps {
@@ -29,6 +29,7 @@ export function ProductInput({ onAddProduct }: ProductInputProps): JSX.Element {
   const [subtotal, setSubtotal] = useState('R$ 0,00');
   const [isProductModalOpen, setIsProductModalOpen] = useState(false);
   const productInputRef = useRef<HTMLInputElement>(null);
+  const { systemStyles, systemColors } = useTheme();
 
   // Calcula subtotal quando quantidade ou preço mudam
   useEffect(() => {

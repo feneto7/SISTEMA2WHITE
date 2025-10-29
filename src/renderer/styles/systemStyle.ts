@@ -4,93 +4,25 @@
 // Cores, layouts e componentes seguindo o padrão Apple
 //--------------------------------------------------------------------
 
-// Paleta de cores do sistema baseada nas imagens fornecidas
-export const systemColors = {
-  // Cores de fundo
-  background: {
-    primary: '#DEDEDE',        // Fundo de headers/footers/toolbars (mais escuro)
-    secondary: '#E4E4E4',      // Fundo secundário
-    sidebar: '#D7D7D7',        // Fundo da sidebar (Finder)
-    content: '#ECECEC',        // Fundo de conteúdo/formulários (mais claro)
-    white: '#FFFFFF',          // Branco puro
-    window: '#EDEDED'          // Fundo de janelas
-  },
-  
-  // Cores de bordas e divisores
-  border: {
-    light: '#C8C8C8',          // Borda clara
-    medium: '#B4B4B4',         // Borda média
-    dark: '#979797',           // Borda escura
-    divider: '#D0D0D0'         // Divisor
-  },
-  
-  // Cores de texto
-  text: {
-    primary: '#000000',        // Texto principal
-    secondary: '#6B6B6B',      // Texto secundário
-    tertiary: '#8E8E8E',       // Texto terciário
-    disabled: '#BEBEBE',       // Texto desabilitado
-    label: '#464646'           // Labels
-  },
-  
-  // Cores de seleção e destaque
-  selection: {
-    blue: '#0066CC',           // Azul de seleção
-    blueLight: '#4A90E2',      // Azul claro
-    blueDark: '#0051A8',       // Azul escuro
-    background: '#DCE9F7',     // Fundo de seleção
-    border: '#3F8FCA'          // Borda de seleção
-  },
-  
-  // Cores de controles
-  control: {
-    background: '#FBFBFB',     // Fundo de controles
-    border: '#C0C0C0',         // Borda de controles
-    hover: '#F0F0F0',          // Hover
-    active: '#E5E5E5',         // Ativo
-    disabled: '#F7F7F7'        // Desabilitado
-  },
-  
-  // Cores de botões
-  button: {
-    default: '#FFFFFF',        // Botão padrão
-    defaultBorder: '#ADADAD',  // Borda botão padrão
-    blue: '#007AFF',           // Botão azul
-    blueHover: '#0051D5',      // Botão azul hover
-    gradient: 'linear-gradient(to bottom, #FFFFFF, #F0F0F0)'  // Gradiente padrão
-  },
-  
-  // Cores de status
-  status: {
-    authorized: { color: '#34C759', background: 'rgba(52, 199, 89, 0.1)' },
-    canceled: { color: '#FF3B30', background: 'rgba(255, 59, 48, 0.1)' },
-    closed: { color: '#5856D6', background: 'rgba(88, 86, 214, 0.1)' },
-    rejected: { color: '#FF3B30', background: 'rgba(255, 59, 48, 0.1)' },
-    editing: { color: '#FF9500', background: 'rgba(255, 149, 0, 0.1)' },
-    waiting: { color: '#007AFF', background: 'rgba(0, 122, 255, 0.1)' },
-    closingPending: { color: '#AF52DE', background: 'rgba(175, 82, 222, 0.1)' },
-    transmissionError: { color: '#FF3B30', background: 'rgba(255, 59, 48, 0.1)' },
-    voided: { color: '#8E8E93', background: 'rgba(142, 142, 147, 0.1)' }
-  },
-  
-  // Cores do Dock
-  dock: {
-    background: 'rgba(255, 255, 255, 0.25)',  // Fundo translúcido
-    border: 'rgba(255, 255, 255, 0.5)',       // Borda
-    separator: 'rgba(0, 0, 0, 0.15)'          // Separador
-  },
-  
-  // Traffic Lights (botões de janela)
-  trafficLights: {
-    red: '#FF5F57',
-    yellow: '#FFBD2E',
-    green: '#28CA42',
-    inactive: '#D6D6D6'
-  }
-};
+import { ThemeTokens, lightTheme } from './shared';
 
-// Estilos do sistema
-export const systemStyles = {
+// Fábrica de estilos baseada em tokens de tema
+export function createSystemStyles(theme: ThemeTokens) {
+  const systemColors = {
+    background: theme.background,
+    border: theme.border,
+    text: theme.text,
+    selection: theme.selection,
+    control: theme.control,
+    input: theme.input,
+    button: theme.button,
+    status: theme.status,
+    dock: theme.dock,
+    trafficLights: theme.trafficLights
+  };
+
+  // Estilos do sistema (usa systemColors criado acima)
+  const systemStyles = {
   // Janela principal
   window: {
     background: systemColors.background.primary,
@@ -176,18 +108,23 @@ export const systemStyles = {
       alignItems: 'center',
       justifyContent: 'center',
       cursor: 'pointer',
-      transition: 'all 0.15s ease',
+      transition: 'none',
       padding: '4px',
-      boxShadow: '3px 3px 6px rgba(0, 0, 0, 0.1), -3px -3px 6px rgba(255, 255, 255, 0.8)'
+      outline: 'none',
+      transform: 'none',
+      appearance: 'none' as any,
+      WebkitAppearance: 'none' as any,
+      MozAppearance: 'none' as any,
+      filter: 'none',
+      boxShadow: `${systemColors.text.primary === '#FFFFFF' ? '6px 6px 12px rgba(0,0,0,0.45), -6px -6px 12px rgba(255,255,255,0.06)' : '3px 3px 6px rgba(0, 0, 0, 0.1), -3px -3px 6px rgba(255, 255, 255, 0.8)'}`
     },
     buttonHover: {
       background: systemColors.background.primary,
-      boxShadow: '3px 3px 6px rgba(0, 0, 0, 0.1), -3px -3px 6px rgba(255, 255, 255, 0.8)'
+      boxShadow: `${systemColors.text.primary === '#FFFFFF' ? '6px 6px 12px rgba(0,0,0,0.45), -6px -6px 12px rgba(255,255,255,0.06)' : '3px 3px 6px rgba(0, 0, 0, 0.1), -3px -3px 6px rgba(255, 255, 255, 0.8)'}`
     },
     buttonActive: {
       background: systemColors.background.primary,
-      boxShadow: 'inset 2px 2px 4px rgba(0, 0, 0, 0.12), inset -2px -2px 4px rgba(255, 255, 255, 0.7)',
-      transform: 'scale(0.98)'
+      boxShadow: `${systemColors.text.primary === '#FFFFFF' ? 'inset 3px 3px 6px rgba(0,0,0,0.6), inset -3px -3px 6px rgba(255,255,255,0.06)' : 'inset 2px 2px 4px rgba(0, 0, 0, 0.12), inset -2px -2px 4px rgba(255, 255, 255, 0.7)'}`
     }
   },
 
@@ -448,13 +385,19 @@ export const systemStyles = {
       padding: '4px 8px',
       fontSize: '11px',
       color: systemColors.text.primary,
-      background: '#FFFFFF',
-      border: `0.5px solid #BABABA`,
+      background: systemColors.input.background,
+      border: `0.5px solid ${systemColors.input.border}`,
       borderRadius: '4px',
       fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, Helvetica, Arial, sans-serif',
       outline: 'none',
       transition: 'all 0.2s ease',
-      boxShadow: 'inset 0 0.5px 2px rgba(0, 0, 0, 0.12), 0 0.5px 0 rgba(255, 255, 255, 0.5)'
+      boxShadow: systemColors.text.primary === '#FFFFFF' 
+        ? 'inset 0 0.5px 2px rgba(0, 0, 0, 0.3), 0 0.5px 0 rgba(255, 255, 255, 0.05)'
+        : 'inset 0 0.5px 2px rgba(0, 0, 0, 0.12), 0 0.5px 0 rgba(255, 255, 255, 0.5)'
+    },
+    fieldFocus: {
+      borderColor: systemColors.input.borderFocus,
+      boxShadow: `0 0 0 2px ${systemColors.input.borderFocus}33`
     },
     label: {
       fontSize: '11px',
@@ -480,13 +423,19 @@ export const systemStyles = {
       padding: '4px 8px 4px 24px',
       fontSize: '13px',
       color: systemColors.text.primary,
-      background: systemColors.control.background,
-      border: `1px solid ${systemColors.control.border}`,
+      background: systemColors.input.background,
+      border: `1px solid ${systemColors.input.border}`,
       borderRadius: '5px',
       fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, Helvetica, Arial, sans-serif',
       outline: 'none',
       transition: 'all 0.15s ease',
-      boxShadow: 'inset 0 1px 2px rgba(0, 0, 0, 0.05)'
+      boxShadow: systemColors.text.primary === '#FFFFFF' 
+        ? 'inset 0 1px 2px rgba(0, 0, 0, 0.2)'
+        : 'inset 0 1px 2px rgba(0, 0, 0, 0.05)'
+    },
+    fieldFocus: {
+      borderColor: systemColors.input.borderFocus,
+      boxShadow: `0 0 0 2px ${systemColors.input.borderFocus}33`
     },
     icon: {
       position: 'absolute' as const,
@@ -526,8 +475,8 @@ export const systemStyles = {
       padding: '4px 24px 4px 8px',
       fontSize: '11px',
       color: systemColors.text.primary,
-      background: 'linear-gradient(to bottom, #FFFFFF, #F8F8F8)',
-      border: '0.5px solid #BABABA',
+      background: systemColors.input.background,
+      border: `0.5px solid ${systemColors.input.border}`,
       borderRadius: '4px',
       fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, Helvetica, Arial, sans-serif',
       outline: 'none',
@@ -536,7 +485,9 @@ export const systemStyles = {
       WebkitAppearance: 'none' as any,
       MozAppearance: 'none' as any,
       transition: 'all 0.2s ease',
-      boxShadow: 'inset 0 0.5px 1px rgba(0, 0, 0, 0.06), 0 0.5px 0 rgba(255, 255, 255, 0.5)'
+      boxShadow: systemColors.text.primary === '#FFFFFF'
+        ? 'inset 0 0.5px 2px rgba(0, 0, 0, 0.3), 0 0.5px 0 rgba(255, 255, 255, 0.05)'
+        : 'inset 0 0.5px 2px rgba(0, 0, 0, 0.12), 0 0.5px 0 rgba(255, 255, 255, 0.5)'
     },
     arrow: {
       position: 'absolute' as const,
@@ -547,8 +498,8 @@ export const systemStyles = {
       display: 'flex',
       alignItems: 'center',
       justifyContent: 'center',
-      background: 'linear-gradient(to bottom, #5A9EDD, #3B7BC4)',
-      borderLeft: '0.5px solid #2A6BA8',
+      background: systemColors.button.blue,
+      borderLeft: `0.5px solid ${systemColors.selection.blueDark}`,
       borderRadius: '0 3.5px 3.5px 0',
       pointerEvents: 'none' as const,
       boxShadow: 'inset 0 0.5px 0 rgba(255, 255, 255, 0.4)'
@@ -672,11 +623,15 @@ export const systemStyles = {
       alignItems: 'center',
       justifyContent: 'center',
       transition: 'none',
-      boxShadow: '3px 3px 6px rgba(0, 0, 0, 0.1), -3px -3px 6px rgba(255, 255, 255, 0.8)'
+      boxShadow: systemColors.text.primary === '#FFFFFF'
+        ? '6px 6px 12px rgba(0,0,0,0.45), -6px -6px 12px rgba(255,255,255,0.06)'
+        : '3px 3px 6px rgba(0, 0, 0, 0.1), -3px -3px 6px rgba(255, 255, 255, 0.8)'
     },
     containerActive: {
       background: systemColors.background.content,
-      boxShadow: 'inset 2px 2px 4px rgba(0, 0, 0, 0.12), inset -2px -2px 4px rgba(255, 255, 255, 0.7)',
+      boxShadow: systemColors.text.primary === '#FFFFFF'
+        ? 'inset 3px 3px 6px rgba(0,0,0,0.6), inset -3px -3px 6px rgba(255,255,255,0.06)'
+        : 'inset 2px 2px 4px rgba(0, 0, 0, 0.12), inset -2px -2px 4px rgba(255, 255, 255, 0.7)',
       transform: 'scale(0.95)'
     }
   },
@@ -719,11 +674,13 @@ export const systemStyles = {
       height: '68px',
       margin: '0 auto 12px auto',
       borderRadius: '16px',
-      background: 'rgba(255, 255, 255, 0.3)',
+      background: systemColors.text.primary === '#FFFFFF' ? 'rgba(30,30,36,0.35)' : 'rgba(255, 255, 255, 0.3)',
       backdropFilter: 'blur(30px) saturate(180%)',
       WebkitBackdropFilter: 'blur(30px) saturate(180%)',
-      border: '0.5px solid rgba(255, 255, 255, 0.4)',
-      boxShadow: '0 8px 32px rgba(0, 0, 0, 0.12), inset 0 0 0 0.5px rgba(255, 255, 255, 0.5), 0 8px 16px rgba(0, 0, 0, 0.15)',
+      border: systemColors.text.primary === '#FFFFFF' ? '0.5px solid rgba(255,255,255,0.15)' : '0.5px solid rgba(255, 255, 255, 0.4)',
+      boxShadow: systemColors.text.primary === '#FFFFFF'
+        ? '0 10px 30px rgba(0,0,0,0.35), inset 0 0 0 0.5px rgba(255,255,255,0.08)'
+        : '0 8px 32px rgba(0, 0, 0, 0.12), inset 0 0 0 0.5px rgba(255, 255, 255, 0.5), 0 8px 16px rgba(0, 0, 0, 0.15)',
       width: 'fit-content',
       padding: '0 12px',
       position: 'relative' as const,
@@ -743,7 +700,10 @@ export const systemStyles = {
       display: 'flex',
       alignItems: 'center',
       justifyContent: 'center',
-      willChange: 'transform'
+      willChange: 'transform',
+      boxShadow: systemColors.text.primary === '#FFFFFF'
+        ? '6px 6px 12px rgba(0,0,0,0.45), -6px -6px 12px rgba(255,255,255,0.06)'
+        : '0 4px 10px rgba(0,0,0,0.25), inset 0 1px 0 rgba(255,255,255,0.2)'
     },
     iconHover: {
       transform: 'scale(1.3) translateY(-8px)'
@@ -1193,7 +1153,13 @@ export const systemStyles = {
       marginTop: '4px'
     }
   }
-};
+  };
+
+  return { systemColors, systemStyles };
+}
+
+// Instância padrão (backwards compatibility): tema claro
+export const { systemColors, systemStyles } = createSystemStyles(lightTheme);
 
 // Export padrão com tudo
 export default {

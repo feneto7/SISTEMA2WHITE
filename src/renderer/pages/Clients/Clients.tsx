@@ -1,5 +1,5 @@
 import React, { useState, lazy, Suspense } from 'react';
-import { systemStyles, systemColors } from '../../styles/systemStyle';
+import { useTheme } from '../../styles/ThemeProvider';
 import { ClientSearchBox, ClientList } from './components';
 import { useNavigation } from '../../router/Navigation';
 import { useClickSound } from '../../hooks/useClickSound';
@@ -59,6 +59,7 @@ interface Client {
 export function Clients(): JSX.Element {
   const { navigate } = useNavigation();
   const playClickSound = useClickSound();
+  const { systemStyles, systemColors } = useTheme();
   const [searchTerm, setSearchTerm] = useState('');
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [clients, setClients] = useState<Client[]>([
@@ -151,9 +152,7 @@ export function Clients(): JSX.Element {
 
   return (
     <div style={{
-      height: '100%',
-      display: 'flex',
-      flexDirection: 'column',
+      ...systemStyles.page.container,
       padding: '20px',
       gap: '20px',
       overflow: 'hidden'

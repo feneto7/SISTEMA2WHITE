@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useClickSound } from '../../../../../hooks/useClickSound';
-import { systemStyles, systemColors } from '../../../../../styles/systemStyle';
+import { useTheme } from '../../../../../styles/ThemeProvider';
 
 interface Driver {
   id: string;
@@ -31,6 +31,7 @@ interface NewDriverModalProps {
 
 export function NewDriverModal({ isOpen, onClose, onSave, editingDriver }: NewDriverModalProps): JSX.Element | null {
   const playClickSound = useClickSound();
+  const { systemStyles, systemColors } = useTheme();
   const [focusedField, setFocusedField] = useState<string | null>(null);
   const [formData, setFormData] = useState<Partial<Driver>>({
     nomeMotorista: '',
