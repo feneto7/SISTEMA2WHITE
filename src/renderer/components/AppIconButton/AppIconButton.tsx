@@ -16,11 +16,14 @@ export function AppIconButton(): JSX.Element {
   const [isHovered, setHovered] = useState(false);
   const [isPressed, setPressed] = useState(false);
   const [isThemeMenuOpen, setIsThemeMenuOpen] = useState(false);
+  const themeCloseTimeout = useRef<number | null>(null);
+  const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
+  const [hoveredSubIndex, setHoveredSubIndex] = useState<number | null>(null);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const themeMenuRef = useRef<HTMLDivElement>(null);
   const playClickSound = useClickSound();
   const { navigate } = useNavigation();
-  const { theme, setTheme } = useTheme();
+  const { theme, setTheme, systemColors: themeColors } = useTheme();
 
   // Fechar dropdown ao clicar fora
   useEffect(() => {
@@ -45,8 +48,21 @@ export function AppIconButton(): JSX.Element {
     setIsDropdownOpen(!isDropdownOpen);
   };
 
-  const handleThemeOpen = () => setIsThemeMenuOpen(true);
-  const handleThemeClose = () => setIsThemeMenuOpen(false);
+  const handleThemeOpen = () => {
+    if (themeCloseTimeout.current) {
+      window.clearTimeout(themeCloseTimeout.current);
+      themeCloseTimeout.current = null;
+    }
+    setIsThemeMenuOpen(true);
+  };
+  const handleThemeClose = () => {
+    // pequeno atraso para permitir mover o cursor até o submenu sem fechar
+    if (themeCloseTimeout.current) window.clearTimeout(themeCloseTimeout.current);
+    themeCloseTimeout.current = window.setTimeout(() => {
+      setIsThemeMenuOpen(false);
+      themeCloseTimeout.current = null;
+    }, 150);
+  };
 
   const handleThemeChange = (newTheme: 'light' | 'dark') => {
     playClickSound();
@@ -93,7 +109,7 @@ export function AppIconButton(): JSX.Element {
 
         {/* Dropdown menu */}
         {isDropdownOpen && (
-          <div style={styles.dropdownMenu} ref={dropdownRef}>
+          <div style={{ ...styles.dropdownMenu, background: themeColors.background.content, border: `1px solid ${themeColors.border.light}` }}>
             {/* Item Temas com submenu */}
             <div
               style={styles.themeItemContainer}
@@ -102,51 +118,32 @@ export function AppIconButton(): JSX.Element {
               onMouseLeave={handleThemeClose}
             >
               <button
-                style={isThemeMenuOpen ? styles.dropdownItemActive : styles.dropdownItem}
-                onMouseEnter={(e) => {
-                  Object.assign(e.currentTarget.style, styles.dropdownItemHover);
-                }}
-                onMouseLeave={(e) => {
-                  if (!isThemeMenuOpen) Object.assign(e.currentTarget.style, styles.dropdownItem);
-                }}
+                style={{ ...(isThemeMenuOpen || hoveredIndex === 0 ? styles.dropdownItemActive : styles.dropdownItem), color: (isThemeMenuOpen || hoveredIndex === 0) ? '#ffffff' : themeColors.text.primary }}
+                onClick={() => setIsThemeMenuOpen((v) => !v)}
+                onMouseEnter={() => setHoveredIndex(0)}
+                onMouseLeave={() => setHoveredIndex(null)}
               >
                 <span>Temas</span>
-                <span style={styles.arrowIcon}>{isThemeMenuOpen ? '▼' : '▶'}</span>
+                <span style={{ ...styles.arrowIcon, marginLeft: 'auto' }}>{isThemeMenuOpen ? '▾' : '▸'}</span>
               </button>
               
               {/* Submenu de temas */}
               {isThemeMenuOpen && (
-                <div style={styles.subMenu}>
+                <div style={{ ...styles.subMenu, background: themeColors.background.content, border: `1px solid ${themeColors.border.light}` }} onMouseEnter={handleThemeOpen} onMouseLeave={handleThemeClose}>
                   <button
                     onClick={() => handleThemeChange('light')}
-                    style={theme === 'light' ? styles.subMenuItemActive : styles.subMenuItem}
-                    onMouseEnter={(e) => {
-                      if (theme !== 'light') {
-                        Object.assign(e.currentTarget.style, styles.subMenuItemHover);
-                      }
-                    }}
-                    onMouseLeave={(e) => {
-                      if (theme !== 'light') {
-                        Object.assign(e.currentTarget.style, styles.subMenuItem);
-                      }
-                    }}
+                    style={{ ...(theme === 'light' || hoveredSubIndex === 0 ? styles.subMenuItemActive : styles.subMenuItem), color: (theme === 'light' || hoveredSubIndex === 0) ? '#ffffff' : themeColors.text.primary }}
+                    onMouseEnter={() => setHoveredSubIndex(0)}
+                    onMouseLeave={() => setHoveredSubIndex(null)}
                   >
                     <span style={styles.checkIcon}>{theme === 'light' ? '✓' : ''}</span>
                     <span>Light</span>
                   </button>
                   <button
                     onClick={() => handleThemeChange('dark')}
-                    style={theme === 'dark' ? styles.subMenuItemActive : styles.subMenuItem}
-                    onMouseEnter={(e) => {
-                      if (theme !== 'dark') {
-                        Object.assign(e.currentTarget.style, styles.subMenuItemHover);
-                      }
-                    }}
-                    onMouseLeave={(e) => {
-                      if (theme !== 'dark') {
-                        Object.assign(e.currentTarget.style, styles.subMenuItem);
-                      }
-                    }}
+                    style={{ ...(theme === 'dark' || hoveredSubIndex === 1 ? styles.subMenuItemActive : styles.subMenuItem), color: (theme === 'dark' || hoveredSubIndex === 1) ? '#ffffff' : themeColors.text.primary }}
+                    onMouseEnter={() => setHoveredSubIndex(1)}
+                    onMouseLeave={() => setHoveredSubIndex(null)}
                   >
                     <span style={styles.checkIcon}>{theme === 'dark' ? '✓' : ''}</span>
                     <span>Dark</span>
@@ -158,13 +155,9 @@ export function AppIconButton(): JSX.Element {
             {/* Item Sair */}
             <button
               onClick={handleLogout}
-              style={styles.dropdownItem}
-              onMouseEnter={(e) => {
-                Object.assign(e.currentTarget.style, styles.dropdownItemHover);
-              }}
-              onMouseLeave={(e) => {
-                Object.assign(e.currentTarget.style, styles.dropdownItem);
-              }}
+              style={{ ...(hoveredIndex === 1 ? styles.dropdownItemActive : styles.dropdownItem), color: hoveredIndex === 1 ? '#ffffff' : themeColors.text.primary }}
+              onMouseEnter={() => setHoveredIndex(1)}
+              onMouseLeave={() => setHoveredIndex(null)}
             >
               Sair
             </button>
@@ -186,12 +179,12 @@ const styles = {
     position: 'absolute' as const,
     top: '40px',
     left: '0',
-    minWidth: '180px',
+    minWidth: '140px',
     background: systemColors.background.content,
-    border: `0.5px solid ${systemColors.border.medium}`,
-    borderRadius: '6px',
-    boxShadow: '0 4px 16px rgba(0, 0, 0, 0.22), 0 2px 4px rgba(0, 0, 0, 0.08)',
-    padding: '0',
+    border: `1px solid ${systemColors.border.light}`,
+    borderRadius: '2px',
+    boxShadow: '0 8px 20px rgba(0,0,0,0.18)',
+    padding: '2px 0',
     zIndex: 1000,
     animation: 'dropdownFadeIn 0.15s cubic-bezier(0.2, 0, 0.2, 1)',
     transformOrigin: 'top left',
@@ -199,34 +192,16 @@ const styles = {
   },
   dropdownItem: {
     width: '100%',
-    padding: '6px 14px',
-    fontSize: '13px',
+    padding: '4px 8px',
+    fontSize: '11px',
     color: systemColors.text.primary,
     background: 'transparent',
-    border: 'none',
-    borderRadius: '0',
-    cursor: 'default',
-    textAlign: 'left' as const,
-    fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, Helvetica, Arial, sans-serif',
-    fontWeight: '400',
-    transition: 'background-color 0.08s ease',
-    display: 'block',
-    outline: 'none',
-    WebkitFontSmoothing: 'antialiased' as const,
-    MozOsxFontSmoothing: 'grayscale' as const
-  },
-  dropdownItemHover: {
-    width: '100%',
-    padding: '6px 14px',
-    fontSize: '13px',
-    color: '#ffffff',
-    background: '#007AFF',
     border: 'none',
     borderRadius: '0',
     cursor: 'pointer',
     textAlign: 'left' as const,
     fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, Helvetica, Arial, sans-serif',
-    fontWeight: '400',
+    fontWeight: '500',
     transition: 'background-color 0.08s ease',
     display: 'block',
     outline: 'none',
@@ -235,8 +210,8 @@ const styles = {
   },
   dropdownItemActive: {
     width: '100%',
-    padding: '6px 14px',
-    fontSize: '13px',
+    padding: '4px 8px',
+    fontSize: '11px',
     color: '#ffffff',
     background: '#007AFF',
     border: 'none',
@@ -244,7 +219,7 @@ const styles = {
     cursor: 'pointer',
     textAlign: 'left' as const,
     fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, Helvetica, Arial, sans-serif',
-    fontWeight: '400',
+    fontWeight: '600',
     transition: 'background-color 0.08s ease',
     display: 'flex',
     justifyContent: 'space-between',
@@ -265,12 +240,12 @@ const styles = {
     position: 'absolute' as const,
     left: '100%',
     top: '0',
-    minWidth: '140px',
+    minWidth: '130px',
     background: systemColors.background.content,
-    border: `0.5px solid ${systemColors.border.medium}`,
-    borderRadius: '6px',
-    boxShadow: '0 4px 16px rgba(0, 0, 0, 0.22), 0 2px 4px rgba(0, 0, 0, 0.08)',
-    padding: '4px 0',
+    border: `1px solid ${systemColors.border.light}`,
+    borderRadius: '2px',
+    boxShadow: '0 8px 20px rgba(0,0,0,0.18)',
+    padding: '2px 0',
     marginLeft: '4px',
     zIndex: 1001,
     animation: 'dropdownFadeIn 0.15s cubic-bezier(0.2, 0, 0.2, 1)',
@@ -279,36 +254,16 @@ const styles = {
   },
   subMenuItem: {
     width: '100%',
-    padding: '6px 14px',
-    fontSize: '13px',
+    padding: '4px 8px',
+    fontSize: '11px',
     color: systemColors.text.primary,
     background: 'transparent',
-    border: 'none',
-    borderRadius: '0',
-    cursor: 'default',
-    textAlign: 'left' as const,
-    fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, Helvetica, Arial, sans-serif',
-    fontWeight: '400',
-    transition: 'background-color 0.08s ease',
-    display: 'flex',
-    alignItems: 'center',
-    gap: '8px',
-    outline: 'none',
-    WebkitFontSmoothing: 'antialiased' as const,
-    MozOsxFontSmoothing: 'grayscale' as const
-  },
-  subMenuItemHover: {
-    width: '100%',
-    padding: '6px 14px',
-    fontSize: '13px',
-    color: '#ffffff',
-    background: '#007AFF',
     border: 'none',
     borderRadius: '0',
     cursor: 'pointer',
     textAlign: 'left' as const,
     fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, Helvetica, Arial, sans-serif',
-    fontWeight: '400',
+    fontWeight: '500',
     transition: 'background-color 0.08s ease',
     display: 'flex',
     alignItems: 'center',
@@ -319,16 +274,16 @@ const styles = {
   },
   subMenuItemActive: {
     width: '100%',
-    padding: '6px 14px',
-    fontSize: '13px',
+    padding: '4px 8px',
+    fontSize: '11px',
     color: '#ffffff',
-    background: '#0051D5',
+    background: '#007AFF',
     border: 'none',
     borderRadius: '0',
     cursor: 'pointer',
     textAlign: 'left' as const,
     fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, Helvetica, Arial, sans-serif',
-    fontWeight: '500',
+    fontWeight: '600',
     transition: 'background-color 0.08s ease',
     display: 'flex',
     alignItems: 'center',

@@ -15,8 +15,23 @@ interface DockButtonProps {
 
 function DockButton({ icon: Icon, label, onClick }: DockButtonProps): JSX.Element {
   const [isHovered, setIsHovered] = useState(false);
+  const [isPressed, setIsPressed] = useState(false);
   const playClickSound = useClickSound();
   const { systemStyles, systemColors } = useTheme();
+
+  // Neomorfismo sutil baseado no tema atual
+  const baseBg = systemColors.background.sidebar;
+  const shadowDark = 'rgba(0, 0, 0, 0.45)';
+  const shadowLight = 'rgba(255, 255, 255, 0.10)';
+
+  const neoButton: React.CSSProperties = {
+    background: baseBg,
+    borderRadius: 14,
+    boxShadow: isPressed
+      ? `inset 6px 6px 12px ${shadowDark}, inset -6px -6px 12px ${shadowLight}`
+      : `10px 10px 20px ${shadowDark}, -10px -10px 20px ${shadowLight}`,
+    transition: 'box-shadow 120ms ease',
+  };
 
   const handleClick = () => {
     playClickSound();
@@ -26,9 +41,11 @@ function DockButton({ icon: Icon, label, onClick }: DockButtonProps): JSX.Elemen
   return (
     <div style={dockButtonContainer}>
       <button
-        style={systemStyles.dock.icon}
+        style={{ ...systemStyles.dock.icon, ...neoButton }}
         onMouseEnter={() => setIsHovered(true)}
-        onMouseLeave={() => setIsHovered(false)}
+        onMouseLeave={() => { setIsHovered(false); setIsPressed(false); }}
+        onMouseDown={() => setIsPressed(true)}
+        onMouseUp={() => setIsPressed(false)}
         onClick={handleClick}
       >
         <Icon size={20} color={systemColors.text.primary} />
@@ -45,7 +62,15 @@ interface DockMenuProps {
 
 export function DockMenu({ onOpenOperations, onOpenFiscal }: DockMenuProps): JSX.Element {
   const { navigate } = useNavigation();
-  const { systemStyles } = useTheme();
+  const { systemStyles, systemColors } = useTheme();
+
+  // Neomorfismo do container do dock
+  const dockSurface: React.CSSProperties = {
+    ...systemStyles.dock.container,
+    background: systemColors.background.sidebar,
+    borderRadius: 18,
+    boxShadow: `12px 12px 24px rgba(0,0,0,0.45), -12px -12px 24px rgba(255,255,255,0.10)`
+  };
   
   const handleOperationsClick = () => {
     if (onOpenOperations) {
@@ -60,7 +85,7 @@ export function DockMenu({ onOpenOperations, onOpenFiscal }: DockMenuProps): JSX
   };
 
   return (
-    <div style={systemStyles.dock.container}>
+    <div style={dockSurface}>
       <div style={dockInner}>
         <DockButton icon={AppIcons.Products} label="Produtos" onClick={() => navigate('products')} />
         <DockButton icon={AppIcons.Users} label="Clientes" onClick={() => navigate('clients')} />

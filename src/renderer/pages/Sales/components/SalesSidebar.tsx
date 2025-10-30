@@ -6,14 +6,21 @@
 import React from 'react';
 import { useTheme } from '../../../styles/ThemeProvider';
 
+interface PaymentEntry {
+  method: string;
+  amountCents: number;
+}
+
 interface SalesSidebarProps {
   subtotal: number;
   discount: number;
   total: number;
   itemsCount: number;
+  payments?: PaymentEntry[];
+  adjustment?: { label: string; valueCents: number };
 }
 
-export function SalesSidebar({ subtotal, discount, total, itemsCount }: SalesSidebarProps): JSX.Element {
+export function SalesSidebar({ subtotal, discount, total, itemsCount, payments = [], adjustment }: SalesSidebarProps): JSX.Element {
   const { systemStyles, systemColors } = useTheme();
   // Formata valores para exibição em moeda brasileira
   const formatCurrency = (value: number): string => {
@@ -38,7 +45,7 @@ export function SalesSidebar({ subtotal, discount, total, itemsCount }: SalesSid
       alignSelf: 'stretch'
     },
     header: {
-      padding: '32px 24px',
+      padding: '24px 24px',
       textAlign: 'center' as const,
       background: systemColors.background.sidebar,
       borderBottom: `1px solid ${systemColors.border.light}`
@@ -56,15 +63,39 @@ export function SalesSidebar({ subtotal, discount, total, itemsCount }: SalesSid
       flex: 1,
       display: 'flex',
       flexDirection: 'column' as const,
-      justifyContent: 'center',
-      padding: '32px 28px',
-      gap: '40px',
-      minHeight: 0
+      justifyContent: 'flex-start',
+      padding: '16px 18px 12px 18px',
+      gap: '16px',
+      minHeight: 0,
+      overflow: 'hidden' as const
     },
     section: {
       display: 'flex',
       flexDirection: 'column' as const,
       gap: '24px'
+    },
+    paymentsList: {
+      display: 'flex',
+      flexDirection: 'column' as const,
+      gap: '6px',
+      marginTop: '2px'
+    },
+    paymentRow: {
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'space-between',
+      fontSize: '12px',
+      color: systemColors.text.primary,
+      background: 'transparent',
+      border: `1px solid ${systemColors.border.light}`,
+      borderRadius: '8px',
+      padding: '6px 10px'
+    },
+    paymentName: {
+      fontWeight: 600
+    },
+    paymentValue: {
+      fontWeight: 700
     },
     sectionTitle: {
       fontSize: '18px',
@@ -77,7 +108,7 @@ export function SalesSidebar({ subtotal, discount, total, itemsCount }: SalesSid
       letterSpacing: '1px'
     },
     valueBox: {
-      padding: '24px 20px',
+      padding: '16px 16px',
       textAlign: 'center' as const
     },
     valueLabel: {
@@ -90,7 +121,7 @@ export function SalesSidebar({ subtotal, discount, total, itemsCount }: SalesSid
       letterSpacing: '1px'
     },
     value: {
-      fontSize: '42px',
+      fontSize: '36px',
       fontWeight: '700',
       color: systemColors.text.primary,
       margin: 0,
@@ -99,11 +130,12 @@ export function SalesSidebar({ subtotal, discount, total, itemsCount }: SalesSid
     },
     totalBox: {
       background: systemColors.selection.background,
-      borderRadius: '12px',
-      padding: '32px 20px',
+      borderRadius: '10px',
+      padding: '18px 16px',
       textAlign: 'center' as const,
       border: `1px solid ${systemColors.selection.border}`,
-      boxShadow: '0 4px 12px rgba(0, 122, 255, 0.1)'
+      boxShadow: '0 3px 10px rgba(0, 122, 255, 0.08)',
+      marginTop: 'auto'
     },
     totalLabel: {
       fontSize: '16px',
@@ -115,7 +147,7 @@ export function SalesSidebar({ subtotal, discount, total, itemsCount }: SalesSid
       letterSpacing: '1.5px'
     },
     totalValue: {
-      fontSize: '56px',
+      fontSize: '48px',
       fontWeight: '700',
       color: systemColors.selection.blue,
       margin: 0,
@@ -133,16 +165,42 @@ export function SalesSidebar({ subtotal, discount, total, itemsCount }: SalesSid
 
       {/* Conteúdo com totais */}
       <div style={styles.content}>
-        {/* Seção Totais */}
+        {/* Subtotal (sem label "TOTAIS") */}
         <div style={styles.section}>
-          <h2 style={styles.sectionTitle}>Totais</h2>
-          
-          {/* Subtotal */}
           <div style={styles.valueBox}>
             <p style={styles.valueLabel}>Subtotal:</p>
             <p style={styles.value}>{formatCurrency(subtotal)}</p>
           </div>
         </div>
+
+        {/* Desconto / Acréscimo (abaixo do subtotal) */}
+        {adjustment && adjustment.valueCents > 0 && (
+          <div style={styles.section}>
+            <div style={styles.paymentsList}>
+              <div style={styles.paymentRow}>
+                <span style={styles.paymentName as React.CSSProperties}>{adjustment.label}</span>
+                <span style={styles.paymentValue as React.CSSProperties}>{formatCurrency(adjustment.valueCents)}</span>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Pagamentos lançados */}
+        {payments.length > 0 && (
+          <div style={styles.section}>
+            <div>
+              <p style={styles.valueLabel}>Pagamentos:</p>
+              <div style={styles.paymentsList}>
+                {payments.map((p) => (
+                  <div key={p.method} style={styles.paymentRow}>
+                    <span style={styles.paymentName as React.CSSProperties}>{p.method}</span>
+                    <span style={styles.paymentValue as React.CSSProperties}>{formatCurrency(p.amountCents)}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        )}
 
         {/* Total Final */}
         <div style={styles.totalBox}>
