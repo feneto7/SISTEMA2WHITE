@@ -27,7 +27,7 @@ interface NewClientModalProps {
 export function NewClientModal({ isOpen, onClose, onSave }: NewClientModalProps): JSX.Element | null {
   const playClickSound = useClickSound();
   const { systemStyles, systemColors } = useTheme();
-  const [activeTab, setActiveTab] = useState<'main' | 'address' | 'additional'>('main');
+  const [activeTab, setActiveTab] = useState<'main' | 'address' | 'additional' | 'limit' | 'plans'>('main');
   const [clientType, setClientType] = useState<'individual' | 'company'>('individual');
   const [isCancelHovered, setIsCancelHovered] = useState(false);
   const [isSaveHovered, setIsSaveHovered] = useState(false);
@@ -47,7 +47,13 @@ export function NewClientModal({ isOpen, onClose, onSave }: NewClientModalProps)
     municipalRegistration: '',
     // Campos de endereço adicionais
     addressNumber: '',
-    neighborhood: ''
+    neighborhood: '',
+    // Limite / Condições comerciais
+    creditLimit: '',
+    dueDays: '',
+    discountPercent: '',
+    // Planos
+    plan: 'basic'
   });
 
   // Função para fechar o modal
@@ -68,7 +74,13 @@ export function NewClientModal({ isOpen, onClose, onSave }: NewClientModalProps)
       municipalRegistration: '',
       // Campos de endereço adicionais
       addressNumber: '',
-      neighborhood: ''
+      neighborhood: '',
+      // Limite / Condições comerciais
+      creditLimit: '',
+      dueDays: '',
+      discountPercent: '',
+      // Planos
+      plan: 'basic'
     });
     setClientType('individual');
     setActiveTab('main');
@@ -293,6 +305,50 @@ export function NewClientModal({ isOpen, onClose, onSave }: NewClientModalProps)
           >
             Adicional
           </button>
+          <button
+            style={{
+              ...systemStyles.tabs.tab,
+              ...(activeTab === 'limit' ? systemStyles.tabs.tabActive : {})
+            }}
+            onMouseEnter={(e) => {
+              if (activeTab !== 'limit') {
+                Object.assign(e.currentTarget.style, systemStyles.tabs.tabHover);
+              }
+            }}
+            onMouseLeave={(e) => {
+              if (activeTab !== 'limit') {
+                Object.assign(e.currentTarget.style, systemStyles.tabs.tab);
+              }
+            }}
+            onClick={() => {
+              playClickSound();
+              setActiveTab('limit');
+            }}
+          >
+            Limite
+          </button>
+          <button
+            style={{
+              ...systemStyles.tabs.tab,
+              ...(activeTab === 'plans' ? systemStyles.tabs.tabActive : {})
+            }}
+            onMouseEnter={(e) => {
+              if (activeTab !== 'plans') {
+                Object.assign(e.currentTarget.style, systemStyles.tabs.tabHover);
+              }
+            }}
+            onMouseLeave={(e) => {
+              if (activeTab !== 'plans') {
+                Object.assign(e.currentTarget.style, systemStyles.tabs.tab);
+              }
+            }}
+            onClick={() => {
+              playClickSound();
+              setActiveTab('plans');
+            }}
+          >
+            Planos
+          </button>
         </div>
 
         {/* Conteúdo das abas */}
@@ -322,6 +378,58 @@ export function NewClientModal({ isOpen, onClose, onSave }: NewClientModalProps)
               formData={formData}
               onUpdateFormData={updateFormData}
             />
+          )}
+
+          {activeTab === 'limit' && (
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '16px', maxWidth: '700px' }}>
+              <div style={systemStyles.input.container}>
+                <label style={systemStyles.input.label}>Limite de Crédito (R$)</label>
+                <input
+                  style={systemStyles.input.field}
+                  value={formData.creditLimit}
+                  onChange={(e) => updateFormData('creditLimit', e.target.value)}
+                  placeholder="0,00"
+                />
+              </div>
+              <div style={systemStyles.input.container}>
+                <label style={systemStyles.input.label}>Prazo de Vencimento (dias)</label>
+                <input
+                  style={systemStyles.input.field}
+                  value={formData.dueDays}
+                  onChange={(e) => updateFormData('dueDays', e.target.value)}
+                  placeholder="30"
+                />
+              </div>
+              <div style={systemStyles.input.container}>
+                <label style={systemStyles.input.label}>Desconto (%)</label>
+                <input
+                  style={systemStyles.input.field}
+                  value={formData.discountPercent}
+                  onChange={(e) => updateFormData('discountPercent', e.target.value)}
+                  placeholder="0"
+                />
+              </div>
+            </div>
+          )}
+
+          {activeTab === 'plans' && (
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: '16px', maxWidth: '420px' }}>
+              <div style={systemStyles.select.container}>
+                <label style={systemStyles.input.label}>Plano</label>
+                <select
+                  style={systemStyles.select.field}
+                  value={formData.plan}
+                  onChange={(e) => updateFormData('plan', e.target.value)}
+                >
+                  <option value="basic">Básico</option>
+                  <option value="pro">Pro</option>
+                  <option value="enterprise">Enterprise</option>
+                </select>
+                <div style={systemStyles.select.arrow}>
+                  <span style={systemStyles.select.arrowIcon}></span>
+                </div>
+              </div>
+            </div>
           )}
         </div>
 

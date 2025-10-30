@@ -5,7 +5,7 @@
 //--------------------------------------------------------------------
 
 import React, { useState } from 'react';
-import { systemColors, systemStyles } from '../../../styles/systemStyle';
+import { useTheme } from '../../../styles/ThemeProvider';
 import { useClickSound } from '../../../hooks/useClickSound';
 import { AppIcons } from '../../../components/Icons/AppIcons';
 
@@ -16,6 +16,7 @@ interface LaunchpadFiscalProps {
 }
 
 export function LaunchpadFiscal({ isOpen, onClose, onSelectDocument }: LaunchpadFiscalProps): JSX.Element | null {
+  const { systemColors, systemStyles } = useTheme();
   const playClickSound = useClickSound();
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
   const [isAnimating, setIsAnimating] = useState(false);
