@@ -9,6 +9,7 @@ import { BackButton } from '../../components/BackButton';
 import { SettingsSidebar } from './components/SettingsSidebar';
 import { CompanyForm } from './components/CompanyForm';
 import { FiscalTab } from './components/FiscalTab';
+import { PrintersTab } from './components/PrintersTab';
 import { ParametrosTab } from './components/ParametrosTab';
 import { useTheme } from '../../styles/ThemeProvider';
 
@@ -32,7 +33,7 @@ function Settings(): JSX.Element {
       case 'pagamento':
         return <div style={styles.placeholder}>Formas de Pagamento</div>;
       case 'impressoras':
-        return <div style={styles.placeholder}>Configurações de Impressoras</div>;
+        return <PrintersTab />;
       case 'balanca':
         return <div style={styles.placeholder}>Configurações de Balança</div>;
       case 'gaveta':
