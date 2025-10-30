@@ -1091,12 +1091,14 @@ export function createSystemStyles(theme: ThemeTokens) {
       opacity: 1
     },
     container: {
-      background: 'rgba(255, 255, 255, 0.25)',
+      background: systemColors.text.primary === '#FFFFFF' ? 'rgba(30,30,36,0.35)' : 'rgba(255, 255, 255, 0.25)',
       backdropFilter: 'blur(50px) saturate(180%)',
       WebkitBackdropFilter: 'blur(50px) saturate(180%)',
       borderRadius: '32px',
-      border: '1px solid rgba(255, 255, 255, 0.2)',
-      boxShadow: '0 8px 32px rgba(0, 0, 0, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.4)',
+      border: systemColors.text.primary === '#FFFFFF' ? '1px solid rgba(255,255,255,0.14)' : '1px solid rgba(255, 255, 255, 0.2)',
+      boxShadow: systemColors.text.primary === '#FFFFFF'
+        ? '0 10px 30px rgba(0,0,0,0.35), inset 0 0 0 0.5px rgba(255,255,255,0.08)'
+        : '0 8px 32px rgba(0, 0, 0, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.4)',
       padding: '60px 80px',
       maxWidth: '90vw',
       maxHeight: '90vh'
@@ -1126,14 +1128,18 @@ export function createSystemStyles(theme: ThemeTokens) {
       padding: '16px',
       opacity: 1,
       transition: 'all 0.15s ease',
-      background: 'rgba(255, 255, 255, 0.15)',
-      boxShadow: '4px 4px 8px rgba(0, 0, 0, 0.1), -4px -4px 8px rgba(255, 255, 255, 0.3)'
+      background: systemColors.text.primary === '#FFFFFF' ? 'rgba(40, 40, 46, 0.4)' : 'rgba(255, 255, 255, 0.15)',
+      boxShadow: systemColors.text.primary === '#FFFFFF'
+        ? '6px 6px 12px rgba(0,0,0,0.45), -6px -6px 12px rgba(255,255,255,0.06)'
+        : '4px 4px 8px rgba(0, 0, 0, 0.1), -4px -4px 8px rgba(255, 255, 255, 0.3)'
     },
     iconContainerHover: {
-      boxShadow: '4px 4px 8px rgba(0, 0, 0, 0.1), -4px -4px 8px rgba(255, 255, 255, 0.3)'
+      // Sem efeito de hover: mantém aparência neutra (neumorfismo só no active)
     },
     iconContainerActive: {
-      boxShadow: 'inset 3px 3px 6px rgba(0, 0, 0, 0.15), inset -3px -3px 6px rgba(255, 255, 255, 0.3)',
+      boxShadow: systemColors.text.primary === '#FFFFFF'
+        ? 'inset 3px 3px 6px rgba(0,0,0,0.6), inset -3px -3px 6px rgba(255,255,255,0.06)'
+        : 'inset 3px 3px 6px rgba(0, 0, 0, 0.15), inset -3px -3px 6px rgba(255, 255, 255, 0.3)',
       transform: 'scale(0.98)'
     },
     iconWrapper: {
