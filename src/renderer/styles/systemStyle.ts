@@ -636,6 +636,33 @@ export function createSystemStyles(theme: ThemeTokens) {
     }
   },
 
+  // Neumorphic Button (botão grande com neomorfismo)
+  neumorphicButton: {
+    container: {
+      padding: '10px 16px',
+      borderRadius: '14px',
+      border: 'none',
+      background: systemColors.background.content,
+      color: systemColors.text.primary,
+      cursor: 'pointer',
+      boxShadow: systemColors.text.primary === '#FFFFFF'
+        ? '10px 10px 20px rgba(0,0,0,0.45), -10px -10px 20px rgba(255,255,255,0.06)'
+        : '3px 3px 6px rgba(0, 0, 0, 0.1), -3px -3px 6px rgba(255, 255, 255, 0.8)',
+      transition: 'box-shadow 120ms ease'
+    },
+    containerActive: {
+      padding: '10px 16px',
+      borderRadius: '14px',
+      border: 'none',
+      background: systemColors.background.content,
+      color: systemColors.text.primary,
+      cursor: 'pointer',
+      boxShadow: systemColors.text.primary === '#FFFFFF'
+        ? 'inset 6px 6px 12px rgba(0,0,0,0.6), inset -6px -6px 12px rgba(255,255,255,0.06)'
+        : 'inset 2px 2px 4px rgba(0, 0, 0, 0.12), inset -2px -2px 4px rgba(255, 255, 255, 0.7)'
+    }
+  },
+
   // Segmented Control
   segmentedControl: {
     container: {

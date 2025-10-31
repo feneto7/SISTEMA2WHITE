@@ -12,6 +12,7 @@ const Users = lazy(() => import('./pages/Users/Users').then(module => ({ default
 const MDFePage = lazy(() => import('./pages/MDFe/MDFe').then(module => ({ default: module.MDFePage })));
 const Sales = lazy(() => import('./pages/Sales/Sales').then(module => ({ default: module.default })));
 const Settings = lazy(() => import('./pages/Settings/Settings').then(module => ({ default: module.default })));
+const Attendances = lazy(() => import('./pages/Attendances/Attendances').then(module => ({ default: module.default })));
 
 
 // Componente de loading otimizado
@@ -50,6 +51,8 @@ function AppContent(): JSX.Element {
         return <Sales />;
       case 'settings':
         return <Settings />;
+      case 'attendances':
+        return <Attendances />;
       default:
         return <Home />;
     }
