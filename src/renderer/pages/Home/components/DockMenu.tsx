@@ -89,6 +89,7 @@ export function DockMenu({ onOpenOperations, onOpenFiscal }: DockMenuProps): JSX
       <div style={dockInner}>
         <DockButton icon={AppIcons.Products} label="Produtos" onClick={() => navigate('products')} />
         <DockButton icon={AppIcons.Users} label="Clientes" onClick={() => navigate('clients')} />
+        <DockButton icon={AppIcons.Settings} label="Atendimentos" onClick={() => navigate('attendances')} />
         <DockButton icon={AppIcons.ShoppingCart} label="Operações" onClick={handleOperationsClick} />
         <DockButton icon={AppIcons.Invoice} label="Fiscal" onClick={handleFiscalClick} />
       </div>
