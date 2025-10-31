@@ -3,6 +3,7 @@ import { useTheme } from '../../../styles/ThemeProvider';
 import { useClickSound } from '../../../hooks/useClickSound';
 import { UserForm } from './UserForm';
 import { AppIcons } from '../../../components/Icons/AppIcons';
+import { WindowHeader } from '../../../components/WindowHeader/WindowHeader';
 
 interface NewUserModalProps {
   isOpen: boolean;
@@ -98,41 +99,7 @@ export function NewUserModal({ isOpen, onClose, onSave }: NewUserModalProps): JS
         flexDirection: 'column' as const,
         overflow: 'hidden'
       }}>
-        {/* Header do modal */}
-        <div style={{
-          ...systemStyles.titleBar,
-          position: 'relative' as const
-        }}>
-          <div style={systemStyles.trafficLights.container}>
-            <div 
-              style={{
-                ...systemStyles.trafficLights.button,
-                ...systemStyles.trafficLights.red,
-                ...(isCloseHovered ? { opacity: 0.8 } : {})
-              }} 
-              onClick={() => {
-                playClickSound();
-                handleClose();
-              }}
-              onMouseEnter={() => setIsCloseHovered(true)}
-              onMouseLeave={() => setIsCloseHovered(false)}
-            />
-            <div 
-              style={{
-                ...systemStyles.trafficLights.button,
-                ...systemStyles.trafficLights.yellow
-              }} 
-            />
-            <div 
-              style={{
-                ...systemStyles.trafficLights.button,
-                ...systemStyles.trafficLights.green
-              }} 
-            />
-          </div>
-          <h2 style={systemStyles.titleBarTitle}>Novo Usuário</h2>
-          <div style={{ width: '60px' }}></div>
-        </div>
+        <WindowHeader title="Novo Usuário" onClose={handleClose} />
 
         {/* Conteúdo do modal */}
         <div style={{

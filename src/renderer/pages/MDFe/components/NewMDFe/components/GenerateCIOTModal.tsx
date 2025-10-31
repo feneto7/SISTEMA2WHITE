@@ -2,6 +2,7 @@ import React, { useState, useRef } from 'react';
 import { systemStyles, systemColors } from '../../../../../styles/systemStyle';
 import { useClickSound } from '../../../../../hooks/useClickSound';
 import { AddButton } from '../../../../../components/AddButton/AddButton';
+import { WindowHeader } from '../../../../../components/WindowHeader/WindowHeader';
 
 // Modal para gerar CIOT
 // Componente separado para formulário completo de geração de CIOT
@@ -260,19 +261,7 @@ export function GenerateCIOTModal({ isOpen, onClose, onSave }: GenerateCIOTModal
         flexDirection: 'column' as const,
         overflow: 'hidden'
       }}>
-        {/* Modal header */}
-        <div style={{
-          ...systemStyles.titleBar,
-          position: 'relative' as const
-        }}>
-          <div style={systemStyles.trafficLights.container}>
-            <button style={{...systemStyles.trafficLights.button, ...systemStyles.trafficLights.red}} onClick={handleClose}></button>
-            <button style={{...systemStyles.trafficLights.button, ...systemStyles.trafficLights.yellow}}></button>
-            <button style={{...systemStyles.trafficLights.button, ...systemStyles.trafficLights.green}}></button>
-          </div>
-          <div style={systemStyles.titleBarTitle}>Gerar CIOT</div>
-          <div style={{ width: '60px' }}></div>
-        </div>
+        <WindowHeader title="Gerar CIOT" onClose={handleClose} />
 
         {/* Modal content */}
         <div ref={formContainerRef} className="scrollbar-modal" style={{

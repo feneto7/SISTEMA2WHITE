@@ -8,6 +8,7 @@ import React, { useState, useEffect } from 'react';
 import { useTheme } from '../../../styles/ThemeProvider';
 import { SearchField } from '../../../components/SearchField';
 import { NewProductModal } from '../../../components/NewProductModal/NewProductModal';
+import { WindowHeader } from '../../../components/WindowHeader/WindowHeader';
 
 interface Product {
   id: string;
@@ -186,19 +187,7 @@ export function ProductSelectModal({ isOpen, onClose, onSelectProduct }: Product
   return (
     <div style={systemStyles.modal.overlay}>
       <div style={styles.modal}>
-        {/* Title Bar com traffic lights */}
-        <div style={{ ...systemStyles.modal.titleBar, flexShrink: 0 }}>
-          <div style={systemStyles.trafficLights.container}>
-            <button 
-              style={{...systemStyles.trafficLights.button, ...systemStyles.trafficLights.red}} 
-              onClick={onClose}
-            ></button>
-            <button style={{...systemStyles.trafficLights.button, ...systemStyles.trafficLights.yellow}}></button>
-            <button style={{...systemStyles.trafficLights.button, ...systemStyles.trafficLights.green}}></button>
-          </div>
-          <div style={systemStyles.modal.title}>Selecionar Produto</div>
-          <div style={{ width: '60px' }}></div>
-        </div>
+        <WindowHeader title="Selecionar Produto" onClose={onClose} />
 
         {/* Campo de pesquisa */}
         <div style={styles.searchContainer}>

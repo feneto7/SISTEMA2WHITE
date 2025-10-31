@@ -842,6 +842,44 @@ export function createSystemStyles(theme: ThemeTokens) {
     }
   },
 
+  // Modal List (listagens internas a modais)
+  modalList: {
+    container: {
+      border: `1px solid ${systemColors.border.light}`,
+      borderRadius: '10px',
+      background: systemColors.background.primary,
+      flex: 1,
+      minHeight: 0,
+      height: '100%',
+      overflowY: 'auto' as const,
+      overflowX: 'hidden' as const
+    },
+    header: {
+      display: 'grid',
+      gridTemplateColumns: '2fr 1fr auto',
+      gap: '8px',
+      padding: '10px 8px',
+      color: systemColors.text.secondary,
+      fontSize: '12px',
+      borderBottom: `1px solid ${systemColors.border.light}`,
+      textTransform: 'uppercase' as const,
+      letterSpacing: '0.5px'
+    },
+    row: {
+      display: 'grid',
+      gridTemplateColumns: '2fr 1fr auto',
+      gap: '8px',
+      padding: '10px 8px',
+      alignItems: 'center',
+      color: systemColors.text.primary,
+      borderBottom: `1px solid ${systemColors.border.light}`
+    },
+    actions: {
+      display: 'flex',
+      justifyContent: 'flex-end'
+    }
+  },
+
   // List Item (item de lista)
   listItem: {
     container: {

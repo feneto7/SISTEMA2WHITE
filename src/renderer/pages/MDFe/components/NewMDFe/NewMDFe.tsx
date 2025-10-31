@@ -3,6 +3,7 @@ import { useTheme } from '../../../../styles/ThemeProvider';
 import { useClickSound } from '../../../../hooks/useClickSound';
 import { DocumentsTab, TransportTab, DriversTab, RouteTab, FreightTab, InsuranceTab, TotalizersTab } from './components';
 import { validateMDFe, generateMDFeXML, ValidationError } from '../../../../utils/mdfeValidator';
+import { WindowHeader } from '../../../../components/WindowHeader/WindowHeader';
 
 // New MDF-e modal
 // Modularized component following project rules
@@ -374,16 +375,7 @@ export function NewMDFe({ isOpen, onClose, onSave }: NewMDFeProps): JSX.Element 
   return (
     <div style={styles.overlay} onClick={handleClose}>
       <div style={styles.container} onClick={(e) => e.stopPropagation()}>
-        {/* Modal header */}
-        <div style={styles.titleBar}>
-          <div style={systemStyles.trafficLights.container}>
-            <button style={{...systemStyles.trafficLights.button, ...systemStyles.trafficLights.red}} onClick={handleClose}></button>
-            <button style={{...systemStyles.trafficLights.button, ...systemStyles.trafficLights.yellow}}></button>
-            <button style={{...systemStyles.trafficLights.button, ...systemStyles.trafficLights.green}}></button>
-          </div>
-          <div style={styles.title}>Nova MDF-e</div>
-          <div style={{ width: '60px' }}></div>
-        </div>
+        <WindowHeader title="Nova MDF-e" onClose={handleClose} />
 
         {/* Seletor de tipo de MDF-e */}
         <div style={styles.typeSelector}>

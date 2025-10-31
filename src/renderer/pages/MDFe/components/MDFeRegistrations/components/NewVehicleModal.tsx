@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useClickSound } from '../../../../../hooks/useClickSound';
 import { useTheme } from '../../../../../styles/ThemeProvider';
+import { WindowHeader } from '../../../../../components/WindowHeader/WindowHeader';
 
 interface Vehicle {
   id: string;
@@ -243,31 +244,7 @@ export function NewVehicleModal({ isOpen, onClose, onSave, editingVehicle }: New
   return (
     <div style={styles.overlay}>
       <div style={styles.container}>
-        {/* Modal header */}
-        <div style={styles.titleBar}>
-          <div style={systemStyles.trafficLights.container}>
-            <button 
-              style={{...systemStyles.trafficLights.button, ...systemStyles.trafficLights.red}} 
-              onClick={() => {
-                playClickSound();
-                handleClose();
-              }}
-              title="Fechar"
-            />
-            <button 
-              style={{...systemStyles.trafficLights.button, ...systemStyles.trafficLights.yellow}}
-              title="Minimizar"
-            />
-            <button 
-              style={{...systemStyles.trafficLights.button, ...systemStyles.trafficLights.green}}
-              title="Maximizar"
-            />
-          </div>
-          <div style={styles.title}>
-            {editingVehicle ? 'Editar Veículo' : 'Novo Veículo'}
-          </div>
-          <div style={{ width: '60px' }}></div>
-        </div>
+        <WindowHeader title={editingVehicle ? 'Editar Veículo' : 'Novo Veículo'} onClose={handleClose} />
 
         {/* Form content */}
         <div style={styles.content}>
