@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useTheme } from '../../styles/ThemeProvider';
 import { useClickSound } from '../../hooks/useClickSound';
 import { MainTab, TaxTab, WholesaleTab, IngredientsTab, VariationsTab } from './components';
+import { WindowHeader } from '../WindowHeader/WindowHeader';
 
 // Modal de cadastro de novo produto
 // Componente modularizado seguindo as regras do projeto
@@ -73,54 +74,7 @@ export function NewProductModal({ isOpen, onClose }: NewProductModalProps): JSX.
         flexDirection: 'column' as const,
         overflow: 'hidden'
       }}>
-        {/* Header com botões de controle macOS */}
-        <div style={{
-          ...systemStyles.titleBar,
-          position: 'relative',
-          flexShrink: 0
-        }}>
-          {/* Botões de controle (traffic lights) */}
-          <div style={systemStyles.trafficLights.container}>
-            <button
-              style={{
-                ...systemStyles.trafficLights.button,
-                ...systemStyles.trafficLights.red
-              }}
-              onClick={() => {
-                playClickSound();
-                onClose();
-              }}
-              onMouseEnter={() => setIsCloseHovered(true)}
-              onMouseLeave={() => setIsCloseHovered(false)}
-              title="Fechar"
-            />
-            <button
-              style={{
-                ...systemStyles.trafficLights.button,
-                ...systemStyles.trafficLights.yellow
-              }}
-              onClick={() => {
-                playClickSound();
-                // Minimizar modal (implementar depois)
-              }}
-              title="Minimizar"
-            />
-            <button
-              style={{
-                ...systemStyles.trafficLights.button,
-                ...systemStyles.trafficLights.green
-              }}
-              onClick={() => {
-                playClickSound();
-                // Maximizar modal (implementar depois)
-              }}
-              title="Maximizar"
-            />
-          </div>
-
-          <h2 style={systemStyles.titleBarTitle}>Novo Produto</h2>
-          <div style={{ width: '60px' }}></div> {/* Espaçador para centralizar o título */}
-        </div>
+        <WindowHeader title="Novo Produto" onClose={onClose} />
 
         {/* Seletor de tipo */}
         <div style={{

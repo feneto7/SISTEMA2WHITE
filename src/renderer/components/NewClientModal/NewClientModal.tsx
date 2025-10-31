@@ -1,3 +1,4 @@
+import { WindowHeader } from '../WindowHeader/WindowHeader';
 import React, { useState } from 'react';
 import { useTheme } from '../../styles/ThemeProvider';
 import { useClickSound } from '../../hooks/useClickSound';
@@ -159,35 +160,7 @@ export function NewClientModal({ isOpen, onClose, onSave }: NewClientModalProps)
         flexDirection: 'column' as const,
         overflow: 'hidden'
       }}>
-        {/* Header do modal */}
-        <div style={{
-          ...systemStyles.titleBar,
-          position: 'relative' as const
-        }}>
-          <div style={systemStyles.trafficLights.container}>
-            <div 
-              style={{
-                ...systemStyles.trafficLights.button,
-                ...systemStyles.trafficLights.red
-              }} 
-              onClick={handleClose}
-            />
-            <div 
-              style={{
-                ...systemStyles.trafficLights.button,
-                ...systemStyles.trafficLights.yellow
-              }} 
-            />
-            <div 
-              style={{
-                ...systemStyles.trafficLights.button,
-                ...systemStyles.trafficLights.green
-              }} 
-            />
-          </div>
-          <h2 style={systemStyles.titleBarTitle}>Novo Cliente</h2>
-          <div style={{ width: '60px' }}></div>
-        </div>
+        <WindowHeader title="Novo Cliente" onClose={handleClose} />
 
         {/* Seletor de tipo de cliente */}
         <div style={{

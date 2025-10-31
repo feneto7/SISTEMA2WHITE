@@ -8,6 +8,7 @@ import React, { useState, useEffect } from 'react';
 import { useTheme } from '../../../styles/ThemeProvider';
 import { SearchField } from '../../../components/SearchField';
 import { NewClientModal } from '../../../components/NewClientModal/NewClientModal';
+import { WindowHeader } from '../../../components/WindowHeader/WindowHeader';
 
 interface Client {
   id: string;
@@ -187,19 +188,7 @@ export function ClientSelectModal({ isOpen, onClose, onSelectClient }: ClientSel
   return (
     <div style={systemStyles.modal.overlay}>
       <div style={styles.modal}>
-        {/* Title Bar com traffic lights */}
-        <div style={{ ...systemStyles.modal.titleBar, flexShrink: 0 }}>
-          <div style={systemStyles.trafficLights.container}>
-            <button 
-              style={{...systemStyles.trafficLights.button, ...systemStyles.trafficLights.red}} 
-              onClick={onClose}
-            ></button>
-            <button style={{...systemStyles.trafficLights.button, ...systemStyles.trafficLights.yellow}}></button>
-            <button style={{...systemStyles.trafficLights.button, ...systemStyles.trafficLights.green}}></button>
-          </div>
-          <div style={systemStyles.modal.title}>Selecionar Cliente</div>
-          <div style={{ width: '60px' }}></div>
-        </div>
+        <WindowHeader title="Selecionar Cliente" onClose={onClose} />
 
         {/* Campo de pesquisa */}
         <div style={styles.searchContainer}>

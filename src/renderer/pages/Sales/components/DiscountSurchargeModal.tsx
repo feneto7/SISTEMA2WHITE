@@ -8,6 +8,7 @@ import React from 'react';
 import { useTheme } from '../../../styles/ThemeProvider';
 import { formatMoneyInput, convertReaisToCents, convertCentsToReais } from '../../../utils/money';
 import { formatPercentageInput, parsePercentage } from '../../../utils/percentageFormatter';
+import { WindowHeader } from '../../../components/WindowHeader/WindowHeader';
 
 type AdjustmentMode = 'discount' | 'addition';
 type InputKind = 'percent' | 'value';
@@ -131,16 +132,7 @@ export function DiscountSurchargeModal({ isOpen, onClose, onConfirm, referenceCe
   return (
     <div style={systemStyles.modal.overlay}>
       <div style={styles.modal}>
-        {/* Title Bar */}
-        <div style={{ ...systemStyles.modal.titleBar, flexShrink: 0 }}>
-          <div style={systemStyles.trafficLights.container}>
-            <button style={{ ...systemStyles.trafficLights.button, ...systemStyles.trafficLights.red }} onClick={onClose}></button>
-            <button style={{ ...systemStyles.trafficLights.button, ...systemStyles.trafficLights.yellow }}></button>
-            <button style={{ ...systemStyles.trafficLights.button, ...systemStyles.trafficLights.green }}></button>
-          </div>
-          <div style={{ ...systemStyles.modal.title, position: 'absolute', left: '50%', transform: 'translateX(-50%)' }}>Desconto / Acréscimo</div>
-          <div style={{ width: '60px' }}></div>
-        </div>
+        <WindowHeader title="Desconto / Acréscimo" onClose={onClose} />
 
         {/* Conteúdo */}
         <div style={styles.content}>

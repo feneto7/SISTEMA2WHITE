@@ -31,7 +31,8 @@ export function OrderCard({
   buttonLabel = 'Avançar →'
 }: OrderCardProps): JSX.Element {
   const { systemStyles, systemColors } = useTheme();
-  const [isButtonHovered, setIsButtonHovered] = useState(false);
+  // Efeito de hover do card para realçar o pedido no quadro
+  const [isCardHovered, setIsCardHovered] = useState(false);
   const [isButtonPressed, setIsButtonPressed] = useState(false);
   const playClickSound = useClickSound();
 
@@ -56,9 +57,16 @@ export function OrderCard({
       padding: 12,
       marginBottom: 12,
       cursor: 'default',
-      boxShadow: systemColors.text.primary === '#FFFFFF'
-        ? '6px 6px 12px rgba(0,0,0,0.45), -6px -6px 12px rgba(255,255,255,0.06)'
-        : '3px 3px 6px rgba(0, 0, 0, 0.1)'
+      // Sombra com variação sutil no hover para sensação de elevação (estilo macOS)
+      boxShadow: isCardHovered
+        ? (systemColors.text.primary === '#FFFFFF'
+          ? '8px 8px 16px rgba(0,0,0,0.5), -8px -8px 16px rgba(255,255,255,0.08)'
+          : '6px 6px 12px rgba(0, 0, 0, 0.12)')
+        : (systemColors.text.primary === '#FFFFFF'
+          ? '6px 6px 12px rgba(0,0,0,0.45), -6px -6px 12px rgba(255,255,255,0.06)'
+          : '3px 3px 6px rgba(0, 0, 0, 0.1)'),
+      transition: 'box-shadow 160ms ease, transform 160ms ease',
+      transform: isCardHovered ? 'translateY(-1px)' : 'translateY(0)'
     },
     header: {
       display: 'flex',
@@ -137,7 +145,12 @@ export function OrderCard({
   };
 
   return (
-    <div style={styles.container}>
+    <div
+      style={styles.container}
+      onMouseEnter={() => setIsCardHovered(true)}
+      onMouseLeave={() => setIsCardHovered(false)}
+      onClick={onClick}
+    >
       <div style={styles.header}>
         <h3 style={styles.orderNumber}>#{orderNumber}</h3>
         <span style={styles.orderTime}>{orderTime}</span>
@@ -154,8 +167,7 @@ export function OrderCard({
           <button
             style={styles.advanceButton()}
             onClick={handleAdvance}
-            onMouseEnter={() => setIsButtonHovered(true)}
-            onMouseLeave={() => { setIsButtonHovered(false); setIsButtonPressed(false); }}
+            onMouseLeave={() => { setIsButtonPressed(false); }}
             onMouseDown={() => setIsButtonPressed(true)}
             onMouseUp={() => setIsButtonPressed(false)}
           >

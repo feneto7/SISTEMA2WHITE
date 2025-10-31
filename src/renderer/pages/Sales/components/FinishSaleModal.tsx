@@ -6,6 +6,7 @@
 
 import React, { useEffect, useRef } from 'react';
 import { useTheme } from '../../../styles/ThemeProvider';
+import { WindowHeader } from '../../../components/WindowHeader/WindowHeader';
 import { convertCentsToReais } from '../../../utils/money';
 
 interface PaymentEntry {
@@ -182,21 +183,7 @@ export function FinishSaleModal({ isOpen, onClose, onFinish, totalSaleCents, pay
   return (
     <div style={systemStyles.modal.overlay}>
       <div style={styles.modal}>
-        {/* Title Bar */}
-        <div style={{ ...systemStyles.modal.titleBar, flexShrink: 0 }}>
-          <div style={systemStyles.trafficLights.container}>
-            <button 
-              style={{ ...systemStyles.trafficLights.button, ...systemStyles.trafficLights.red }} 
-              onClick={onClose}
-            ></button>
-            <button style={{ ...systemStyles.trafficLights.button, ...systemStyles.trafficLights.yellow }}></button>
-            <button style={{ ...systemStyles.trafficLights.button, ...systemStyles.trafficLights.green }}></button>
-          </div>
-          <div style={{ ...systemStyles.modal.title, position: 'absolute', left: '50%', transform: 'translateX(-50%)' }}>
-            Finalizar Venda
-          </div>
-          <div style={{ width: '60px' }}></div>
-        </div>
+        <WindowHeader title="Finalizar Venda" onClose={onClose} />
 
         {/* Conteúdo */}
         <div style={styles.content}>
