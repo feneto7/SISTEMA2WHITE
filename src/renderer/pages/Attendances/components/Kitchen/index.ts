@@ -1,0 +1,2 @@
+export { KitchenTab } from './KitchenTab';
+

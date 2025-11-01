@@ -1,6 +1,6 @@
 //--------------------------------------------------------------------
 // PÁGINA DE ATENDIMENTOS
-// Tela operacional com abas: Meus Pedidos, Pedido Balcão, Pedidos Salão e Cozinha
+// Tela operacional com abas: Meus Pedidos, Balcão PDV, Pedidos Salão e Cozinha
 // Segue o mesmo layout base de páginas do sistema, com sidebar e conteúdo dinâmico
 //--------------------------------------------------------------------
 import React, { useState } from 'react';
@@ -8,10 +8,10 @@ import { useNavigation } from '../../router/Navigation';
 import { BackButton } from '../../components/BackButton';
 import { useTheme } from '../../styles/ThemeProvider';
 import { AttendancesSidebar } from './components/AttendancesSidebar';
-import { MyOrdersTab } from './components/MyOrdersTab';
-import { CounterOrdersTab } from './components/CounterOrdersTab';
-import { HallOrdersTab } from './components/HallOrdersTab';
-import { KitchenTab } from './components/KitchenTab';
+import { MyOrdersTab } from './components/MyOrders';
+import { CounterPDVTab } from './components/CounterPDV';
+import { HallOrdersTab } from './components/Hall';
+import { KitchenTab } from './components/Kitchen';
 
 export type AttendancesTab = 'myOrders' | 'counter' | 'hall' | 'kitchen';
 
@@ -26,7 +26,7 @@ function Attendances(): JSX.Element {
       case 'myOrders':
         return <MyOrdersTab />;
       case 'counter':
-        return <CounterOrdersTab />;
+        return <CounterPDVTab />;
       case 'hall':
         return <HallOrdersTab />;
       case 'kitchen':

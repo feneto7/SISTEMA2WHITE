@@ -5,9 +5,9 @@
 //--------------------------------------------------------------------
 import React from 'react';
 import { useState } from 'react';
-import { useTheme } from '../../../styles/ThemeProvider';
-import { SearchField } from '../../../components/SearchField';
-import { OrderCard } from './OrderCard';
+import { useTheme } from '../../../../styles/ThemeProvider';
+import { SearchField } from '../../../../components/SearchField';
+import { OrderCard } from './components/OrderCard';
 
 type KanbanColumnId = 'review' | 'inProgress' | 'ready';
 

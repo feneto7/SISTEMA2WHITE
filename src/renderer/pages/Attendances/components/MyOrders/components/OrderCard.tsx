@@ -4,8 +4,8 @@
 // Usa estilos neomórficos e segue o padrão visual do sistema
 //--------------------------------------------------------------------
 import React, { useState } from 'react';
-import { useTheme } from '../../../styles/ThemeProvider';
-import { useClickSound } from '../../../hooks/useClickSound';
+import { useTheme } from '../../../../../styles/ThemeProvider';
+import { useClickSound } from '../../../../../hooks/useClickSound';
 
 interface OrderCardProps {
   orderNumber: string;
