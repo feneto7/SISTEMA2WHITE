@@ -1,9 +1,9 @@
 //--------------------------------------------------------------------
 // ABA: COZINHA
-// Fila de preparo e controle de produção
+// Visualização de pedidos em produção para a equipe da cozinha
 //--------------------------------------------------------------------
 import React from 'react';
-import { useTheme } from '../../../styles/ThemeProvider';
+import { useTheme } from '../../../../styles/ThemeProvider';
 
 export function KitchenTab(): JSX.Element {
   const { systemColors } = useTheme();
@@ -26,5 +26,4 @@ export function KitchenTab(): JSX.Element {
     </div>
   );
 }
-
 

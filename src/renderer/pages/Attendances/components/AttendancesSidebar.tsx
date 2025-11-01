@@ -28,7 +28,7 @@ export function AttendancesSidebar({ activeTab, onSelectTab }: AttendancesSideba
 
   const navItems: NavItem[] = [
     { id: 'myOrders', label: 'Meus Pedidos', icon: AppIcons.Document },
-    { id: 'counter', label: 'Pedido Balcão', icon: AppIcons.Invoice },
+    { id: 'counter', label: 'Balcão PDV', icon: AppIcons.Invoice },
     { id: 'hall', label: 'Pedidos Salão', icon: AppIcons.Config },
     { id: 'kitchen', label: 'Cozinha', icon: AppIcons.Settings }
   ];

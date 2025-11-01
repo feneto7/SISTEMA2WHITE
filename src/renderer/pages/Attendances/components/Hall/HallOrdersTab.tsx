@@ -1,11 +1,11 @@
 //--------------------------------------------------------------------
-// ABA: PEDIDO BALCÃO
-// Operação de balcão/retirada com foco em agilidade
+// ABA: PEDIDOS SALÃO
+// Gestão de mesas e pedidos por mesa com status
 //--------------------------------------------------------------------
 import React from 'react';
-import { useTheme } from '../../../styles/ThemeProvider';
+import { useTheme } from '../../../../styles/ThemeProvider';
 
-export function CounterOrdersTab(): JSX.Element {
+export function HallOrdersTab(): JSX.Element {
   const { systemColors } = useTheme();
 
   const styles = {
@@ -22,7 +22,7 @@ export function CounterOrdersTab(): JSX.Element {
 
   return (
     <div style={styles.placeholder}>
-      Pedido Balcão (placeholder)
+      Pedidos Salão (placeholder)
     </div>
   );
 }
