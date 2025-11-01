@@ -22,9 +22,9 @@ export function CounterPDVTab(): JSX.Element {
     setOrderType(type);
   };
 
-  const handleProductClick = (product: any) => {
-    console.log('Produto selecionado:', product);
-    // TODO: Adicionar produto ao carrinho
+  const handleProductClick = (product: any, quantity: number) => {
+    console.log('Produto selecionado:', product, 'Quantidade:', quantity);
+    // TODO: Adicionar produto ao carrinho com a quantidade
   };
 
   const handleCheckout = () => {

@@ -6,8 +6,11 @@
 import React from 'react';
 import { useState } from 'react';
 import { useTheme } from '../../../../../styles/ThemeProvider';
+import { useClickSound } from '../../../../../hooks/useClickSound';
 import { BackButton } from '../../../../../components/BackButton';
 import { SearchField } from '../../../../../components/SearchField';
+import { CategoryCard } from './CategoryCard';
+import { ProductCard } from './ProductCard';
 
 interface Category {
   id: string;
@@ -26,29 +29,25 @@ interface Product {
 interface ProductsGridProps {
   categories?: Category[];
   products?: Product[];
-  onProductClick?: (product: Product) => void;
+  onProductClick?: (product: Product, quantity: number) => void;
 }
 
 export function ProductsGrid({ categories = [], products = [], onProductClick }: ProductsGridProps): JSX.Element {
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [searchTerm, setSearchTerm] = useState('');
+  const [productQuantities, setProductQuantities] = useState<{ [key: string]: number }>({});
   const { systemStyles, systemColors } = useTheme();
-
-  const formatMoney = (value: number): string => {
-    return new Intl.NumberFormat('pt-BR', {
-      style: 'currency',
-      currency: 'BRL'
-    }).format(value);
-  };
+  const playClickSound = useClickSound();
 
   const handleCategoryClick = (categoryId: string) => {
     setSelectedCategory(selectedCategory === categoryId ? null : categoryId);
   };
 
-  const handleProductClick = (product: Product) => {
-    if (onProductClick) {
-      onProductClick(product);
-    }
+  const handleProductQuantityChange = (productId: string, quantity: number) => {
+    setProductQuantities(prev => ({
+      ...prev,
+      [productId]: quantity
+    }));
   };
 
   // Por enquanto, usar dados mock quando não houver props
@@ -112,6 +111,21 @@ export function ProductsGrid({ categories = [], products = [], onProductClick }:
 
   const displayProducts = selectedCategory ? getProductsForCategory(selectedCategory) : [];
 
+  const handleAddAllToCart = () => {
+    if (onProductClick) {
+      displayProducts.forEach(product => {
+        const quantity = productQuantities[product.id] || 0;
+        if (quantity > 0) {
+          onProductClick(product, quantity);
+        }
+      });
+      playClickSound();
+      setProductQuantities({});
+    }
+  };
+
+  const hasProductsSelected = displayProducts.some(product => (productQuantities[product.id] || 0) > 0);
+
   const styles = {
     container: {
       display: 'flex',
@@ -139,26 +153,6 @@ export function ProductsGrid({ categories = [], products = [], onProductClick }:
       gridTemplateColumns: 'repeat(auto-fill, minmax(150px, 1fr))',
       gap: 12
     },
-    categoryCard: (isSelected: boolean) => ({
-      display: 'flex',
-      flexDirection: 'column' as const,
-      alignItems: 'center',
-      justifyContent: 'center',
-      padding: '20px',
-      borderRadius: 10,
-      cursor: 'pointer',
-      transition: 'all 0.15s ease',
-      background: isSelected ? systemColors.selection.background : systemColors.background.primary,
-      border: `1px solid ${isSelected ? systemColors.selection.border : systemColors.border.light}`,
-      boxShadow: isSelected ? '0 2px 8px rgba(0, 0, 0, 0.1)' : 'none'
-    }),
-    categoryName: (isSelected: boolean) => ({
-      fontSize: '14px',
-      fontWeight: '600',
-      color: isSelected ? systemColors.selection.blue : systemColors.text.primary,
-      marginTop: 8,
-      textAlign: 'center' as const
-    }),
     productsWrapper: {
       display: 'flex',
       flexDirection: 'column' as const,
@@ -190,18 +184,6 @@ export function ProductsGrid({ categories = [], products = [], onProductClick }:
       display: 'grid',
       gridTemplateColumns: 'repeat(5, 1fr)',
       gap: 12
-    },
-    productCard: {
-      display: 'flex',
-      flexDirection: 'column' as const,
-      alignItems: 'center',
-      justifyContent: 'center',
-      padding: 12,
-      borderRadius: 8,
-      border: `1px solid ${systemColors.border.light}`,
-      cursor: 'pointer',
-      transition: 'all 0.15s ease',
-      background: systemColors.background.primary
     },
     placeholder: {
       flex: 1,
@@ -239,17 +221,12 @@ export function ProductsGrid({ categories = [], products = [], onProductClick }:
             <div style={styles.categoriesContainer}>
               <div style={styles.categoriesGrid}>
                 {displayCategories.map((category) => (
-                  <div
+                  <CategoryCard
                     key={category.id}
-                    style={styles.categoryCard(false)}
+                    category={category}
+                    isSelected={false}
                     onClick={() => handleCategoryClick(category.id)}
-                  >
-                    {/* Ícone da categoria será adicionado aqui */}
-                    <div style={{ fontSize: '32px', marginBottom: 8 }}>📦</div>
-                    <span style={styles.categoryName(false)}>
-                      {category.name}
-                    </span>
-                  </div>
+                  />
                 ))}
               </div>
             </div>
@@ -274,12 +251,32 @@ export function ProductsGrid({ categories = [], products = [], onProductClick }:
                 />
               </div>
               <div style={styles.topBarRight}>
-                <div style={{ height: 32, display: 'flex', alignItems: 'center', width: 250 }}>
-                  <SearchField
-                    value={searchTerm}
-                    onChange={setSearchTerm}
-                    placeholder="Buscar produto"
-                  />
+                <div style={{ display: 'flex', gap: 12, alignItems: 'center' }}>
+                  <div style={{ height: 32, display: 'flex', alignItems: 'center', width: 250 }}>
+                    <SearchField
+                      value={searchTerm}
+                      onChange={setSearchTerm}
+                      placeholder="Buscar produto"
+                    />
+                  </div>
+                  <button
+                    style={{
+                      padding: '6px 16px',
+                      borderRadius: 8,
+                      background: hasProductsSelected ? systemColors.selection.blue : systemColors.button.gradient,
+                      color: hasProductsSelected ? '#FFFFFF' : systemColors.text.primary,
+                      border: `1px solid ${hasProductsSelected ? systemColors.selection.blueDark : systemColors.button.defaultBorder}`,
+                      cursor: hasProductsSelected ? 'pointer' : 'not-allowed',
+                      fontSize: '13px',
+                      fontWeight: '600',
+                      transition: 'all 0.15s ease',
+                      opacity: hasProductsSelected ? 1 : 0.5
+                    }}
+                    onClick={handleAddAllToCart}
+                    disabled={!hasProductsSelected}
+                  >
+                    Adicionar ao Carrinho
+                  </button>
                 </div>
               </div>
             </div>
@@ -288,19 +285,12 @@ export function ProductsGrid({ categories = [], products = [], onProductClick }:
             <div style={styles.productsContainer}>
               <div style={styles.productsGrid}>
                 {displayProducts.map((product) => (
-                  <div
+                  <ProductCard
                     key={product.id}
-                    style={styles.productCard}
-                    onClick={() => handleProductClick(product)}
-                  >
-                    <div style={{ fontSize: '24px', textAlign: 'center' as const }}>🍔</div>
-                    <div style={{ fontSize: '12px', fontWeight: '600', marginTop: 8, textAlign: 'center' as const }}>
-                      {product.name}
-                    </div>
-                    <div style={{ fontSize: '14px', fontWeight: '700', color: systemColors.selection.blue, textAlign: 'center' as const, marginTop: 4 }}>
-                      {formatMoney(product.price)}
-                    </div>
-                  </div>
+                    product={product}
+                    quantity={productQuantities[product.id] || 0}
+                    onQuantityChange={(qty) => handleProductQuantityChange(product.id, qty)}
+                  />
                 ))}
               </div>
             </div>
