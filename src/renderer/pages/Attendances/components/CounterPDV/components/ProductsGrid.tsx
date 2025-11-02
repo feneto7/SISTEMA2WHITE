@@ -1,22 +1,14 @@
 //--------------------------------------------------------------------
 // GRID DE PRODUTOS
-// Área central para exibir categorias de produtos e produtos da categoria selecionada
-// Suporta navegação entre categorias e produtos
+// Exibe os produtos de uma categoria selecionada
+// Usado no PDV para adicionar produtos ao carrinho
 //--------------------------------------------------------------------
-import React from 'react';
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { useTheme } from '../../../../../styles/ThemeProvider';
 import { useClickSound } from '../../../../../hooks/useClickSound';
+import { GridTopBar } from './GridTopBar';
 import { BackButton } from '../../../../../components/BackButton';
-import { SearchField } from '../../../../../components/SearchField';
-import { CategoryCard } from './CategoryCard';
 import { ProductCard } from './ProductCard';
-
-interface Category {
-  id: string;
-  name: string;
-  icon?: string;
-}
 
 interface Product {
   id: string;
@@ -24,40 +16,33 @@ interface Product {
   description?: string;
   price: number;
   image?: string;
+  hasComplements?: boolean;
 }
 
 interface ProductsGridProps {
-  categories?: Category[];
+  categoryId: string | null;
   products?: Product[];
+  onBack: () => void;
   onProductClick?: (product: Product, quantity: number) => void;
+  onNextToComplements?: (product: Product, quantity: number) => void;
 }
 
-export function ProductsGrid({ categories = [], products = [], onProductClick }: ProductsGridProps): JSX.Element {
-  const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
+export function ProductsGrid({ categoryId, products = [], onBack, onProductClick, onNextToComplements }: ProductsGridProps): JSX.Element {
   const [searchTerm, setSearchTerm] = useState('');
   const [productQuantities, setProductQuantities] = useState<{ [key: string]: number }>({});
   const { systemStyles, systemColors } = useTheme();
   const playClickSound = useClickSound();
 
-  const handleCategoryClick = (categoryId: string) => {
-    setSelectedCategory(selectedCategory === categoryId ? null : categoryId);
-  };
-
   const handleProductQuantityChange = (productId: string, quantity: number) => {
-    setProductQuantities(prev => ({
-      ...prev,
-      [productId]: quantity
-    }));
+    // Permitir apenas 1 produto selecionado por vez
+    if (quantity > 0) {
+      // Limpar todos os outros produtos
+      setProductQuantities({ [productId]: quantity });
+    } else {
+      // Se quantidade for 0, apenas limpar este produto
+      setProductQuantities({});
+    }
   };
-
-  // Por enquanto, usar dados mock quando não houver props
-  const displayCategories = categories.length > 0 ? categories : [
-    { id: '1', name: 'Bebidas' },
-    { id: '2', name: 'Lanches' },
-    { id: '3', name: 'Pizzas' },
-    { id: '4', name: 'Sobremesas' },
-    { id: '5', name: 'Promoções' }
-  ];
 
   // Dados mock de produtos por categoria
   const mockProductsByCategory: { [key: string]: Product[] } = {
@@ -70,11 +55,11 @@ export function ProductsGrid({ categories = [], products = [], onProductClick }:
       { id: '106', name: 'Refrigerante Zero', price: 5.50 }
     ],
     '2': [ // Lanches
-      { id: '201', name: 'Hambúrguer', price: 15.00 },
-      { id: '202', name: 'Cheeseburguer', price: 17.00 },
-      { id: '203', name: 'X-Bacon', price: 20.00 },
-      { id: '204', name: 'X-Salada', price: 16.00 },
-      { id: '205', name: 'X-Tudo', price: 25.00 },
+      { id: '201', name: 'Hambúrguer', price: 15.00, hasComplements: true },
+      { id: '202', name: 'Cheeseburguer', price: 17.00, hasComplements: true },
+      { id: '203', name: 'X-Bacon', price: 20.00, hasComplements: true },
+      { id: '204', name: 'X-Salada', price: 16.00, hasComplements: true },
+      { id: '205', name: 'X-Tudo', price: 25.00, hasComplements: true },
       { id: '206', name: 'Batata Frita', price: 10.00 }
     ],
     '3': [ // Pizzas
@@ -102,29 +87,42 @@ export function ProductsGrid({ categories = [], products = [], onProductClick }:
   };
 
   // Obter produtos da categoria selecionada
-  const getProductsForCategory = (categoryId: string): Product[] => {
+  const getProductsForCategory = (catId: string): Product[] => {
     if (products.length > 0) {
       return products;
     }
-    return mockProductsByCategory[categoryId] || [];
+    return mockProductsByCategory[catId] || [];
   };
 
-  const displayProducts = selectedCategory ? getProductsForCategory(selectedCategory) : [];
+  const displayProducts = categoryId ? getProductsForCategory(categoryId) : [];
+
+  // Obter o produto selecionado
+  const selectedProduct = displayProducts.find(product => (productQuantities[product.id] || 0) > 0);
+  const selectedProductQuantity = selectedProduct ? productQuantities[selectedProduct.id] : 0;
+  const hasSelectedProductWithComplements = selectedProduct?.hasComplements === true;
 
   const handleAddAllToCart = () => {
-    if (onProductClick) {
-      displayProducts.forEach(product => {
-        const quantity = productQuantities[product.id] || 0;
-        if (quantity > 0) {
-          onProductClick(product, quantity);
-        }
-      });
+    if (onProductClick && selectedProduct) {
+      onProductClick(selectedProduct, selectedProductQuantity);
       playClickSound();
       setProductQuantities({});
     }
   };
 
-  const hasProductsSelected = displayProducts.some(product => (productQuantities[product.id] || 0) > 0);
+  const handleNextToComplements = () => {
+    if (onNextToComplements && selectedProduct) {
+      onNextToComplements(selectedProduct, selectedProductQuantity);
+      playClickSound();
+      setProductQuantities({});
+    }
+  };
+
+  const hasProductsSelected = selectedProductQuantity > 0;
+
+  // Filtrar produtos baseado no termo de busca
+  const filteredProducts = displayProducts.filter(product =>
+    product.name.toLowerCase().includes(searchTerm.toLowerCase())
+  );
 
   const styles = {
     container: {
@@ -137,43 +135,11 @@ export function ProductsGrid({ categories = [], products = [], onProductClick }:
       overflow: 'hidden',
       height: '100%'
     },
-    categoriesWrapper: {
-      display: 'flex',
-      flexDirection: 'column' as const,
-      flex: 1,
-      overflow: 'hidden'
-    },
-    categoriesContainer: {
-      padding: 16,
-      flex: 1,
-      overflow: 'auto'
-    },
-    categoriesGrid: {
-      display: 'grid',
-      gridTemplateColumns: 'repeat(auto-fill, minmax(150px, 1fr))',
-      gap: 12
-    },
     productsWrapper: {
       display: 'flex',
       flexDirection: 'column' as const,
       flex: 1,
       overflow: 'hidden'
-    },
-    topBar: {
-      display: 'flex',
-      justifyContent: 'space-between',
-      alignItems: 'center',
-      padding: 12,
-      borderBottom: `1px solid ${systemColors.border.light}`,
-      flexShrink: 0
-    },
-    topBarLeft: {
-      display: 'flex',
-      alignItems: 'center'
-    },
-    topBarRight: {
-      display: 'flex',
-      alignItems: 'center'
     },
     productsContainer: {
       flex: 1,
@@ -195,113 +161,69 @@ export function ProductsGrid({ categories = [], products = [], onProductClick }:
     }
   };
 
+  if (!categoryId) {
+    return (
+      <div style={styles.container}>
+        <div style={styles.placeholder}>
+          Selecione uma categoria
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div style={styles.container}>
-      {/* Se não tiver categoria selecionada, mostra as categorias */}
-      {!selectedCategory && (
-        displayCategories.length > 0 ? (
-          <div style={styles.categoriesWrapper}>
-            {/* Barra superior com busca */}
-            <div style={styles.topBar}>
-              <div style={styles.topBarLeft}>
-                {/* Espaço vazio para alinhar com produtos */}
-              </div>
-              <div style={styles.topBarRight}>
-                <div style={{ height: 32, display: 'flex', alignItems: 'center', width: 250 }}>
-                  <SearchField
-                    value={searchTerm}
-                    onChange={setSearchTerm}
-                    placeholder="Buscar categoria"
-                  />
-                </div>
-              </div>
-            </div>
+      {displayProducts.length > 0 ? (
+        <div style={styles.productsWrapper}>
+          {/* Barra superior com botão voltar e adicionar */}
+          <GridTopBar
+            leftContent={
+              <BackButton 
+                onClick={onBack} 
+                label="Voltar para categorias" 
+              />
+            }
+            rightContent={
+              <button
+                style={{
+                  padding: '6px 16px',
+                  borderRadius: 8,
+                  background: hasProductsSelected ? systemColors.selection.blue : systemColors.button.gradient,
+                  color: hasProductsSelected ? '#FFFFFF' : systemColors.text.primary,
+                  border: `1px solid ${hasProductsSelected ? systemColors.selection.blueDark : systemColors.button.defaultBorder}`,
+                  cursor: hasProductsSelected ? 'pointer' : 'not-allowed',
+                  fontSize: '13px',
+                  fontWeight: '600',
+                  transition: 'all 0.15s ease',
+                  opacity: hasProductsSelected ? 1 : 0.5
+                }}
+                onClick={hasSelectedProductWithComplements ? handleNextToComplements : handleAddAllToCart}
+                disabled={!hasProductsSelected}
+              >
+                {hasSelectedProductWithComplements ? 'Próximo' : 'Adicionar ao Carrinho'}
+              </button>
+            }
+          />
 
-            {/* Grid de categorias */}
-            <div style={styles.categoriesContainer}>
-              <div style={styles.categoriesGrid}>
-                {displayCategories.map((category) => (
-                  <CategoryCard
-                    key={category.id}
-                    category={category}
-                    isSelected={false}
-                    onClick={() => handleCategoryClick(category.id)}
-                  />
-                ))}
-              </div>
-            </div>
-          </div>
-        ) : (
-          <div style={styles.placeholder}>
-            Nenhuma categoria disponível
-          </div>
-        )
-      )}
-
-      {/* Se tiver categoria selecionada, mostra somente os produtos */}
-      {selectedCategory && (
-        displayProducts.length > 0 ? (
-          <div style={styles.productsWrapper}>
-            {/* Barra superior com botão voltar e busca */}
-            <div style={styles.topBar}>
-              <div style={styles.topBarLeft}>
-                <BackButton 
-                  onClick={() => setSelectedCategory(null)} 
-                  label="Voltar para categorias" 
+          {/* Grid de produtos */}
+          <div style={styles.productsContainer}>
+            <div style={styles.productsGrid}>
+              {filteredProducts.map((product) => (
+                <ProductCard
+                  key={product.id}
+                  product={product}
+                  quantity={productQuantities[product.id] || 0}
+                  onQuantityChange={(qty) => handleProductQuantityChange(product.id, qty)}
                 />
-              </div>
-              <div style={styles.topBarRight}>
-                <div style={{ display: 'flex', gap: 12, alignItems: 'center' }}>
-                  <div style={{ height: 32, display: 'flex', alignItems: 'center', width: 250 }}>
-                    <SearchField
-                      value={searchTerm}
-                      onChange={setSearchTerm}
-                      placeholder="Buscar produto"
-                    />
-                  </div>
-                  <button
-                    style={{
-                      padding: '6px 16px',
-                      borderRadius: 8,
-                      background: hasProductsSelected ? systemColors.selection.blue : systemColors.button.gradient,
-                      color: hasProductsSelected ? '#FFFFFF' : systemColors.text.primary,
-                      border: `1px solid ${hasProductsSelected ? systemColors.selection.blueDark : systemColors.button.defaultBorder}`,
-                      cursor: hasProductsSelected ? 'pointer' : 'not-allowed',
-                      fontSize: '13px',
-                      fontWeight: '600',
-                      transition: 'all 0.15s ease',
-                      opacity: hasProductsSelected ? 1 : 0.5
-                    }}
-                    onClick={handleAddAllToCart}
-                    disabled={!hasProductsSelected}
-                  >
-                    Adicionar ao Carrinho
-                  </button>
-                </div>
-              </div>
-            </div>
-
-            {/* Grid de produtos */}
-            <div style={styles.productsContainer}>
-              <div style={styles.productsGrid}>
-                {displayProducts.map((product) => (
-                  <ProductCard
-                    key={product.id}
-                    product={product}
-                    quantity={productQuantities[product.id] || 0}
-                    onQuantityChange={(qty) => handleProductQuantityChange(product.id, qty)}
-                  />
-                ))}
-              </div>
+              ))}
             </div>
           </div>
-        ) : (
-          <div style={styles.placeholder}>
-            Nenhum produto nesta categoria
-          </div>
-        )
+        </div>
+      ) : (
+        <div style={styles.placeholder}>
+          Nenhum produto nesta categoria
+        </div>
       )}
     </div>
   );
 }
-
