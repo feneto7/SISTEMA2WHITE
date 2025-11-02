@@ -14,6 +14,7 @@ interface ProductCardProps {
     description?: string;
     price: number;
     image?: string;
+    hasComplements?: boolean;
   };
   quantity: number;
   onQuantityChange: (quantity: number) => void;
@@ -63,7 +64,8 @@ export function ProductCard({ product, quantity, onQuantityChange }: ProductCard
       cursor: 'pointer',
       transition: 'all 0.15s ease',
       background: systemColors.background.primary,
-      position: 'relative' as const
+      position: 'relative' as const,
+      minHeight: 140
     },
     icon: {
       fontSize: '24px',
@@ -134,7 +136,8 @@ export function ProductCard({ product, quantity, onQuantityChange }: ProductCard
               Object.assign(e.currentTarget.style, styles.quantityButtonHover);
             }}
             onMouseLeave={(e) => {
-              Object.assign(e.currentTarget.style, { background: '', borderColor: '' });
+              e.currentTarget.style.background = systemColors.background.primary;
+              e.currentTarget.style.borderColor = systemColors.border.light;
             }}
           >
             -
@@ -147,7 +150,8 @@ export function ProductCard({ product, quantity, onQuantityChange }: ProductCard
               Object.assign(e.currentTarget.style, styles.quantityButtonHover);
             }}
             onMouseLeave={(e) => {
-              Object.assign(e.currentTarget.style, { background: '', borderColor: '' });
+              e.currentTarget.style.background = systemColors.background.primary;
+              e.currentTarget.style.borderColor = systemColors.border.light;
             }}
           >
             +

@@ -28,7 +28,8 @@ import {
   FiSave,
   FiTool,
   FiLogOut,
-  FiDollarSign
+  FiDollarSign,
+  FiX
 } from 'react-icons/fi';
 import {
   // Material Design Icons (estilo clean e moderno)
@@ -86,6 +87,7 @@ export const EditIcon = createIcon(FiEdit);
 export const DeleteIcon = createIcon(FiTrash2);
 export const SaveIcon = createIcon(FiSave);
 export const LogOutIcon = createIcon(FiLogOut);
+export const CloseIcon = createIcon(FiX);
 
 // Ícones de Usuários
 export const UserIcon = createIcon(FiUsers);
@@ -130,6 +132,7 @@ export const AppIcons = {
   Edit: EditIcon,
   Delete: DeleteIcon,
   Save: SaveIcon,
+  Close: CloseIcon,
   Exit: LogOutIcon,
   
   // Configuração

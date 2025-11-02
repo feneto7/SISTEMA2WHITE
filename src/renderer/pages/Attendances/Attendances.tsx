@@ -14,11 +14,25 @@ import { HallOrdersTab } from './components/Hall';
 import { KitchenTab } from './components/Kitchen';
 
 export type AttendancesTab = 'myOrders' | 'counter' | 'hall' | 'kitchen';
+export type PDVOrderType = 'counter' | 'table';
 
 function Attendances(): JSX.Element {
   const { navigate } = useNavigation();
   const [activeTab, setActiveTab] = useState<AttendancesTab>('myOrders');
+  const [isPDVOpen, setIsPDVOpen] = useState(false);
+  const [pdvOrderType, setPDVOrderType] = useState<PDVOrderType>('counter');
   const { systemStyles, systemColors } = useTheme();
+
+  // Função para abrir o PDV em modo fullscreen
+  const handleOpenPDV = (orderType: PDVOrderType) => {
+    setPDVOrderType(orderType);
+    setIsPDVOpen(true);
+  };
+
+  // Função para fechar o PDV
+  const handleClosePDV = () => {
+    setIsPDVOpen(false);
+  };
 
   // Renderiza o conteúdo da aba selecionada
   const renderContent = () => {
@@ -28,7 +42,7 @@ function Attendances(): JSX.Element {
       case 'counter':
         return <CounterPDVTab />;
       case 'hall':
-        return <HallOrdersTab />;
+        return <HallOrdersTab onNewOrder={() => handleOpenPDV('table')} />;
       case 'kitchen':
         return <KitchenTab />;
       default:
@@ -44,7 +58,8 @@ function Attendances(): JSX.Element {
       overflow: 'hidden',
       background: systemColors.background.content,
       padding: '20px',
-      gap: '20px'
+      gap: '20px',
+      position: 'relative' as const
     },
     header: {
       ...systemStyles.page.header,
@@ -84,30 +99,56 @@ function Attendances(): JSX.Element {
       borderRadius: '10px',
       border: `1px solid ${systemColors.border.light}`,
       boxShadow: '0 2px 8px rgba(0, 0, 0, 0.1)'
+    },
+    pdvOverlay: {
+      position: 'fixed' as const,
+      top: 0,
+      left: 0,
+      right: 0,
+      bottom: 0,
+      background: systemColors.background.content,
+      zIndex: 10000,
+      display: 'flex',
+      flexDirection: 'column' as const
+    },
+    pdvContent: {
+      height: '100vh',
+      width: '100vw'
     }
   };
 
   return (
-    <div style={styles.container}>
-      {/* Header */}
-      <div style={styles.header}>
-        <div style={styles.headerLeft}>
-          <BackButton onClick={() => navigate('home')} label="Voltar para Home" />
+    <>
+      <div style={styles.container}>
+        {/* Header */}
+        <div style={styles.header}>
+          <div style={styles.headerLeft}>
+            <BackButton onClick={() => navigate('home')} label="Voltar para Home" />
+          </div>
+          <div style={styles.headerCenter}>
+            <h1 style={styles.title}>Atendimentos</h1>
+          </div>
+          <div style={styles.headerRight}></div>
         </div>
-        <div style={styles.headerCenter}>
-          <h1 style={styles.title}>Atendimentos</h1>
+
+        {/* Conteúdo principal com sidebar e área de conteúdo */}
+        <div style={styles.mainContent}>
+          <AttendancesSidebar activeTab={activeTab} onSelectTab={setActiveTab} />
+          <div style={styles.contentArea}>
+            {renderContent()}
+          </div>
         </div>
-        <div style={styles.headerRight}></div>
       </div>
 
-      {/* Conteúdo principal com sidebar e área de conteúdo */}
-      <div style={styles.mainContent}>
-        <AttendancesSidebar activeTab={activeTab} onSelectTab={setActiveTab} />
-        <div style={styles.contentArea}>
-          {renderContent()}
+      {/* PDV em modo fullscreen */}
+      {isPDVOpen && (
+        <div style={styles.pdvOverlay}>
+          <div style={styles.pdvContent}>
+            <CounterPDVTab initialOrderType={pdvOrderType} onClose={handleClosePDV} />
+          </div>
         </div>
-      </div>
-    </div>
+      )}
+    </>
   );
 }
 
