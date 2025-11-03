@@ -6,6 +6,8 @@
 import React, { useState, useEffect } from 'react';
 import { useTheme } from '../../../../styles/ThemeProvider';
 import { useClickSound } from '../../../../hooks/useClickSound';
+import { useOrderBellSound } from '../../../../hooks/useOrderBellSound';
+import { useSystemNotification } from '../../../../hooks/useSystemNotification';
 import { AppIcons } from '../../../../components/Icons/AppIcons';
 import { CartSidebar, CartItem, CartComplement } from './components/CartSidebar';
 import { CategoriesGrid } from './components/CategoriesGrid';
@@ -17,10 +19,11 @@ type ViewMode = 'categories' | 'products' | 'complements';
 
 interface CounterPDVTabProps {
   initialOrderType?: OrderType;
+  initialSelectedTable?: { id: string; number: number; status: 'free' | 'occupied' | 'reserved' } | null;
   onClose?: () => void;
 }
 
-export function CounterPDVTab({ initialOrderType = 'counter', onClose }: CounterPDVTabProps = {}): JSX.Element {
+export function CounterPDVTab({ initialOrderType = 'counter', initialSelectedTable = null, onClose }: CounterPDVTabProps = {}): JSX.Element {
   const [orderType, setOrderType] = useState<OrderType>(initialOrderType);
   const [viewMode, setViewMode] = useState<ViewMode>('categories');
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
@@ -32,14 +35,27 @@ export function CounterPDVTab({ initialOrderType = 'counter', onClose }: Counter
   const [isCloseHovered, setIsCloseHovered] = useState(false);
   const [isClosePressed, setIsClosePressed] = useState(false);
   const [isTableModalOpen, setIsTableModalOpen] = useState(false);
-  const [selectedTable, setSelectedTable] = useState<{ id: string; number: number; status: 'free' | 'occupied' | 'reserved' } | null>(null);
+  const [selectedTable, setSelectedTable] = useState<{ id: string; number: number; status: 'free' | 'occupied' | 'reserved' } | null>(initialSelectedTable);
   const playClickSound = useClickSound();
+  const playOrderBellSound = useOrderBellSound();
+  const showNotification = useSystemNotification();
   const { systemStyles, systemColors } = useTheme();
 
   // Sincronizar orderType quando initialOrderType mudar
   useEffect(() => {
     setOrderType(initialOrderType);
   }, [initialOrderType]);
+
+  // Sincronizar mesa selecionada quando initialSelectedTable mudar
+  useEffect(() => {
+    if (initialSelectedTable) {
+      setSelectedTable(initialSelectedTable);
+      // Se for mesa, garantir que o tipo seja 'table'
+      if (initialOrderType !== 'table') {
+        setOrderType('table');
+      }
+    }
+  }, [initialSelectedTable, initialOrderType]);
 
   const handleOrderTypeChange = (type: OrderType) => {
     playClickSound();
@@ -128,7 +144,8 @@ export function CounterPDVTab({ initialOrderType = 'counter', onClose }: Counter
           return {
             ...item,
             quantity: selectedProduct.quantity,
-            complements: cartComplements
+            complements: cartComplements.length > 0 ? cartComplements : undefined,
+            hasComplements: cartComplements.length > 0
           };
         }
         return item;
@@ -143,8 +160,8 @@ export function CounterPDVTab({ initialOrderType = 'counter', onClose }: Counter
         name: selectedProduct.name,
         quantity: selectedProduct.quantity,
         price: selectedProduct.price,
-        complements: cartComplements,
-        hasComplements: true,
+        complements: cartComplements.length > 0 ? cartComplements : undefined,
+        hasComplements: cartComplements.length > 0,
         productId: selectedProduct.id
       };
       setCartItems([...cartItems, cartItem]);
@@ -224,7 +241,31 @@ export function CounterPDVTab({ initialOrderType = 'counter', onClose }: Counter
 
   const handleCheckout = () => {
     console.log('Finalizar pedido');
-    // TODO: Implementar finalização do pedido
+    playOrderBellSound();
+    
+    // Exibir notificação do sistema
+    const orderTypeText = orderType === 'table' && selectedTable 
+      ? `Pedido para Mesa ${selectedTable.number}` 
+      : orderType === 'table' 
+      ? 'Pedido para Mesa' 
+      : 'Pedido do Balcão';
+    
+    showNotification(
+      'Novo Pedido',
+      `Chegou um novo pedido! ${orderTypeText}`,
+      undefined // Usar ícone padrão do sistema
+    );
+    
+    // TODO: Implementar finalização do pedido (salvar no backend)
+    
+    // Resetar a tela após gerar pedido
+    setCartItems([]);
+    setViewMode('categories');
+    setSelectedCategory(null);
+    setSelectedProduct(null);
+    setEditingItemId(null);
+    setEditingItemComplements([]);
+    setSelectedTable(null);
   };
 
   // Calcular total do carrinho

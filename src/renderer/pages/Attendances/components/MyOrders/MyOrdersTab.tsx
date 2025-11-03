@@ -6,13 +6,19 @@
 import React from 'react';
 import { useState } from 'react';
 import { useTheme } from '../../../../styles/ThemeProvider';
+import { useClickSound } from '../../../../hooks/useClickSound';
 import { SearchField } from '../../../../components/SearchField';
 import { OrderCard } from './components/OrderCard';
 
 type KanbanColumnId = 'review' | 'inProgress' | 'ready';
 
-export function MyOrdersTab(): JSX.Element {
+interface MyOrdersTabProps {
+  onNewOrder?: () => void;
+}
+
+export function MyOrdersTab({ onNewOrder }: MyOrdersTabProps = {}): JSX.Element {
   const { systemStyles, systemColors } = useTheme();
+  const playClickSound = useClickSound();
   const [searchTerm, setSearchTerm] = useState('');
   const [isHovered, setIsHovered] = useState(false);
   const [isPressed, setIsPressed] = useState(false);
@@ -162,6 +168,12 @@ export function MyOrdersTab(): JSX.Element {
           onMouseLeave={() => { setIsHovered(false); setIsPressed(false); }}
           onMouseDown={() => setIsPressed(true)}
           onMouseUp={() => setIsPressed(false)}
+          onClick={() => {
+            playClickSound();
+            if (onNewOrder) {
+              onNewOrder();
+            }
+          }}
         >
           Novo Pedido
         </button>

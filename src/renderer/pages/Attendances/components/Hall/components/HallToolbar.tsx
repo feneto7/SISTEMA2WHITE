@@ -15,6 +15,7 @@ interface HallToolbarProps {
   sortOrder: SortOrder;
   onSortChange: (order: SortOrder) => void;
   onNewOrder: () => void;
+  onViewTablesWithOrders?: () => void;
   searchPlaceholder?: string;
 }
 
@@ -24,6 +25,7 @@ export function HallToolbar({
   sortOrder,
   onSortChange,
   onNewOrder,
+  onViewTablesWithOrders,
   searchPlaceholder = 'Mesa'
 }: HallToolbarProps): JSX.Element {
   const { systemStyles, systemColors } = useTheme();
@@ -91,6 +93,16 @@ export function HallToolbar({
       fontSize: 12,
       color: systemColors.text.tertiary
     },
+    viewTablesButton: {
+      ...systemStyles.button.default,
+      padding: '8px 16px',
+      fontSize: '14px',
+      fontWeight: '600',
+      cursor: 'pointer',
+      display: 'flex',
+      alignItems: 'center',
+      gap: 6
+    },
     newOrderButton: {
       ...systemStyles.button.primary,
       padding: '8px 16px',
@@ -135,6 +147,13 @@ export function HallToolbar({
 
       {/* Espaço flexível para empurrar botão para direita */}
       <div style={{ flex: 1 }}></div>
+
+      {/* Botão ver mesas com pedidos */}
+      {onViewTablesWithOrders && (
+        <button style={styles.viewTablesButton} onClick={onViewTablesWithOrders}>
+          Ver Mesas c/ Pedidos
+        </button>
+      )}
 
       {/* Botão novo pedido */}
       <button style={styles.newOrderButton} onClick={onNewOrder}>

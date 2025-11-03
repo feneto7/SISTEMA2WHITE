@@ -6,6 +6,7 @@
 import React, { useState } from 'react';
 import { useTheme } from '../../../../../styles/ThemeProvider';
 import { useClickSound } from '../../../../../hooks/useClickSound';
+import { AppIcons } from '../../../../../components/Icons/AppIcons';
 
 interface OrderCardProps {
   orderNumber: string;
@@ -17,6 +18,8 @@ interface OrderCardProps {
   onAdvance?: () => void;
   showAdvanceButton?: boolean;
   buttonLabel?: string;
+  tableName?: string;
+  orderType?: string;
 }
 
 export function OrderCard({
@@ -28,7 +31,9 @@ export function OrderCard({
   onClick,
   onAdvance,
   showAdvanceButton = false,
-  buttonLabel = 'Avançar →'
+  buttonLabel = 'Avançar →',
+  tableName,
+  orderType
 }: OrderCardProps): JSX.Element {
   const { systemStyles, systemColors } = useTheme();
   // Efeito de hover do card para realçar o pedido no quadro
@@ -156,6 +161,20 @@ export function OrderCard({
         <span style={styles.orderTime}>{orderTime}</span>
       </div>
       <div style={styles.customerName}>{customerName}</div>
+      {tableName && orderType === 'table' && (
+        <div style={{
+          display: 'flex',
+          alignItems: 'center',
+          gap: '6px',
+          fontSize: '13px',
+          color: systemColors.text.secondary,
+          marginBottom: '8px',
+          fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, Helvetica, Arial, sans-serif'
+        }}>
+          <AppIcons.Table size={16} color={systemColors.text.secondary} />
+          <span>{tableName}</span>
+        </div>
+      )}
       <div style={styles.details}>
         <span style={styles.itemsCount}>
           {itemsCount} {itemsCount === 1 ? 'item' : 'itens'}

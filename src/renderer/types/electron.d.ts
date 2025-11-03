@@ -13,6 +13,7 @@ interface ElectronBridge {
     buttonLabel?: string;
     filters?: { name: string; extensions: string[] }[];
   }) => Promise<string[]>;
+  showNotification: (options: { title: string; body: string; icon?: string }) => Promise<boolean>;
   invoke: (channel: string, ...args: any[]) => Promise<any>;
 }
 

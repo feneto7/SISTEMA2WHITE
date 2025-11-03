@@ -1,5 +1,5 @@
 import path from 'node:path';
-import { app, BrowserWindow, nativeTheme, ipcMain, dialog } from 'electron';
+import { app, BrowserWindow, nativeTheme, ipcMain, dialog, Notification } from 'electron';
 import { getInstalledCertificates } from './handlers/certificateHandler';
 import { importNFEXMLs, importNFEXMLsFromFiles } from './handlers/xmlImportHandler';
 
@@ -87,6 +87,31 @@ app.whenReady().then(() => {
       return result.filePaths;
     } catch (error) {
       console.error('Erro ao abrir dialog:', error);
+      throw error;
+    }
+  });
+
+  // Handler para exibir notificação do sistema
+  ipcMain.handle('show-notification', async (event, options: { title: string; body: string; icon?: string }) => {
+    try {
+      // Verificar se as notificações são suportadas
+      if (!Notification.isSupported()) {
+        console.warn('Notificações do sistema não são suportadas nesta plataforma');
+        return;
+      }
+
+      const notification = new Notification({
+        title: options.title,
+        body: options.body,
+        icon: options.icon,
+        silent: true // Sem som da notificação do sistema (o som do sino já é reproduzido pelo useOrderBellSound)
+      });
+
+      notification.show();
+      
+      return true;
+    } catch (error) {
+      console.error('Erro ao exibir notificação:', error);
       throw error;
     }
   });

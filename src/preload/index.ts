@@ -10,6 +10,7 @@ contextBridge.exposeInMainWorld('electronAPI', {
 // Expose electron APIs for file/folder selection and general IPC
 contextBridge.exposeInMainWorld('electron', {
   showOpenDialog: (options: any) => ipcRenderer.invoke('show-open-dialog', options),
+  showNotification: (options: { title: string; body: string; icon?: string }) => ipcRenderer.invoke('show-notification', options),
   invoke: (channel: string, ...args: any[]) => ipcRenderer.invoke(channel, ...args)
 });
 

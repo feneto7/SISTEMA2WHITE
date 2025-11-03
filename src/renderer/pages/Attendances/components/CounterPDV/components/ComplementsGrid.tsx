@@ -73,8 +73,6 @@ export function ComplementsGrid({ product, complements = [], selectedComplements
     setComplementQuantities({});
   };
 
-  const hasComplementsSelected = displayComplements.some(complement => (complementQuantities[complement.id] || 0) > 0);
-
   const styles = {
     container: {
       display: 'flex',
@@ -138,17 +136,15 @@ export function ComplementsGrid({ product, complements = [], selectedComplements
               style={{
                 padding: '6px 16px',
                 borderRadius: 8,
-                background: hasComplementsSelected ? systemColors.selection.blue : systemColors.button.gradient,
-                color: hasComplementsSelected ? '#FFFFFF' : systemColors.text.primary,
-                border: `1px solid ${hasComplementsSelected ? systemColors.selection.blueDark : systemColors.button.defaultBorder}`,
-                cursor: hasComplementsSelected ? 'pointer' : 'not-allowed',
+                background: systemColors.selection.blue,
+                color: '#FFFFFF',
+                border: `1px solid ${systemColors.selection.blueDark}`,
+                cursor: 'pointer',
                 fontSize: '13px',
                 fontWeight: '600',
-                transition: 'all 0.15s ease',
-                opacity: hasComplementsSelected ? 1 : 0.5
+                transition: 'all 0.15s ease'
               }}
               onClick={handleAddToCart}
-              disabled={!hasComplementsSelected}
             >
               Adicionar ao Carrinho
             </button>
