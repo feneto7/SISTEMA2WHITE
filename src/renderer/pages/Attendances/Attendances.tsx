@@ -21,28 +21,37 @@ function Attendances(): JSX.Element {
   const [activeTab, setActiveTab] = useState<AttendancesTab>('myOrders');
   const [isPDVOpen, setIsPDVOpen] = useState(false);
   const [pdvOrderType, setPDVOrderType] = useState<PDVOrderType>('counter');
+  const [pdvSelectedTable, setPDVSelectedTable] = useState<{ id: string; number: number; status: 'free' | 'occupied' | 'reserved' } | null>(null);
   const { systemStyles, systemColors } = useTheme();
 
   // Função para abrir o PDV em modo fullscreen
-  const handleOpenPDV = (orderType: PDVOrderType) => {
+  const handleOpenPDV = (orderType: PDVOrderType, table?: { id: string; number: number; status: 'free' | 'occupied' | 'reserved' }) => {
     setPDVOrderType(orderType);
+    setPDVSelectedTable(table || null);
     setIsPDVOpen(true);
   };
 
   // Função para fechar o PDV
   const handleClosePDV = () => {
     setIsPDVOpen(false);
+    setPDVSelectedTable(null);
   };
 
   // Renderiza o conteúdo da aba selecionada
   const renderContent = () => {
     switch (activeTab) {
       case 'myOrders':
-        return <MyOrdersTab />;
+        return <MyOrdersTab onNewOrder={() => handleOpenPDV('counter')} />;
       case 'counter':
         return <CounterPDVTab />;
       case 'hall':
-        return <HallOrdersTab onNewOrder={() => handleOpenPDV('table')} />;
+        return <HallOrdersTab 
+          onNewOrder={() => handleOpenPDV('table')} 
+          onOpenPDVWithTable={(table) => handleOpenPDV('table', table)}
+          onViewTableOrders={(tableId) => {
+            // Esta funcionalidade será gerenciada internamente pelo HallOrdersTab
+          }}
+        />;
       case 'kitchen':
         return <KitchenTab />;
       default:
@@ -144,7 +153,11 @@ function Attendances(): JSX.Element {
       {isPDVOpen && (
         <div style={styles.pdvOverlay}>
           <div style={styles.pdvContent}>
-            <CounterPDVTab initialOrderType={pdvOrderType} onClose={handleClosePDV} />
+            <CounterPDVTab 
+              initialOrderType={pdvOrderType} 
+              initialSelectedTable={pdvSelectedTable}
+              onClose={handleClosePDV} 
+            />
           </div>
         </div>
       )}

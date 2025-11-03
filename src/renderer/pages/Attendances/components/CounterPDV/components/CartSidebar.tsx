@@ -3,7 +3,7 @@
 // Sidebar lateral para exibir itens adicionados ao carrinho e totais
 // Componente reutilizável para PDV e operações de pedidos
 //--------------------------------------------------------------------
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useTheme } from '../../../../../styles/ThemeProvider';
 import { AppIcons } from '../../../../../components/Icons/AppIcons';
 import { useClickSound } from '../../../../../hooks/useClickSound';
@@ -56,6 +56,14 @@ export function CartSidebar({ items = [], total = 0, onCheckout, editingItemId, 
       currency: 'BRL'
     }).format(value);
   };
+
+  // Limpar campos de cliente quando o carrinho for esvaziado
+  useEffect(() => {
+    if (items.length === 0) {
+      setClientName('');
+      setClientPhone('');
+    }
+  }, [items.length]);
 
   const styles = {
     container: {
@@ -124,6 +132,15 @@ export function CartSidebar({ items = [], total = 0, onCheckout, editingItemId, 
       fontSize: '14px',
       fontWeight: '600',
       cursor: 'pointer'
+    },
+    checkoutButtonDisabled: {
+      ...systemStyles.button.primary,
+      width: '100%',
+      padding: '12px',
+      fontSize: '14px',
+      fontWeight: '600',
+      cursor: 'not-allowed',
+      opacity: 0.5
     },
     itemWrapper: {
       position: 'relative' as const,
@@ -557,7 +574,11 @@ export function CartSidebar({ items = [], total = 0, onCheckout, editingItemId, 
           </button>
         )}
 
-        <button style={styles.checkoutButton} onClick={onCheckout}>
+        <button 
+          style={items.length === 0 ? styles.checkoutButtonDisabled : styles.checkoutButton} 
+          onClick={onCheckout}
+          disabled={items.length === 0}
+        >
           Gerar Pedido
         </button>
       </div>

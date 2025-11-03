@@ -29,7 +29,11 @@ import {
   FiTool,
   FiLogOut,
   FiDollarSign,
-  FiX
+  FiX,
+  FiArrowRight,
+  FiCheck,
+  FiRefreshCw,
+  FiPrinter
 } from 'react-icons/fi';
 import {
   // Material Design Icons (estilo clean e moderno)
@@ -38,7 +42,10 @@ import {
   MdAssignment,
   MdSettings,
   MdAccountCircle,
-  MdReceipt
+  MdReceipt,
+  MdTableBar,
+  MdRestaurantMenu,
+  MdSwapHoriz
 } from 'react-icons/md';
 import React from 'react';
 
@@ -80,14 +87,23 @@ export const ProductsIcon = createIcon(MdShoppingCart);
 // Ícones de Transporte
 export const TruckIcon = createIcon(FiTruck);
 
+// Ícones Comerciais Adicionais
+export const TableIcon = createIcon(MdTableBar);
+
 // Ícones de Ações
 export const BackIcon = createIcon(FiArrowLeft);
+export const ArrowRightIcon = createIcon(FiArrowRight);
 export const AddIcon = createIcon(FiPlus);
 export const EditIcon = createIcon(FiEdit);
 export const DeleteIcon = createIcon(FiTrash2);
 export const SaveIcon = createIcon(FiSave);
 export const LogOutIcon = createIcon(FiLogOut);
 export const CloseIcon = createIcon(FiX);
+export const CheckIcon = createIcon(FiCheck);
+export const RefreshIcon = createIcon(FiRefreshCw);
+export const PrintIcon = createIcon(FiPrinter);
+export const ChefHatIcon = createIcon(MdRestaurantMenu);
+export const TransferIcon = createIcon(MdSwapHoriz);
 
 // Ícones de Usuários
 export const UserIcon = createIcon(FiUsers);
@@ -114,6 +130,7 @@ export const AppIcons = {
   // Comercial
   ShoppingCart: ShoppingCartIcon,
   Products: ProductsIcon,
+  Table: TableIcon,
   
   // Financeiro
   Dollar: DollarIcon,
@@ -128,12 +145,18 @@ export const AppIcons = {
   
   // Ações
   Back: BackIcon,
+  ArrowRight: ArrowRightIcon,
   Add: AddIcon,
   Edit: EditIcon,
   Delete: DeleteIcon,
   Save: SaveIcon,
   Close: CloseIcon,
   Exit: LogOutIcon,
+  Check: CheckIcon,
+  Refresh: RefreshIcon,
+  Print: PrintIcon,
+  ChefHat: ChefHatIcon,
+  Transfer: TransferIcon,
   
   // Configuração
   Settings: SettingsIcon,

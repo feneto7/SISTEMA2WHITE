@@ -794,7 +794,7 @@ export function createSystemStyles(theme: ThemeTokens) {
       overflow: 'hidden',
       boxShadow: '0 2px 8px rgba(0, 0, 0, 0.1)',
       display: 'flex',
-      flexDirection: 'column',
+      flexDirection: 'column' as const,
       flex: 1,
       minHeight: 0
     },
