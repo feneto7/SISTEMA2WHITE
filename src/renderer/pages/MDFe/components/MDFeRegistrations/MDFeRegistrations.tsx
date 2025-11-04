@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useTheme } from '../../../../styles/ThemeProvider';
 import { useClickSound } from '../../../../hooks/useClickSound';
+import { WindowHeader } from '../../../../components/WindowHeader/WindowHeader';
 import { VehicleTab, DriverTab, RoutesTab, SettingsTab } from './components';
 
 // MDF-e registrations modal
@@ -16,7 +17,6 @@ export function MDFeRegistrations({ isOpen, onClose }: MDFeRegistrationsProps): 
   const playClickSound = useClickSound();
   const { systemStyles, systemColors } = useTheme();
   const [activeTab, setActiveTab] = useState<TabType>('vehicle');
-  const [isCloseHovered, setIsCloseHovered] = useState(false);
   const [isCancelHovered, setIsCancelHovered] = useState(false);
   const [isSaveHovered, setIsSaveHovered] = useState(false);
   const [formData, setFormData] = useState({
@@ -193,52 +193,8 @@ export function MDFeRegistrations({ isOpen, onClose }: MDFeRegistrationsProps): 
         overflow: 'hidden',
         boxSizing: 'border-box' as const
       }}>
-        {/* Modal header */}
-        <div style={{
-          ...systemStyles.titleBar,
-          position: 'relative',
-          flexShrink: 0
-        }}>
-          <div style={systemStyles.trafficLights.container}>
-            <button
-              style={{
-                ...systemStyles.trafficLights.button,
-                ...systemStyles.trafficLights.red
-              }}
-              onClick={() => {
-                playClickSound();
-                handleClose();
-              }}
-              onMouseEnter={() => setIsCloseHovered(true)}
-              onMouseLeave={() => setIsCloseHovered(false)}
-              title="Fechar"
-            />
-            <button
-              style={{
-                ...systemStyles.trafficLights.button,
-                ...systemStyles.trafficLights.yellow
-              }}
-              onClick={() => {
-                playClickSound();
-                // Minimizar modal (implementar depois)
-              }}
-              title="Minimizar"
-            />
-            <button
-              style={{
-                ...systemStyles.trafficLights.button,
-                ...systemStyles.trafficLights.green
-              }}
-              onClick={() => {
-                playClickSound();
-                // Maximizar modal (implementar depois)
-              }}
-              title="Maximizar"
-            />
-          </div>
-          <h2 style={systemStyles.titleBarTitle}>Cadastros MDF-e</h2>
-          <div style={{ width: '60px' }}></div>
-        </div>
+        {/* Modal header - componente padrão da aplicação */}
+        <WindowHeader title="Cadastros MDF-e" onClose={handleClose} />
 
         {/* Tab system */}
         <div style={{...systemStyles.tabs.container, flexShrink: 0}}>
