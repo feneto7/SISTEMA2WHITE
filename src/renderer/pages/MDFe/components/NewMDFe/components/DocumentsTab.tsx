@@ -2,6 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import { useClickSound } from '../../../../../hooks/useClickSound';
 import { useTheme } from '../../../../../styles/ThemeProvider';
 import { AppIcons } from '../../../../../components/Icons/AppIcons';
+import { Dialog } from '../../../../../components/Dialog';
 
 interface Document {
   id: string;
@@ -27,6 +28,12 @@ export function DocumentsTab({ formData, onUpdateFormData }: DocumentsTabProps):
   const { systemStyles, systemColors } = useTheme();
   const [documents, setDocuments] = useState<Document[]>([]);
   const listContainerRef = useRef<HTMLDivElement>(null);
+  const [showImportDialog, setShowImportDialog] = useState(false);
+  const [importDialogType, setImportDialogType] = useState<'success' | 'error' | 'info'>('success');
+  const [importDialogMessage, setImportDialogMessage] = useState('');
+  const [importDialogHint, setImportDialogHint] = useState('');
+  const [showDeleteDialog, setShowDeleteDialog] = useState(false);
+  const [documentToDelete, setDocumentToDelete] = useState<string | null>(null);
 
 
   // Sincroniza o estado local com formData.notasFiscais quando o componente monta ou quando muda
@@ -90,23 +97,32 @@ export function DocumentsTab({ formData, onUpdateFormData }: DocumentsTabProps):
             onUpdateFormData('pesoTotalCarga', pesoTotalCarga.toFixed(4).replace('.', ','));
             onUpdateFormData('notasSemPesoBruto', notasSemPeso);
             
-            alert(`✅ ${importedDocs.length} nota(s) fiscal(is) importada(s) com sucesso!\n\n` +
-                  `Totalizadores atualizados:\n` +
-                  `• Quantidade: ${qntTotalNFe}\n` +
-                  `• Valor Total: R$ ${valorTotalCarga.toFixed(2).replace('.', ',')}\n` +
-                  `• Peso Total: ${pesoTotalCarga.toFixed(4).replace('.', ',')} kg`);
+            // Mostra dialog de sucesso
+            setImportDialogType('success');
+            setImportDialogMessage(`${importedDocs.length} nota(s) fiscal(is) importada(s) com sucesso!`);
+            setImportDialogHint(`Totalizadores atualizados:\n\n• Quantidade: ${qntTotalNFe}\n• Valor Total: R$ ${valorTotalCarga.toFixed(2).replace('.', ',')}\n• Peso Total: ${pesoTotalCarga.toFixed(4).replace('.', ',')} kg`);
+            setShowImportDialog(true);
           } else {
-            alert('Nenhum dado válido encontrado nos arquivos selecionados.');
+            setImportDialogType('error');
+            setImportDialogMessage('Nenhum dado válido encontrado.');
+            setImportDialogHint('Verifique se os arquivos XML selecionados contêm dados válidos.');
+            setShowImportDialog(true);
           }
         }
       } else {
         // Fallback para desenvolvimento sem Electron
         console.log('Importar documentos (Electron não disponível)');
-        alert('Funcionalidade de importação requer Electron. Em desenvolvimento.');
+        setImportDialogType('info');
+        setImportDialogMessage('Funcionalidade de importação requer Electron.');
+        setImportDialogHint('Esta funcionalidade está disponível apenas na versão Electron do sistema.');
+        setShowImportDialog(true);
       }
     } catch (error) {
       console.error('Erro ao importar documentos:', error);
-      alert('Erro ao importar documentos: ' + error);
+      setImportDialogType('error');
+      setImportDialogMessage('Erro ao importar documentos.');
+      setImportDialogHint(`Detalhes: ${error instanceof Error ? error.message : String(error)}`);
+      setShowImportDialog(true);
     }
   };
 
@@ -118,8 +134,13 @@ export function DocumentsTab({ formData, onUpdateFormData }: DocumentsTabProps):
 
   const handleDeleteDocument = (id: string) => {
     playClickSound();
-    if (confirm('Tem certeza que deseja excluir este documento?')) {
-      const updatedDocuments = documents.filter(d => d.id !== id);
+    setDocumentToDelete(id);
+    setShowDeleteDialog(true);
+  };
+
+  const confirmDeleteDocument = () => {
+    if (documentToDelete) {
+      const updatedDocuments = documents.filter(d => d.id !== documentToDelete);
       setDocuments(updatedDocuments);
       
       // Recalcula totalizadores
@@ -138,6 +159,9 @@ export function DocumentsTab({ formData, onUpdateFormData }: DocumentsTabProps):
       onUpdateFormData('valorTotalCarga', valorTotalCarga.toFixed(2).replace('.', ','));
       onUpdateFormData('pesoTotalCarga', pesoTotalCarga.toFixed(4).replace('.', ','));
       onUpdateFormData('notasSemPesoBruto', notasSemPeso);
+      
+      setShowDeleteDialog(false);
+      setDocumentToDelete(null);
     }
   };
 
@@ -372,6 +396,41 @@ export function DocumentsTab({ formData, onUpdateFormData }: DocumentsTabProps):
           </div>
         </div>
       )}
+
+      {/* Dialog de importação */}
+      <Dialog
+        isOpen={showImportDialog}
+        onClose={() => setShowImportDialog(false)}
+        onConfirm={() => setShowImportDialog(false)}
+        icon={
+          importDialogType === 'success' 
+            ? <AppIcons.CheckCircle size={60} color="#28CA42" />
+            : importDialogType === 'error'
+            ? <AppIcons.Alert size={60} color="#ff5f57" />
+            : <AppIcons.Info size={60} color="#007AFF" />
+        }
+        warning={importDialogMessage}
+        hint={importDialogHint}
+        confirmLabel="OK"
+        showCancel={false}
+        width="500px"
+      />
+
+      {/* Dialog de confirmação de exclusão */}
+      <Dialog
+        isOpen={showDeleteDialog}
+        onClose={() => {
+          setShowDeleteDialog(false);
+          setDocumentToDelete(null);
+        }}
+        onConfirm={confirmDeleteDocument}
+        icon={<AppIcons.Alert size={60} color="#ff5f57" />}
+        warning="Tem certeza que deseja excluir este documento?"
+        hint="Esta ação não pode ser desfeita."
+        confirmLabel="Excluir"
+        cancelLabel="Cancelar"
+        width="450px"
+      />
     </div>
   );
 }

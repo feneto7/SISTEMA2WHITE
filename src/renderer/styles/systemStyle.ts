@@ -1223,6 +1223,123 @@ export function createSystemStyles(theme: ThemeTokens) {
       fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, Helvetica, Arial, sans-serif',
       marginTop: '4px'
     }
+  },
+
+  // Dialog (Caixa de diálogo estilo sistema)
+  dialog: {
+    overlay: {
+      position: 'fixed' as const,
+      top: 0,
+      left: 0,
+      right: 0,
+      bottom: 0,
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      backgroundColor: 'rgba(0, 0, 0, 0.3)',
+      zIndex: 10000,
+      backdropFilter: 'blur(2px)'
+    },
+    container: {
+      fontFamily: '-apple-system, BlinkMacSystemFont, "Helvetica Neue", Helvetica, Arial, sans-serif',
+      width: '422px',
+      background: systemColors.background.content,
+      borderRadius: '5px',
+      boxShadow: '0px 15px 25px 0px rgba(50, 50, 50, 0.7)',
+      display: 'flex',
+      flexDirection: 'column' as const,
+      overflow: 'hidden',
+      border: `1px solid ${systemColors.border.light}`
+    },
+    titleBar: {
+      width: '100%',
+      height: '22px',
+      background: systemColors.background.sidebar,
+      borderRadius: '5px 5px 0 0',
+      borderBottom: `1px solid ${systemColors.border.medium}`
+    },
+    body: {
+      position: 'relative' as const,
+      padding: '12px',
+      paddingBottom: '20px',
+      background: systemColors.background.content,
+      overflow: 'hidden' as const,
+      boxSizing: 'border-box' as const
+    },
+    icon: {
+      width: '60px',
+      height: '60px',
+      position: 'absolute' as const,
+      left: '25px',
+      top: '12px',
+      zIndex: 1,
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      pointerEvents: 'none' as const
+    },
+    warning: {
+      fontSize: '0.8em',
+      fontWeight: '700',
+      color: systemColors.text.primary,
+      lineHeight: '1.4',
+      marginBottom: '8px'
+    },
+    hint: {
+      fontSize: '0.75em',
+      color: systemColors.text.secondary,
+      lineHeight: '1.4',
+      marginBottom: '4px'
+    },
+    actions: {
+      padding: '15px',
+      display: 'flex',
+      gap: '5px',
+      justifyContent: 'flex-end',
+      borderTop: `1px solid ${systemColors.border.divider}`,
+      background: systemColors.background.sidebar,
+      position: 'relative' as const,
+      zIndex: 2
+    },
+    button: {
+      width: '80px',
+      margin: '0 5px',
+      padding: '4px 12px',
+      fontSize: '11px',
+      fontWeight: '400',
+      color: systemColors.text.primary,
+      background: systemColors.background.white,
+      border: `0.5px solid ${systemColors.border.light}`,
+      borderRadius: '3px',
+      cursor: 'pointer',
+      fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, Helvetica, Arial, sans-serif',
+      transition: 'all 0.15s ease',
+      outline: 'none',
+      boxShadow: '0 0.5px 1px rgba(0, 0, 0, 0.04)'
+    },
+    buttonHover: {
+      background: systemColors.background.primary,
+      border: `0.5px solid ${systemColors.border.medium}`,
+      boxShadow: '0 0.5px 2px rgba(0, 0, 0, 0.08)'
+    },
+    buttonActive: {
+      background: systemColors.background.secondary,
+      boxShadow: 'inset 0 0.5px 1px rgba(0, 0, 0, 0.08)'
+    },
+    buttonConfirm: {
+      color: '#ffffff',
+      background: systemColors.button.blue,
+      border: `0.5px solid ${systemColors.selection.blueDark}`,
+      boxShadow: '0 0.5px 2px rgba(0, 122, 255, 0.25)'
+    },
+    buttonConfirmHover: {
+      background: systemColors.button.blueHover,
+      boxShadow: '0 1px 3px rgba(0, 122, 255, 0.35)'
+    },
+    buttonConfirmActive: {
+      background: systemColors.selection.blueDark,
+      boxShadow: 'inset 0 0.5px 1px rgba(0, 0, 0, 0.15)'
+    }
   }
   };
 

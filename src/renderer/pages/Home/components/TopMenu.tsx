@@ -54,10 +54,17 @@ function MenuButton({ icon: Icon, label, onClick }: MenuButtonProps): JSX.Elemen
 
 export function TopMenu(): JSX.Element {
   const { navigate } = useNavigation();
-  const { systemStyles, systemColors } = useTheme();
+  const { systemStyles, systemColors, theme } = useTheme();
 
   return (
-    <div style={{ ...systemStyles.toolbar.container, position: 'relative', zIndex: 100 }}>
+    <div style={{ 
+      ...systemStyles.toolbar.container, 
+      position: 'relative' as const, 
+      zIndex: 100,
+      boxShadow: theme === 'dark'
+        ? '0 2px 8px rgba(0, 0, 0, 0.4)'
+        : '0 2px 8px rgba(0, 0, 0, 0.1)'
+    }}>
       <div style={{
         height: '100%',
         display: 'flex',
