@@ -17,18 +17,22 @@ function DockButton({ icon: Icon, label, onClick }: DockButtonProps): JSX.Elemen
   const [isHovered, setIsHovered] = useState(false);
   const [isPressed, setIsPressed] = useState(false);
   const playClickSound = useClickSound();
-  const { systemStyles, systemColors } = useTheme();
+  const { systemStyles, systemColors, theme } = useTheme();
 
   // Neomorfismo sutil baseado no tema atual
   const baseBg = systemColors.background.sidebar;
   const shadowDark = 'rgba(0, 0, 0, 0.45)';
-  const shadowLight = 'rgba(255, 255, 255, 0.10)';
+  const shadowLight = theme === 'dark' ? 'rgba(255, 255, 255, 0.03)' : 'rgba(255, 255, 255, 0.10)';
 
   const neoButton: React.CSSProperties = {
     background: baseBg,
     borderRadius: 14,
     boxShadow: isPressed
-      ? `inset 6px 6px 12px ${shadowDark}, inset -6px -6px 12px ${shadowLight}`
+      ? theme === 'dark'
+        ? `inset 6px 6px 12px ${shadowDark}, inset -6px -6px 12px rgba(255, 255, 255, 0.02)`
+        : `inset 6px 6px 12px ${shadowDark}, inset -6px -6px 12px ${shadowLight}`
+      : theme === 'dark'
+      ? `8px 8px 16px ${shadowDark}, -4px -4px 8px rgba(255, 255, 255, 0.03)`
       : `10px 10px 20px ${shadowDark}, -10px -10px 20px ${shadowLight}`,
     transition: 'box-shadow 120ms ease',
   };
@@ -62,14 +66,16 @@ interface DockMenuProps {
 
 export function DockMenu({ onOpenOperations, onOpenFiscal }: DockMenuProps): JSX.Element {
   const { navigate } = useNavigation();
-  const { systemStyles, systemColors } = useTheme();
+  const { systemStyles, systemColors, theme } = useTheme();
 
-  // Neomorfismo do container do dock
+  // Neomorfismo do container do dock baseado no tema
   const dockSurface: React.CSSProperties = {
     ...systemStyles.dock.container,
     background: systemColors.background.sidebar,
     borderRadius: 18,
-    boxShadow: `12px 12px 24px rgba(0,0,0,0.45), -12px -12px 24px rgba(255,255,255,0.10)`
+    boxShadow: theme === 'dark'
+      ? `10px 10px 20px rgba(0,0,0,0.5), -4px -4px 10px rgba(255,255,255,0.03)`
+      : `12px 12px 24px rgba(0,0,0,0.45), -12px -12px 24px rgba(255,255,255,0.10)`
   };
   
   const handleOperationsClick = () => {

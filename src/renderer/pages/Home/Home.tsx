@@ -3,13 +3,12 @@ import { TopMenu } from './components/TopMenu';
 import { DockMenu } from './components/DockMenu';
 import { LaunchpadOperations } from './components/LaunchpadOperations';
 import { LaunchpadFiscal } from './components/LaunchpadFiscal';
-import { AnimatedWaves, useAnimatedBackground, getBgHomeContainer } from '../../styles/bgHome';
-import { useTheme } from '../../styles/ThemeProvider';
 import { useNavigation } from '../../router/Navigation';
+import { useTheme } from '../../styles/ThemeProvider';
+import { getBgHomeSimpleContainer } from '../../styles/bgHomeSimple';
+import logoImage from '../../../main/img/logo.png';
 
 export function Home(): JSX.Element {
-  // Injeta as animações CSS no head
-  useAnimatedBackground();
   const { navigate } = useNavigation();
   const { theme } = useTheme();
   const [isLaunchpadOpen, setIsLaunchpadOpen] = useState(false);
@@ -83,18 +82,31 @@ export function Home(): JSX.Element {
     }
   };
 
+  // Filtro do logo baseado no tema
+  const logoFilter = theme === 'dark' 
+    ? 'brightness(0)' // Logo preto no tema dark
+    : 'brightness(0) saturate(100%) invert(36%)'; // Logo cinza escuro no tema light
+
   return (
     <div style={layoutRoot}>
-      {/* Background animado com gradiente */}
-      <div style={getBgHomeContainer(theme)}>
-        <AnimatedWaves />
-      </div>
+      {/* Background simples conforme o tema */}
+      <div style={getBgHomeSimpleContainer(theme)} />
 
       <TopMenu />
       
       <div style={contentArea}>
-        <h1 style={{ margin: 0, fontWeight: 600, color: '#FFFFFF', textShadow: '0 2px 10px rgba(0,0,0,0.3)' }}>Bem-vindo</h1>
-        
+        {/* Logo centralizado */}
+        <div style={logoContainer}>
+          <img 
+            src={logoImage} 
+            alt="Logo" 
+            style={{
+              ...logoStyle,
+              filter: logoFilter,
+              WebkitFilter: logoFilter
+            }}
+          />
+        </div>
       </div>
 
       <DockMenu 
@@ -136,6 +148,20 @@ const contentArea: React.CSSProperties = {
   padding: '20px',
   position: 'relative',
   zIndex: 1
+};
+
+const logoContainer: React.CSSProperties = {
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+  marginBottom: '64px'
+};
+
+const logoStyle: React.CSSProperties = {
+  width: '80px',
+  height: '80px',
+  objectFit: 'contain' as const
+  // Filtro aplicado dinamicamente baseado no tema no componente
 };
 
 

@@ -4,6 +4,8 @@ import { useClickSound } from '../../../../hooks/useClickSound';
 import { DocumentsTab, TransportTab, DriversTab, RouteTab, FreightTab, InsuranceTab, TotalizersTab } from './components';
 import { validateMDFe, generateMDFeXML, ValidationError } from '../../../../utils/mdfeValidator';
 import { WindowHeader } from '../../../../components/WindowHeader/WindowHeader';
+import { Dialog } from '../../../../components/Dialog';
+import { AppIcons } from '../../../../components/Icons/AppIcons';
 
 // New MDF-e modal
 // Modularized component following project rules
@@ -24,6 +26,10 @@ export function NewMDFe({ isOpen, onClose, onSave }: NewMDFeProps): JSX.Element 
   const [mdfeType, setMdfeType] = useState<MDFeType>('rodoviario');
   const [validationErrors, setValidationErrors] = useState<ValidationError[]>([]);
   const [showValidationResult, setShowValidationResult] = useState(false);
+  const [showValidationDialog, setShowValidationDialog] = useState(false);
+  const [validationDialogType, setValidationDialogType] = useState<'success' | 'error'>('error');
+  const [validationMessage, setValidationMessage] = useState('');
+  const [validationHint, setValidationHint] = useState('');
   const [formData, setFormData] = useState({
     // Documents data
     notasFiscais: [],
@@ -232,10 +238,15 @@ export function NewMDFe({ isOpen, onClose, onSave }: NewMDFeProps): JSX.Element 
     setShowValidationResult(true);
 
     if (errors.length === 0) {
-      alert('✅ MDF-e validado com sucesso! Todos os campos obrigatórios estão preenchidos corretamente.');
+      setValidationDialogType('success');
+      setValidationMessage('MDF-e validado com sucesso!');
+      setValidationHint('Todos os campos obrigatórios estão preenchidos corretamente.');
+      setShowValidationDialog(true);
     } else {
-      alert(`❌ MDF-e contém ${errors.length} erro(s) de validação. Verifique os campos obrigatórios.\n\n` +
-            errors.map(e => `• ${e.tab}: ${e.message}`).join('\n'));
+      setValidationDialogType('error');
+      setValidationMessage(`MDF-e contém ${errors.length} erro(s) de validação.`);
+      setValidationHint(`Verifique os campos obrigatórios:\n\n${errors.map(e => `• ${e.tab}: ${e.message}`).join('\n')}`);
+      setShowValidationDialog(true);
       
       // Navegar para a primeira aba com erro
       if (errors.length > 0) {
@@ -262,8 +273,10 @@ export function NewMDFe({ isOpen, onClose, onSave }: NewMDFeProps): JSX.Element 
     const errors = validateMDFe(formData);
     
     if (errors.length > 0) {
-      alert(`❌ Não é possível criar o MDF-e. Por favor, corrija os erros primeiro.\n\n` +
-            errors.map(e => `• ${e.tab}: ${e.message}`).join('\n'));
+      setValidationDialogType('error');
+      setValidationMessage('Não é possível criar o MDF-e.');
+      setValidationHint(`Por favor, corrija os erros primeiro:\n\n${errors.map(e => `• ${e.tab}: ${e.message}`).join('\n')}`);
+      setShowValidationDialog(true);
       return;
     }
 
@@ -612,6 +625,23 @@ export function NewMDFe({ isOpen, onClose, onSave }: NewMDFeProps): JSX.Element 
           </div>
         </div>
       </div>
+
+      {/* Dialog de validação */}
+      <Dialog
+        isOpen={showValidationDialog}
+        onClose={() => setShowValidationDialog(false)}
+        onConfirm={() => setShowValidationDialog(false)}
+        icon={
+          validationDialogType === 'success' 
+            ? <AppIcons.CheckCircle size={60} color="#28CA42" />
+            : <AppIcons.Alert size={60} color="#ff5f57" />
+        }
+        warning={validationMessage}
+        hint={validationHint}
+        confirmLabel="OK"
+        showCancel={false}
+        width="500px"
+      />
     </div>
   );
 }

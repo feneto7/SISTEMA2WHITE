@@ -33,7 +33,11 @@ import {
   FiArrowRight,
   FiCheck,
   FiRefreshCw,
-  FiPrinter
+  FiPrinter,
+  FiAlertCircle,
+  FiAlertTriangle,
+  FiInfo,
+  FiCheckCircle
 } from 'react-icons/fi';
 import {
   // Material Design Icons (estilo clean e moderno)
@@ -104,6 +108,10 @@ export const RefreshIcon = createIcon(FiRefreshCw);
 export const PrintIcon = createIcon(FiPrinter);
 export const ChefHatIcon = createIcon(MdRestaurantMenu);
 export const TransferIcon = createIcon(MdSwapHoriz);
+export const AlertIcon = createIcon(FiAlertCircle);
+export const WarningIcon = createIcon(FiAlertTriangle);
+export const InfoIcon = createIcon(FiInfo);
+export const CheckCircleIcon = createIcon(FiCheckCircle);
 
 // Ícones de Usuários
 export const UserIcon = createIcon(FiUsers);
@@ -157,6 +165,12 @@ export const AppIcons = {
   Print: PrintIcon,
   ChefHat: ChefHatIcon,
   Transfer: TransferIcon,
+  
+  // Alertas e Notificações
+  Alert: AlertIcon,
+  Warning: WarningIcon,
+  Info: InfoIcon,
+  CheckCircle: CheckCircleIcon,
   
   // Configuração
   Settings: SettingsIcon,

@@ -5,7 +5,8 @@
 //--------------------------------------------------------------------
 
 import React, { useState, useEffect, useRef } from 'react';
-import { systemStyles } from '../../../styles/systemStyle';
+import { systemStyles, systemColors } from '../../../styles/systemStyle';
+import { useTheme } from '../../../styles/ThemeProvider';
 import logoImage from '../../../../main/img/logo.png';
 
 interface LoginCardProps {
@@ -13,6 +14,7 @@ interface LoginCardProps {
 }
 
 export function LoginCard({ onLogin }: LoginCardProps): JSX.Element {
+  const { theme, systemColors } = useTheme();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showArrow, setShowArrow] = useState(false);
@@ -100,32 +102,59 @@ export function LoginCard({ onLogin }: LoginCardProps): JSX.Element {
     }
   };
 
+  // Filtro do logo baseado no tema
+  const logoFilter = theme === 'dark' 
+    ? 'brightness(0)' // Logo preto no tema dark
+    : 'brightness(0) saturate(100%) invert(36%)'; // Logo cinza escuro no tema light
+
   return (
     <div style={{
-      ...systemStyles.loginCard.container,
-      ...(isShaking ? { animation: 'shake 0.7s ease-in-out' } : {})
+      position: 'relative' as const,
+      width: '100%',
+      height: '100%',
+      display: 'flex',
+      flexDirection: 'column' as const,
+      alignItems: 'center',
+      justifyContent: 'center',
+      minHeight: '100vh'
     }}>
-      <div style={systemStyles.loginCard.card}>
-        {/* Efeito de reflexo de vidro */}
-        <div style={systemStyles.loginCard.glassReflection} />
-        
-        {/* Logo */}
-        <div style={{...systemStyles.loginCard.avatar, position: 'relative' as const, zIndex: 2}}>
-          <div style={systemStyles.loginCard.avatarInner}>
-            <img 
-              src={logoImage} 
-              alt="Logo" 
-              style={systemStyles.loginCard.logoImage}
-            />
-          </div>
+      {/* Container principal com animação de shake */}
+      <div style={{
+        display: 'flex',
+        flexDirection: 'column' as const,
+        alignItems: 'center',
+        justifyContent: 'center',
+        gap: '24px',
+        ...(isShaking ? { animation: 'shake 0.7s ease-in-out' } : {}),
+        position: 'relative' as const,
+        zIndex: 1
+      }}>
+        {/* Logo centralizada */}
+        <div style={logoContainer}>
+          <img 
+            src={logoImage} 
+            alt="Logo" 
+            style={{
+              ...logoStyle,
+              filter: logoFilter,
+              WebkitFilter: logoFilter
+            }}
+          />
         </div>
 
-        {/* Nome do usuário - mostra email quando na etapa de senha */}
+        {/* Container com label e formulário juntos */}
+        <div style={{
+          display: 'flex',
+          flexDirection: 'column' as const,
+          alignItems: 'center',
+          gap: '0px'
+        }}>
+        {/* Label Usuário */}
         <span style={{
           ...systemStyles.loginCard.userLabel,
           ...(isTransitioning ? systemStyles.loginCard.userLabelTransitioning : {}),
-          position: 'relative' as const,
-          zIndex: 2
+          textAlign: 'center' as const,
+          marginBottom: '4px'
         }}>
           {step === 'password' ? email : 'Usuário'}
         </span>
@@ -134,12 +163,18 @@ export function LoginCard({ onLogin }: LoginCardProps): JSX.Element {
         <form onSubmit={handleSubmit} style={{
           ...systemStyles.loginCard.form,
           ...(isTransitioning ? systemStyles.loginCard.formTransitioning : {}),
-          position: 'relative' as const,
-          zIndex: 2
+          display: 'flex',
+          flexDirection: 'column' as const,
+          alignItems: 'center',
+          gap: '2px',
+          marginTop: 0
         }}>
           {step === 'email' ? (
             // Campo de email
-            <div style={systemStyles.loginCard.inputWrapper}>
+            <div style={{
+              ...systemStyles.loginCard.inputWrapper,
+              margin: '0 auto 2px'
+            }}>
               <input
                 ref={emailInputRef}
                 type="email"
@@ -149,15 +184,20 @@ export function LoginCard({ onLogin }: LoginCardProps): JSX.Element {
                 onKeyPress={handleKeyPress}
                 onFocus={() => setIsEmailFocused(true)}
                 onBlur={() => setIsEmailFocused(false)}
+                className="neumorphic-login-input"
+                data-theme={theme}
                 style={{
                   ...systemStyles.loginCard.input,
-                  ...(isEmailFocused || email.length > 0 ? systemStyles.loginCard.inputFocus : {})
+                  ...getNeumorphicInputStyle(theme, false, systemColors) // Sempre usa o estilo não focado
                 }}
               />
             </div>
           ) : (
             // Campo de senha com botão de revelar senha
-            <div style={systemStyles.loginCard.inputWrapper}>
+            <div style={{
+              ...systemStyles.loginCard.inputWrapper,
+              margin: '0 auto 2px'
+            }}>
               <input
                 ref={passwordInputRef}
                 type={showPassword ? 'text' : 'password'}
@@ -167,9 +207,11 @@ export function LoginCard({ onLogin }: LoginCardProps): JSX.Element {
                 onKeyPress={handleKeyPress}
                 onFocus={() => setIsPasswordFocused(true)}
                 onBlur={() => setIsPasswordFocused(false)}
+                className="neumorphic-login-input"
+                data-theme={theme}
                 style={{
                   ...systemStyles.loginCard.input,
-                  ...(isPasswordFocused || password.length > 0 ? systemStyles.loginCard.inputFocus : {})
+                  ...getNeumorphicInputStyle(theme, false, systemColors) // Sempre usa o estilo não focado
                 }}
               />
               <button
@@ -198,35 +240,61 @@ export function LoginCard({ onLogin }: LoginCardProps): JSX.Element {
           <div style={{
             ...systemStyles.loginCard.hint,
             ...(isTransitioning ? systemStyles.loginCard.hintTransitioning : {}),
-            position: 'relative' as const,
-            zIndex: 2
+            textAlign: 'center' as const,
+            marginTop: '0px'
           }}>
             {step === 'email' ? 'Digite seu e-mail' : 'Digite sua senha'}
           </div>
         </form>
+        </div>
       </div>
 
-      {/* Footer com informações da empresa */}
-      <div style={systemStyles.loginCard.footer}>
-        <p style={systemStyles.loginCard.footerTitle}>Netinove</p>
-        <p style={systemStyles.loginCard.footerSubtitle}>Consultoria e Sistema</p>
+      {/* Footer com informações da empresa - sempre fixo na parte inferior */}
+      <div style={{
+        ...systemStyles.loginCard.footer,
+        position: 'fixed' as const,
+        bottom: '20px',
+        left: '50%',
+        transform: 'translateX(-50%)',
+        zIndex: 10,
+        width: 'auto',
+        color: systemColors.text.primary,
+        textShadow: theme === 'dark' ? '0px 1px 5px rgba(0, 0, 0, 1)' : 'none'
+      }}>
+        <p style={{
+          ...systemStyles.loginCard.footerTitle,
+          color: systemColors.text.primary
+        }}>Netinove</p>
+        <p style={{
+          ...systemStyles.loginCard.footerSubtitle,
+          color: systemColors.text.secondary
+        }}>Consultoria e Sistema</p>
         <a 
           href="https://netinove.com/" 
           target="_blank" 
           rel="noopener noreferrer"
-          style={systemStyles.loginCard.footerLink}
+          style={{
+            ...systemStyles.loginCard.footerLink,
+            color: systemColors.text.secondary
+          }}
           onMouseEnter={(e) => {
-            Object.assign(e.currentTarget.style, systemStyles.loginCard.footerLinkHover);
+            Object.assign(e.currentTarget.style, {
+              ...systemStyles.loginCard.footerLinkHover,
+              color: systemColors.text.primary
+            });
           }}
           onMouseLeave={(e) => {
-            Object.assign(e.currentTarget.style, systemStyles.loginCard.footerLink);
+            Object.assign(e.currentTarget.style, {
+              ...systemStyles.loginCard.footerLink,
+              color: systemColors.text.secondary
+            });
           }}
         >
           Acesse nosso site
         </a>
       </div>
 
-      {/* Inject shake animation */}
+      {/* Inject shake animation and override global input styles */}
       <style>
         {`
           @keyframes shake {
@@ -237,9 +305,99 @@ export function LoginCard({ onLogin }: LoginCardProps): JSX.Element {
             80% { transform: translateX(-10px); }
             100% { transform: translateX(0); }
           }
+          
+          /* Sobrescrever estilos globais de input para campos de login neumórficos */
+          /* Remove border e outline, e garante que background e box-shadow inline sejam preservados */
+          .neumorphic-login-input {
+            border: none !important;
+            outline: none !important;
+          }
+          
+          /* Remover TODOS os estilos globais quando focado */
+          .neumorphic-login-input:focus {
+            border: none !important;
+            outline: none !important;
+            box-shadow: none !important;
+          }
+          
+          /* Aplicar background e box-shadow neumórfico baseado no tema via data attribute */
+          .neumorphic-login-input[data-theme="light"]:focus {
+            background: #E8E8E8 !important;
+            background-color: #E8E8E8 !important;
+            box-shadow: inset 4px 4px 8px rgba(0, 0, 0, 0.2), inset -4px -4px 8px rgba(255, 255, 255, 0.9) !important;
+          }
+          
+          .neumorphic-login-input[data-theme="dark"]:focus {
+            background: #3A3A3D !important;
+            background-color: #3A3A3D !important;
+            box-shadow: inset 4px 4px 8px rgba(0, 0, 0, 0.6), inset -4px -4px 8px rgba(255, 255, 255, 0.02) !important;
+          }
+          
+          /* Garantir que estilos inline sejam preservados */
+          .neumorphic-login-input:active {
+            border: none !important;
+            outline: none !important;
+          }
         `}
       </style>
     </div>
   );
+}
+
+const logoContainer: React.CSSProperties = {
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+  marginBottom: '16px'
+};
+
+const logoStyle: React.CSSProperties = {
+  width: '80px',
+  height: '80px',
+  objectFit: 'contain' as const
+  // Filtro aplicado dinamicamente baseado no tema no componente
+};
+
+// Função para obter estilo neumórfico do input baseado no tema
+// Inputs neumórficos são sempre debossed (pressionados/côncavos)
+function getNeumorphicInputStyle(
+  theme: 'light' | 'dark',
+  isFocused: boolean,
+  systemColors: any
+): React.CSSProperties {
+  // Background levemente mais escuro que o fundo para criar o efeito debossed
+  const baseBg = theme === 'dark' ? systemColors.background.secondary : '#E8E8E8';
+  
+  if (theme === 'dark') {
+    // Neumorfismo dark: sombras internas para efeito debossed
+    const shadowDark = 'rgba(0, 0, 0, 0.6)'; // Sombra escura na parte superior/esquerda
+    const shadowLight = 'rgba(255, 255, 255, 0.02)'; // Destaque claro na parte inferior/direita
+    
+    // Mantém o mesmo estilo neumórfico tanto no estado normal quanto focado
+    // Apenas intensifica ligeiramente as sombras quando focado
+    return {
+      background: baseBg,
+      border: 'none',
+      boxShadow: isFocused 
+        ? `inset 5px 5px 10px ${shadowDark}, inset -5px -5px 10px ${shadowLight}` 
+        : `inset 4px 4px 8px ${shadowDark}, inset -4px -4px 8px ${shadowLight}`,
+      outline: 'none'
+    };
+  } else {
+    // Neumorfismo light: sombras internas mais pronunciadas
+    const shadowDark = 'rgba(0, 0, 0, 0.2)'; // Sombra escura na parte superior/esquerda
+    const shadowLight = 'rgba(255, 255, 255, 0.9)'; // Destaque claro na parte inferior/direita
+    
+    // Mantém o mesmo estilo neumórfico tanto no estado normal quanto focado
+    // Apenas intensifica ligeiramente as sombras quando focado
+    return {
+      background: baseBg,
+      border: 'none',
+      boxShadow: isFocused 
+        ? `inset 5px 5px 10px ${shadowDark}, inset -5px -5px 10px ${shadowLight}` 
+        : `inset 4px 4px 8px ${shadowDark}, inset -4px -4px 8px ${shadowLight}`,
+      outline: 'none'
+    };
+  }
 }
 
