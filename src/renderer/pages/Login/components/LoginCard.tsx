@@ -131,15 +131,15 @@ export function LoginCard({ onLogin }: LoginCardProps): JSX.Element {
       }}>
         {/* Logo centralizada */}
         <div style={logoContainer}>
-          <img 
-            src={logoImage} 
-            alt="Logo" 
+            <img 
+              src={logoImage} 
+              alt="Logo" 
             style={{
               ...logoStyle,
               filter: logoFilter,
               WebkitFilter: logoFilter
             }}
-          />
+            />
         </div>
 
         {/* Container com label e formulário juntos */}

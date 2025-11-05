@@ -162,67 +162,67 @@ export function ProductsGrid({ categoryId, products = [], onBack, onProductClick
   };
 
   if (!categoryId) {
-    return (
-      <div style={styles.container}>
+  return (
+    <div style={styles.container}>
         <div style={styles.placeholder}>
           Selecione uma categoria
-        </div>
-      </div>
+                </div>
+              </div>
     );
   }
 
   return (
     <div style={styles.container}>
       {displayProducts.length > 0 ? (
-        <div style={styles.productsWrapper}>
+          <div style={styles.productsWrapper}>
           {/* Barra superior com botão voltar e adicionar */}
           <GridTopBar
             leftContent={
-              <BackButton 
+                <BackButton 
                 onClick={onBack} 
-                label="Voltar para categorias" 
-              />
+                  label="Voltar para categorias" 
+                />
             }
             rightContent={
-              <button
-                style={{
-                  padding: '6px 16px',
-                  borderRadius: 8,
-                  background: hasProductsSelected ? systemColors.selection.blue : systemColors.button.gradient,
-                  color: hasProductsSelected ? '#FFFFFF' : systemColors.text.primary,
-                  border: `1px solid ${hasProductsSelected ? systemColors.selection.blueDark : systemColors.button.defaultBorder}`,
-                  cursor: hasProductsSelected ? 'pointer' : 'not-allowed',
-                  fontSize: '13px',
-                  fontWeight: '600',
-                  transition: 'all 0.15s ease',
-                  opacity: hasProductsSelected ? 1 : 0.5
-                }}
+                  <button
+                    style={{
+                      padding: '6px 16px',
+                      borderRadius: 8,
+                      background: hasProductsSelected ? systemColors.selection.blue : systemColors.button.gradient,
+                      color: hasProductsSelected ? '#FFFFFF' : systemColors.text.primary,
+                      border: `1px solid ${hasProductsSelected ? systemColors.selection.blueDark : systemColors.button.defaultBorder}`,
+                      cursor: hasProductsSelected ? 'pointer' : 'not-allowed',
+                      fontSize: '13px',
+                      fontWeight: '600',
+                      transition: 'all 0.15s ease',
+                      opacity: hasProductsSelected ? 1 : 0.5
+                    }}
                 onClick={hasSelectedProductWithComplements ? handleNextToComplements : handleAddAllToCart}
-                disabled={!hasProductsSelected}
-              >
+                    disabled={!hasProductsSelected}
+                  >
                 {hasSelectedProductWithComplements ? 'Próximo' : 'Adicionar ao Carrinho'}
-              </button>
+                  </button>
             }
           />
 
-          {/* Grid de produtos */}
-          <div style={styles.productsContainer}>
-            <div style={styles.productsGrid}>
+            {/* Grid de produtos */}
+            <div style={styles.productsContainer}>
+              <div style={styles.productsGrid}>
               {filteredProducts.map((product) => (
-                <ProductCard
-                  key={product.id}
-                  product={product}
-                  quantity={productQuantities[product.id] || 0}
-                  onQuantityChange={(qty) => handleProductQuantityChange(product.id, qty)}
-                />
-              ))}
+                  <ProductCard
+                    key={product.id}
+                    product={product}
+                    quantity={productQuantities[product.id] || 0}
+                    onQuantityChange={(qty) => handleProductQuantityChange(product.id, qty)}
+                  />
+                ))}
+              </div>
             </div>
           </div>
-        </div>
-      ) : (
-        <div style={styles.placeholder}>
-          Nenhum produto nesta categoria
-        </div>
+        ) : (
+          <div style={styles.placeholder}>
+            Nenhum produto nesta categoria
+          </div>
       )}
     </div>
   );
