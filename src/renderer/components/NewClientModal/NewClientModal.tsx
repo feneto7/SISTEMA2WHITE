@@ -2,7 +2,8 @@ import { WindowHeader } from '../WindowHeader/WindowHeader';
 import React, { useState } from 'react';
 import { useTheme } from '../../styles/ThemeProvider';
 import { useClickSound } from '../../hooks/useClickSound';
-import { MainTab, AddressTab, AdditionalTab } from './components';
+import { MainTab, AddressTab, AdditionalTab, PlansTab } from './components';
+import { Plan } from './types';
 
 // Interface para dados do cliente
 interface Client {
@@ -54,7 +55,9 @@ export function NewClientModal({ isOpen, onClose, onSave }: NewClientModalProps)
     dueDays: '',
     discountPercent: '',
     // Planos
-    plan: 'basic'
+    plan: 'basic',
+    // Lista de planos vinculados
+    plans: [] as Plan[]
   });
 
   // Função para fechar o modal
@@ -81,7 +84,9 @@ export function NewClientModal({ isOpen, onClose, onSave }: NewClientModalProps)
       dueDays: '',
       discountPercent: '',
       // Planos
-      plan: 'basic'
+      plan: 'basic',
+      // Lista de planos vinculados
+      plans: [] as Plan[]
     });
     setClientType('individual');
     setActiveTab('main');
@@ -111,6 +116,24 @@ export function NewClientModal({ isOpen, onClose, onSave }: NewClientModalProps)
   // Função para atualizar dados do formulário
   const updateFormData = (field: string, value: string) => {
     setFormData(prev => ({ ...prev, [field]: value }));
+  };
+
+  // Planos: adicionar e remover
+  const addPlan = (plan: Omit<Plan, 'id'>) => {
+    setFormData(prev => ({
+      ...prev,
+      plans: [
+        ...prev.plans,
+        { ...plan, id: `${Date.now()}-${Math.random().toString(36).slice(2, 8)}` }
+      ]
+    }));
+  };
+
+  const removePlan = (planId: string) => {
+    setFormData(prev => ({
+      ...prev,
+      plans: prev.plans.filter(p => p.id !== planId)
+    }));
   };
 
   // Função para mudar tipo de cliente e limpar documento se necessário
@@ -386,23 +409,11 @@ export function NewClientModal({ isOpen, onClose, onSave }: NewClientModalProps)
           )}
 
           {activeTab === 'plans' && (
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: '16px', maxWidth: '420px' }}>
-              <div style={systemStyles.select.container}>
-                <label style={systemStyles.input.label}>Plano</label>
-                <select
-                  style={systemStyles.select.field}
-                  value={formData.plan}
-                  onChange={(e) => updateFormData('plan', e.target.value)}
-                >
-                  <option value="basic">Básico</option>
-                  <option value="pro">Pro</option>
-                  <option value="enterprise">Enterprise</option>
-                </select>
-                <div style={systemStyles.select.arrow}>
-                  <span style={systemStyles.select.arrowIcon}></span>
-                </div>
-              </div>
-            </div>
+            <PlansTab
+              plans={formData.plans}
+              onAddPlan={addPlan}
+              onRemovePlan={removePlan}
+            />
           )}
         </div>
 
