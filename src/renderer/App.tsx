@@ -1,6 +1,7 @@
 import React, { Suspense, lazy, useState, useEffect } from 'react';
 import { NavigationProvider, useNavigation } from './router/Navigation';
 import { SplashScreen } from './components/SplashScreen';
+import { PageTransition } from './components/PageTransition';
 
 // Lazy loading das páginas para melhor performance
 // Carrega apenas quando necessário, reduzindo o bundle inicial
@@ -13,23 +14,6 @@ const MDFePage = lazy(() => import('./pages/MDFe/MDFe').then(module => ({ defaul
 const Sales = lazy(() => import('./pages/Sales/Sales').then(module => ({ default: module.default })));
 const Settings = lazy(() => import('./pages/Settings/Settings').then(module => ({ default: module.default })));
 const Attendances = lazy(() => import('./pages/Attendances/Attendances').then(module => ({ default: module.default })));
-
-
-// Componente de loading otimizado
-const PageLoader = () => (
-  <div style={{
-    height: '100vh',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    background: 'var(--bg-blur)',
-    color: 'var(--text-primary)',
-    fontSize: '16px',
-    fontWeight: '500'
-  }}>
-    Carregando...
-  </div>
-);
 
 function AppContent(): JSX.Element {
   const { route } = useNavigation();
@@ -59,9 +43,9 @@ function AppContent(): JSX.Element {
   };
 
   return (
-    <Suspense fallback={<PageLoader />}>
+    <PageTransition currentRoute={route}>
       {renderPage()}
-    </Suspense>
+    </PageTransition>
   );
 }
 
@@ -69,10 +53,11 @@ export function App(): JSX.Element {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    // Simula carregamento inicial
+    // Simula carregamento inicial - aguarda toda a sequência de animações terminar
+    // Timeline: Letras (2.1s) + Logo (2.3s + 1.5s = 3.8s) + Brilho (0.5s) + Fade out (0.8s) = 5.2s
     const timer = setTimeout(() => {
       setIsLoading(false);
-    }, 2500);
+    }, 5200);
 
     return () => clearTimeout(timer);
   }, []);

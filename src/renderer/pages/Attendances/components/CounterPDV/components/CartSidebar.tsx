@@ -493,7 +493,7 @@ export function CartSidebar({ items = [], total = 0, onCheckout, editingItemId, 
               <span style={{ fontWeight: '600', color: systemColors.text.secondary, fontSize: '13px' }}>
                 Subtotal
               </span>
-            </div>
+              </div>
             {/* Separador */}
             <div style={styles.separator} />
             {/* Lista de itens */}

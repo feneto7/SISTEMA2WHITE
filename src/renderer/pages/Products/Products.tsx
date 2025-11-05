@@ -17,31 +17,6 @@ const PlusIcon = ({ size = 16, color = 'currentColor' }: { size?: number; color?
   </svg>
 );
 
-// Componente de loading para o modal
-const ModalLoader = () => (
-  <div style={{
-    position: 'fixed',
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 0,
-    background: 'rgba(0, 0, 0, 0.5)',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    zIndex: 1000
-  }}>
-    <div style={{
-      background: 'var(--bg-primary)',
-      padding: '20px',
-      borderRadius: '8px',
-      color: 'var(--text-primary)'
-    }}>
-      Carregando modal...
-    </div>
-  </div>
-);
-
 // Página de Produtos/Serviços do sistema
 // Permite buscar, visualizar e gerenciar produtos e serviços cadastrados
 // Estilos importados de @styles/style.ts e componentes modularizados
@@ -232,7 +207,7 @@ export function Products(): JSX.Element {
 
       {/* Modal de novo produto com lazy loading */}
       {isModalOpen && (
-        <Suspense fallback={<ModalLoader />}>
+        <Suspense fallback={null}>
           <NewProductModal 
             isOpen={isModalOpen} 
             onClose={() => setIsModalOpen(false)} 

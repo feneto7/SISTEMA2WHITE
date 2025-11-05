@@ -2,119 +2,161 @@
 // SPLASH SCREEN
 // Tela de carregamento estilo macOS minimalista
 // Exibida na abertura do aplicativo enquanto os recursos carregam
+// Animação de slide-in da palavra "Netinove"
 //--------------------------------------------------------------------
 
 import React, { useEffect, useState } from 'react';
-import { systemColors } from '../../styles/systemStyle';
-import { useAnimatedBackground, AnimatedWaves, bgHomeStyles } from '../../styles/bgHome';
-import logo from '../../../main/img/logo.png';
+import logoImage from '../../../main/img/logo.png';
 
 export function SplashScreen(): JSX.Element {
   const [visible, setVisible] = useState(true);
-  
-  // Injeta animações do background animado
-  useAnimatedBackground();
+  const [isFadingOut, setIsFadingOut] = useState(false);
+  // Detecta o tema do localStorage ou usa 'dark' como padrão
+  const theme = (() => {
+    if (typeof window !== 'undefined') {
+      const savedTheme = localStorage.getItem('app.theme');
+      return (savedTheme === 'dark' || savedTheme === 'light') ? savedTheme : 'dark';
+    }
+    return 'dark';
+  })();
 
   useEffect(() => {
-    // Simula carregamento e remove splash após 2 segundos
-    const timer = setTimeout(() => {
-      setVisible(false);
-    }, 2000);
+    
+    const fadeOutTimer = setTimeout(() => {
+      setIsFadingOut(true);
+    }, 4300);
 
-    return () => clearTimeout(timer);
+    const hideTimer = setTimeout(() => {
+      setVisible(false);
+    }, 5200);
+
+    return () => {
+      clearTimeout(fadeOutTimer);
+      clearTimeout(hideTimer);
+    };
   }, []);
 
   if (!visible) return <></>;
 
+  const textColor = theme === 'dark' ? '#ffffff' : '#000000';
+  const backgroundColor = theme === 'dark' ? '#1a1a1a' : '#ffffff';
+
+  // Palavra "Netinove" dividida em letras
+  const letters = ['N', 'e', 't', 'i', 'n', 'o', 'v', 'e'];
+
   return (
     <>
-      {/* Background animado */}
-      <div style={bgHomeStyles.container}>
-        <AnimatedWaves />
-      </div>
+      <div className={`splash ${isFadingOut ? 'fade-out' : ''}`} style={{ backgroundColor }}>
+        <div style={styles.contentContainer}>
+          {/* Container das letras */}
+          <div className="letter-container">
+            {letters.map((letter, index) => (
+              <div
+                key={index}
+                className="letter"
+                style={{
+                  color: textColor,
+                  animationDelay: `${(index + 1) * 0.2}s`
+                }}
+              >
+                {letter}
+              </div>
+            ))}
+          </div>
 
-      {/* Conteúdo da splash */}
-      <div style={styles.container}>
-        {/* Logo com animação de brilho */}
-        <div style={styles.logoContainer}>
-          <img 
-            src={logo} 
-            alt="Logo" 
-            style={styles.logo}
-          />
+          {/* Logo abaixo do nome */}
+          <div className="logo-container">
+            <img
+              src={logoImage}
+              alt="Logo"
+              className="logo-image"
+            />
+          </div>
         </div>
-
-        {/* Texto de carregamento */}
-        <p style={styles.loadingText}>Carregando...</p>
       </div>
+
+      {/* Injetar estilos CSS */}
+      <style>
+        {`
+          .splash {
+            width: 100%;
+            height: 100vh;
+            position: fixed;
+            background-color: ${backgroundColor};
+            transition: opacity 0.8s ease-in-out;
+            z-index: 10;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+          }
+
+          .splash.fade-out {
+            opacity: 0;
+          }
+
+          .letter-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 32px;
+          }
+
+          .letter {
+            font-size: 2em;
+            font-family: '-apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, Helvetica, Arial, sans-serif';
+            opacity: 0;
+            transform: translateX(-20px);
+            animation: slideIn 0.5s forwards;
+          }
+
+          .logo-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-top: 24px;
+          }
+
+          .logo-image {
+            width: 120px;
+            height: 120px;
+            object-fit: contain;
+            opacity: 0;
+            transform: scale(0.8);
+            animation: logoAppear 1.5s ease forwards 2.3s;
+          }
+
+          @keyframes slideIn {
+            to {
+              opacity: 1;
+              transform: translateX(0);
+            }
+          }
+
+          @keyframes logoAppear {
+            0% {
+              opacity: 0;
+              transform: scale(0.8);
+            }
+            50% {
+              opacity: 0.8;
+              transform: scale(1.05);
+            }
+            100% {
+              opacity: 1;
+              transform: scale(1);
+            }
+          }
+        `}
+      </style>
     </>
   );
 }
 
 const styles = {
-  container: {
-    position: 'fixed' as const,
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 0,
+  contentContainer: {
     display: 'flex',
     flexDirection: 'column' as const,
-    alignItems: 'center',
-    justifyContent: 'center',
-    zIndex: 10
-  },
-  logoContainer: {
-    position: 'relative' as const,
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center'
-  },
-  logo: {
-    width: '120px',
-    height: '120px',
-    objectFit: 'contain' as const,
-    // Torna a logo vermelha branca (igual AppIconButton)
-    filter: 'brightness(0) invert(1) drop-shadow(0 0 20px rgba(255, 255, 255, 0.8)) drop-shadow(0 0 40px rgba(255, 255, 255, 0.6)) drop-shadow(0 0 60px rgba(255, 255, 255, 0.4))',
-    WebkitFilter: 'brightness(0) invert(1) drop-shadow(0 0 20px rgba(255, 255, 255, 0.8)) drop-shadow(0 0 40px rgba(255, 255, 255, 0.6)) drop-shadow(0 0 60px rgba(255, 255, 255, 0.4))',
-    animation: 'glowPulse 2s ease-in-out infinite'
-  },
-  loadingText: {
-    marginTop: '32px',
-    fontSize: '15px',
-    fontWeight: '400',
-    color: systemColors.text.secondary,
-    fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, Helvetica, Arial, sans-serif',
-    letterSpacing: '0.5px',
-    animation: 'fadeInOut 2s ease-in-out infinite'
+    alignItems: 'center' as const,
+    justifyContent: 'center' as const
   }
 };
-
-// Injetar animações CSS
-if (typeof document !== 'undefined') {
-  const style = document.createElement('style');
-  style.textContent = `
-    @keyframes glowPulse {
-      0%, 100% {
-        filter: brightness(0) invert(1) drop-shadow(0 0 20px rgba(255, 255, 255, 0.6)) drop-shadow(0 0 40px rgba(255, 255, 255, 0.4)) drop-shadow(0 0 60px rgba(255, 255, 255, 0.2));
-      }
-      50% {
-        filter: brightness(0) invert(1) drop-shadow(0 0 30px rgba(255, 255, 255, 1)) drop-shadow(0 0 60px rgba(255, 255, 255, 0.8)) drop-shadow(0 0 90px rgba(255, 255, 255, 0.6));
-      }
-    }
-    
-    @keyframes fadeInOut {
-      0%, 100% {
-        opacity: 0.5;
-      }
-      50% {
-        opacity: 1;
-      }
-    }
-  `;
-  if (!document.getElementById('splash-animations')) {
-    style.id = 'splash-animations';
-    document.head.appendChild(style);
-  }
-}
-
