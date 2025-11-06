@@ -463,11 +463,16 @@ export function createSystemStyles(theme: ThemeTokens) {
     }
   },
 
-  // Select / Dropdown - estilo macOS com botão azul
+  // Select / Dropdown - com botão azul
   select: {
     container: {
       position: 'relative' as const,
       width: '100%'
+    },
+    fieldWrapper: {
+      position: 'relative' as const,
+      width: '100%',
+      height: '28px'
     },
     field: {
       width: '100%',
@@ -494,7 +499,7 @@ export function createSystemStyles(theme: ThemeTokens) {
       right: '0px',
       top: '0px',
       width: '20px',
-      height: '100%',
+      height: '100%', // acompanha a altura do wrapper/field
       display: 'flex',
       alignItems: 'center',
       justifyContent: 'center',
