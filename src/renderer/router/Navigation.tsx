@@ -2,7 +2,7 @@ import React from 'react';
 
 // Navegação simples baseada em contexto para telas do renderer
 // Rotas definidas no sistema: manter simples sem dependências externas
-export type Route = 'login' | 'home' | 'products' | 'clients' | 'users' | 'fiscal' | 'mdfe' | 'sales' | 'settings' | 'attendances';
+export type Route = 'login' | 'home' | 'products' | 'clients' | 'suppliers' | 'users' | 'fiscal' | 'mdfe' | 'sales' | 'settings' | 'attendances';
 
 interface NavigationContextValue {
   route: Route;

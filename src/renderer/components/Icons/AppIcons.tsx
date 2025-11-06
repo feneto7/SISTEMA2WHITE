@@ -1,22 +1,18 @@
 //--------------------------------------------------------------------
-// APP ICONS - Ícones elegantes usando react-icons
-// Biblioteca de ícones variada com mais de 10.000 opções
+// APP ICONS - Ícones padronizados usando apenas react-icons/fi (Feather Icons)
+// Todos os ícones do sistema usam o mesmo pacote para manter consistência visual
 //--------------------------------------------------------------------
 
-import { 
-  // Heroicons (estilo moderno do Tailwind)
-  HiOutlineHome,
-  HiOutlineSearch,
-  HiOutlineCog,
-  HiOutlineFolder,
-  HiOutlineDocumentText,
-  HiOutlineUser,
-  HiOutlineMail
-} from 'react-icons/hi';
 import {
-  // Feather/Lucide Icons (estilo moderno e minimalista)
-  FiShoppingCart,
+  // Feather Icons - Estilo moderno e minimalista
+  FiHome,
+  FiSearch,
+  FiSettings,
+  FiFolder,
   FiFileText,
+  FiUser,
+  FiMail,
+  FiShoppingCart,
   FiClipboard,
   FiTruck,
   FiUsers,
@@ -37,20 +33,11 @@ import {
   FiAlertCircle,
   FiAlertTriangle,
   FiInfo,
-  FiCheckCircle
+  FiCheckCircle,
+  FiGrid,
+  FiMenu,
+  FiRepeat
 } from 'react-icons/fi';
-import {
-  // Material Design Icons (estilo clean e moderno)
-  MdShoppingCart,
-  MdDescription,
-  MdAssignment,
-  MdSettings,
-  MdAccountCircle,
-  MdReceipt,
-  MdTableBar,
-  MdRestaurantMenu,
-  MdSwapHoriz
-} from 'react-icons/md';
 import React from 'react';
 
 interface IconProps {
@@ -67,18 +54,18 @@ export const createIcon = (Icon: React.ComponentType<any>) => {
 };
 
 // Ícones de Navegação e Interface
-export const HomeIcon = createIcon(HiOutlineHome);
-export const SearchIcon = createIcon(HiOutlineSearch);
-export const SettingsIcon = createIcon(HiOutlineCog);
-export const FolderIcon = createIcon(HiOutlineFolder);
+export const HomeIcon = createIcon(FiHome);
+export const SearchIcon = createIcon(FiSearch);
+export const SettingsIcon = createIcon(FiSettings);
+export const FolderIcon = createIcon(FiFolder);
 export const ToolsIcon = createIcon(FiTool);
-export const DocumentIcon = createIcon(HiOutlineDocumentText);
-export const UsersIcon = createIcon(HiOutlineUser);
-export const MailIcon = createIcon(HiOutlineMail);
+export const DocumentIcon = createIcon(FiFileText);
+export const UsersIcon = createIcon(FiUser);
+export const MailIcon = createIcon(FiMail);
 
 // Ícones de Documentos
-export const FileIcon = createIcon(HiOutlineDocumentText);
-export const InvoiceIcon = createIcon(MdReceipt);
+export const FileIcon = createIcon(FiFile);
+export const InvoiceIcon = createIcon(FiFileText);
 export const ClipboardIcon = createIcon(FiClipboard);
 
 // Ícones Financeiros
@@ -86,13 +73,13 @@ export const DollarIcon = createIcon(FiDollarSign);
 
 // Ícones Comerciais
 export const ShoppingCartIcon = createIcon(FiShoppingCart);
-export const ProductsIcon = createIcon(MdShoppingCart);
+export const ProductsIcon = createIcon(FiShoppingCart);
 
 // Ícones de Transporte
 export const TruckIcon = createIcon(FiTruck);
 
 // Ícones Comerciais Adicionais
-export const TableIcon = createIcon(MdTableBar);
+export const TableIcon = createIcon(FiGrid);
 
 // Ícones de Ações
 export const BackIcon = createIcon(FiArrowLeft);
@@ -106,8 +93,8 @@ export const CloseIcon = createIcon(FiX);
 export const CheckIcon = createIcon(FiCheck);
 export const RefreshIcon = createIcon(FiRefreshCw);
 export const PrintIcon = createIcon(FiPrinter);
-export const ChefHatIcon = createIcon(MdRestaurantMenu);
-export const TransferIcon = createIcon(MdSwapHoriz);
+export const ChefHatIcon = createIcon(FiMenu);
+export const TransferIcon = createIcon(FiRepeat);
 export const AlertIcon = createIcon(FiAlertCircle);
 export const WarningIcon = createIcon(FiAlertTriangle);
 export const InfoIcon = createIcon(FiInfo);
@@ -115,10 +102,10 @@ export const CheckCircleIcon = createIcon(FiCheckCircle);
 
 // Ícones de Usuários
 export const UserIcon = createIcon(FiUsers);
-export const AccountIcon = createIcon(MdAccountCircle);
+export const AccountIcon = createIcon(FiUser);
 
 // Ícones de Configuração
-export const ConfigIcon = createIcon(MdSettings);
+export const ConfigIcon = createIcon(FiSettings);
 
 // Exportar todos os ícones em um objeto para facilitar o acesso
 export const AppIcons = {

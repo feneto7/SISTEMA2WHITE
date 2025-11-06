@@ -4,18 +4,11 @@ import { SearchBox, ProductList } from './components';
 import { useNavigation } from '../../router/Navigation';
 import { useClickSound } from '../../hooks/useClickSound';
 import { BackButton } from '../../components/BackButton';
+import { PlusIcon } from '../../components/Icons/Icons';
 
 // Lazy loading do modal para melhor performance
 // Carrega apenas quando necessário
 const NewProductModal = lazy(() => import('../../components/NewProductModal').then(module => ({ default: module.NewProductModal })));
-
-// Ícone de plus simples para o botão novo produto
-const PlusIcon = ({ size = 16, color = 'currentColor' }: { size?: number; color?: string }) => (
-  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-    <line x1="12" y1="5" x2="12" y2="19"></line>
-    <line x1="5" y1="12" x2="19" y2="12"></line>
-  </svg>
-);
 
 // Página de Produtos/Serviços do sistema
 // Permite buscar, visualizar e gerenciar produtos e serviços cadastrados
