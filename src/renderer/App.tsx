@@ -9,6 +9,7 @@ const Login = lazy(() => import('./pages/Login').then(module => ({ default: modu
 const Home = lazy(() => import('./pages/Home/Home').then(module => ({ default: module.Home })));
 const Products = lazy(() => import('./pages/Products/Products').then(module => ({ default: module.Products })));
 const Clients = lazy(() => import('./pages/Clients/Clients').then(module => ({ default: module.Clients })));
+const Suppliers = lazy(() => import('./pages/Suppliers/Suppliers').then(module => ({ default: module.Suppliers })));
 const Users = lazy(() => import('./pages/Users/Users').then(module => ({ default: module.Users })));
 const MDFePage = lazy(() => import('./pages/MDFe/MDFe').then(module => ({ default: module.MDFePage })));
 const Sales = lazy(() => import('./pages/Sales/Sales').then(module => ({ default: module.default })));
@@ -27,6 +28,8 @@ function AppContent(): JSX.Element {
         return <Products />;
       case 'clients':
         return <Clients />;
+      case 'suppliers':
+        return <Suppliers />;
       case 'users':
         return <Users />;
       case 'mdfe':

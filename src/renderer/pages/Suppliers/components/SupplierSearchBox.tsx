@@ -1,63 +1,56 @@
 import React from 'react';
-import { AppIcons } from '../../../components/Icons/AppIcons';
-import { PlusIcon } from '../../../components/Icons/Icons';
+import { SearchIcon } from '../../../components/Icons/Icons';
+import { BackButton } from '../../../components/BackButton';
 import { useTheme } from '../../../styles/ThemeProvider';
 
-// Componente de busca para usuários
+// Componente de busca para fornecedores
 // Modularizado e reutilizável seguindo as regras do projeto
-interface UserSearchBoxProps {
+interface SupplierSearchBoxProps {
   searchTerm: string;
   onSearchChange: (term: string) => void;
   placeholder?: string;
   resultsCount: number;
-  onNewUserClick?: () => void;
+  onBackClick?: () => void;
+  additionalButton?: React.ReactNode;
 }
 
-export function UserSearchBox({ 
+export function SupplierSearchBox({ 
   searchTerm, 
   onSearchChange, 
-  placeholder = "Buscar usuários...", 
+  placeholder = "Buscar fornecedores...", 
   resultsCount,
-  onNewUserClick
-}: UserSearchBoxProps): JSX.Element {
+  onBackClick,
+  additionalButton
+}: SupplierSearchBoxProps): JSX.Element {
   const { systemStyles, systemColors } = useTheme();
+  const searchInputStyle: React.CSSProperties = {
+    ...systemStyles.searchField.field,
+    width: '100%',
+    height: '28px',
+    paddingLeft: '32px',
+    paddingRight: '10px'
+  };
   return (
     <div style={systemStyles.searchBox.container}>
       <div style={searchHeaderRow}>
+        {onBackClick && (
+          <BackButton onClick={onBackClick} label="Voltar" />
+        )}
         <div style={searchFieldContainer}>
           <div style={searchIconWrapper}>
-            <AppIcons.Search size={14} color={systemColors.text.tertiary} />
+            <SearchIcon size={14} color={systemColors.text.tertiary} />
           </div>
           <input
             type="text"
             placeholder={placeholder}
             value={searchTerm}
             onChange={(e) => onSearchChange(e.target.value)}
-            style={{
-              ...systemStyles.searchField.field,
-              width: '100%',
-              height: '28px',
-              paddingLeft: '32px',
-              paddingRight: '10px'
-            }}
+            style={searchInputStyle}
           />
         </div>
-        {onNewUserClick && (
+        {additionalButton && (
           <div style={{ flexShrink: 0 }}>
-            <button
-              style={{
-                ...systemStyles.button.primary,
-                display: 'flex',
-                alignItems: 'center',
-                gap: '6px',
-                height: '28px',
-                padding: '0 12px'
-              }}
-              onClick={onNewUserClick}
-            >
-              <PlusIcon size={14} />
-              Novo Usuário
-            </button>
+            {additionalButton}
           </div>
         )}
       </div>
@@ -73,7 +66,7 @@ export function UserSearchBox({
           fontWeight: '500',
           fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, Helvetica, Arial, sans-serif'
         }}>
-          {resultsCount} {resultsCount === 1 ? 'usuário encontrado' : 'usuários encontrados'}
+          {resultsCount} {resultsCount === 1 ? 'fornecedor encontrado' : 'fornecedores encontrados'}
         </span>
       </div>
     </div>
@@ -107,5 +100,4 @@ const searchIconWrapper: React.CSSProperties = {
   zIndex: 1
 };
 
-// Estilo do input agora vem do tema via useTheme
-
+// estilo do input é definido dentro do componente via tema

@@ -371,7 +371,11 @@ export function createSystemStyles(theme: ThemeTokens) {
     }
   },
 
-  // Input / Text Field - estilo macOS
+  // Input / Text Field - 
+  // IMPORTANTE: O estilo de foco (:focus) dos inputs é aplicado automaticamente
+  // via CSS global em reset.css (linhas 227-237). Não é necessário aplicar
+  // fieldFocus programaticamente nos componentes - apenas usar systemStyles.input.field
+  // e deixar o CSS global aplicar o estilo de foco quando o campo está em :focus
   input: {
     container: {
       width: '100%',
@@ -395,6 +399,7 @@ export function createSystemStyles(theme: ThemeTokens) {
         ? 'inset 0 0.5px 2px rgba(0, 0, 0, 0.3), 0 0.5px 0 rgba(255, 255, 255, 0.05)'
         : 'inset 0 0.5px 2px rgba(0, 0, 0, 0.12), 0 0.5px 0 rgba(255, 255, 255, 0.5)'
     },
+   
     fieldFocus: {
       borderColor: systemColors.input.borderFocus,
       boxShadow: `0 0 0 2px ${systemColors.input.borderFocus}33`

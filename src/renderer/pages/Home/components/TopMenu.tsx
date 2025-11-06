@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { AppIcons } from '../../../components/Icons/AppIcons';
+import { ClientsIcon, SuppliersIcon } from '../../../components/Icons/Icons';
 import { useClickSound } from '../../../hooks/useClickSound';
 import { Tooltip } from '../../../components/Tooltip';
 import { useTheme } from '../../../styles/ThemeProvider';
@@ -79,6 +80,21 @@ export function TopMenu(): JSX.Element {
 
         {/* Menu centralizado */}
         <div style={menuCenter}>
+          <MenuButton 
+            icon={AppIcons.Products} 
+            label="Produtos" 
+            onClick={() => navigate('products')}
+          />
+          <MenuButton 
+            icon={ClientsIcon} 
+            label="Clientes" 
+            onClick={() => navigate('clients')}
+          />
+          <MenuButton 
+            icon={SuppliersIcon} 
+            label="Fornecedores" 
+            onClick={() => navigate('suppliers')}
+          />
           <MenuButton 
             icon={AppIcons.Users} 
             label="Usuários" 

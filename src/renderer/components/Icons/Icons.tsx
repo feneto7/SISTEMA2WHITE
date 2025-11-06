@@ -1,4 +1,9 @@
 import React, { memo } from 'react';
+import {
+  FiUser,
+  FiPackage,
+  FiPlus
+} from 'react-icons/fi';
 
 interface IconProps {
   size?: number;
@@ -6,8 +11,8 @@ interface IconProps {
   className?: string;
 }
 
-// Ícones inspirados no estilo IconSVG.xyz - Design moderno e minimalista
-// Baseado no padrão visual do IconSVG com linhas mais limpas e formas geométricas
+// Ícones padronizados usando react-icons/fi (Feather Icons)
+// Todos os ícones do sistema usam o mesmo pacote para manter consistência visual
 
 export const HomeIcon = memo<IconProps>(({ size = 24, color = 'currentColor', className }) => (
   <svg width={size} height={size} viewBox="0 0 24 24" fill="none" className={className}>
@@ -115,21 +120,16 @@ export const UsersIcon = memo<IconProps>(({ size = 24, color = 'currentColor', c
   </svg>
 ));
 
-export const ClientsIcon = memo<IconProps>(({ size = 24, color = 'currentColor', className }) => (
-  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" className={className}>
-    <path d="M20 21V19C20 17.9391 19.5786 16.9217 18.8284 16.1716C18.0783 15.4214 17.0609 15 16 15H8C6.93913 15 5.92172 15.4214 5.17157 16.1716C4.42143 16.9217 4 17.9391 4 19V21" stroke={color} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-    <circle cx="12" cy="7" r="4" stroke={color} strokeWidth="1.5"/>
-  </svg>
-));
+// Wrapper para padronizar os ícones do Feather
+const createFeatherIcon = (Icon: React.ComponentType<any>) => {
+  return memo<IconProps>(({ size = 24, color = 'currentColor', className }) => (
+    <Icon size={size} color={color} className={className} />
+  ));
+};
 
-export const SuppliersIcon = memo<IconProps>(({ size = 24, color = 'currentColor', className }) => (
-  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" className={className}>
-    <path d="M16 21V19C16 17.9391 15.5786 16.9217 14.8284 16.1716C14.0783 15.4214 13.0609 15 12 15H4C2.93913 15 1.92172 15.4214 1.17157 16.1716C0.421427 16.9217 0 17.9391 0 19V21" stroke={color} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-    <circle cx="8" cy="7" r="4" stroke={color} strokeWidth="1.5"/>
-    <path d="M20 8L22 10L20 12" stroke={color} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-    <path d="M16 10H22" stroke={color} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-  </svg>
-));
+export const ClientsIcon = createFeatherIcon(FiUser);
+
+export const SuppliersIcon = createFeatherIcon(FiPackage);
 
 export const EntriesIcon = memo<IconProps>(({ size = 24, color = 'currentColor', className }) => (
   <svg width={size} height={size} viewBox="0 0 24 24" fill="none" className={className}>
@@ -209,12 +209,7 @@ export const DetailIcon = memo<IconProps>(({ size = 24, color = 'currentColor', 
   </svg>
 ));
 
-export const PlusIcon = memo<IconProps>(({ size = 24, color = 'currentColor', className }) => (
-  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" className={className}>
-    <path d="M12 5V19" stroke={color} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-    <path d="M5 12H19" stroke={color} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-  </svg>
-));
+export const PlusIcon = createFeatherIcon(FiPlus);
 
 // Display names para debugging
 HomeIcon.displayName = 'HomeIcon';
