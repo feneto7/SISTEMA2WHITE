@@ -7,7 +7,7 @@
 import { ThemeTokens, lightTheme } from './shared';
 
 // Fábrica de estilos baseada em tokens de tema
-export function createSystemStyles(theme: ThemeTokens) {
+export const createSystemStyles = (theme: ThemeTokens) => {
   const systemColors = {
     background: theme.background,
     border: theme.border,
@@ -1350,11 +1350,424 @@ export function createSystemStyles(theme: ThemeTokens) {
       background: systemColors.selection.blueDark,
       boxShadow: 'inset 0 0.5px 1px rgba(0, 0, 0, 0.15)'
     }
+  },
+
+  // Kitchen (layout KDS e cartões de estações)
+  kitchen: {
+    container: {
+      display: 'flex',
+      flexDirection: 'column' as const,
+      gap: '24px',
+      height: '100%',
+      minHeight: 0,
+      position: 'relative' as const
+    },
+    header: {
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      padding: '8px 0'
+    },
+    title: {
+      fontSize: '22px',
+      fontWeight: 600,
+      color: systemColors.text.primary,
+      margin: 0,
+      fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, Helvetica, Arial, sans-serif'
+    },
+    description: {
+      fontSize: '13px',
+      fontWeight: 400,
+      color: systemColors.text.secondary,
+      textAlign: 'center' as const,
+      margin: '0 auto',
+      maxWidth: '520px'
+    },
+    grid: {
+      display: 'grid',
+      gridTemplateColumns: 'repeat(auto-fill, minmax(180px, 1fr))',
+      gap: '18px',
+      width: '100%',
+      padding: '0 8px'
+    },
+    card: {
+      container: {
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        minHeight: '100px',
+        borderRadius: '14px',
+        borderWidth: '1px',
+        borderStyle: 'solid',
+        borderColor: systemColors.border.light,
+        boxShadow: '0 6px 16px rgba(0, 0, 0, 0.12)',
+        cursor: 'pointer',
+        background: systemColors.background.window,
+        transition: 'transform 0.18s ease, box-shadow 0.18s ease',
+        overflow: 'hidden'
+      },
+      containerHover: {
+        transform: 'translateY(-3px)',
+        boxShadow: '0 12px 26px rgba(0, 0, 0, 0.16)'
+      },
+      mainArea: {
+        flex: 1,
+        padding: '22px',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'flex-start',
+        gap: '12px',
+        background: systemColors.background.window,
+        color: systemColors.text.primary
+      },
+      title: {
+        fontSize: '16px',
+        fontWeight: 600,
+        margin: 0,
+        color: systemColors.text.primary
+      },
+      actionPanel: {
+        width: '60px',
+        background: systemColors.background.content,
+        borderLeft: `1px solid ${systemColors.border.light}`,
+        borderTopRightRadius: '14px',
+        borderBottomRightRadius: '14px',
+        display: 'flex',
+        flexDirection: 'column' as const,
+        alignItems: 'center',
+        justifyContent: 'center',
+        gap: '10px',
+        padding: '14px 0'
+      },
+      actionButton: {
+        width: '32px',
+        height: '32px',
+        borderRadius: '10px',
+        borderWidth: '1px',
+        borderStyle: 'solid',
+        borderColor: systemColors.border.light,
+        background: systemColors.control.background,
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        color: systemColors.selection.blueDark,
+        cursor: 'pointer',
+        transition: 'all 0.15s ease'
+      },
+      actionButtonHover: {
+        background: systemColors.selection.background,
+        borderColor: systemColors.selection.blue
+      }
+    },
+    addCard: {
+      container: {
+        minHeight: '100px',
+        borderRadius: '14px',
+        border: `1px dashed ${systemColors.border.medium}`,
+        background: systemColors.background.window,
+        display: 'flex',
+        flexDirection: 'column' as const,
+        alignItems: 'center',
+        justifyContent: 'center',
+        gap: '12px',
+        padding: '18px',
+        cursor: 'pointer',
+        transition: 'all 0.18s ease',
+        color: systemColors.text.secondary
+      },
+      containerHover: {
+        border: `1px dashed ${systemColors.selection.blue}`,
+        color: systemColors.selection.blue,
+        background: systemColors.selection.background,
+        boxShadow: '0 10px 22px rgba(0, 0, 0, 0.14)'
+      },
+      iconWrapper: {
+        width: '38px',
+        height: '38px',
+        borderRadius: '12px',
+        border: `1px solid ${systemColors.border.light}`,
+        background: systemColors.control.background,
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center'
+      },
+      label: {
+        fontSize: '13px',
+        fontWeight: 600,
+        textAlign: 'center' as const
+      }
+    },
+    emptyState: {
+      display: 'flex',
+      flexDirection: 'column' as const,
+      alignItems: 'center',
+      justifyContent: 'center',
+      padding: '60px 20px',
+      borderRadius: '16px',
+      border: `1px dashed ${systemColors.border.light}`,
+      color: systemColors.text.secondary,
+      gap: '12px'
+    },
+    kdsOverlay: {
+      position: 'absolute' as const,
+      top: 0,
+      left: 0,
+      right: 0,
+      bottom: 0,
+      background: systemColors.background.content,
+      borderRadius: '16px',
+      border: `1px solid ${systemColors.border.light}`,
+      boxShadow: '0 12px 32px rgba(0, 0, 0, 0.22)',
+      display: 'flex',
+      flexDirection: 'column' as const,
+      padding: '24px',
+      gap: '20px',
+      zIndex: 5
+    },
+    kdsHeader: {
+      display: 'grid',
+      gridTemplateColumns: '1fr auto auto',
+      gap: '16px',
+      alignItems: 'center'
+    },
+    kdsTitleGroup: {
+      display: 'flex',
+      flexDirection: 'column' as const,
+      gap: '4px'
+    },
+    kdsTitle: {
+      fontSize: '24px',
+      fontWeight: 600,
+      color: systemColors.text.primary,
+      margin: 0
+    },
+    kdsSubtitle: {
+      fontSize: '13px',
+      color: systemColors.text.secondary,
+      margin: 0
+    },
+    kdsControls: {
+      display: 'flex',
+      gap: '12px',
+      alignItems: 'center'
+    },
+    kdsButton: {
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      gap: '6px',
+      padding: '10px 18px',
+      borderRadius: '12px',
+      borderWidth: '1px',
+      borderStyle: 'solid',
+      borderColor: systemColors.control.border,
+      background: systemColors.control.background,
+      color: systemColors.text.primary,
+      fontSize: '13px',
+      fontWeight: 600,
+      cursor: 'pointer',
+      transition: 'all 0.15s ease',
+      boxShadow: `0 6px 16px ${systemColors.control.hover}`
+    },
+    kdsButtonPrimary: {
+      background: systemColors.button.blue,
+      borderColor: systemColors.selection.blueDark,
+      color: '#FFFFFF',
+      boxShadow: `0 8px 20px ${systemColors.selection.background}`
+    },
+    kdsButtonHover: {
+      transform: 'translateY(-1px)',
+      boxShadow: '0 10px 24px rgba(0, 0, 0, 0.16)'
+    },
+    kdsOrdersGrid: {
+      flex: 1,
+      display: 'flex',
+      gap: '16px',
+      overflowX: 'auto' as const,
+      overflowY: 'hidden' as const,
+      padding: '10px 4px 14px',
+      alignItems: 'stretch',
+      scrollbarWidth: 'thin' as const,
+      WebkitOverflowScrolling: 'touch' as const
+    },
+    kdsOrderCard: {
+      minWidth: '240px',
+      maxWidth: '260px',
+      borderRadius: '12px',
+      border: `1px solid ${systemColors.border.light}`,
+      background: systemColors.text.primary === '#FFFFFF'
+        ? systemColors.background.window
+        : systemColors.background.sidebar,
+      boxShadow: `0 8px 20px rgba(0, 0, 0, 0.16)`,
+      padding: '18px',
+      display: 'flex',
+      flexDirection: 'column' as const,
+      gap: '14px',
+      overflow: 'hidden'
+    },
+    kdsOrderTopHeader: {
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'space-between',
+      gap: '12px',
+      padding: '12px 18px',
+      margin: '-18px -18px 10px',
+      background: systemColors.text.primary === '#FFFFFF'
+        ? systemColors.control.background
+        : systemColors.background.primary,
+      borderTopLeftRadius: '12px',
+      borderTopRightRadius: '12px'
+    },
+    kdsOrderTitleGroup: {
+      display: 'flex',
+      flexDirection: 'column' as const,
+      gap: '2px'
+    },
+    kdsOrderLabel: {
+      fontSize: '11px',
+      color: systemColors.text.secondary,
+      textTransform: 'uppercase' as const,
+      letterSpacing: '0.6px'
+    },
+    kdsOrderCode: {
+      fontSize: '15px',
+      fontWeight: 700,
+      color: systemColors.text.primary
+    },
+    kdsOrderHeaderMeta: {
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'space-between',
+      marginTop: '0'
+    },
+    kdsFinalizeButton: {
+      padding: '6px 14px',
+      borderRadius: '999px',
+      border: 'none',
+      background: systemColors.status.authorized.color,
+      color: '#FFFFFF',
+      fontSize: '12px',
+      fontWeight: 600,
+      cursor: 'pointer',
+      boxShadow: `0 6px 12px ${systemColors.status.authorized.background}`,
+      transition: 'transform 0.15s ease'
+    },
+    kdsFinalizeButtonHover: {
+      transform: 'translateY(-1px)'
+    },
+    kdsOrderTimer: {
+      display: 'flex',
+      alignItems: 'center',
+      gap: '6px',
+      padding: '6px 12px',
+      borderRadius: '999px',
+      background: systemColors.control.background,
+      color: systemColors.text.primary,
+      fontSize: '12px',
+      fontWeight: 600
+    },
+    kdsOrderBody: {
+      display: 'flex',
+      flexDirection: 'column' as const,
+      gap: '14px',
+      flex: 1,
+      minHeight: 0,
+      overflowY: 'auto' as const,
+      paddingRight: '4px',
+      scrollbarWidth: 'thin' as const,
+      WebkitOverflowScrolling: 'touch' as const
+    },
+    kdsOrderProduct: {
+      display: 'flex',
+      flexDirection: 'column' as const,
+      gap: '6px',
+      borderRadius: '12px',
+      padding: '12px 14px',
+      background: systemColors.background.content,
+      border: 'none',
+      cursor: 'pointer',
+      textAlign: 'left' as const,
+      transition: 'all 0.18s ease',
+      color: systemColors.text.primary,
+      fontFamily: 'inherit',
+      fontSize: 'inherit',
+      outline: 'none',
+      boxShadow: `inset 0 0 0 1px ${systemColors.border.light}`,
+      width: '100%',
+      appearance: 'none' as const,
+      WebkitAppearance: 'none' as const,
+      MozAppearance: 'none' as const,
+      position: 'relative' as const,
+      overflow: 'hidden'
+    },
+    kdsOrderProductHover: {
+      background: systemColors.control.background,
+      boxShadow: `inset 0 0 0 1px ${systemColors.control.border}`
+    },
+    kdsOrderProductReady: {
+      background: systemColors.status.authorized.background,
+      boxShadow: `inset 0 0 0 1px ${systemColors.status.authorized.color}`
+    },
+    kdsOrderProductHeader: {
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'space-between',
+      gap: '12px'
+    },
+    kdsOrderProductName: {
+      fontSize: '13px',
+      fontWeight: 600,
+      color: systemColors.text.primary
+    },
+    kdsOrderProductReadyIcon: {
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      width: '16px',
+      height: '16px',
+      borderRadius: '4px',
+      background: systemColors.status.authorized.color,
+      boxShadow: '0 4px 12px rgba(52, 199, 89, 0.25)',
+      flexShrink: 0
+    },
+    kdsOrderProductNote: {
+      fontSize: '12px',
+      color: systemColors.text.secondary
+    },
+    kdsComplementList: {
+      margin: 0,
+      padding: 0,
+      listStyle: 'none',
+      display: 'flex',
+      flexDirection: 'column' as const,
+      gap: '2px'
+    },
+    kdsComplementItem: {
+      fontSize: '12px',
+      color: systemColors.text.secondary
+    },
+    kdsFooter: {
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'space-between'
+    },
+    kdsFooterTag: {
+      padding: '4px 10px',
+      borderRadius: '8px',
+      background: systemColors.selection.background,
+      color: systemColors.selection.blueDark,
+      fontSize: '12px',
+      fontWeight: 600
+    },
+    kdsFooterTime: {
+      fontSize: '12px',
+      color: systemColors.text.secondary
+    }
   }
   };
 
   return { systemColors, systemStyles };
-}
+};
 
 // Instância padrão (backwards compatibility): tema claro
 export const { systemColors, systemStyles } = createSystemStyles(lightTheme);

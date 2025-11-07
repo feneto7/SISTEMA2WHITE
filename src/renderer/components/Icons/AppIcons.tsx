@@ -34,6 +34,7 @@ import {
   FiAlertTriangle,
   FiInfo,
   FiCheckCircle,
+  FiClock,
   FiGrid,
   FiMenu,
   FiRepeat
@@ -99,6 +100,7 @@ export const AlertIcon = createIcon(FiAlertCircle);
 export const WarningIcon = createIcon(FiAlertTriangle);
 export const InfoIcon = createIcon(FiInfo);
 export const CheckCircleIcon = createIcon(FiCheckCircle);
+export const ClockIcon = createIcon(FiClock);
 
 // Ícones de Usuários
 export const UserIcon = createIcon(FiUsers);
@@ -158,6 +160,7 @@ export const AppIcons = {
   Warning: WarningIcon,
   Info: InfoIcon,
   CheckCircle: CheckCircleIcon,
+  Clock: ClockIcon,
   
   // Configuração
   Settings: SettingsIcon,
