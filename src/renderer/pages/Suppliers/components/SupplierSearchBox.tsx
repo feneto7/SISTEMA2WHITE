@@ -101,3 +101,4 @@ const searchIconWrapper: React.CSSProperties = {
 };
 
 // estilo do input é definido dentro do componente via tema
+
