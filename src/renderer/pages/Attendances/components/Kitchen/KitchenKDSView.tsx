@@ -7,8 +7,9 @@ import React, { useState } from 'react';
 import { useTheme } from '../../../../styles/ThemeProvider';
 import { AppIcons } from '../../../../components/Icons/AppIcons';
 import { useClickSound } from '../../../../hooks/useClickSound';
+import { useOrderBellSound } from '../../../../hooks/useOrderBellSound';
+import { useSystemNotification } from '../../../../hooks/useSystemNotification';
 import { KitchenStation, KitchenOrder } from './types';
-import { convertCentsToReais } from '../../../../utils/money';
 
 interface KitchenKDSViewProps {
   kitchen: KitchenStation;
@@ -16,6 +17,8 @@ interface KitchenKDSViewProps {
   onRefresh: (kitchenId: string) => void;
   onMarkAsReady: (kitchenId: string, orderId: string) => void;
   onToggleItemReady: (kitchenId: string, orderId: string, itemId: string) => void;
+  onOpenFullscreen?: (kitchenId: string) => void;
+  isFullscreen?: boolean;
 }
 
 const priorityLabel: Record<KitchenOrder['priority'], string> = {
@@ -26,12 +29,16 @@ const priorityLabel: Record<KitchenOrder['priority'], string> = {
 export function KitchenKDSView({
   kitchen,
   onClose,
-  onRefresh,
+  onRefresh: _onRefresh,
   onMarkAsReady,
-  onToggleItemReady
+  onToggleItemReady,
+  onOpenFullscreen,
+  isFullscreen = false
 }: KitchenKDSViewProps): JSX.Element {
   const { systemStyles, systemColors } = useTheme();
   const playClickSound = useClickSound();
+  const playOrderBell = useOrderBellSound();
+  const showNotification = useSystemNotification();
 
   const preparingOrders = kitchen.orders.filter(order => order.status === 'preparing');
   const [hoveredItemId, setHoveredItemId] = useState<string | null>(null);
@@ -46,7 +53,10 @@ export function KitchenKDSView({
   };
 
   return (
-    <div style={systemStyles.kitchen.kdsOverlay}>
+    <div style={{
+      ...systemStyles.kitchen.kdsOverlay,
+      ...(isFullscreen ? systemStyles.kitchen.kdsOverlayFullscreen : {})
+    }}>
       <header style={systemStyles.kitchen.kdsHeader}>
         <div style={systemStyles.kitchen.kdsTitleGroup}>
           <h2 style={systemStyles.kitchen.kdsTitle}>{kitchen.kdsName}</h2>
@@ -66,19 +76,21 @@ export function KitchenKDSView({
             <AppIcons.Back size={16} />
             Voltar
           </button>
-          <button
-            style={{
-              ...systemStyles.kitchen.kdsButton,
-              ...systemStyles.kitchen.kdsButtonPrimary
-            }}
-            onClick={() => {
-              playClickSound();
-              onRefresh(kitchen.id);
-            }}
-          >
-            <AppIcons.Refresh size={16} />
-            Atualizar
-          </button>
+          {onOpenFullscreen && !isFullscreen && (
+            <button
+              style={{
+                ...systemStyles.kitchen.kdsButton,
+                ...systemStyles.kitchen.kdsButtonPrimary
+              }}
+              onClick={() => {
+                playClickSound();
+                onOpenFullscreen(kitchen.id);
+              }}
+            >
+              <AppIcons.Maximize size={16} />
+              Tela cheia
+            </button>
+          )}
         </div>
       </header>
 
@@ -112,13 +124,6 @@ export function KitchenKDSView({
                   </button>
                 </header>
 
-                <div style={systemStyles.kitchen.kdsOrderHeaderMeta}>
-                  <div style={systemStyles.kitchen.kdsOrderTimer}>
-                    <AppIcons.Clock size={14} />
-                    <span>{elapsedText}</span>
-                  </div>
-                </div>
-
                 <div style={systemStyles.kitchen.kdsOrderBody}>
                   {order.items.map(item => (
                     (() => {
@@ -141,17 +146,16 @@ export function KitchenKDSView({
                           onClick={() => {
                             playClickSound();
                             onToggleItemReady(kitchen.id, order.id, item.id);
+                            if (!item.isReady) {
+                              playOrderBell();
+                              showNotification('Item Pronto!', `${item.quantity}x ${item.name}`);
+                            }
                           }}
                         >
                           <div style={systemStyles.kitchen.kdsOrderProductHeader}>
                             <span style={systemStyles.kitchen.kdsOrderProductName}>
                               <strong>{item.quantity}x</strong> {item.name}
                             </span>
-                            {isReady && (
-                              <span style={systemStyles.kitchen.kdsOrderProductReadyIcon}>
-                                <AppIcons.Check size={12} color="#FFFFFF" />
-                              </span>
-                            )}
                           </div>
 
                           {item.notes && (
@@ -166,6 +170,12 @@ export function KitchenKDSView({
                                 </li>
                               ))}
                             </ul>
+                          )}
+
+                          {isReady && (
+                            <div style={systemStyles.kitchen.kdsOrderProductReadyOverlay}>
+                              <AppIcons.Check size={20} color={systemColors.status.authorized.color} />
+                            </div>
                           )}
                         </button>
                       );

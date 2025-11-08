@@ -197,10 +197,16 @@ export function KitchenTab(): JSX.Element {
   const [kitchens, setKitchens] = useState<KitchenStation[]>(() => buildDefaultStations());
   const [selectedKitchenId, setSelectedKitchenId] = useState<string | null>(null);
   const [settingsKitchenId, setSettingsKitchenId] = useState<string | null>(null);
+  const [fullscreenKitchenId, setFullscreenKitchenId] = useState<string | null>(null);
 
   const activeKitchen = useMemo(
     () => kitchens.find(kitchen => kitchen.id === selectedKitchenId) ?? null,
     [kitchens, selectedKitchenId]
+  );
+
+  const fullscreenKitchen = useMemo(
+    () => (fullscreenKitchenId ? kitchens.find(kitchen => kitchen.id === fullscreenKitchenId) ?? null : null),
+    [kitchens, fullscreenKitchenId]
   );
 
   const editingKitchen = useMemo(
@@ -215,6 +221,7 @@ export function KitchenTab(): JSX.Element {
 
   const handleCloseKDS = () => {
     setSelectedKitchenId(null);
+    setFullscreenKitchenId(null);
   };
 
   const handleOpenSettings = (stationId: string) => {
@@ -339,6 +346,11 @@ export function KitchenTab(): JSX.Element {
     );
   };
 
+  const handleOpenFullscreen = (stationId: string) => {
+    playClickSound();
+    setFullscreenKitchenId(stationId);
+  };
+
   const kitchenStyles = systemStyles.kitchen;
 
   return (
@@ -383,15 +395,25 @@ export function KitchenTab(): JSX.Element {
         />
       )}
 
-      {activeKitchen && (
+      {(() => {
+        const displayedKitchen = fullscreenKitchen ?? activeKitchen;
+        if (!displayedKitchen) return null;
+
+        const onClose = fullscreenKitchen ? () => setFullscreenKitchenId(null) : handleCloseKDS;
+        const onOpenFull = fullscreenKitchen ? undefined : handleOpenFullscreen;
+
+        return (
         <KitchenKDSView
-          kitchen={activeKitchen}
-          onClose={handleCloseKDS}
+          kitchen={displayedKitchen}
+          onClose={onClose}
           onRefresh={handleRefreshKitchen}
           onMarkAsReady={handleMarkOrderReady}
           onToggleItemReady={handleToggleItemReady}
+          onOpenFullscreen={onOpenFull}
+          isFullscreen={Boolean(fullscreenKitchen)}
         />
-      )}
+        );
+      })()}
     </div>
   );
 }
