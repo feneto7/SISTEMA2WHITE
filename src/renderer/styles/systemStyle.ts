@@ -1402,7 +1402,7 @@ export const createSystemStyles = (theme: ThemeTokens) => {
         borderColor: systemColors.border.light,
         boxShadow: '0 6px 16px rgba(0, 0, 0, 0.12)',
         cursor: 'pointer',
-        background: systemColors.background.window,
+        background: systemColors.background.primary,
         transition: 'transform 0.18s ease, box-shadow 0.18s ease',
         overflow: 'hidden'
       },
@@ -1417,7 +1417,7 @@ export const createSystemStyles = (theme: ThemeTokens) => {
         alignItems: 'center',
         justifyContent: 'flex-start',
         gap: '12px',
-        background: systemColors.background.window,
+        background: systemColors.background.primary,
         color: systemColors.text.primary
       },
       title: {
@@ -1464,7 +1464,7 @@ export const createSystemStyles = (theme: ThemeTokens) => {
         minHeight: '100px',
         borderRadius: '14px',
         border: `1px dashed ${systemColors.border.medium}`,
-        background: systemColors.background.window,
+        background: systemColors.background.primary,
         display: 'flex',
         flexDirection: 'column' as const,
         alignItems: 'center',
