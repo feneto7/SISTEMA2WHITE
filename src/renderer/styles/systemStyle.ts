@@ -1524,6 +1524,19 @@ export const createSystemStyles = (theme: ThemeTokens) => {
       gap: '20px',
       zIndex: 5
     },
+    kdsOverlayFullscreen: {
+      position: 'fixed' as const,
+      top: 0,
+      left: 0,
+      right: 0,
+      bottom: 0,
+      borderRadius: 0,
+      border: 'none',
+      padding: '32px',
+      boxShadow: 'none',
+      background: systemColors.background.primary,
+      zIndex: 9999
+    },
     kdsHeader: {
       display: 'grid',
       gridTemplateColumns: '1fr auto auto',
@@ -1719,16 +1732,14 @@ export const createSystemStyles = (theme: ThemeTokens) => {
       fontWeight: 600,
       color: systemColors.text.primary
     },
-    kdsOrderProductReadyIcon: {
+    kdsOrderProductReadyOverlay: {
+      position: 'absolute' as const,
+      top: '50%',
+      right: '12px',
+      transform: 'translateY(-50%)',
       display: 'flex',
       alignItems: 'center',
-      justifyContent: 'center',
-      width: '16px',
-      height: '16px',
-      borderRadius: '4px',
-      background: systemColors.status.authorized.color,
-      boxShadow: '0 4px 12px rgba(52, 199, 89, 0.25)',
-      flexShrink: 0
+      justifyContent: 'center'
     },
     kdsOrderProductNote: {
       fontSize: '12px',

@@ -231,21 +231,17 @@ export function KitchenSettingsModal({
 
         <div style={systemStyles.modal.footer}>
           <div style={systemStyles.modal.footerLeft}>
-            <span style={{ fontSize: '12px', color: systemColors.text.secondary }}>
-              Defina pelo menos uma categoria para direcionar os pedidos corretamente.
-            </span>
-          </div>
-          <div style={systemStyles.modal.footerRight}>
             <button
-              style={systemStyles.modal.button}
+              style={systemStyles.button.default}
               onClick={onClose}
             >
               Cancelar
             </button>
+          </div>
+          <div style={systemStyles.modal.footerRight}>
             <button
               style={{
-                ...systemStyles.modal.button,
-                ...systemStyles.modal.buttonConfirm
+                ...systemStyles.button.primary
               }}
               onClick={handleSave}
             >
@@ -257,5 +253,6 @@ export function KitchenSettingsModal({
     </div>
   );
 }
+
 
 

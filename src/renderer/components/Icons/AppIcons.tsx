@@ -37,7 +37,8 @@ import {
   FiClock,
   FiGrid,
   FiMenu,
-  FiRepeat
+  FiRepeat,
+  FiMaximize
 } from 'react-icons/fi';
 import React from 'react';
 
@@ -96,6 +97,7 @@ export const RefreshIcon = createIcon(FiRefreshCw);
 export const PrintIcon = createIcon(FiPrinter);
 export const ChefHatIcon = createIcon(FiMenu);
 export const TransferIcon = createIcon(FiRepeat);
+export const MaximizeIcon = createIcon(FiMaximize);
 export const AlertIcon = createIcon(FiAlertCircle);
 export const WarningIcon = createIcon(FiAlertTriangle);
 export const InfoIcon = createIcon(FiInfo);
@@ -154,6 +156,7 @@ export const AppIcons = {
   Print: PrintIcon,
   ChefHat: ChefHatIcon,
   Transfer: TransferIcon,
+  Maximize: MaximizeIcon,
   
   // Alertas e Notificações
   Alert: AlertIcon,
