@@ -1526,16 +1526,16 @@ export const createSystemStyles = (theme: ThemeTokens) => {
     },
     kdsOverlayFullscreen: {
       position: 'fixed' as const,
-      top: 0,
-      left: 0,
-      right: 0,
-      bottom: 0,
+      inset: 0,
+      width: '100vw',
+      height: '100vh',
       borderRadius: 0,
       border: 'none',
-      padding: '32px',
+      padding: '24px',
       boxShadow: 'none',
-      background: systemColors.background.primary,
-      zIndex: 9999
+      background: systemColors.background.content,
+      zIndex: 9999,
+      overflow: 'hidden'
     },
     kdsHeader: {
       display: 'grid',
@@ -1714,8 +1714,10 @@ export const createSystemStyles = (theme: ThemeTokens) => {
       overflow: 'hidden'
     },
     kdsOrderProductHover: {
-      background: systemColors.control.background,
-      boxShadow: `inset 0 0 0 1px ${systemColors.control.border}`
+      background: systemColors.text.primary === '#FFFFFF'
+        ? systemColors.background.window
+        : systemColors.background.sidebar,
+      boxShadow: `inset 0 0 0 1px ${systemColors.border.light}`
     },
     kdsOrderProductReady: {
       background: systemColors.status.authorized.background,

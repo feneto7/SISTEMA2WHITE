@@ -2,7 +2,7 @@
 // ABA: COZINHA
 // Visualização de pedidos em produção para a equipe da cozinha
 //--------------------------------------------------------------------
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { useTheme } from '../../../../styles/ThemeProvider';
 import { useClickSound } from '../../../../hooks/useClickSound';
 import { KitchenCard } from './KitchenCard';
@@ -230,6 +230,7 @@ export function KitchenTab(): JSX.Element {
   };
 
   const handleCloseKDS = () => {
+    exitBrowserFullscreen();
     setSelectedKitchenId(null);
     setFullscreenKitchenId(null);
   };
@@ -359,7 +360,40 @@ export function KitchenTab(): JSX.Element {
   const handleOpenFullscreen = (stationId: string) => {
     playClickSound();
     setFullscreenKitchenId(stationId);
+    enterBrowserFullscreen();
   };
+
+  const handleCloseFullscreen = () => {
+    exitBrowserFullscreen();
+    setFullscreenKitchenId(null);
+  };
+
+  const enterBrowserFullscreen = () => {
+    const doc = document as any;
+    const el: any = document.documentElement;
+    if (!doc.fullscreenElement) {
+      const request = el.requestFullscreen || el.webkitRequestFullscreen || el.msRequestFullscreen;
+      request && request.call(el);
+    }
+  };
+
+  const exitBrowserFullscreen = () => {
+    const doc = document as any;
+    if (doc.fullscreenElement) {
+      const exit = doc.exitFullscreen || doc.webkitExitFullscreen || doc.msExitFullscreen;
+      exit && exit.call(document);
+    }
+  };
+
+  useEffect(() => {
+    const handleWindowKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape' && fullscreenKitchenId) {
+        handleCloseFullscreen();
+      }
+    };
+    window.addEventListener('keydown', handleWindowKeyDown);
+    return () => window.removeEventListener('keydown', handleWindowKeyDown);
+  }, [fullscreenKitchenId]);
 
   const kitchenStyles = systemStyles.kitchen;
 
@@ -409,7 +443,7 @@ export function KitchenTab(): JSX.Element {
         const displayedKitchen = fullscreenKitchen ?? activeKitchen;
         if (!displayedKitchen) return null;
 
-        const onClose = fullscreenKitchen ? () => setFullscreenKitchenId(null) : handleCloseKDS;
+        const onClose = fullscreenKitchen ? handleCloseFullscreen : handleCloseKDS;
         const onOpenFull = fullscreenKitchen ? undefined : handleOpenFullscreen;
 
         return (
