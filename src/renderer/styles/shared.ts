@@ -85,7 +85,7 @@ export const lightTheme: ThemeTokens = {
     sidebar: '#D7D7D7',
     content: '#ECECEC',
     white: '#FFFFFF',
-    window: '#EDEDED'
+    window: '#d1d1d1'
   },
   border: {
     light: '#C8C8C8',

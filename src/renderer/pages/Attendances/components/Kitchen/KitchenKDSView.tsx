@@ -66,16 +66,29 @@ export function KitchenKDSView({
         </div>
 
         <div style={systemStyles.kitchen.kdsControls}>
-          <button
-            style={systemStyles.kitchen.kdsButton}
-            onClick={() => {
-              playClickSound();
-              onClose();
-            }}
-          >
-            <AppIcons.Back size={16} />
-            Voltar
-          </button>
+          {isFullscreen ? (
+            <button
+              style={systemStyles.kitchen.kdsButton}
+              onClick={() => {
+                playClickSound();
+                onClose();
+              }}
+            >
+              <AppIcons.Minimize size={16} />
+              Minimizar tela
+            </button>
+          ) : (
+            <button
+              style={systemStyles.kitchen.kdsButton}
+              onClick={() => {
+                playClickSound();
+                onClose();
+              }}
+            >
+              <AppIcons.Back size={16} />
+              Voltar
+            </button>
+          )}
           {onOpenFullscreen && !isFullscreen && (
             <button
               style={{
