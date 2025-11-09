@@ -164,22 +164,32 @@ const buildDefaultStations = (): KitchenStation[] => [
 interface AddKitchenTileProps {
   onClick: () => void;
 }
-
+// Bloco responsável por renderizar o card de criação rápida dentro da lista de estações KDS mantendo consistência de tema
 function AddKitchenTile({ onClick }: AddKitchenTileProps): JSX.Element {
   const { systemStyles, systemColors } = useTheme();
   const [isHovered, setIsHovered] = useState(false);
 
+  const baseContainerStyle = systemStyles.kitchen.addCard.container;
+  const hoverContainerStyle = systemStyles.kitchen.addCard.containerHover ?? {};
+  const currentContainerStyle = {
+    ...baseContainerStyle,
+    ...(isHovered ? hoverContainerStyle : {})
+  };
+  const iconWrapperBackground =
+    baseContainerStyle.background ?? systemStyles.kitchen.addCard.iconWrapper.background;
+  const iconWrapperStyle = {
+    ...systemStyles.kitchen.addCard.iconWrapper,
+    background: iconWrapperBackground
+  };
+
   return (
     <div
-      style={{
-        ...systemStyles.kitchen.addCard.container,
-        ...(isHovered ? systemStyles.kitchen.addCard.containerHover : {})
-      }}
+      style={currentContainerStyle}
       onClick={onClick}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
-      <div style={systemStyles.kitchen.addCard.iconWrapper}>
+      <div style={iconWrapperStyle}>
         <AppIcons.Add
           size={18}
           color={isHovered ? systemColors.selection.blue : systemColors.text.secondary}
