@@ -1,0 +1,136 @@
+{
+  "mdfeJSON": {
+    "ide": {
+      "cUF": "31",
+      "tpAmb": "2",
+      "tpEmit": "1",
+      "tpTransp": "0",
+      "modelo": "58",
+      "serie": "001",
+      "nMDF": "000000001",
+      "cMDF": "45678901",
+      "cDV": "0",
+      "modal": "1",
+      "dhEmi": "2025-11-12T14:30:00.000Z",
+      "tpEmis": "1",
+      "procEmi": "0",
+      "verProc": "1.0.0",
+      "UFIni": "MG",
+      "UFFim": "SP",
+      "infMunCarrega": [
+        {
+          "cMunCarrega": "3106200",
+          "xMunCarrega": "Belo Horizonte"
+        }
+      ],
+      "infPercurso": [
+        {
+          "UFPer": "MG"
+        },
+        {
+          "UFPer": "SP"
+        }
+      ],
+      "dhIniViagem": "2025-11-12T14:30:00.000Z"
+    },
+    "emit": {
+      "CNPJ": "12345678000190",
+      "IE": "123456789",
+      "xNome": "TRANSPORTADORA EXEMPLO LTDA",
+      "xFant": "TRANSPORTADORA EXEMPLO",
+      "enderEmit": {
+        "xLgr": "Rua dos Transportes",
+        "nro": "S/N",
+        "xBairro": "Centro",
+        "cMun": "3106200",
+        "xMun": "Belo Horizonte",
+        "CEP": "30140010",
+        "UF": "MG"
+      }
+    },
+    "infModal": {
+      "rodo": {
+        "infANTT": {
+          "RNTRC": "12345678"
+        },
+        "veicTracao": {
+          "cInt": "001",
+          "placa": "ABC1234",
+          "RENAVAM": "12345678901",
+          "tara": "0",
+          "capKG": "30000",
+          "tpRod": "01",
+          "tpCar": "00",
+          "UF": "MG",
+          "condutor": [
+            {
+              "xNome": "JOAO DA SILVA",
+              "CPF": "12345678901"
+            }
+          ]
+        },
+        "lacRodo": [
+          {
+            "nLacre": "LAC001"
+          }
+        ]
+      }
+    },
+    "infDoc": {
+      "infMunDescarga": [
+        {
+          "cMunDescarga": "3550308",
+          "xMunDescarga": "São Paulo",
+          "infNFe": [
+            {
+              "chNFe": "35200112345678000190550010000000011234567890",
+              "indReentrega": "0"
+            }
+          ]
+        }
+      ]
+    },
+    "tot": {
+      "qNFe": "1",
+      "qCTe": "0",
+      "qMDFe": "0",
+      "vCarga": "50000.00",
+      "cUnid": "01",
+      "qCarga": "15000.000"
+    },
+    "infAdic": {
+      "infCpl": "Transporte de mercadorias gerais"
+    }
+  },
+  "status": "gerado",
+  "dataGeracao": "2025-11-12T14:30:00.000Z",
+  "notasFiscais": [
+    {
+      "chave": "35200112345678000190550010000000011234567890",
+      "numero": "000000001",
+      "serie": "001",
+      "valor": 50000.00
+    }
+  ],
+  "veiculoSelecionado": "001",
+  "placa": "ABC-1234",
+  "renavam": "12345678901",
+  "condutoresSelecionados": [
+    {
+      "nome": "JOAO DA SILVA",
+      "cpf": "123.456.789-01",
+      "cnh": "12345678901"
+    }
+  ],
+  "municipioCarregamento": "Belo Horizonte",
+  "ufCarregamento": "MG",
+  "ufsPercurso": ["MG", "SP"],
+  "municipioDescarregamento": "São Paulo",
+  "ufDescarregamento": "SP",
+  "qntTotalNFe": "1",
+  "valorTotalCarga": "50000.00",
+  "codUnidadeMedidaCarga": "01",
+  "pesoTotalCarga": "15000.000",
+  "tipoMDFe": "rodoviario"
+}
+
