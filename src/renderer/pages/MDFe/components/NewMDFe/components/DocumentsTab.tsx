@@ -16,6 +16,17 @@ interface Document {
   pesoBruto: number;
   dataEmissao: string;
   status: string;
+  emitenteUF?: string;
+  emitenteMunicipioNome?: string;
+  emitenteCodigoMunicipio?: string;
+  destinatarioUF?: string;
+  destinatarioMunicipioNome?: string;
+  destinatarioCodigoMunicipio?: string;
+  indReentrega?: string;
+  // Dados do produto predominante
+  descricaoProduto?: string;
+  codigoNCM?: string;
+  gtin?: string;
 }
 
 interface DocumentsTabProps {
@@ -74,7 +85,18 @@ export function DocumentsTab({ formData, onUpdateFormData }: DocumentsTabProps):
               valor: doc.valor || 0,
               pesoBruto: doc.pesoBruto || 0,
               dataEmissao: doc.dataEmissao || new Date().toISOString().split('T')[0],
-              status: 'importado'
+              status: 'importado',
+              emitenteUF: doc.emitenteUF || '',
+              emitenteMunicipioNome: doc.emitenteMunicipioNome || '',
+              emitenteCodigoMunicipio: doc.emitenteCodigoMunicipio || '',
+              destinatarioUF: doc.destinatarioUF || '',
+              destinatarioMunicipioNome: doc.destinatarioMunicipioNome || '',
+              destinatarioCodigoMunicipio: doc.destinatarioCodigoMunicipio || '',
+              indReentrega: doc.indReentrega || '0',
+              // Dados do produto predominante
+              descricaoProduto: doc.descricaoProduto || '',
+              codigoNCM: doc.codigoNCM || '',
+              gtin: doc.gtin || ''
             }));
 
             const allDocuments = [...documents, ...newDocuments];
@@ -96,6 +118,35 @@ export function DocumentsTab({ formData, onUpdateFormData }: DocumentsTabProps):
             onUpdateFormData('valorTotalCarga', valorTotalCarga.toFixed(2).replace('.', ','));
             onUpdateFormData('pesoTotalCarga', pesoTotalCarga.toFixed(4).replace('.', ','));
             onUpdateFormData('notasSemPesoBruto', notasSemPeso);
+
+            // Atualiza automaticamente dados de rota com base na primeira nota importada, caso ainda não preenchidos
+            const primeiraNota = newDocuments[0];
+            if (primeiraNota) {
+              // Preenche dados de rota (carregamento e descarregamento)
+              if (!formData.municipioCarregamento && primeiraNota.emitenteMunicipioNome) {
+                onUpdateFormData('municipioCarregamento', primeiraNota.emitenteMunicipioNome);
+              }
+              if (!formData.ufCarregamento && primeiraNota.emitenteUF) {
+                onUpdateFormData('ufCarregamento', primeiraNota.emitenteUF);
+              }
+              if (!formData.municipioDescarregamento && primeiraNota.destinatarioMunicipioNome) {
+                onUpdateFormData('municipioDescarregamento', primeiraNota.destinatarioMunicipioNome);
+              }
+              if (!formData.ufDescarregamento && primeiraNota.destinatarioUF) {
+                onUpdateFormData('ufDescarregamento', primeiraNota.destinatarioUF);
+              }
+              
+              // Preenche dados de produto predominante na aba Totalizadores
+              if (!formData.descricaoProduto && primeiraNota.descricaoProduto) {
+                onUpdateFormData('descricaoProduto', primeiraNota.descricaoProduto);
+              }
+              if (!formData.codigoNCM && primeiraNota.codigoNCM) {
+                onUpdateFormData('codigoNCM', primeiraNota.codigoNCM);
+              }
+              if (!formData.gtin && primeiraNota.gtin) {
+                onUpdateFormData('gtin', primeiraNota.gtin);
+              }
+            }
             
             // Mostra dialog de sucesso
             setImportDialogType('success');

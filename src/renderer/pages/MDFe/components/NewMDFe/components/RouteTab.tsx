@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { useTheme } from '../../../../../styles/ThemeProvider';
 import { useClickSound } from '../../../../../hooks/useClickSound';
 import { AddButton } from '../../../../../components/AddButton';
@@ -90,29 +90,17 @@ export function RouteTab({ formData, onUpdateFormData }: RouteTabProps): JSX.Ele
   };
 
   // Handler para mudança de UF de carregamento
-  const handleUFCarregamentoChange = async (uf: string) => {
+  const handleUFCarregamentoChange = (uf: string) => {
     playClickSound();
     onUpdateFormData('ufCarregamento', uf);
-    onUpdateFormData('municipioCarregamento', ''); // Limpar município ao trocar UF
-    
-    if (uf) {
-      await fetchMunicipios(uf, 'carregamento');
-    } else {
-      setMunicipiosCarregamento([]);
-    }
+    onUpdateFormData('municipioCarregamento', '');
   };
 
   // Handler para mudança de UF de descarregamento
-  const handleUFDescarregamentoChange = async (uf: string) => {
+  const handleUFDescarregamentoChange = (uf: string) => {
     playClickSound();
     onUpdateFormData('ufDescarregamento', uf);
-    onUpdateFormData('municipioDescarregamento', ''); // Limpar município ao trocar UF
-    
-    if (uf) {
-      await fetchMunicipios(uf, 'descarregamento');
-    } else {
-      setMunicipiosDescarregamento([]);
-    }
+    onUpdateFormData('municipioDescarregamento', '');
   };
 
   const handleAdicionarUF = () => {
@@ -143,6 +131,77 @@ export function RouteTab({ formData, onUpdateFormData }: RouteTabProps): JSX.Ele
     
     onUpdateFormData('ufsPercurso', ufsReordenadas);
   };
+
+  useEffect(() => {
+    if (!formData.ufCarregamento) {
+      setMunicipiosCarregamento([]);
+      return;
+    }
+    fetchMunicipios(formData.ufCarregamento, 'carregamento');
+  }, [formData.ufCarregamento]);
+
+  useEffect(() => {
+    if (!formData.ufDescarregamento) {
+      setMunicipiosDescarregamento([]);
+      return;
+    }
+    fetchMunicipios(formData.ufDescarregamento, 'descarregamento');
+  }, [formData.ufDescarregamento]);
+
+  useEffect(() => {
+    if (!formData.municipioCarregamento) {
+      return;
+    }
+    setMunicipiosCarregamento((prev) => {
+      const exists = prev.some(
+        (municipio) => municipio.nome.toUpperCase() === formData.municipioCarregamento.toUpperCase()
+      );
+      if (exists) {
+        return prev;
+      }
+      const notas = Array.isArray(formData.notasFiscais) ? formData.notasFiscais : [];
+      const notaReferencia = notas.find(
+        (nota: any) =>
+          (nota.emitenteMunicipioNome || '').toUpperCase() === formData.municipioCarregamento.toUpperCase()
+      );
+      const codigoIBGE = notaReferencia?.emitenteCodigoMunicipio || formData.municipioCarregamento;
+      return [
+        {
+          nome: formData.municipioCarregamento,
+          codigo_ibge: codigoIBGE
+        },
+        ...prev
+      ];
+    });
+  }, [formData.municipioCarregamento, formData.notasFiscais]);
+
+  useEffect(() => {
+    if (!formData.municipioDescarregamento) {
+      return;
+    }
+    setMunicipiosDescarregamento((prev) => {
+      const exists = prev.some(
+        (municipio) => municipio.nome.toUpperCase() === formData.municipioDescarregamento.toUpperCase()
+      );
+      if (exists) {
+        return prev;
+      }
+      const notas = Array.isArray(formData.notasFiscais) ? formData.notasFiscais : [];
+      const notaReferencia = notas.find(
+        (nota: any) =>
+          (nota.destinatarioMunicipioNome || '').toUpperCase() ===
+          formData.municipioDescarregamento.toUpperCase()
+      );
+      const codigoIBGE = notaReferencia?.destinatarioCodigoMunicipio || formData.municipioDescarregamento;
+      return [
+        {
+          nome: formData.municipioDescarregamento,
+          codigo_ibge: codigoIBGE
+        },
+        ...prev
+      ];
+    });
+  }, [formData.municipioDescarregamento, formData.notasFiscais]);
 
   const styles = {
     container: {

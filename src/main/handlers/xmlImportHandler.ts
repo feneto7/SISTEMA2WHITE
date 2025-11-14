@@ -16,6 +16,18 @@ export interface NFEData {
   pesoBruto: number;
   dataEmissao: string;
   lacres?: string[];
+  // Dados do emitente
+  emitenteUF?: string;
+  emitenteMunicipioNome?: string;
+  emitenteCodigoMunicipio?: string;
+  // Dados do destinatário
+  destinatarioUF?: string;
+  destinatarioMunicipioNome?: string;
+  destinatarioCodigoMunicipio?: string;
+  // Dados do produto predominante
+  descricaoProduto?: string;
+  codigoNCM?: string;
+  gtin?: string;
 }
 
 /**
@@ -78,7 +90,34 @@ function extractNFEDataFromString(xmlContent: string): NFEData | null {
     const serie = ide?.getElementsByTagName('serie')[0]?.textContent || '';
 
     // Extrai chave de acesso
-    const chaveAcesso = ide?.getAttribute('Id')?.replace('NFe', '') || '';
+    let chaveAcesso =
+      infNFe?.getAttribute('Id')?.replace('NFe', '') ||
+      xmlDoc.getElementsByTagName('chNFe')[0]?.textContent ||
+      '';
+
+    if (!chaveAcesso.trim()) {
+      const chaveRegex = /<infNFe[^>]*Id=["']NFe(\d{44})["']/i;
+      const match = chaveRegex.exec(xmlContent);
+      if (match && match[1]) {
+        chaveAcesso = match[1];
+      }
+    }
+
+    if (chaveAcesso.trim().length !== 44) {
+      const matchChNFeTag = /<chNFe>(\d{44})<\/chNFe>/i.exec(xmlContent);
+      if (matchChNFeTag && matchChNFeTag[1]) {
+        chaveAcesso = matchChNFeTag[1];
+      }
+    }
+
+    if (chaveAcesso.trim().length !== 44) {
+      const genericMatch = xmlContent.match(/\d{44}/);
+      if (genericMatch && genericMatch[0]) {
+        chaveAcesso = genericMatch[0];
+      }
+    }
+
+    chaveAcesso = chaveAcesso.trim();
 
     // Extrai dados do emitente
     const emitenteNome = emit?.getElementsByTagName('xNome')[0]?.textContent || '';
@@ -114,6 +153,26 @@ function extractNFEDataFromString(xmlContent: string): NFEData | null {
       }
     }
 
+    // Extrai endereço do emitente
+    const enderEmit = emit?.getElementsByTagName('enderEmit')[0];
+    const emitenteUF = enderEmit?.getElementsByTagName('UF')[0]?.textContent || '';
+    const emitenteMunicipioNome = enderEmit?.getElementsByTagName('xMun')[0]?.textContent || '';
+    const emitenteCodigoMunicipio = enderEmit?.getElementsByTagName('cMun')[0]?.textContent || '';
+
+    // Extrai endereço do destinatário
+    const enderDest = dest?.getElementsByTagName('enderDest')[0];
+    const destinatarioUF = enderDest?.getElementsByTagName('UF')[0]?.textContent || '';
+    const destinatarioMunicipioNome = enderDest?.getElementsByTagName('xMun')[0]?.textContent || '';
+    const destinatarioCodigoMunicipio = enderDest?.getElementsByTagName('cMun')[0]?.textContent || '';
+
+    // Extrai dados do produto predominante (primeiro produto da lista)
+    const det = infNFe?.getElementsByTagName('det')[0];
+    const prod = det?.getElementsByTagName('prod')[0];
+    const descricaoProduto = prod?.getElementsByTagName('xProd')[0]?.textContent || '';
+    const codigoNCM = prod?.getElementsByTagName('NCM')[0]?.textContent || '';
+    const gtin = prod?.getElementsByTagName('cEAN')[0]?.textContent || 
+                 prod?.getElementsByTagName('cEANTrib')[0]?.textContent || '';
+
     return {
       tipo: 'NF-e',
       numero: numero,
@@ -124,7 +183,19 @@ function extractNFEDataFromString(xmlContent: string): NFEData | null {
       valor: valor,
       pesoBruto: pesoBruto,
       dataEmissao: dataEmissao,
-      lacres: lacres.length > 0 ? lacres : undefined
+      lacres: lacres.length > 0 ? lacres : undefined,
+      // Dados do emitente
+      emitenteUF: emitenteUF,
+      emitenteMunicipioNome: emitenteMunicipioNome,
+      emitenteCodigoMunicipio: emitenteCodigoMunicipio,
+      // Dados do destinatário
+      destinatarioUF: destinatarioUF,
+      destinatarioMunicipioNome: destinatarioMunicipioNome,
+      destinatarioCodigoMunicipio: destinatarioCodigoMunicipio,
+      // Dados do produto predominante
+      descricaoProduto: descricaoProduto,
+      codigoNCM: codigoNCM,
+      gtin: gtin !== 'SEM GTIN' ? gtin : undefined
     };
   } catch (error) {
     console.error('Erro ao extrair dados da NF-e:', error);

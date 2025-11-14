@@ -1,0 +1,19 @@
+{
+  "success": true,
+  "message": "MDF-e autorizado com sucesso",
+  "data": {
+    "id": "mdfe_123456",
+    "status": "autorizado",
+    "protocolo": "135200012345678",
+    "chave": "31251112345678000190580010000000011234567893",
+    "dhRecbto": "2025-11-12T14:35:22-03:00",
+    "nProt": "135200012345678",
+    "digVal": "abcd1234efgh5678ijkl9012mnop3456qrst7890uvwx",
+    "xml": "<?xml version=\"1.0\" encoding=\"UTF-8\"?><mdfeProc>...</mdfeProc>",
+    "pdf": "https://api.exemplo.com/mdfe/123456/pdf",
+    "qrCode": "https://mdfe.fazenda.gov.br/qrcode?chave=31251112345678000190580010000000011234567893",
+    "dataAutorizacao": "2025-11-12T14:35:22-03:00",
+    "ambiente": "homologacao"
+  }
+}
+

@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useTheme } from '../../../../styles/ThemeProvider';
 import { useClickSound } from '../../../../hooks/useClickSound';
 import { DocumentsTab, TransportTab, DriversTab, RouteTab, FreightTab, InsuranceTab, TotalizersTab } from './components';
-import { validateMDFe, generateMDFeXML, ValidationError } from '../../../../utils/mdfeValidator';
+import { validateMDFe, generateMDFeJSON, ValidationError } from '../../../../utils/mdfeValidator';
 import { WindowHeader } from '../../../../components/WindowHeader/WindowHeader';
 import { Dialog } from '../../../../components/Dialog';
 import { AppIcons } from '../../../../components/Icons/AppIcons';
@@ -265,7 +265,7 @@ export function NewMDFe({ isOpen, onClose, onSave }: NewMDFeProps): JSX.Element 
     }
   };
 
-  // Function to save MDF-e and generate XML
+  // Function to save MDF-e and generate JSON for API
   const handleSave = () => {
     playClickSound();
     
@@ -280,22 +280,26 @@ export function NewMDFe({ isOpen, onClose, onSave }: NewMDFeProps): JSX.Element 
       return;
     }
 
-    // Gerar XML
-    const xmlContent = generateMDFeXML(formData);
+    // Gerar JSON estruturado no padrão SEFAZ
+    const mdfeJSON = generateMDFeJSON(formData);
     
-    console.log('MDF-e XML gerado:', xmlContent);
+    console.log('MDF-e JSON gerado para envio à API:', JSON.stringify(mdfeJSON, null, 2));
     
-    // TODO: Enviar XML para API da SEFAZ
-    // Aqui você implementaria a comunicação com a SEFAZ
-    
-    // Salvar dados do formulário junto com o XML
-    const mdfeDataWithXML = {
+    // Dados que serão salvos localmente e enviados para a API
+    const mdfeData = {
       ...formData,
-      xml: xmlContent,
-      status: 'gerado'
+      mdfeJSON: mdfeJSON, // JSON estruturado no padrão SEFAZ para enviar à API
+      status: 'gerado',
+      dataGeracao: new Date().toISOString()
     };
 
-    onSave(mdfeDataWithXML);
+    // TODO: Aqui a API receberá o mdfeJSON e fará:
+    // 1. Converter o JSON para XML conforme schema da SEFAZ
+    // 2. Assinar digitalmente o XML
+    // 3. Enviar para a SEFAZ
+    // 4. Retornar a resposta (autorizado, rejeitado, etc)
+
+    onSave(mdfeData);
     handleClose();
   };
 

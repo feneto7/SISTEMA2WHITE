@@ -20,6 +20,7 @@ interface Vehicle {
   cidadeProprietario: string;
   ufProprietario: string;
   cepProprietario: string;
+  rntrc?: string;
 }
 
 interface TransportTabProps {
@@ -83,7 +84,8 @@ export function TransportTab({ formData, onUpdateFormData }: TransportTabProps):
       enderecoProprietario: 'Rua das Flores, 123',
       cidadeProprietario: 'São Paulo',
       ufProprietario: 'SP',
-      cepProprietario: '01234-567'
+      cepProprietario: '01234-567',
+      rntrc: '12345678'
     },
     {
       id: '2',
@@ -102,7 +104,8 @@ export function TransportTab({ formData, onUpdateFormData }: TransportTabProps):
       enderecoProprietario: 'Av. Paulista, 1000',
       cidadeProprietario: 'São Paulo',
       ufProprietario: 'SP',
-      cepProprietario: '01310-100'
+      cepProprietario: '01310-100',
+      rntrc: '87654321'
     },
     {
       id: '3',
@@ -121,7 +124,8 @@ export function TransportTab({ formData, onUpdateFormData }: TransportTabProps):
       enderecoProprietario: 'Rua Augusta, 500',
       cidadeProprietario: 'São Paulo',
       ufProprietario: 'SP',
-      cepProprietario: '01305-000'
+      cepProprietario: '01305-000',
+      rntrc: '99887766'
     }
   ]);
 
@@ -360,6 +364,10 @@ export function TransportTab({ formData, onUpdateFormData }: TransportTabProps):
             <label style={styles.label}>Capacidade (kg)</label>
             <input {...getInputProps('capacidade', '1500')} />
           </div>
+          <div style={styles.formGroup}>
+            <label style={styles.label}>RNTRC*</label>
+            <input {...getInputProps('rntrc', '00000000')} />
+          </div>
         </div>
       </div>
 
@@ -448,10 +456,6 @@ export function TransportTab({ formData, onUpdateFormData }: TransportTabProps):
         {proprietarioNaoEmitente && (
           <div style={styles.additionalForm}>
             <div style={styles.additionalFormGrid}>
-              <div style={styles.formGroup}>
-                <label style={styles.label}>RNTRC</label>
-                <input {...getInputProps('rntrc', '123456789')} />
-              </div>
               <div style={styles.formGroup}>
                 <label style={styles.label}>Tipo de Proprietário</label>
                 <input {...getInputProps('tipoProprietario', 'Pessoa Física')} />

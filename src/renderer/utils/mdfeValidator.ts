@@ -160,6 +160,14 @@ export function validateMDFe(formData: MDFeFormData): ValidationError[] {
     });
   }
 
+  if (!formData.rntrc || formData.rntrc.replace(/\D/g, '').length === 0) {
+    errors.push({
+      field: 'rntrc',
+      message: 'RNTRC é obrigatório para transporte rodoviário',
+      tab: 'Transporte'
+    });
+  }
+
   // Dados do proprietário só são obrigatórios quando o proprietário NÃO é o emitente
   if (formData.proprietarioNaoEmitente) {
     if (!formData.tipoProprietario || !formData.proprietario) {
@@ -271,73 +279,175 @@ export function validateMDFe(formData: MDFeFormData): ValidationError[] {
     });
   }
 
+  // Validação do seguro (obrigatório para modal rodoviário)
+  if (formData.tipoMDFe === 'rodoviario') {
+    const camposSeguroObrigatorios = [
+      { field: 'responsavelSeguro', value: formData.responsavelSeguro },
+      { field: 'cpfCnpjResponsavelSeguro', value: formData.cpfCnpjResponsavelSeguro },
+      { field: 'nomeSeguradora', value: formData.nomeSeguradora },
+      { field: 'cnpjSeguradora', value: formData.cnpjSeguradora },
+      { field: 'numeroApolice', value: formData.numeroApolice }
+    ];
+
+    camposSeguroObrigatorios.forEach(({ field, value }) => {
+      if (!value || String(value).trim() === '') {
+        errors.push({
+          field,
+          message: 'Preencha todas as informações de seguro obrigatórias',
+          tab: 'Seguro'
+        });
+      }
+    });
+
+    const camposPagamentoObrigatorios = [
+      { field: 'nomeResponsavel', value: formData.nomeResponsavel },
+      { field: 'cpfCnpjResponsavel', value: formData.cpfCnpjResponsavel },
+      { field: 'valorTotalContrato', value: formData.valorTotalContrato },
+      { field: 'formaPagamento', value: formData.formaPagamento }
+    ];
+
+    camposPagamentoObrigatorios.forEach(({ field, value }) => {
+      if (!value || String(value).trim() === '') {
+        errors.push({
+          field,
+          message: 'Preencha todos os campos obrigatórios do pagamento do frete',
+          tab: 'Frete'
+        });
+      }
+    });
+
+    if (parseCurrency(formData.valorTotalContrato) <= 0) {
+      errors.push({
+        field: 'valorTotalContrato',
+        message: 'Valor total do contrato deve ser maior que zero',
+        tab: 'Frete'
+      });
+    }
+  }
+
   return errors;
 }
 
 /**
- * Gera o XML do MDF-e seguindo o schema da Receita Federal
+ * Gera o JSON estruturado do MDF-e seguindo o padrão da SEFAZ
+ * Este JSON será enviado para a API que irá comunicar com a SEFAZ
+ * IMPORTANTE: Apenas campos preenchidos são incluídos no JSON
  */
-export function generateMDFeXML(formData: MDFeFormData): string {
-  const timestamp = new Date().toISOString().replace(/[-:]/g, '').split('.')[0];
+export function generateMDFeJSON(formData: MDFeFormData): any {
+  const timestamp = new Date().toISOString();
+  const modal = getModalCode(formData.tipoMDFe);
   
-  const xml = `<?xml version="1.0" encoding="UTF-8"?>
-<MDFe xmlns="http://www.portalfiscal.inf.br/mdfe">
-  <infMDFe Id="MDFe${formData.numero}">
-    <ide>
-      <cUF>${getCUFCode(formData.ufCarregamento)}</cUF>
-      <tpAmb>1</tpAmb>
-      <tpEmit>1</tpEmit>
-      <modelo>58</modelo>
-      <serie>${formData.serie}</serie>
-      <nMDF>${formData.numero}</nMDF>
-      <cMDF>${generateCMDF(formData)}</cMDF>
-      <cDV>${calculateCheckDigit(formData)}</cDV>
-      <modal>01</modal>
-      <dhEmi>${timestamp}</dhEmi>
-      <tpEmit>1</tpEmit>
-      <tpTransp>0</tpTransp>
-      <modTransp>01</modTransp>
-    </ide>
-    <emit>
-      <CNPJ>${formatCNPJ(formData.cpfCnpjProprietario)}</CNPJ>
-      <IE>${formData.ie}</IE>
-      <IEST></IEST>
-      <xNome>${formData.proprietario}</xNome>
-      <xFant>${formData.proprietario}</xFant>
-      <enderEmit>
-        <xLgr>${formData.enderecoProprietario}</xLgr>
-        <nro>000</nro>
-        <xBairro>Centro</xBairro>
-        <cMun>${getMunicipioCode(formData.cidadeProprietario, formData.ufProprietario)}</cMun>
-        <xMun>${formData.cidadeProprietario}</xMun>
-        <CEP>${formatCEP(formData.cepProprietario)}</CEP>
-        <UF>${formData.ufProprietario}</UF>
-        <fone></fone>
-        <email></email>
-      </enderEmit>
-    </emit>
-    ${generateInfModal(formData)}
-    ${generateInfDoc(formData)}
-    ${generateTotal(formData)}
-    <autXML>
-      <CNPJ>${formatCNPJ(formData.cpfCnpjProprietario)}</CNPJ>
-    </autXML>
-    <infAdic>
-      <infCpl></infCpl>
-    </infAdic>
-    <infRespTec>
-      <CNPJ></CNPJ>
-    </infRespTec>
-    <infSolicNFF>
-      <xSolic>${formData.observacoes}</xSolic>
-    </infSolicNFF>
-  </infMDFe>
-</MDFe>`;
+  // Busca ambiente fiscal configurado (Settings > Fiscal > Certificado Digital)
+  const ambienteFiscal = localStorage.getItem('fiscal_environment') || 'homologacao';
+  const tpAmb = ambienteFiscal === 'producao' ? '1' : '2';
+  
+  // Busca código do município de carregamento das notas importadas (primeira nota)
+  const primeiraNotaFiscal = Array.isArray(formData.notasFiscais) && formData.notasFiscais.length > 0 
+    ? formData.notasFiscais[0] 
+    : null;
+  const codigoMunCarrega = primeiraNotaFiscal?.emitenteCodigoMunicipio || 
+    getMunicipioCode(formData.municipioCarregamento, formData.ufCarregamento);
 
-  return xml;
+  // Monta a seção ide (identificação) - campos obrigatórios
+  const ide: any = {
+    cUF: getCUFCode(formData.ufCarregamento),
+    tpAmb: tpAmb, // 1-Produção, 2-Homologação (vem das configurações)
+    tpEmit: "1", // 1-Prestador de serviço de transporte
+    tpTransp: "0", // 0-Não se aplica (quando for ETC ou CTC)
+    modelo: "58", // Modelo do MDF-e
+    serie: formData.serie || "001",
+    nMDF: formData.numero,
+    cMDF: generateCMDF(formData),
+    cDV: calculateCheckDigit(formData),
+    modal: modal, // 1-Rodoviário, 2-Aéreo, 3-Aquaviário, 4-Ferroviário
+    dhEmi: timestamp,
+    tpEmis: "1", // 1-Normal, 2-Contingência
+    procEmi: "0", // 0-Emissão com aplicativo do contribuinte
+    verProc: "1.0.0",
+    UFIni: formData.ufCarregamento,
+    UFFim: formData.ufDescarregamento,
+    infMunCarrega: [{
+      cMunCarrega: codigoMunCarrega,
+      xMunCarrega: formData.municipioCarregamento
+    }],
+    dhIniViagem: timestamp
+  };
+
+  // Adiciona percurso apenas se houver UFs
+  if (formData.ufsPercurso && formData.ufsPercurso.length > 0) {
+    ide.infPercurso = formData.ufsPercurso
+      .filter((uf: any) => typeof uf === 'string' ? uf : uf.uf) // Aceita string ou objeto com propriedade 'uf'
+      .map((uf: any) => ({
+        UFPer: typeof uf === 'string' ? uf : uf.uf // Extrai apenas a sigla da UF
+      }));
+  }
+
+  // Monta a seção emit (emitente) - campos obrigatórios
+  const emit: any = {
+    CNPJ: formatCNPJ(formData.cpfCnpjProprietario),
+    xNome: formData.proprietario,
+    xFant: formData.proprietario,
+    enderEmit: {
+      xLgr: formData.enderecoProprietario,
+      nro: "S/N",
+      xBairro: "Centro",
+      cMun: getMunicipioCode(formData.cidadeProprietario, formData.ufProprietario),
+      xMun: formData.cidadeProprietario,
+      CEP: formatCEP(formData.cepProprietario),
+      UF: formData.ufProprietario
+    }
+  };
+
+  // Adiciona IE apenas se preenchido
+  if (formData.ie) {
+    emit.IE = formData.ie;
+  }
+
+  // Adiciona telefone apenas se preenchido
+  if (formData.enderecoProprietario) {
+    // Aqui você pode adicionar campos opcionais do endereço se existirem no formulário
+  }
+
+  // Monta o JSON completo
+  const mdfeJSON: any = {
+    ide,
+    emit,
+    infModal: generateInfModalJSON(formData),
+    tot: {
+      qNFe: formData.qntTotalNFe || "0",
+      qCTe: "0",
+      qMDFe: "0",
+      vCarga: parseFloat(formData.valorTotalCarga || "0").toFixed(2),
+      cUnid: formData.codUnidadeMedidaCarga || "01", // 01-KG, 02-TON
+      qCarga: parseFloat(formData.pesoTotalCarga || "0").toFixed(3)
+    }
+  };
+
+  const infDoc = generateInfDocJSON(formData);
+  if (infDoc) {
+    mdfeJSON.infDoc = infDoc;
+  }
+
+  // Adiciona autorizados apenas se houver
+  if (formData.autorizadoList && formData.autorizadoList.length > 0) {
+    mdfeJSON.autXML = formData.autorizadoList
+      .filter((autorizado: any) => autorizado && autorizado.cpfCnpj)
+      .map((autorizado: any) => ({
+        CNPJ: formatCNPJ(autorizado.cpfCnpj)
+      }));
+  }
+
+  // Adiciona informações adicionais apenas se houver observações
+  if (formData.observacoes && formData.observacoes.trim() !== "") {
+    mdfeJSON.infAdic = {
+      infCpl: formData.observacoes
+    };
+  }
+
+  return mdfeJSON;
 }
 
-// Funções auxiliares para gerar o XML
+// Funções auxiliares para gerar o JSON do MDF-e
 function getCUFCode(uf: string): string {
   const ufMap: Record<string, string> = {
     'AC': '12', 'AL': '27', 'AP': '16', 'AM': '13', 'BA': '29',
@@ -350,61 +460,388 @@ function getCUFCode(uf: string): string {
   return ufMap[uf] || '31';
 }
 
+function getModalCode(tipoMDFe: string): string {
+  const modalMap: Record<string, string> = {
+    'rodoviario': '1',
+    'aereo': '2',
+    'aquaviario': '3',
+    'ferroviario': '4'
+  };
+  return modalMap[tipoMDFe] || '1';
+}
+
 function generateCMDF(formData: MDFeFormData): string {
-  // Gera o código de controle do MDF-e
-  return '00000000';
+  // Gera o código de controle do MDF-e (8 dígitos numéricos aleatórios)
+  return Math.floor(Math.random() * 100000000).toString().padStart(8, '0');
 }
 
 function calculateCheckDigit(formData: MDFeFormData): string {
-  // Calcula o dígito verificador
+  // Calcula o dígito verificador (simplificado - a API deve calcular o correto)
   return '0';
 }
 
+function parseCurrency(value: string): number {
+  if (!value) {
+    return 0;
+  }
+  const sanitized = value.replace(/\s/g, '').replace(/\./g, '').replace(',', '.');
+  const parsed = Number(sanitized);
+  return Number.isFinite(parsed) ? parsed : 0;
+}
+
+function normalizeFormaPagamento(value: string): string {
+  if (!value) {
+    return '';
+  }
+  return value
+    .normalize('NFD')
+    .replace(/[^\w]/g, '')
+    .toLowerCase();
+}
+
 function formatCNPJ(cnpj: string): string {
+  if (!cnpj) return '';
   return cnpj.replace(/\D/g, '');
 }
 
 function formatCEP(cep: string): string {
+  if (!cep) return '';
   return cep.replace(/\D/g, '');
 }
 
 function getMunicipioCode(cidade: string, uf: string): string {
-  // TODO: Implementar busca de código do município
-  return '3106200'; // Código de exemplo (Belo Horizonte)
+  // TODO: A API deve ter uma tabela completa de códigos de municípios do IBGE
+  // Por enquanto, retorna um código genérico
+  return '9999999';
 }
 
-function generateInfModal(formData: MDFeFormData): string {
+// Gera a seção infModal em JSON para transporte rodoviário
+// Apenas campos preenchidos são incluídos
+function generateInfModalJSON(formData: MDFeFormData): any {
   if (formData.tipoMDFe === 'rodoviario') {
-    return `<infModal>
-      <rodo>
-        <lacRodo>
-          ${formData.lacreList.map(lacre => 
-            `<lacres><nLacre>${lacre.numero}</nLacre></lacres>`
-          ).join('')}
-        </lacRodo>
-      </rodo>
-    </infModal>`;
+    // Monta veículo de tração (campos obrigatórios)
+    const veicTracao: any = {
+      cInt: "001",
+      placa: formData.placa.replace(/[^a-zA-Z0-9]/g, '').toUpperCase(),
+      RENAVAM: formData.renavam,
+      tpRod: "01", // 01-Truck, 02-Toco, 03-Cavalo Mecânico, etc
+      tpCar: "00", // 00-Não aplicável
+      UF: formData.ufProprietario
+    };
+
+    // Adiciona tara apenas se preenchido
+    if (formData.capacidade && formData.capacidade !== "0") {
+      veicTracao.tara = "0";
+      veicTracao.capKG = formData.capacidade;
+    }
+
+    // Adiciona condutores apenas se houver
+    if (formData.condutoresSelecionados && formData.condutoresSelecionados.length > 0) {
+      const condutoresValidos = formData.condutoresSelecionados
+        .filter((condutor: any) => {
+          const nome = condutor?.nome || condutor?.nomeCondutor;
+          const cpf = condutor?.cpf || condutor?.cpfCondutor;
+          return nome && cpf;
+        })
+        .map((condutor: any) => {
+          const nome = condutor.nome || condutor.nomeCondutor;
+          const cpf = condutor.cpf || condutor.cpfCondutor;
+          return {
+            xNome: nome,
+            CPF: formatCNPJ(cpf)
+          };
+        });
+      
+      // Só adiciona se houver condutores válidos
+      if (condutoresValidos.length > 0) {
+        veicTracao.condutor = condutoresValidos;
+      }
+    }
+
+    // Adiciona proprietário apenas se não for o emitente
+    if (formData.proprietarioNaoEmitente && formData.proprietario) {
+      const prop: any = {
+        RNTRC: formData.rntrc || "",
+        xNome: formData.proprietario,
+        UF: formData.ufProprietario,
+        tpProp: formData.tipoProprietario || "0" // 0-TAC Agregado, 1-TAC Independente, 2-Outros
+      };
+
+      // Adiciona CPF ou CNPJ
+      const cpfCnpjLimpo = formatCNPJ(formData.cpfCnpjProprietario);
+      if (cpfCnpjLimpo.length === 11) {
+        prop.CPF = cpfCnpjLimpo;
+      } else if (cpfCnpjLimpo.length === 14) {
+        prop.CNPJ = cpfCnpjLimpo;
+      }
+
+      // Adiciona IE apenas se preenchido
+      if (formData.ie) {
+        prop.IE = formData.ie;
+      }
+
+      veicTracao.prop = prop;
+    }
+
+    // Monta estrutura rodoviário
+    const rodo: any = {
+      veicTracao
+    };
+
+    // Adiciona RNTRC apenas se preenchido
+    if (formData.rntrc) {
+      rodo.infANTT = {
+        RNTRC: formData.rntrc
+      };
+    }
+
+    // Adiciona seguro dentro de rodo
+    const seg = generateSegJSON(formData);
+    if (seg.length > 0) {
+      rodo.seg = seg;
+    }
+
+    // Adiciona lacres apenas se houver
+    if (formData.lacreList && formData.lacreList.length > 0) {
+      rodo.lacRodo = formData.lacreList
+        .filter((lacre: any) => lacre && lacre.numeroLacre)
+        .map((lacre: any) => ({
+          nLacre: lacre.numeroLacre
+        }));
+    }
+
+    // Informações de pagamento do frete (infPag)
+    const infPag = generateInfPagJSON(formData);
+    if (infPag.length > 0) {
+      rodo.infPag = infPag;
+    }
+
+    // Adiciona vale pedágio apenas se houver
+    if (formData.valePedagioList && formData.valePedagioList.length > 0) {
+      rodo.infContratante = formData.valePedagioList
+        .filter((vale: any) => vale && vale.cnpjFornecedor && vale.nomeResponsavel)
+        .map((vale: any) => ({
+          CNPJ: formatCNPJ(vale.cnpjFornecedor),
+          infPag: [{
+            xNome: vale.nomeResponsavel,
+            CPF: formatCNPJ(vale.cpfResponsavel),
+            vContrato: parseFloat(vale.valor || "0").toFixed(2),
+            indPag: vale.formaPagamento === "credito" ? "0" : "1" // 0-Pagamento à Vista, 1-Pagamento à Prazo
+          }]
+        }));
+    }
+
+    // Adiciona CIOT apenas se houver
+    if (formData.ciotList && formData.ciotList.length > 0) {
+      rodo.infCIOT = formData.ciotList
+        .filter((ciot: any) => ciot && ciot.numero)
+        .map((ciot: any) => ({
+          CIOT: ciot.numero,
+          CPF: ciot.cpf ? formatCNPJ(ciot.cpf) : undefined,
+          CNPJ: ciot.cnpj ? formatCNPJ(ciot.cnpj) : undefined
+        }));
+    }
+
+    return { rodo };
   }
-  return '';
+
+  // TODO: Implementar para outros modais (aéreo, aquaviário, ferroviário)
+  return {};
 }
 
-function generateInfDoc(formData: MDFeFormData): string {
-  return `<infDoc>
-    ${formData.notasFiscais.map(nf => 
-      `<infMunDescarga>
-        <cMunDescarga>${getMunicipioCode(formData.municipioDescarregamento, formData.ufDescarregamento)}</cMunDescarga>
-        <xMunDescarga>${formData.municipioDescarregamento}</xMunDescarga>
-      </infMunDescarga>`
-    ).join('')}
-  </infDoc>`;
+// Gera a seção infDoc em JSON com as notas fiscais e municípios de descarga
+function generateInfDocJSON(formData: MDFeFormData): any {
+  const notas = Array.isArray(formData.notasFiscais) ? formData.notasFiscais : [];
+  if (notas.length === 0) {
+    return null;
+  }
+
+  const municipiosMap = new Map<
+    string,
+    {
+      municipio: string;
+      uf: string;
+      codigoMunicipio?: string;
+      nfes: Array<{ chNFe: string; indReentrega: string }>;
+    }
+  >();
+
+  notas.forEach((nota: any) => {
+    if (!nota || !nota.chave) {
+      return;
+    }
+
+    const ufDestino =
+      nota.destinatarioUF ||
+      nota.ufDestino ||
+      nota.ufDestinatario ||
+      formData.ufDescarregamento;
+
+    const municipioDestino =
+      nota.destinatarioMunicipioNome ||
+      nota.destinatarioMunicipio ||
+      nota.cidadeDestinatario ||
+      formData.municipioDescarregamento;
+
+    const codigoMunicipioDestino =
+      nota.destinatarioCodigoMunicipio ||
+      '';
+
+    if (!ufDestino || !municipioDestino) {
+      return;
+    }
+
+    const key = `${ufDestino.toUpperCase()}-${municipioDestino.toUpperCase()}`;
+
+    if (!municipiosMap.has(key)) {
+      municipiosMap.set(key, {
+        municipio: municipioDestino,
+        uf: ufDestino,
+        codigoMunicipio: codigoMunicipioDestino,
+        nfes: []
+      });
+    }
+
+    const indReentrega = nota.indReentrega || '0';
+
+    municipiosMap.get(key)!.nfes.push({
+      chNFe: nota.chave,
+      indReentrega
+    });
+  });
+
+  const municipiosDescarga = Array.from(municipiosMap.values())
+    .filter((item) => item.nfes.length > 0)
+    .map((item) => ({
+      cMunDescarga:
+        item.codigoMunicipio ||
+        getMunicipioCode(item.municipio, item.uf),
+      xMunDescarga: item.municipio,
+      infNFe: item.nfes
+    }));
+
+  if (municipiosDescarga.length > 0) {
+    return {
+      infMunDescarga: municipiosDescarga
+    };
+  }
+
+  // Fallback: usa município/UF configurados manualmente caso não existam dados nas notas
+  if (formData.municipioDescarregamento && formData.ufDescarregamento) {
+    const nfesValidas = notas
+      .filter((nota: any) => nota && nota.chave)
+      .map((nota: any) => ({
+        chNFe: nota.chave,
+        indReentrega: nota.indReentrega || '0'
+      }));
+
+    if (nfesValidas.length > 0) {
+      return {
+        infMunDescarga: [
+          {
+            cMunDescarga: getMunicipioCode(
+              formData.municipioDescarregamento,
+              formData.ufDescarregamento
+            ),
+            xMunDescarga: formData.municipioDescarregamento,
+            infNFe: nfesValidas
+          }
+        ]
+      };
+    }
+  }
+
+  return null;
 }
 
-function generateTotal(formData: MDFeFormData): string {
-  return `<total>
-    <ICMSTot>
-      <vNF>${formData.valorTotalCarga || '0.00'}</vNF>
-      <vServ>${formData.valorTotalContrato || '0.00'}</vServ>
-    </ICMSTot>
-  </total>`;
+// Gera a seção de seguro em JSON
+function generateSegJSON(formData: MDFeFormData): any[] {
+  const responsavel = (formData.responsavelSeguro || '').toLowerCase();
+  const documentoResponsavel = formatCNPJ(formData.cpfCnpjResponsavelSeguro);
+  const documentoSeguradora = formatCNPJ(formData.cnpjSeguradora);
+
+  const possuiDadosObrigatorios =
+    formData.nomeSeguradora &&
+    documentoSeguradora &&
+    formData.numeroApolice &&
+    documentoResponsavel;
+
+  if (!possuiDadosObrigatorios) {
+    return [];
+  }
+
+  const seg: any = {
+    infResp: {
+      respSeg: responsavel.includes('contrat') ? '2' : '1'
+    },
+    infSeg: {
+      xSeg: formData.nomeSeguradora,
+      CNPJ: documentoSeguradora
+    },
+    nApol: formData.numeroApolice
+  };
+
+  if (documentoResponsavel.length === 11) {
+    seg.infResp.CPF = documentoResponsavel;
+  } else if (documentoResponsavel.length === 14) {
+    seg.infResp.CNPJ = documentoResponsavel;
+  }
+
+  // Adiciona averbações apenas se houver
+  if (formData.averbacaoList && formData.averbacaoList.length > 0) {
+    seg.nAver = formData.averbacaoList
+      .filter((averb: any) => averb && averb.numeroAverbacao)
+      .map((averb: any) => averb.numeroAverbacao);
+  }
+
+  return [seg];
+}
+
+// Gera a seção de informações de pagamento do frete
+function generateInfPagJSON(formData: MDFeFormData): any[] {
+  if (!formData.nomeResponsavel || !formData.cpfCnpjResponsavel) {
+    return [];
+  }
+
+  const documentoResponsavel = formatCNPJ(formData.cpfCnpjResponsavel);
+  const valorContrato = parseCurrency(formData.valorTotalContrato || '0');
+  const formaNormalizada = normalizeFormaPagamento(formData.formaPagamento || '');
+
+  const infPag: any = {
+    xNome: formData.nomeResponsavel,
+    comp: [
+      {
+        tpComp: '01',
+        vComp: valorContrato.toFixed(2)
+      }
+    ],
+    vContrato: valorContrato.toFixed(2),
+    vPrest: valorContrato.toFixed(2),
+    indPag: formaNormalizada === 'avista' ? '0' : '1',
+    infPrazo: []
+  };
+
+  if (documentoResponsavel.length === 11) {
+    infPag.CPF = documentoResponsavel;
+  } else if (documentoResponsavel.length === 14) {
+    infPag.CNPJ = documentoResponsavel;
+  }
+
+  if (formData.numeroBanco && formData.numeroAgencia) {
+    infPag.infBanc = {
+      codBanco: formData.numeroBanco,
+      codAgencia: formData.numeroAgencia
+    };
+  } else if (formData.pix) {
+    infPag.infBanc = {
+      chavePIX: formData.pix
+    };
+  } else if (formData.cnpjIpef) {
+    infPag.infBanc = {
+      CNPJIPEF: formatCNPJ(formData.cnpjIpef)
+    };
+  }
+
+  return [infPag];
 }
 
