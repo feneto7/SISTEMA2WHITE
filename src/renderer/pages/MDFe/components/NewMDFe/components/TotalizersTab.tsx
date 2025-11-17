@@ -2,6 +2,12 @@ import React, { useState, useRef, useEffect } from 'react';
 import { useClickSound } from '../../../../../hooks/useClickSound';
 import { useTheme } from '../../../../../styles/ThemeProvider';
 import { AddButton } from '../../../../../components/AddButton/AddButton';
+import { formatCpfOrCnpj } from '../../../../../utils/documentFormatter';
+import {
+  formatQuantityByUnitType,
+  getQuantityPlaceholderByUnitType,
+  normalizeUnitType
+} from '../../../../../utils/quantityFormater';
 
 // Totalizers tab for NewMDFe modal
 // Handles totals, seals and authorized downloads
@@ -35,6 +41,15 @@ export function TotalizersTab({ formData, onUpdateFormData }: TotalizersTabProps
     cpfCnpj: ''
   });
   const formContainerRef = useRef<HTMLDivElement>(null);
+
+  // Mapeia código SEFAZ -> tipo de unidade ('0' fracionado, '1' inteiro)
+  const getUnitTypeFromCode = (code?: string): string => {
+    const fractional = new Set(['01', '02', '04', '05', '06']); // KG, TON, M3, LTR, MMBTU
+    if (!code) return '1';
+    return fractional.has(code) ? '0' : '1'; // '03' (UN) é inteiro
+  };
+
+  const currentUnitType = normalizeUnitType(getUnitTypeFromCode(formData.codUnidadeMedidaCarga));
 
   // Sincroniza listas com formData quando o componente monta ou quando muda
   useEffect(() => {
@@ -100,7 +115,7 @@ export function TotalizersTab({ formData, onUpdateFormData }: TotalizersTabProps
   const handleAutorizadoChange = (field: keyof AutorizadoDownload, value: string) => {
     setCurrentAutorizado(prev => ({
       ...prev,
-      [field]: value
+      [field]: field === 'cpfCnpj' ? formatCpfOrCnpj(value) : value
     }));
   };
 
@@ -312,16 +327,57 @@ export function TotalizersTab({ formData, onUpdateFormData }: TotalizersTabProps
           </div>
           <div style={styles.formGroup}>
             <label style={styles.label}>Cod. Unidade de Medida da Carga</label>
-            <input
-              type="text"
-              style={getInputStyle('codUnidadeMedidaCarga')}
-              value={formData.codUnidadeMedidaCarga || ''}
-              onChange={(e) => handleInputChange('codUnidadeMedidaCarga', e.target.value)}
-              onFocus={() => handleInputFocus('codUnidadeMedidaCarga')}
-              onBlur={handleInputBlur}
-              onClick={() => playClickSound()}
-              placeholder=""
-            />
+            <div style={{ position: 'relative' as const }}>
+              <select
+                style={{
+                  ...styles.select,
+                  appearance: 'none' as const,
+                  WebkitAppearance: 'none' as const,
+                  MozAppearance: 'none' as const
+                }}
+                value={(() => {
+                  const mapInv: Record<string, string> = {
+                    '01': 'KG',
+                    '02': 'TON',
+                    '03': 'UN',
+                    '04': 'M3',
+                    '05': 'LTR',
+                    '06': 'MMBTU'
+                  };
+                  return mapInv[formData.codUnidadeMedidaCarga] || '';
+                })()}
+                onChange={(e) => {
+                  playClickSound();
+                  const map: Record<string, string> = {
+                    'KG': '01',
+                    'TON': '02',
+                    'UN': '03',
+                    'M3': '04',
+                    'LTR': '05',
+                    'MMBTU': '06'
+                  };
+                  const sigla = e.target.value;
+                  const codigo = map[sigla] || '';
+                  // Atualiza código e limpa o campo de peso para evitar formatos inconsistentes ao trocar unidade
+                  handleInputChange('codUnidadeMedidaCarga', codigo);
+                  handleInputChange('pesoTotalCarga', '');
+                }}
+                onFocus={() => handleInputFocus('codUnidadeMedidaCarga')}
+                onBlur={handleInputBlur}
+                onClick={() => playClickSound()}
+              >
+                <option value="">Selecione</option>
+                <option value="KG">KG</option>
+                <option value="TON">TON</option>
+                <option value="UN">UN</option>
+                <option value="M3">M3</option>
+                <option value="LTR">LTR</option>
+                <option value="MMBTU">MMBTU</option>
+              </select>
+              <div style={systemStyles.select.arrow}>
+                <div style={systemStyles.select.arrowIcon}></div>
+              </div>
+            </div>
           </div>
           <div style={styles.formGroup}>
             <label style={styles.label}>Peso Total da Carga</label>
@@ -329,11 +385,14 @@ export function TotalizersTab({ formData, onUpdateFormData }: TotalizersTabProps
               type="text"
               style={getInputStyle('pesoTotalCarga')}
               value={formData.pesoTotalCarga || ''}
-              onChange={(e) => handleInputChange('pesoTotalCarga', e.target.value)}
+              onChange={(e) => {
+                const formatted = formatQuantityByUnitType(e.target.value, currentUnitType);
+                handleInputChange('pesoTotalCarga', formatted);
+              }}
               onFocus={() => handleInputFocus('pesoTotalCarga')}
               onBlur={handleInputBlur}
               onClick={() => playClickSound()}
-              placeholder="0.0000"
+              placeholder={getQuantityPlaceholderByUnitType(currentUnitType)}
             />
           </div>
         </div>

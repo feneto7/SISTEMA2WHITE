@@ -282,35 +282,35 @@ export function validateMDFe(formData: MDFeFormData): ValidationError[] {
   // Validação do seguro (obrigatório para modal rodoviário)
   if (formData.tipoMDFe === 'rodoviario') {
     const camposSeguroObrigatorios = [
-      { field: 'responsavelSeguro', value: formData.responsavelSeguro },
-      { field: 'cpfCnpjResponsavelSeguro', value: formData.cpfCnpjResponsavelSeguro },
-      { field: 'nomeSeguradora', value: formData.nomeSeguradora },
-      { field: 'cnpjSeguradora', value: formData.cnpjSeguradora },
-      { field: 'numeroApolice', value: formData.numeroApolice }
+      { field: 'responsavelSeguro', label: 'Responsável pelo seguro', value: formData.responsavelSeguro },
+      { field: 'cpfCnpjResponsavelSeguro', label: 'CPF/CNPJ do responsável pelo seguro', value: formData.cpfCnpjResponsavelSeguro },
+      { field: 'nomeSeguradora', label: 'Nome da seguradora', value: formData.nomeSeguradora },
+      { field: 'cnpjSeguradora', label: 'CNPJ da seguradora', value: formData.cnpjSeguradora },
+      { field: 'numeroApolice', label: 'Número da apólice', value: formData.numeroApolice }
     ];
 
-    camposSeguroObrigatorios.forEach(({ field, value }) => {
+    camposSeguroObrigatorios.forEach(({ field, label, value }) => {
       if (!value || String(value).trim() === '') {
         errors.push({
           field,
-          message: 'Preencha todas as informações de seguro obrigatórias',
+          message: `Campo obrigatório não informado (${label})`,
           tab: 'Seguro'
         });
       }
     });
 
     const camposPagamentoObrigatorios = [
-      { field: 'nomeResponsavel', value: formData.nomeResponsavel },
-      { field: 'cpfCnpjResponsavel', value: formData.cpfCnpjResponsavel },
-      { field: 'valorTotalContrato', value: formData.valorTotalContrato },
-      { field: 'formaPagamento', value: formData.formaPagamento }
+      { field: 'nomeResponsavel', label: 'Nome do responsável (pagamento)', value: formData.nomeResponsavel },
+      { field: 'cpfCnpjResponsavel', label: 'CPF/CNPJ do responsável (pagamento)', value: formData.cpfCnpjResponsavel },
+      { field: 'valorTotalContrato', label: 'Valor total do contrato', value: formData.valorTotalContrato },
+      { field: 'formaPagamento', label: 'Forma de pagamento', value: formData.formaPagamento }
     ];
 
-    camposPagamentoObrigatorios.forEach(({ field, value }) => {
+    camposPagamentoObrigatorios.forEach(({ field, label, value }) => {
       if (!value || String(value).trim() === '') {
         errors.push({
           field,
-          message: 'Preencha todos os campos obrigatórios do pagamento do frete',
+          message: `Campo obrigatório não informado (${label})`,
           tab: 'Frete'
         });
       }

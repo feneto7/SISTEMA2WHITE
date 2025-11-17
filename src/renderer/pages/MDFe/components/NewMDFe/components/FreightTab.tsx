@@ -3,6 +3,7 @@ import { useClickSound } from '../../../../../hooks/useClickSound';
 import { useTheme } from '../../../../../styles/ThemeProvider';
 import { AddButton } from '../../../../../components/AddButton/AddButton';
 import { GenerateCIOTModal } from './GenerateCIOTModal';
+import { formatCpfOrCnpj } from '../../../../../utils/documentFormatter';
 
 // Freight tab for NewMDFe modal
 // Handles freight information and toll vouchers
@@ -303,7 +304,7 @@ export function FreightTab({ formData, onUpdateFormData }: FreightTabProps): JSX
               type="text"
               style={getInputStyle('cnpjFornecedor')}
               value={currentValePedagio.cnpjFornecedor}
-              onChange={(e) => handleValePedagioChange('cnpjFornecedor', e.target.value)}
+              onChange={(e) => handleValePedagioChange('cnpjFornecedor', formatCpfOrCnpj(e.target.value))}
               onFocus={() => handleInputFocus('cnpjFornecedor')}
               onBlur={handleInputBlur}
               onClick={() => playClickSound()}
@@ -342,7 +343,7 @@ export function FreightTab({ formData, onUpdateFormData }: FreightTabProps): JSX
               type="text"
               style={getInputStyle('cpfCnpjResponsavel')}
               value={currentValePedagio.cpfCnpjResponsavel}
-              onChange={(e) => handleValePedagioChange('cpfCnpjResponsavel', e.target.value)}
+              onChange={(e) => handleValePedagioChange('cpfCnpjResponsavel', formatCpfOrCnpj(e.target.value))}
               onFocus={() => handleInputFocus('cpfCnpjResponsavel')}
               onBlur={handleInputBlur}
               onClick={() => playClickSound()}
@@ -437,7 +438,7 @@ export function FreightTab({ formData, onUpdateFormData }: FreightTabProps): JSX
               type="text"
               style={getInputStyle('cpfCnpjResponsavel')}
               value={formData.cpfCnpjResponsavel || ''}
-              onChange={(e) => handleInputChange('cpfCnpjResponsavel', e.target.value)}
+              onChange={(e) => handleInputChange('cpfCnpjResponsavel', formatCpfOrCnpj(e.target.value))}
               onFocus={() => handleInputFocus('cpfCnpjResponsavel')}
               onBlur={handleInputBlur}
               onClick={() => playClickSound()}
@@ -565,7 +566,7 @@ export function FreightTab({ formData, onUpdateFormData }: FreightTabProps): JSX
               type="text"
               style={getInputStyle('cnpjIpef')}
               value={formData.cnpjIpef || ''}
-              onChange={(e) => handleInputChange('cnpjIpef', e.target.value)}
+              onChange={(e) => handleInputChange('cnpjIpef', formatCpfOrCnpj(e.target.value))}
               onFocus={() => handleInputFocus('cnpjIpef')}
               onBlur={handleInputBlur}
               onClick={() => playClickSound()}
@@ -609,7 +610,7 @@ export function FreightTab({ formData, onUpdateFormData }: FreightTabProps): JSX
               type="text"
               style={getInputStyle('cpfCnpjResponsavelCiot')}
               value={currentCiot.cpfCnpjResponsavel}
-              onChange={(e) => handleCiotChange('cpfCnpjResponsavel', e.target.value)}
+              onChange={(e) => handleCiotChange('cpfCnpjResponsavel', formatCpfOrCnpj(e.target.value))}
               onFocus={() => handleInputFocus('cpfCnpjResponsavelCiot')}
               onBlur={handleInputBlur}
               onClick={() => playClickSound()}

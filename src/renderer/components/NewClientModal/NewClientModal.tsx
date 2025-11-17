@@ -4,6 +4,7 @@ import { useTheme } from '../../styles/ThemeProvider';
 import { useClickSound } from '../../hooks/useClickSound';
 import { MainTab, AddressTab, AdditionalTab, PlansTab } from './components';
 import { Plan } from './types';
+import { formatCpfOrCnpj } from '../../utils/documentFormatter';
 
 // Interface para dados do cliente
 interface Client {
@@ -115,7 +116,8 @@ export function NewClientModal({ isOpen, onClose, onSave }: NewClientModalProps)
 
   // Função para atualizar dados do formulário
   const updateFormData = (field: string, value: string) => {
-    setFormData(prev => ({ ...prev, [field]: value }));
+    const formatted = field === 'document' ? formatCpfOrCnpj(value) : value;
+    setFormData(prev => ({ ...prev, [field]: formatted }));
   };
 
   // Planos: adicionar e remover

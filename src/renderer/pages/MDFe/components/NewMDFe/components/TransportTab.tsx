@@ -1,6 +1,7 @@
 import React, { useState, useRef } from 'react';
 import { useClickSound } from '../../../../../hooks/useClickSound';
 import { useTheme } from '../../../../../styles/ThemeProvider';
+import { formatCpfOrCnpj } from '../../../../../utils/documentFormatter';
 
 interface Vehicle {
   id: string;
@@ -152,7 +153,12 @@ export function TransportTab({ formData, onUpdateFormData }: TransportTabProps):
     type: type,
     style: getInputStyle(field),
     value: formData[field] || '',
-    onChange: (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => handleInputChange(field, e.target.value),
+    onChange: (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+      const raw = e.target.value;
+      const isDocField = /cpf|cnpj/i.test(field);
+      const formatted = isDocField ? formatCpfOrCnpj(raw) : raw;
+      handleInputChange(field, formatted);
+    },
     onFocus: () => handleInputFocus(field),
     onBlur: handleInputBlur,
     onClick: () => playClickSound(),
