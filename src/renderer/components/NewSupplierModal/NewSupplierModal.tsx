@@ -2,6 +2,7 @@ import { WindowHeader } from '../WindowHeader/WindowHeader';
 import React, { useState } from 'react';
 import { useTheme } from '../../styles/ThemeProvider';
 import { useClickSound } from '../../hooks/useClickSound';
+import { formatCpfOrCnpj } from '../../utils/documentFormatter';
 
 // Interface para dados do fornecedor
 interface Supplier {
@@ -93,7 +94,8 @@ export function NewSupplierModal({ isOpen, onClose, onSave }: NewSupplierModalPr
 
   // Função para atualizar dados do formulário
   const updateFormData = (field: string, value: string) => {
-    setFormData(prev => ({ ...prev, [field]: value }));
+    const formatted = field === 'document' ? formatCpfOrCnpj(value) : value;
+    setFormData(prev => ({ ...prev, [field]: formatted }));
   };
 
   // Função para mudar tipo de fornecedor e limpar documento se necessário

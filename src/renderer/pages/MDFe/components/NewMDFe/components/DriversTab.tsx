@@ -2,6 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import { useTheme } from '../../../../../styles/ThemeProvider';
 import { useClickSound } from '../../../../../hooks/useClickSound';
 import { AddButton } from '../../../../../components/AddButton';
+import { formatCpfOrCnpj } from '../../../../../utils/documentFormatter';
 
 // Drivers tab for NewMDFe modal
 // Handles driver selection and management
@@ -103,9 +104,11 @@ export function DriversTab({ formData, onUpdateFormData }: DriversTabProps): JSX
     type,
     value: novoCondutor[field as keyof typeof novoCondutor] || '',
     onChange: (e: React.ChangeEvent<HTMLInputElement>) => {
+      const raw = e.target.value;
+      const formatted = /cpf/i.test(field) ? formatCpfOrCnpj(raw) : raw;
       setNovoCondutor(prev => ({
         ...prev,
-        [field]: e.target.value
+        [field]: formatted
       }));
     },
     style: getInputStyle(field),

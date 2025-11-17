@@ -56,16 +56,29 @@ export function Dialog({
 
   return (
     <div style={systemStyles.dialog.overlay} onClick={handleOverlayClick}>
-      <div style={{ ...systemStyles.dialog.container, width }} onClick={(e) => e.stopPropagation()}>
+      <div
+        style={{
+          ...systemStyles.dialog.container,
+          width,
+          maxHeight: '80vh',
+          display: 'flex',
+          flexDirection: 'column'
+        }}
+        onClick={(e) => e.stopPropagation()}
+      >
         {/* Title Bar */}
         <div style={systemStyles.dialog.titleBar} />
 
         {/* Body */}
-        <div style={{
-          ...systemStyles.dialog.body,
-          paddingLeft: icon ? '108px' : '12px',
-          minHeight: icon ? '92px' : 'auto'
-        }}>
+        <div
+          style={{
+            ...systemStyles.dialog.body,
+            paddingLeft: icon ? '108px' : '12px',
+            minHeight: icon ? '92px' : 'auto',
+            overflowY: 'auto',
+            maxHeight: '60vh'
+          }}
+        >
           {/* Icon - Container separado para garantir que não ultrapasse */}
           {icon && (
             <div style={systemStyles.dialog.icon}>

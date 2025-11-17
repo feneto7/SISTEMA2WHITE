@@ -3,6 +3,7 @@ import { systemStyles, systemColors } from '../../../../../styles/systemStyle';
 import { useClickSound } from '../../../../../hooks/useClickSound';
 import { AddButton } from '../../../../../components/AddButton/AddButton';
 import { WindowHeader } from '../../../../../components/WindowHeader/WindowHeader';
+import { formatCpfOrCnpj } from '../../../../../utils/documentFormatter';
 
 // Modal para gerar CIOT
 // Componente separado para formulário completo de geração de CIOT
@@ -292,7 +293,7 @@ export function GenerateCIOTModal({ isOpen, onClose, onSave }: GenerateCIOTModal
                   type="text"
                   style={getInputStyle('cpfCnpjContratante')}
                   value={formData.cpfCnpjContratante}
-                  onChange={(e) => handleInputChange('cpfCnpjContratante', e.target.value)}
+                  onChange={(e) => handleInputChange('cpfCnpjContratante', formatCpfOrCnpj(e.target.value))}
                   onFocus={() => handleInputFocus('cpfCnpjContratante')}
                   onBlur={handleInputBlur}
                   onClick={() => playClickSound()}
@@ -305,7 +306,7 @@ export function GenerateCIOTModal({ isOpen, onClose, onSave }: GenerateCIOTModal
                   type="text"
                   style={getInputStyle('cpfCnpjContratado')}
                   value={formData.cpfCnpjContratado}
-                  onChange={(e) => handleInputChange('cpfCnpjContratado', e.target.value)}
+                  onChange={(e) => handleInputChange('cpfCnpjContratado', formatCpfOrCnpj(e.target.value))}
                   onFocus={() => handleInputFocus('cpfCnpjContratado')}
                   onBlur={handleInputBlur}
                   onClick={() => playClickSound()}
@@ -397,7 +398,7 @@ export function GenerateCIOTModal({ isOpen, onClose, onSave }: GenerateCIOTModal
                   type="text"
                   style={getInputStyle('cpfCnpjDestinatario')}
                   value={formData.cpfCnpjDestinatario}
-                  onChange={(e) => handleInputChange('cpfCnpjDestinatario', e.target.value)}
+                  onChange={(e) => handleInputChange('cpfCnpjDestinatario', formatCpfOrCnpj(e.target.value))}
                   onFocus={() => handleInputFocus('cpfCnpjDestinatario')}
                   onBlur={handleInputBlur}
                   onClick={() => playClickSound()}

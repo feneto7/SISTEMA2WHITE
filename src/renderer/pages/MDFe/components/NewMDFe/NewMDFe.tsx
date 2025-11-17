@@ -6,6 +6,7 @@ import { validateMDFe, generateMDFeJSON, ValidationError } from '../../../../uti
 import { WindowHeader } from '../../../../components/WindowHeader/WindowHeader';
 import { Dialog } from '../../../../components/Dialog';
 import { AppIcons } from '../../../../components/Icons/AppIcons';
+import { convertReaisToCents } from '../../../../utils/money';
 
 // New MDF-e modal
 // Modularized component following project rules
@@ -281,7 +282,10 @@ export function NewMDFe({ isOpen, onClose, onSave }: NewMDFeProps): JSX.Element 
     }
 
     // Gerar JSON estruturado no padrão SEFAZ
-    const mdfeJSON = generateMDFeJSON(formData);
+    let mdfeJSON = generateMDFeJSON(formData);
+
+    // Normalizações críticas antes do envio à API/SEFAZ
+    mdfeJSON = normalizeMdfeForApi(mdfeJSON);
     
     console.log('MDF-e JSON gerado para envio à API:', JSON.stringify(mdfeJSON, null, 2));
     
@@ -315,6 +319,87 @@ export function NewMDFe({ isOpen, onClose, onSave }: NewMDFeProps): JSX.Element 
   };
 
   if (!isOpen) return null;
+
+  // ------------------------
+  // Helpers de normalização
+  // ------------------------
+  const PAYMENT_IN_CENTS = false; // SEFAZ exige strings com ponto decimal (ex: "10000.00")
+
+  function formatMoneyString(value: string | number): string {
+    const num = typeof value === 'string' ? parseFloat(value.replace(',', '.')) : value;
+    if (Number.isNaN(num)) return '0.00';
+    return num.toFixed(2);
+  }
+
+  function sanitizeQuantity(value: string | number, precision = 3): string {
+    const cleaned = String(value).replace(/\./g, '').replace(',', '.');
+    const num = parseFloat(cleaned);
+    if (Number.isNaN(num)) return (0).toFixed(precision);
+    return num.toFixed(precision);
+  }
+
+  function normalizeMdfeForApi(json: any): any {
+    const out = { ...json };
+
+    // 1) Totais: qCarga sem separador de milhar e precisão coerente
+    if (out?.tot?.qCarga !== undefined) {
+      out.tot.qCarga = sanitizeQuantity(out.tot.qCarga, 3);
+    }
+
+    // 2) Pagamento (infPag): valores monetários consistentes
+    const pags = out?.infModal?.rodo?.infPag;
+    if (Array.isArray(pags)) {
+      out.infModal.rodo.infPag = pags.map((p: any) => {
+        const cloned = { ...p };
+        // Componentes do pagamento
+        if (Array.isArray(cloned.comp)) {
+          cloned.comp = cloned.comp.map((c: any) => {
+            const cc = { ...c };
+            if (cc.vComp !== undefined) {
+              cc.vComp = PAYMENT_IN_CENTS
+                ? convertReaisToCents(String(cc.vComp).replace(',', '.'))
+                : formatMoneyString(cc.vComp);
+            }
+            return cc;
+          });
+        }
+        // vContrato e vPrest
+        if (cloned.vContrato !== undefined) {
+          cloned.vContrato = PAYMENT_IN_CENTS
+            ? convertReaisToCents(String(cloned.vContrato).replace(',', '.'))
+            : formatMoneyString(cloned.vContrato);
+        }
+        if (cloned.vPrest !== undefined) {
+          cloned.vPrest = PAYMENT_IN_CENTS
+            ? convertReaisToCents(String(cloned.vPrest).replace(',', '.'))
+            : formatMoneyString(cloned.vPrest);
+        }
+        return cloned;
+      });
+    }
+
+    // 3) CIOT (quando houver): inclui em rodo.infANTT.infCIOT
+    // Espera-se formData.ciotList: [{ ciot: string, cpfCnpj?: string, cnpjIpef?: string }]
+    if (Array.isArray((formData as any).ciotList) && (formData as any).ciotList.length > 0) {
+      const ciotList = (formData as any).ciotList
+        .filter((c: any) => c?.ciot)
+        .map((c: any) => ({
+          CIOT: c.ciot,
+          CPF: c.cpfCnpj && c.cpfCnpj.length === 11 ? c.cpfCnpj : undefined,
+          CNPJ: c.cpfCnpj && c.cpfCnpj.length === 14 ? c.cpfCnpj : undefined,
+          CNPJIPEF: c.cnpjIpef || undefined
+        }));
+
+      if (ciotList.length > 0) {
+        out.infModal = out.infModal || {};
+        out.infModal.rodo = out.infModal.rodo || {};
+        out.infModal.rodo.infANTT = out.infModal.rodo.infANTT || {};
+        out.infModal.rodo.infANTT.infCIOT = ciotList;
+      }
+    }
+
+    return out;
+  }
 
   const styles = {
     overlay: {
@@ -644,7 +729,7 @@ export function NewMDFe({ isOpen, onClose, onSave }: NewMDFeProps): JSX.Element 
         hint={validationHint}
         confirmLabel="OK"
         showCancel={false}
-        width="500px"
+        width="640px"
       />
     </div>
   );

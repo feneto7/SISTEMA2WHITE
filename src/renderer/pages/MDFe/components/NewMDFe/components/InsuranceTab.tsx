@@ -2,6 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import { useClickSound } from '../../../../../hooks/useClickSound';
 import { useTheme } from '../../../../../styles/ThemeProvider';
 import { AddButton } from '../../../../../components/AddButton/AddButton';
+import { formatCpfOrCnpj } from '../../../../../utils/documentFormatter';
 
 // Insurance tab for NewMDFe modal
 // Handles cargo insurance information
@@ -220,7 +221,7 @@ export function InsuranceTab({ formData, onUpdateFormData }: InsuranceTabProps):
               type="text"
               style={getInputStyle('cpfCnpjResponsavelSeguro')}
               value={formData.cpfCnpjResponsavelSeguro || ''}
-              onChange={(e) => handleInputChange('cpfCnpjResponsavelSeguro', e.target.value)}
+              onChange={(e) => handleInputChange('cpfCnpjResponsavelSeguro', formatCpfOrCnpj(e.target.value))}
               onFocus={() => handleInputFocus('cpfCnpjResponsavelSeguro')}
               onBlur={handleInputBlur}
               onClick={() => playClickSound()}
@@ -253,7 +254,7 @@ export function InsuranceTab({ formData, onUpdateFormData }: InsuranceTabProps):
               type="text"
               style={getInputStyle('cnpjSeguradora')}
               value={formData.cnpjSeguradora || ''}
-              onChange={(e) => handleInputChange('cnpjSeguradora', e.target.value)}
+              onChange={(e) => handleInputChange('cnpjSeguradora', formatCpfOrCnpj(e.target.value))}
               onFocus={() => handleInputFocus('cnpjSeguradora')}
               onBlur={handleInputBlur}
               onClick={() => playClickSound()}
