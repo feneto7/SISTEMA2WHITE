@@ -49,6 +49,11 @@ export function NewMDFe({ isOpen, onClose, onSave }: NewMDFeProps): JSX.Element 
     cor: '',
     combustivel: '',
     capacidade: '',
+    capacidadeM3: '',
+    tipoCarroceria: '',
+    tipoRodado: '',
+    tara: '',
+    ufVeiculo: '',
     proprietario: '',
     cpfCnpjProprietario: '',
     enderecoProprietario: '',
@@ -136,7 +141,10 @@ export function NewMDFe({ isOpen, onClose, onSave }: NewMDFeProps): JSX.Element 
     destinatario: '',
     valor: 0,
     status: 'pendente',
-    dataEmissao: new Date().toISOString().split('T')[0]
+    dataEmissao: new Date().toISOString().split('T')[0],
+    
+    // Tipo de emitente (busca do localStorage configurado em Settings)
+    tipoEmitente: localStorage.getItem('mdfe_tipo_emitente') || 'prestador'
   });
 
   // Function to close modal
@@ -156,6 +164,11 @@ export function NewMDFe({ isOpen, onClose, onSave }: NewMDFeProps): JSX.Element 
       cor: '',
       combustivel: '',
       capacidade: '',
+      capacidadeM3: '',
+      tipoCarroceria: '',
+      tipoRodado: '',
+      tara: '',
+      ufVeiculo: '',
       proprietario: '',
       cpfCnpjProprietario: '',
       enderecoProprietario: '',
@@ -224,7 +237,8 @@ export function NewMDFe({ isOpen, onClose, onSave }: NewMDFeProps): JSX.Element 
       destinatario: '',
       valor: 0,
       status: 'pendente',
-      dataEmissao: new Date().toISOString().split('T')[0]
+      dataEmissao: new Date().toISOString().split('T')[0],
+      tipoEmitente: localStorage.getItem('mdfe_tipo_emitente') || 'prestador'
     });
     setMdfeType('rodoviario');
     setActiveTab('documents');
@@ -297,14 +311,10 @@ export function NewMDFe({ isOpen, onClose, onSave }: NewMDFeProps): JSX.Element 
       dataGeracao: new Date().toISOString()
     };
 
-    // TODO: Aqui a API receberá o mdfeJSON e fará:
-    // 1. Converter o JSON para XML conforme schema da SEFAZ
-    // 2. Assinar digitalmente o XML
-    // 3. Enviar para a SEFAZ
-    // 4. Retornar a resposta (autorizado, rejeitado, etc)
-
+    // Envia os dados para o componente pai que fará a chamada à API
+    // O componente pai controla quando fechar o modal após a resposta da API
     onSave(mdfeData);
-    handleClose();
+    // Não fecha o modal aqui - deixa o componente pai controlar
   };
 
   // Function to update form data

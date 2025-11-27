@@ -66,6 +66,26 @@ export function TransportTab({ formData, onUpdateFormData }: TransportTabProps):
     'RS', 'RO', 'RR', 'SC', 'SP', 'SE', 'TO'
   ];
 
+  // Opções de Tipo de Carroceria
+  const tiposCarroceria = [
+    { value: '00', label: 'não aplicável' },
+    { value: '01', label: 'Aberta' },
+    { value: '02', label: 'Fechada/Baú' },
+    { value: '03', label: 'Granelera' },
+    { value: '04', label: 'Porta Container' },
+    { value: '05', label: 'Sider' }
+  ];
+
+  // Opções de Tipo de Rodado
+  const tiposRodado = [
+    { value: '01', label: 'Truck' },
+    { value: '02', label: 'Toco' },
+    { value: '03', label: 'Cavalo Mecânico' },
+    { value: '04', label: 'VAN' },
+    { value: '05', label: 'Utilitário' },
+    { value: '06', label: 'Outros' }
+  ];
+
   // Dados mockados de veículos cadastrados
   const [veiculosCadastrados] = useState<Vehicle[]>([
     {
@@ -339,6 +359,109 @@ export function TransportTab({ formData, onUpdateFormData }: TransportTabProps):
             <input {...getInputProps('renavam', '12345678901')} />
           </div>
           <div style={styles.formGroup}>
+            <label style={styles.label}>Tipo de Carroceria</label>
+            <div style={{ position: 'relative' }}>
+              <select
+                style={{
+                  ...systemStyles.select.field,
+                  appearance: 'none' as const,
+                  WebkitAppearance: 'none' as const,
+                  MozAppearance: 'none' as const
+                }}
+                value={formData.tipoCarroceria || ''}
+                onChange={(e) => {
+                  playClickSound();
+                  handleInputChange('tipoCarroceria', e.target.value);
+                }}
+                onFocus={() => handleInputFocus('tipoCarroceria')}
+                onBlur={handleInputBlur}
+                onClick={() => playClickSound()}
+              >
+                <option value="">Selecione o tipo de carroceria</option>
+                {tiposCarroceria.map(tipo => (
+                  <option key={tipo.value} value={tipo.value}>
+                    {tipo.label}
+                  </option>
+                ))}
+              </select>
+              <div style={systemStyles.select.arrow}>
+                <div style={systemStyles.select.arrowIcon}></div>
+              </div>
+            </div>
+          </div>
+          <div style={styles.formGroup}>
+            <label style={styles.label}>Tipo de Rodado</label>
+            <div style={{ position: 'relative' }}>
+              <select
+                style={{
+                  ...systemStyles.select.field,
+                  appearance: 'none' as const,
+                  WebkitAppearance: 'none' as const,
+                  MozAppearance: 'none' as const
+                }}
+                value={formData.tipoRodado || ''}
+                onChange={(e) => {
+                  playClickSound();
+                  handleInputChange('tipoRodado', e.target.value);
+                }}
+                onFocus={() => handleInputFocus('tipoRodado')}
+                onBlur={handleInputBlur}
+                onClick={() => playClickSound()}
+              >
+                <option value="">Selecione o tipo de rodado</option>
+                {tiposRodado.map(tipo => (
+                  <option key={tipo.value} value={tipo.value}>
+                    {tipo.label}
+                  </option>
+                ))}
+              </select>
+              <div style={systemStyles.select.arrow}>
+                <div style={systemStyles.select.arrowIcon}></div>
+              </div>
+            </div>
+          </div>
+          <div style={styles.formGroup}>
+            <label style={styles.label}>Tara (KG)</label>
+            <input {...getInputProps('tara', '2372')} />
+          </div>
+          <div style={styles.formGroup}>
+            <label style={styles.label}>UF</label>
+            <div style={{ position: 'relative' }}>
+              <select
+                style={{
+                  ...systemStyles.select.field,
+                  appearance: 'none' as const,
+                  WebkitAppearance: 'none' as const,
+                  MozAppearance: 'none' as const
+                }}
+                value={formData.ufVeiculo || ''}
+                onChange={(e) => {
+                  playClickSound();
+                  handleInputChange('ufVeiculo', e.target.value);
+                }}
+                onFocus={() => handleInputFocus('ufVeiculo')}
+                onBlur={handleInputBlur}
+                onClick={() => playClickSound()}
+              >
+                <option value="">Selecione a UF</option>
+                {ufsBrasileiras.map(uf => (
+                  <option key={uf} value={uf}>{uf}</option>
+                ))}
+              </select>
+              <div style={systemStyles.select.arrow}>
+                <div style={systemStyles.select.arrowIcon}></div>
+              </div>
+            </div>
+          </div>
+          <div style={styles.formGroup}>
+            <label style={styles.label}>Capacidade (KG)</label>
+            <input {...getInputProps('capacidade', '1500')} />
+          </div>
+          <div style={styles.formGroup}>
+            <label style={styles.label}>Capacidade (M3)</label>
+            <input {...getInputProps('capacidadeM3', '')} />
+          </div>
+          <div style={styles.formGroup}>
             <label style={styles.label}>Chassi</label>
             <input {...getInputProps('chassi', '9BWZZZZ377VT00426')} />
           </div>
@@ -367,11 +490,7 @@ export function TransportTab({ formData, onUpdateFormData }: TransportTabProps):
             <input {...getInputProps('combustivel', 'Flex')} />
           </div>
           <div style={styles.formGroup}>
-            <label style={styles.label}>Capacidade (kg)</label>
-            <input {...getInputProps('capacidade', '1500')} />
-          </div>
-          <div style={styles.formGroup}>
-            <label style={styles.label}>RNTRC*</label>
+            <label style={styles.label}>RNTRC</label>
             <input {...getInputProps('rntrc', '00000000')} />
           </div>
         </div>

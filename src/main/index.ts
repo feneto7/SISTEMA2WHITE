@@ -2,6 +2,8 @@ import path from 'node:path';
 import { app, BrowserWindow, nativeTheme, ipcMain, dialog, Notification } from 'electron';
 import { getInstalledCertificates } from './handlers/certificateHandler';
 import { importNFEXMLs, importNFEXMLsFromFiles } from './handlers/xmlImportHandler';
+import https from 'node:https';
+import http from 'node:http';
 
 let mainWindow: BrowserWindow | null = null;
 
@@ -36,7 +38,8 @@ const createWindow = () => {
     webPreferences: {
       preload: path.join(__dirname, '../preload/index.cjs'),
       contextIsolation: true,
-      nodeIntegration: false
+      nodeIntegration: false,
+      webSecurity: false // Permite requisições cross-origin no Electron (apenas desenvolvimento)
     }
   });
 
@@ -89,6 +92,90 @@ app.whenReady().then(() => {
       console.error('Erro ao abrir dialog:', error);
       throw error;
     }
+  });
+
+  // Handler para fazer requisições HTTP do lado do Node.js (sem problemas de CORS)
+  ipcMain.handle('http-fetch', async (event, url: string, options?: any) => {
+    return new Promise((resolve, reject) => {
+      try {
+        const urlObj = new URL(url);
+        const isHttps = urlObj.protocol === 'https:';
+        const httpModule = isHttps ? https : http;
+        
+        // Garante que headers é um objeto simples
+        const headers = options?.headers || {};
+        const cleanHeaders: Record<string, string> = {};
+        for (const [key, value] of Object.entries(headers)) {
+          cleanHeaders[key] = String(value);
+        }
+        
+        const requestOptions = {
+          hostname: urlObj.hostname,
+          port: urlObj.port || (isHttps ? 443 : 80),
+          path: urlObj.pathname + urlObj.search,
+          method: options?.method || 'GET',
+          headers: cleanHeaders
+        };
+
+        const req = httpModule.request(requestOptions, (res) => {
+        let data = '';
+
+        res.on('data', (chunk) => {
+          data += chunk;
+        });
+
+        res.on('end', () => {
+          try {
+            const jsonData = data ? JSON.parse(data) : null;
+            // Retorna apenas dados primitivos que podem ser clonados pelo IPC
+            const responseData = {
+              ok: res.statusCode ? res.statusCode >= 200 && res.statusCode < 300 : false,
+              status: res.statusCode || 200,
+              statusText: res.statusMessage || 'OK',
+              data: jsonData, // Dados JSON parseados diretamente
+              text: data, // Texto da resposta
+              headers: {} as Record<string, string>
+            };
+            
+            // Converte headers para objeto simples de strings
+            if (res.headers) {
+              for (const [key, value] of Object.entries(res.headers)) {
+                if (Array.isArray(value)) {
+                  responseData.headers[key] = value.join(', ');
+                } else if (value) {
+                  responseData.headers[key] = String(value);
+                }
+              }
+            }
+            
+            resolve(responseData);
+          } catch (e) {
+            resolve({
+              ok: res.statusCode ? res.statusCode >= 200 && res.statusCode < 300 : false,
+              status: res.statusCode || 200,
+              statusText: res.statusMessage || 'OK',
+              data: null,
+              text: data,
+              headers: {} as Record<string, string>
+            });
+          }
+        });
+      });
+
+        req.on('error', (error) => {
+          reject(error);
+        });
+
+        if (options?.body) {
+          req.write(typeof options.body === 'string' ? options.body : JSON.stringify(options.body));
+        }
+
+        req.end();
+      } catch (error) {
+        console.error('[Main] Erro ao criar requisição:', error);
+        reject(error);
+      }
+    });
   });
 
   // Handler para exibir notificação do sistema

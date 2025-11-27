@@ -17,19 +17,31 @@ export function MDFeSubTab(): JSX.Element {
   const [producao, setProducao] = useState<FormData>({ serie: '', numero: '' });
   const [homologacao, setHomologacao] = useState<FormData>({ serie: '', numero: '' });
   const [activeEnvironment, setActiveEnvironment] = useState<'producao' | 'homologacao'>('homologacao');
+  const [tipoEmitente, setTipoEmitente] = useState<string>('nao_prestador');
 
   const [isProducaoSerieFocused, setIsProducaoSerieFocused] = useState(false);
   const [isProducaoNumeroFocused, setIsProducaoNumeroFocused] = useState(false);
   const [isHomologacaoSerieFocused, setIsHomologacaoSerieFocused] = useState(false);
   const [isHomologacaoNumeroFocused, setIsHomologacaoNumeroFocused] = useState(false);
+  const [isTipoEmitenteFocused, setIsTipoEmitenteFocused] = useState(false);
 
-  // Carregar ambiente ativo
+  // Carregar ambiente ativo e tipo de emitente
   useEffect(() => {
     const savedEnv = localStorage.getItem(ENVIRONMENT_KEY) as 'producao' | 'homologacao' | null;
     if (savedEnv) {
       setActiveEnvironment(savedEnv);
     }
+    
+    const savedTipoEmitente = localStorage.getItem('mdfe_tipo_emitente');
+    if (savedTipoEmitente) {
+      setTipoEmitente(savedTipoEmitente);
+    }
   }, []);
+  
+  // Salvar tipo de emitente no localStorage quando mudar
+  useEffect(() => {
+    localStorage.setItem('mdfe_tipo_emitente', tipoEmitente);
+  }, [tipoEmitente]);
 
   // Estilo padrão para inputs - o foco é aplicado globalmente via CSS
   const getInputStyle = () => ({
@@ -71,6 +83,30 @@ export function MDFeSubTab(): JSX.Element {
       }}>
         Configure o próximo número de série e numeração para MDF-e.
       </p>
+
+      {/* Campo Tipo de Emitente */}
+      <div style={systemStyles.input.container}>
+        <label style={systemStyles.input.label}>Tipo de Emitente</label>
+        <div style={systemStyles.select.container}>
+          <div style={systemStyles.select.fieldWrapper}>
+            <select
+              value={tipoEmitente}
+              onChange={(e) => setTipoEmitente(e.target.value)}
+              onFocus={() => setIsTipoEmitenteFocused(true)}
+              onBlur={() => setIsTipoEmitenteFocused(false)}
+              style={{
+                ...systemStyles.select.field,
+                cursor: 'pointer'
+              }}
+            >
+              <option value="nao_prestador">Não prestador de serviço de transporte</option>
+            </select>
+            <div style={systemStyles.select.arrow}>
+              <div style={systemStyles.select.arrowIcon}></div>
+            </div>
+          </div>
+        </div>
+      </div>
 
       {/* Ambiente de Produção */}
       <div style={{ 

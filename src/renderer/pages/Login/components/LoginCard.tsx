@@ -11,9 +11,10 @@ import logoImage from '../../../../main/img/logo.png';
 
 interface LoginCardProps {
   onLogin: (email: string, password: string) => void;
+  isLoading?: boolean;
 }
 
-export function LoginCard({ onLogin }: LoginCardProps): JSX.Element {
+export function LoginCard({ onLogin, isLoading = false }: LoginCardProps): JSX.Element {
   const { theme, systemColors } = useTheme();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -91,8 +92,10 @@ export function LoginCard({ onLogin }: LoginCardProps): JSX.Element {
         return;
       }
       
-      // Login bem-sucedido
-      onLogin(email, password);
+      // Login bem-sucedido (não chama se já estiver fazendo login)
+      if (!isLoading) {
+        onLogin(email, password);
+      }
     }
   };
 
