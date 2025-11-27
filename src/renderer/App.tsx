@@ -5,6 +5,7 @@ import { PageTransition } from './components/PageTransition';
 
 // Lazy loading das páginas para melhor performance
 // Carrega apenas quando necessário, reduzindo o bundle inicial
+const TenantSelection = lazy(() => import('./pages/TenantSelection').then(module => ({ default: module.TenantSelection })));
 const Login = lazy(() => import('./pages/Login').then(module => ({ default: module.Login })));
 const Home = lazy(() => import('./pages/Home/Home').then(module => ({ default: module.Home })));
 const Products = lazy(() => import('./pages/Products/Products').then(module => ({ default: module.Products })));
@@ -22,6 +23,8 @@ function AppContent(): JSX.Element {
   // Renderização condicional com lazy loading
   const renderPage = () => {
     switch (route) {
+      case 'tenant':
+        return <TenantSelection />;
       case 'login':
         return <Login />;
       case 'products':

@@ -25,6 +25,11 @@ export interface MDFeFormData {
   cor: string;
   combustivel: string;
   capacidade: string;
+  capacidadeM3: string;
+  tipoCarroceria: string;
+  tipoRodado: string;
+  tara: string;
+  ufVeiculo: string;
   proprietario: string;
   cpfCnpjProprietario: string;
   enderecoProprietario: string;
@@ -112,6 +117,9 @@ export interface MDFeFormData {
   valor: number;
   status: string;
   dataEmissao: string;
+  
+  // Tipo de emitente (do Settings)
+  tipoEmitente?: string; // 'prestador' | 'nao_prestador'
 }
 
 /**
@@ -120,6 +128,10 @@ export interface MDFeFormData {
  */
 export function validateMDFe(formData: MDFeFormData): ValidationError[] {
   const errors: ValidationError[] = [];
+  
+  // Busca tipo de emitente do localStorage (configurado em Settings > Fiscal > MDF-e)
+  const tipoEmitente = formData.tipoEmitente || localStorage.getItem('mdfe_tipo_emitente') || 'prestador';
+  const isPrestador = tipoEmitente !== 'nao_prestador';
 
   // Validação da aba Documentos
   if (!formData.notasFiscais || formData.notasFiscais.length === 0) {
@@ -152,6 +164,42 @@ export function validateMDFe(formData: MDFeFormData): ValidationError[] {
     });
   }
 
+  // Validação Tipo de Carroceria (obrigatório)
+  if (!formData.tipoCarroceria || formData.tipoCarroceria.trim() === '') {
+    errors.push({
+      field: 'tipoCarroceria',
+      message: 'Tipo de Carroceria é obrigatório',
+      tab: 'Transporte'
+    });
+  }
+
+  // Validação Tipo de Rodado (obrigatório)
+  if (!formData.tipoRodado || formData.tipoRodado.trim() === '') {
+    errors.push({
+      field: 'tipoRodado',
+      message: 'Tipo de Rodado é obrigatório',
+      tab: 'Transporte'
+    });
+  }
+
+  // Validação Tara (obrigatório)
+  if (!formData.tara || formData.tara.trim() === '' || parseFloat(formData.tara) <= 0) {
+    errors.push({
+      field: 'tara',
+      message: 'Tara (KG) é obrigatória e deve ser maior que zero',
+      tab: 'Transporte'
+    });
+  }
+
+  // Validação UF do Veículo (obrigatório)
+  if (!formData.ufVeiculo || formData.ufVeiculo.trim() === '') {
+    errors.push({
+      field: 'ufVeiculo',
+      message: 'UF do veículo é obrigatória',
+      tab: 'Transporte'
+    });
+  }
+
   if (!formData.renavam || formData.renavam.length !== 11) {
     errors.push({
       field: 'renavam',
@@ -160,10 +208,11 @@ export function validateMDFe(formData: MDFeFormData): ValidationError[] {
     });
   }
 
-  if (!formData.rntrc || formData.rntrc.replace(/\D/g, '').length === 0) {
+  // RNTRC só é obrigatório para prestador de serviço de transporte
+  if (isPrestador && (!formData.rntrc || formData.rntrc.replace(/\D/g, '').length === 0)) {
     errors.push({
       field: 'rntrc',
-      message: 'RNTRC é obrigatório para transporte rodoviário',
+      message: 'RNTRC é obrigatório para prestador de serviço de transporte',
       tab: 'Transporte'
     });
   }
@@ -196,6 +245,7 @@ export function validateMDFe(formData: MDFeFormData): ValidationError[] {
   }
 
   // Validação da aba Condutores
+  // Condutores são obrigatórios independente do tipo de emitente
   if (!formData.condutoresSelecionados || formData.condutoresSelecionados.length === 0) {
     errors.push({
       field: 'condutoresSelecionados',
@@ -270,17 +320,46 @@ export function validateMDFe(formData: MDFeFormData): ValidationError[] {
     });
   }
 
-  // Validação da categoria do veículo (obrigatória para rodoviário)
-  if (formData.tipoMDFe === 'rodoviario' && !formData.categoriaVeicular) {
+  // Validação Tipo da Carga (obrigatório)
+  if (!formData.tipoCarga || formData.tipoCarga.trim() === '') {
     errors.push({
-      field: 'categoriaVeicular',
-      message: 'Categoria veicular é obrigatória para transporte rodoviário',
-      tab: 'Frete'
+      field: 'tipoCarga',
+      message: 'Tipo da Carga é obrigatório',
+      tab: 'Totalizadores'
     });
   }
 
-  // Validação do seguro (obrigatório para modal rodoviário)
-  if (formData.tipoMDFe === 'rodoviario') {
+  // Validação Descrição do Produto (obrigatório)
+  if (!formData.descricaoProduto || formData.descricaoProduto.trim() === '') {
+    errors.push({
+      field: 'descricaoProduto',
+      message: 'Descrição do Produto é obrigatória',
+      tab: 'Totalizadores'
+    });
+  }
+
+  // Validação CEP Local de Carregamento (obrigatório)
+  if (!formData.cepLocalCarregamento || formData.cepLocalCarregamento.trim() === '') {
+    errors.push({
+      field: 'cepLocalCarregamento',
+      message: 'CEP Local de Carregamento é obrigatório',
+      tab: 'Totalizadores'
+    });
+  }
+
+  // Validação CEP Local de Descarregamento (obrigatório)
+  if (!formData.cepLocalDescarregamento || formData.cepLocalDescarregamento.trim() === '') {
+    errors.push({
+      field: 'cepLocalDescarregamento',
+      message: 'CEP Local de Descarregamento é obrigatório',
+      tab: 'Totalizadores'
+    });
+  }
+
+  // Categoria veicular não é obrigatória (removida conforme solicitação)
+
+  // Validação do seguro e pagamento (obrigatórios apenas para prestador de serviço de transporte)
+  if (formData.tipoMDFe === 'rodoviario' && isPrestador) {
     const camposSeguroObrigatorios = [
       { field: 'responsavelSeguro', label: 'Responsável pelo seguro', value: formData.responsavelSeguro },
       { field: 'cpfCnpjResponsavelSeguro', label: 'CPF/CNPJ do responsável pelo seguro', value: formData.cpfCnpjResponsavelSeguro },
@@ -334,6 +413,7 @@ export function validateMDFe(formData: MDFeFormData): ValidationError[] {
  * IMPORTANTE: Apenas campos preenchidos são incluídos no JSON
  */
 export function generateMDFeJSON(formData: MDFeFormData): any {
+  // Formato de data ISO para Laravel (aceita ISO string)
   const timestamp = new Date().toISOString();
   const modal = getModalCode(formData.tipoMDFe);
   
@@ -348,15 +428,22 @@ export function generateMDFeJSON(formData: MDFeFormData): any {
   const codigoMunCarrega = primeiraNotaFiscal?.emitenteCodigoMunicipio || 
     getMunicipioCode(formData.municipioCarregamento, formData.ufCarregamento);
 
+  // Gera número do MDF-e se não estiver preenchido (formato: 000000001)
+  const numeroMDF = formData.numero || generateNextMDFeNumber();
+
+  // Busca tipo de emitente do localStorage (configurado em Settings > Fiscal > MDF-e)
+  const tipoEmitente = formData.tipoEmitente || localStorage.getItem('mdfe_tipo_emitente') || 'prestador';
+  const tpEmit = tipoEmitente === 'nao_prestador' ? "2" : "1"; // 1-Prestador, 2-Não prestador
+
   // Monta a seção ide (identificação) - campos obrigatórios
   const ide: any = {
     cUF: getCUFCode(formData.ufCarregamento),
     tpAmb: tpAmb, // 1-Produção, 2-Homologação (vem das configurações)
-    tpEmit: "1", // 1-Prestador de serviço de transporte
+    tpEmit: tpEmit, // 1-Prestador de serviço de transporte, 2-Não prestador
     tpTransp: "0", // 0-Não se aplica (quando for ETC ou CTC)
-    modelo: "58", // Modelo do MDF-e
+    mod: "58", // Modelo do MDF-e (API espera "mod", não "modelo")
     serie: formData.serie || "001",
-    nMDF: formData.numero,
+    nMDF: numeroMDF,
     cMDF: generateCMDF(formData),
     cDV: calculateCheckDigit(formData),
     modal: modal, // 1-Rodoviário, 2-Aéreo, 3-Aquaviário, 4-Ferroviário
@@ -373,13 +460,19 @@ export function generateMDFeJSON(formData: MDFeFormData): any {
     dhIniViagem: timestamp
   };
 
-  // Adiciona percurso apenas se houver UFs
+  // Adiciona percurso (obrigatório pela API, mesmo que vazio)
+  // Se não houver UFs de percurso, adiciona pelo menos a UF inicial
   if (formData.ufsPercurso && formData.ufsPercurso.length > 0) {
     ide.infPercurso = formData.ufsPercurso
       .filter((uf: any) => typeof uf === 'string' ? uf : uf.uf) // Aceita string ou objeto com propriedade 'uf'
       .map((uf: any) => ({
         UFPer: typeof uf === 'string' ? uf : uf.uf // Extrai apenas a sigla da UF
       }));
+  } else {
+    // Se não houver percurso definido, adiciona pelo menos a UF inicial
+    ide.infPercurso = [{
+      UFPer: formData.ufCarregamento
+    }];
   }
 
   // Monta a seção emit (emitente) - campos obrigatórios
@@ -475,6 +568,15 @@ function generateCMDF(formData: MDFeFormData): string {
   return Math.floor(Math.random() * 100000000).toString().padStart(8, '0');
 }
 
+function generateNextMDFeNumber(): string {
+  // Gera número sequencial do MDF-e (formato: 000000001)
+  // TODO: Buscar último número da API ou usar contador local
+  const lastNumber = parseInt(localStorage.getItem('lastMDFeNumber') || '0', 10);
+  const nextNumber = lastNumber + 1;
+  localStorage.setItem('lastMDFeNumber', nextNumber.toString());
+  return nextNumber.toString().padStart(9, '0');
+}
+
 function calculateCheckDigit(formData: MDFeFormData): string {
   // Calcula o dígito verificador (simplificado - a API deve calcular o correto)
   return '0';
@@ -524,15 +626,24 @@ function generateInfModalJSON(formData: MDFeFormData): any {
       cInt: "001",
       placa: formData.placa.replace(/[^a-zA-Z0-9]/g, '').toUpperCase(),
       RENAVAM: formData.renavam,
-      tpRod: "01", // 01-Truck, 02-Toco, 03-Cavalo Mecânico, etc
-      tpCar: "00", // 00-Não aplicável
-      UF: formData.ufProprietario
+      tpRod: formData.tipoRodado || "01", // 01-Truck, 02-Toco, 03-Cavalo Mecânico, etc
+      tpCar: formData.tipoCarroceria || "00", // 00-Não aplicável, 01-Aberta, 02-Fechada/Baú, etc
+      UF: formData.ufVeiculo || formData.ufProprietario
     };
 
     // Adiciona tara apenas se preenchido
+    if (formData.tara && formData.tara !== "0") {
+      veicTracao.tara = formData.tara;
+    }
+
+    // Adiciona capacidade em KG apenas se preenchido
     if (formData.capacidade && formData.capacidade !== "0") {
-      veicTracao.tara = "0";
       veicTracao.capKG = formData.capacidade;
+    }
+
+    // Adiciona capacidade em M3 apenas se preenchido
+    if (formData.capacidadeM3 && formData.capacidadeM3 !== "0") {
+      veicTracao.capM3 = formData.capacidadeM3;
     }
 
     // Adiciona condutores apenas se houver

@@ -97,6 +97,15 @@ export default defineConfig({
     server: {
       hmr: {
         overlay: false // Desabilitar overlay de erros para melhor performance
+      },
+      // Proxy para API Laravel - resolve problemas de CORS
+      proxy: {
+        '/api': {
+          target: 'http://localhost:8000',
+          changeOrigin: true,
+          secure: false,
+          rewrite: (path) => path
+        }
       }
     }
   }

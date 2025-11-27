@@ -6,6 +6,8 @@ import { useClickSound } from '../../hooks/useClickSound';
 import { BackButton } from '../../components/BackButton';
 import { MDFeRegistrations } from './components/MDFeRegistrations';
 import { AppIcons } from '../../components/Icons/AppIcons';
+import { apiPost } from '../../utils/apiService';
+import { Dialog } from '../../components/Dialog';
 
 // Página de MDF-e do sistema
 // Permite visualizar e gerenciar MDF-es emitidas
@@ -18,6 +20,11 @@ export function MDFePage(): JSX.Element {
   const [isCadastrosPressed, setIsCadastrosPressed] = useState(false);
   const [isCadastrosModalOpen, setIsCadastrosModalOpen] = useState(false);
   const [isNewMDFeModalOpen, setIsNewMDFeModalOpen] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
+  const [showResultDialog, setShowResultDialog] = useState(false);
+  const [resultDialogType, setResultDialogType] = useState<'success' | 'error'>('success');
+  const [resultMessage, setResultMessage] = useState('');
+  const [resultHint, setResultHint] = useState('');
   
   // Dados mockados de MDF-es
   const [mdfes, setMdfes] = useState<MDFe[]>([
@@ -102,11 +109,56 @@ export function MDFePage(): JSX.Element {
     setIsCadastrosModalOpen(true);
   };
 
-  const handleSaveNewMDFe = (mdfeData: any) => {
-    // TODO: Implementar salvamento da nova MDF-e
-    console.log('Salvando nova MDF-e:', mdfeData);
-    // Por enquanto, apenas fecha o modal
-    setIsNewMDFeModalOpen(false);
+  const handleSaveNewMDFe = async (mdfeData: any) => {
+    try {
+      setIsSaving(true);
+      
+      // Extrai o JSON estruturado do MDF-e
+      const mdfeJSON = mdfeData.mdfeJSON;
+      
+      if (!mdfeJSON) {
+        throw new Error('JSON do MDF-e não encontrado. Por favor, valide o formulário antes de salvar.');
+      }
+
+      // Envia para a API
+      const response = await apiPost('/api/mdfe', mdfeJSON, {
+        requireAuth: true
+      });
+
+      if (response.ok && response.status === 201) {
+        // Sucesso
+        setResultDialogType('success');
+        setResultMessage('MDF-e criada com sucesso!');
+        setResultHint(`A MDF-e foi salva no sistema e todas as tabelas foram preenchidas automaticamente.`);
+        setShowResultDialog(true);
+        
+        // Fecha o modal de criação
+        setIsNewMDFeModalOpen(false);
+        
+        // TODO: Atualizar lista de MDF-es após salvar
+        // Pode buscar novamente da API ou adicionar o novo item à lista
+      } else {
+        // Erro na resposta da API
+        const errorMessage = response.data?.message || response.data?.error || 'Erro ao salvar MDF-e';
+        throw new Error(errorMessage);
+      }
+    } catch (error: any) {
+      // Erro ao fazer requisição ou processar resposta
+      setResultDialogType('error');
+      setResultMessage('Erro ao criar MDF-e');
+      
+      let errorHint = 'Não foi possível salvar a MDF-e.';
+      if (error?.message) {
+        errorHint += `\n\nErro: ${error.message}`;
+      } else if (typeof error === 'string') {
+        errorHint += `\n\nErro: ${error}`;
+      }
+      
+      setResultHint(errorHint);
+      setShowResultDialog(true);
+    } finally {
+      setIsSaving(false);
+    }
   };
 
   const styles = {
@@ -206,6 +258,23 @@ export function MDFePage(): JSX.Element {
         isOpen={isNewMDFeModalOpen}
         onClose={() => setIsNewMDFeModalOpen(false)}
         onSave={handleSaveNewMDFe}
+      />
+
+      {/* Dialog de resultado (sucesso/erro) */}
+      <Dialog
+        isOpen={showResultDialog}
+        onClose={() => setShowResultDialog(false)}
+        onConfirm={() => setShowResultDialog(false)}
+        icon={
+          resultDialogType === 'success' 
+            ? <AppIcons.CheckCircle size={60} color="#28CA42" />
+            : <AppIcons.Alert size={60} color="#ff5f57" />
+        }
+        warning={resultMessage}
+        hint={resultHint}
+        confirmLabel="OK"
+        showCancel={false}
+        width="640px"
       />
     </div>
   );
