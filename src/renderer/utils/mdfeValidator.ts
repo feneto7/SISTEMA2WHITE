@@ -408,11 +408,38 @@ export function validateMDFe(formData: MDFeFormData): ValidationError[] {
 }
 
 /**
+ * Interface para dados da empresa vindos da API
+ */
+export interface CompanyData {
+  id?: number;
+  name: string;
+  legal_name?: string;
+  cnpj: string;
+  ie?: string;
+  im?: string;
+  addresses?: Array<{
+    street?: string;
+    number?: string;
+    complement?: string;
+    district?: string;
+    city_id?: number;
+    state_id?: number;
+    zipcode?: string;
+  }>;
+  contacts?: Array<{
+    type: string;
+    value: string;
+  }>;
+}
+
+/**
  * Gera o JSON estruturado do MDF-e seguindo o padrão da SEFAZ
  * Este JSON será enviado para a API que irá comunicar com a SEFAZ
  * IMPORTANTE: Apenas campos preenchidos são incluídos no JSON
+ * @param formData - Dados do formulário MDF-e
+ * @param companyData - Dados da empresa vindos da API (opcional, se não fornecido usa dados do proprietário)
  */
-export function generateMDFeJSON(formData: MDFeFormData): any {
+export function generateMDFeJSON(formData: MDFeFormData, companyData?: CompanyData): any {
   // Formato de data ISO para Laravel (aceita ISO string)
   const timestamp = new Date().toISOString();
   const modal = getModalCode(formData.tipoMDFe);
@@ -476,24 +503,66 @@ export function generateMDFeJSON(formData: MDFeFormData): any {
   }
 
   // Monta a seção emit (emitente) - campos obrigatórios
-  const emit: any = {
-    CNPJ: formatCNPJ(formData.cpfCnpjProprietario),
-    xNome: formData.proprietario,
-    xFant: formData.proprietario,
-    enderEmit: {
-      xLgr: formData.enderecoProprietario,
-      nro: "S/N",
-      xBairro: "Centro",
-      cMun: getMunicipioCode(formData.cidadeProprietario, formData.ufProprietario),
-      xMun: formData.cidadeProprietario,
-      CEP: formatCEP(formData.cepProprietario),
-      UF: formData.ufProprietario
+  // Usa dados da empresa da API se disponível, senão usa dados do proprietário do formulário
+  let emit: any;
+  
+  if (companyData) {
+    // Usa dados da empresa da API
+    const address = companyData.addresses && companyData.addresses.length > 0 ? companyData.addresses[0] : null;
+    
+    // Lista de UFs brasileiras para mapear state_id para sigla
+    const ufsBrasileiras = [
+      'AC', 'AL', 'AP', 'AM', 'BA', 'CE', 'DF', 'ES', 'GO', 'MA',
+      'MT', 'MS', 'MG', 'PA', 'PB', 'PR', 'PE', 'PI', 'RJ', 'RN',
+      'RS', 'RO', 'RR', 'SC', 'SP', 'SE', 'TO'
+    ];
+    
+    // Determina UF a partir do state_id se disponível
+    let ufValue = '';
+    if (address?.state_id && address.state_id > 0 && address.state_id <= ufsBrasileiras.length) {
+      ufValue = ufsBrasileiras[address.state_id - 1];
     }
-  };
-
-  // Adiciona IE apenas se preenchido
-  if (formData.ie) {
-    emit.IE = formData.ie;
+    
+    emit = {
+      CNPJ: formatCNPJ(companyData.cnpj),
+      xNome: companyData.name,
+      xFant: companyData.legal_name || companyData.name,
+      enderEmit: {
+        xLgr: address?.street || '',
+        nro: address?.number || 'S/N',
+        xBairro: address?.district || '',
+        cMun: address?.city_id ? address.city_id.toString() : '9999999',
+        xMun: '', // Será preenchido pela API se necessário
+        CEP: formatCEP(address?.zipcode || ''),
+        UF: ufValue // Preenche UF se tiver state_id
+      }
+    };
+    
+    // Adiciona IE apenas se preenchido
+    if (companyData.ie) {
+      emit.IE = companyData.ie;
+    }
+  } else {
+    // Fallback: usa dados do proprietário do formulário (comportamento antigo)
+    emit = {
+      CNPJ: formatCNPJ(formData.cpfCnpjProprietario),
+      xNome: formData.proprietario,
+      xFant: formData.proprietario,
+      enderEmit: {
+        xLgr: formData.enderecoProprietario,
+        nro: "S/N",
+        xBairro: "Centro",
+        cMun: getMunicipioCode(formData.cidadeProprietario, formData.ufProprietario),
+        xMun: formData.cidadeProprietario,
+        CEP: formatCEP(formData.cepProprietario),
+        UF: formData.ufProprietario
+      }
+    };
+    
+    // Adiciona IE apenas se preenchido
+    if (formData.ie) {
+      emit.IE = formData.ie;
+    }
   }
 
   // Adiciona telefone apenas se preenchido
