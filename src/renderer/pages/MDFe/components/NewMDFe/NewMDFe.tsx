@@ -2,11 +2,12 @@ import React, { useState } from 'react';
 import { useTheme } from '../../../../styles/ThemeProvider';
 import { useClickSound } from '../../../../hooks/useClickSound';
 import { DocumentsTab, TransportTab, DriversTab, RouteTab, FreightTab, InsuranceTab, TotalizersTab } from './components';
-import { validateMDFe, generateMDFeJSON, ValidationError } from '../../../../utils/mdfeValidator';
+import { validateMDFe, generateMDFeJSON, ValidationError, CompanyData } from '../../../../utils/mdfeValidator';
 import { WindowHeader } from '../../../../components/WindowHeader/WindowHeader';
 import { Dialog } from '../../../../components/Dialog';
 import { AppIcons } from '../../../../components/Icons/AppIcons';
 import { convertReaisToCents } from '../../../../utils/money';
+import { apiGet } from '../../../../utils/apiService';
 
 // New MDF-e modal
 // Modularized component following project rules
@@ -281,7 +282,7 @@ export function NewMDFe({ isOpen, onClose, onSave }: NewMDFeProps): JSX.Element 
   };
 
   // Function to save MDF-e and generate JSON for API
-  const handleSave = () => {
+  const handleSave = async () => {
     playClickSound();
     
     // Validar antes de gerar
@@ -295,8 +296,43 @@ export function NewMDFe({ isOpen, onClose, onSave }: NewMDFeProps): JSX.Element 
       return;
     }
 
-    // Gerar JSON estruturado no padrão SEFAZ
-    let mdfeJSON = generateMDFeJSON(formData);
+    // Busca dados da empresa da API antes de gerar o JSON
+    let companyData: CompanyData | undefined = undefined;
+    try {
+      console.log('[NewMDFe] Buscando dados da empresa...');
+      const response = await apiGet('/api/companies', { requireAuth: true });
+      
+      if (response.ok) {
+        // Verifica diferentes estruturas possíveis da resposta
+        let companies = null;
+        
+        if (response.data?.data) {
+          if (Array.isArray(response.data.data)) {
+            companies = response.data.data;
+          } else {
+            companies = [response.data.data];
+          }
+        } else if (Array.isArray(response.data)) {
+          companies = response.data;
+        }
+        
+        if (companies && companies.length > 0) {
+          const company = companies[0];
+          console.log('[NewMDFe] Empresa encontrada:', company);
+          companyData = company as CompanyData;
+        } else {
+          console.warn('[NewMDFe] Nenhuma empresa encontrada na API, usando dados do formulário como fallback');
+        }
+      } else {
+        console.warn('[NewMDFe] Erro ao buscar empresa:', response.status, 'Usando dados do formulário como fallback');
+      }
+    } catch (error) {
+      console.error('[NewMDFe] Erro ao buscar dados da empresa:', error);
+      console.warn('[NewMDFe] Usando dados do formulário como fallback');
+    }
+
+    // Gerar JSON estruturado no padrão SEFAZ (passa dados da empresa se disponível)
+    let mdfeJSON = generateMDFeJSON(formData, companyData);
 
     // Normalizações críticas antes do envio à API/SEFAZ
     mdfeJSON = normalizeMdfeForApi(mdfeJSON);

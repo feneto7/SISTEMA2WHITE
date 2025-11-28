@@ -59,8 +59,9 @@ export function RouteTab({ formData, onUpdateFormData }: RouteTabProps): JSX.Ele
       const data = await response.json();
       
       // Mapear os dados para o formato esperado
+      // Remove o estado entre parênteses do nome do município (ex: "SÃO FELIPE (BAHIA)" -> "SÃO FELIPE")
       const municipiosFormatados: Municipio[] = data.map((municipio: any) => ({
-        nome: municipio.nome,
+        nome: municipio.nome.replace(/\s*\([^)]*\)\s*$/, '').trim(),
         codigo_ibge: municipio.codigo_ibge
       }));
       
