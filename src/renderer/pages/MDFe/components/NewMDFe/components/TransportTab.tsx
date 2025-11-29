@@ -60,14 +60,14 @@ export function TransportTab({ formData, onUpdateFormData }: TransportTabProps):
 
 
   // Lista de UFs brasileiras
-  const ufsBrasileiras = [
+  const brazilianStates = [
     'AC', 'AL', 'AP', 'AM', 'BA', 'CE', 'DF', 'ES', 'GO', 'MA',
     'MT', 'MS', 'MG', 'PA', 'PB', 'PR', 'PE', 'PI', 'RJ', 'RN',
     'RS', 'RO', 'RR', 'SC', 'SP', 'SE', 'TO'
   ];
 
   // Opções de Tipo de Carroceria
-  const tiposCarroceria = [
+  const bodyTypes = [
     { value: '00', label: 'não aplicável' },
     { value: '01', label: 'Aberta' },
     { value: '02', label: 'Fechada/Baú' },
@@ -77,7 +77,7 @@ export function TransportTab({ formData, onUpdateFormData }: TransportTabProps):
   ];
 
   // Opções de Tipo de Rodado
-  const tiposRodado = [
+  const wheelTypes = [
     { value: '01', label: 'Truck' },
     { value: '02', label: 'Toco' },
     { value: '03', label: 'Cavalo Mecânico' },
@@ -378,9 +378,9 @@ export function TransportTab({ formData, onUpdateFormData }: TransportTabProps):
                 onClick={() => playClickSound()}
               >
                 <option value="">Selecione o tipo de carroceria</option>
-                {tiposCarroceria.map(tipo => (
-                  <option key={tipo.value} value={tipo.value}>
-                    {tipo.label}
+                {bodyTypes.map(type => (
+                  <option key={type.value} value={type.value}>
+                    {type.label}
                   </option>
                 ))}
               </select>
@@ -409,9 +409,9 @@ export function TransportTab({ formData, onUpdateFormData }: TransportTabProps):
                 onClick={() => playClickSound()}
               >
                 <option value="">Selecione o tipo de rodado</option>
-                {tiposRodado.map(tipo => (
-                  <option key={tipo.value} value={tipo.value}>
-                    {tipo.label}
+                {wheelTypes.map(type => (
+                  <option key={type.value} value={type.value}>
+                    {type.label}
                   </option>
                 ))}
               </select>
@@ -444,7 +444,7 @@ export function TransportTab({ formData, onUpdateFormData }: TransportTabProps):
                 onClick={() => playClickSound()}
               >
                 <option value="">Selecione a UF</option>
-                {ufsBrasileiras.map(uf => (
+                {brazilianStates.map(uf => (
                   <option key={uf} value={uf}>{uf}</option>
                 ))}
               </select>
@@ -566,7 +566,7 @@ export function TransportTab({ formData, onUpdateFormData }: TransportTabProps):
               onClick={() => playClickSound()}
             >
               <option value="">Selecione a UF</option>
-              {ufsBrasileiras.map(uf => (
+              {brazilianStates.map(uf => (
                 <option key={uf} value={uf}>{uf}</option>
               ))}
             </select>
@@ -613,7 +613,7 @@ export function TransportTab({ formData, onUpdateFormData }: TransportTabProps):
                   onClick={() => playClickSound()}
                 >
                   <option value="">Selecione a UF</option>
-                  {ufsBrasileiras.map(uf => (
+                  {brazilianStates.map(uf => (
                     <option key={uf} value={uf}>{uf}</option>
                   ))}
                 </select>

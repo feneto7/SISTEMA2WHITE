@@ -6,22 +6,22 @@ import { NewDriverModal } from './NewDriverModal';
 
 interface Driver {
   id: string;
-  nomeMotorista: string;
-  cpfMotorista: string;
-  rgMotorista: string;
-  cnhMotorista: string;
-  categoriaCnh: string;
-  validadeCnh: string;
-  telefoneMotorista: string;
-  emailMotorista: string;
-  enderecoMotorista: string;
-  cidadeMotorista: string;
-  ufMotorista: string;
-  cepMotorista: string;
-  dataNascimento: string;
-  estadoCivil: string;
-  nomePai: string;
-  nomeMae: string;
+  name: string;
+  cpf: string;
+  rg: string;
+  cnh: string;
+  cnhCategory: string;
+  cnhExpiration: string;
+  phone: string;
+  email: string;
+  address: string;
+  city: string;
+  state: string;
+  zipCode: string;
+  birthDate: string;
+  maritalStatus: string;
+  fatherName: string;
+  motherName: string;
 }
 
 interface DriverTabProps {
@@ -198,10 +198,10 @@ export function DriverTab({ formData, onUpdateFormData }: DriverTabProps): JSX.E
                   e.currentTarget.style.background = 'transparent';
                 }}
               >
-                <div style={styles.rowCell}>{driver.nomeMotorista}</div>
-                <div style={styles.rowCell}>{driver.cpfMotorista}</div>
-                <div style={styles.rowCell}>{driver.cnhMotorista}</div>
-                <div style={styles.rowCell}>{driver.categoriaCnh}</div>
+                <div style={styles.rowCell}>{driver.name}</div>
+                <div style={styles.rowCell}>{driver.cpf}</div>
+                <div style={styles.rowCell}>{driver.cnh}</div>
+                <div style={styles.rowCell}>{driver.cnhCategory}</div>
                 <div style={styles.actionButtons}>
                   <button
                     style={styles.actionButton}

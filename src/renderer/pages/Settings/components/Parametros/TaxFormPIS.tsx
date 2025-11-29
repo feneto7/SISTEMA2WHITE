@@ -9,10 +9,10 @@ import { formatPercentageInput } from '../../../../utils/percentageFormatter';
 
 interface TaxFormPISProps {
   onSubmit: (data: {
-    nomeDepartamento: string;
+    nomeDepartamento: string; // Mantém em português para compatibilidade com estrutura de dados
     st: string;
-    aliquota: string;
-    aliquotaPorUnidade?: string;
+    aliquota: string; // Mantém em português para compatibilidade com estrutura de dados
+    aliquotaPorUnidade?: string; // Mantém em português para compatibilidade com estrutura de dados
   }) => void;
 }
 
@@ -55,10 +55,10 @@ const ST_OPTIONS = [
 
 export function TaxFormPIS({ onSubmit }: TaxFormPISProps): JSX.Element {
   const [formData, setFormData] = useState({
-    nomeDepartamento: '',
+    nomeDepartamento: '', // Mantém em português para compatibilidade com estrutura de dados
     st: '',
-    aliquota: '',
-    aliquotaPorUnidade: ''
+    aliquota: '', // Mantém em português para compatibilidade com estrutura de dados
+    aliquotaPorUnidade: '' // Mantém em português para compatibilidade com estrutura de dados
   });
   const { systemStyles, systemColors } = useTheme();
 

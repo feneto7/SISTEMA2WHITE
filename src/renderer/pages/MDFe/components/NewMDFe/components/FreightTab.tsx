@@ -14,35 +14,35 @@ interface FreightTabProps {
 
 interface TollVoucher {
   id: string;
-  cnpjFornecedor: string;
-  numeroComprovante: string;
-  valorVale: string;
-  cpfCnpjResponsavel: string;
+  supplierCnpj: string;
+  receiptNumber: string;
+  voucherValue: string;
+  responsibleDocument: string;
 }
 
 interface CIOT {
   id: string;
-  ciot: string;
-  cpfCnpjResponsavel: string;
+  ciotCode: string;
+  responsibleDocument: string;
 }
 
 export function FreightTab({ formData, onUpdateFormData }: FreightTabProps): JSX.Element {
   const playClickSound = useClickSound();
   const { systemStyles, systemColors } = useTheme();
   const [focusedField, setFocusedField] = useState<string | null>(null);
-  const [valePedagioList, setValePedagioList] = useState<TollVoucher[]>([]);
-  const [currentValePedagio, setCurrentValePedagio] = useState<TollVoucher>({
+  const [tollVoucherList, setTollVoucherList] = useState<TollVoucher[]>([]);
+  const [currentTollVoucher, setCurrentTollVoucher] = useState<TollVoucher>({
     id: '',
-    cnpjFornecedor: '',
-    numeroComprovante: '',
-    valorVale: '',
-    cpfCnpjResponsavel: ''
+    supplierCnpj: '',
+    receiptNumber: '',
+    voucherValue: '',
+    responsibleDocument: ''
   });
   const [ciotList, setCiotList] = useState<CIOT[]>([]);
   const [currentCiot, setCurrentCiot] = useState<CIOT>({
     id: '',
-    ciot: '',
-    cpfCnpjResponsavel: ''
+    ciotCode: '',
+    responsibleDocument: ''
   });
   const [isGenerateCIOTModalOpen, setIsGenerateCIOTModalOpen] = useState(false);
   const formContainerRef = useRef<HTMLDivElement>(null);
@@ -50,16 +50,16 @@ export function FreightTab({ formData, onUpdateFormData }: FreightTabProps): JSX
 
   // Sincroniza listas com formData quando o componente monta ou quando muda
   useEffect(() => {
-    if (formData.valePedagioList && Array.isArray(formData.valePedagioList)) {
-      setValePedagioList(formData.valePedagioList);
+    if (formData.tollVoucherList && Array.isArray(formData.tollVoucherList)) {
+      setTollVoucherList(formData.tollVoucherList);
     }
     if (formData.ciotList && Array.isArray(formData.ciotList)) {
       setCiotList(formData.ciotList);
     }
-  }, [formData.valePedagioList, formData.ciotList]);
+  }, [formData.tollVoucherList, formData.ciotList]);
 
   // Categorias de combinação veicular
-  const categoriasVeiculares = [
+  const vehicleCategories = [
     'Veículo Comercial 2 eixos',
     'Veículo Comercial 3 eixos',
     'Veículo Comercial 4 eixos',
@@ -92,38 +92,38 @@ export function FreightTab({ formData, onUpdateFormData }: FreightTabProps): JSX
   };
 
   // Funções para gerenciar vale pedágio
-  const handleValePedagioChange = (field: keyof TollVoucher, value: string) => {
-    setCurrentValePedagio(prev => ({
+  const handleTollVoucherChange = (field: keyof TollVoucher, value: string) => {
+    setCurrentTollVoucher(prev => ({
       ...prev,
       [field]: value
     }));
   };
 
-  const handleAddValePedagio = () => {
+  const handleAddTollVoucher = () => {
     playClickSound();
-    if (currentValePedagio.cnpjFornecedor && currentValePedagio.numeroComprovante && 
-        currentValePedagio.valorVale && currentValePedagio.cpfCnpjResponsavel) {
+    if (currentTollVoucher.supplierCnpj && currentTollVoucher.receiptNumber && 
+        currentTollVoucher.voucherValue && currentTollVoucher.responsibleDocument) {
       const newVale: TollVoucher = {
-        ...currentValePedagio,
+        ...currentTollVoucher,
         id: Date.now().toString()
       };
-      setValePedagioList(prev => [...prev, newVale]);
-      setCurrentValePedagio({
+      setTollVoucherList(prev => [...prev, newVale]);
+      setCurrentTollVoucher({
         id: '',
-        cnpjFornecedor: '',
-        numeroComprovante: '',
-        valorVale: '',
-        cpfCnpjResponsavel: ''
+        supplierCnpj: '',
+        receiptNumber: '',
+        voucherValue: '',
+        responsibleDocument: ''
       });
-      onUpdateFormData('valePedagioList', [...valePedagioList, newVale]);
+      onUpdateFormData('tollVoucherList', [...tollVoucherList, newVale]);
     }
   };
 
-  const handleRemoveValePedagio = (id: string) => {
+  const handleRemoveTollVoucher = (id: string) => {
     playClickSound();
-    const updatedList = valePedagioList.filter(vale => vale.id !== id);
-    setValePedagioList(updatedList);
-    onUpdateFormData('valePedagioList', updatedList);
+    const updatedList = tollVoucherList.filter(toll => toll.id !== id);
+    setTollVoucherList(updatedList);
+    onUpdateFormData('tollVoucherList', updatedList);
   };
 
   // Funções para gerenciar CIOT
@@ -136,7 +136,7 @@ export function FreightTab({ formData, onUpdateFormData }: FreightTabProps): JSX
 
   const handleAddCiot = () => {
     playClickSound();
-    if (currentCiot.ciot && currentCiot.cpfCnpjResponsavel) {
+    if (currentCiot.ciotCode && currentCiot.responsibleDocument) {
       const newCiot: CIOT = {
         ...currentCiot,
         id: Date.now().toString()
@@ -144,8 +144,8 @@ export function FreightTab({ formData, onUpdateFormData }: FreightTabProps): JSX
       setCiotList(prev => [...prev, newCiot]);
       setCurrentCiot({
         id: '',
-        ciot: '',
-        cpfCnpjResponsavel: ''
+        ciotCode: '',
+        responsibleDocument: ''
       });
       onUpdateFormData('ciotList', [...ciotList, newCiot]);
     }
@@ -153,7 +153,7 @@ export function FreightTab({ formData, onUpdateFormData }: FreightTabProps): JSX
 
   const handleRemoveCiot = (id: string) => {
     playClickSound();
-    const updatedList = ciotList.filter(ciot => ciot.id !== id);
+    const updatedList = ciotList.filter(ciotItem => ciotItem.id !== id);
     setCiotList(updatedList);
     onUpdateFormData('ciotList', updatedList);
   };
@@ -176,8 +176,8 @@ export function FreightTab({ formData, onUpdateFormData }: FreightTabProps): JSX
     // Por exemplo, adicionar à lista de CIOTs
     const newCiot: CIOT = {
       id: Date.now().toString(),
-      ciot: ciotData.ciot || 'CIOT-' + Date.now(),
-      cpfCnpjResponsavel: ciotData.cpfCnpjContratado || ''
+      ciotCode: ciotData.ciot || 'CIOT-' + Date.now(),
+      responsibleDocument: ciotData.hiredDocument || ''
     };
     setCiotList(prev => [...prev, newCiot]);
     onUpdateFormData('ciotList', [...ciotList, newCiot]);
@@ -302,10 +302,10 @@ export function FreightTab({ formData, onUpdateFormData }: FreightTabProps): JSX
             <label style={styles.label}>CNPJ da Empresa Fornecedora do Vale Pedágio</label>
             <input
               type="text"
-              style={getInputStyle('cnpjFornecedor')}
-              value={currentValePedagio.cnpjFornecedor}
-              onChange={(e) => handleValePedagioChange('cnpjFornecedor', formatCpfOrCnpj(e.target.value))}
-              onFocus={() => handleInputFocus('cnpjFornecedor')}
+              style={getInputStyle('supplierCnpj')}
+              value={currentTollVoucher.supplierCnpj}
+              onChange={(e) => handleTollVoucherChange('supplierCnpj', formatCpfOrCnpj(e.target.value))}
+              onFocus={() => handleInputFocus('supplierCnpj')}
               onBlur={handleInputBlur}
               onClick={() => playClickSound()}
               placeholder="00.000.000/0000-00"
@@ -315,10 +315,10 @@ export function FreightTab({ formData, onUpdateFormData }: FreightTabProps): JSX
             <label style={styles.label}>Número do Comprovante de Compra</label>
             <input
               type="text"
-              style={getInputStyle('numeroComprovante')}
-              value={currentValePedagio.numeroComprovante}
-              onChange={(e) => handleValePedagioChange('numeroComprovante', e.target.value)}
-              onFocus={() => handleInputFocus('numeroComprovante')}
+              style={getInputStyle('receiptNumber')}
+              value={currentTollVoucher.receiptNumber}
+              onChange={(e) => handleTollVoucherChange('receiptNumber', e.target.value)}
+              onFocus={() => handleInputFocus('receiptNumber')}
               onBlur={handleInputBlur}
               onClick={() => playClickSound()}
               placeholder="123456789"
@@ -328,10 +328,10 @@ export function FreightTab({ formData, onUpdateFormData }: FreightTabProps): JSX
             <label style={styles.label}>Valor do Vale Pedágio</label>
             <input
               type="text"
-              style={getInputStyle('valorVale')}
-              value={currentValePedagio.valorVale}
-              onChange={(e) => handleValePedagioChange('valorVale', e.target.value)}
-              onFocus={() => handleInputFocus('valorVale')}
+              style={getInputStyle('voucherValue')}
+              value={currentTollVoucher.voucherValue}
+              onChange={(e) => handleTollVoucherChange('voucherValue', e.target.value)}
+              onFocus={() => handleInputFocus('voucherValue')}
               onBlur={handleInputBlur}
               onClick={() => playClickSound()}
               placeholder="R$ 0,00"
@@ -341,37 +341,37 @@ export function FreightTab({ formData, onUpdateFormData }: FreightTabProps): JSX
             <label style={styles.label}>CPF/CNPJ Responsável pelo Pagamento</label>
             <input
               type="text"
-              style={getInputStyle('cpfCnpjResponsavel')}
-              value={currentValePedagio.cpfCnpjResponsavel}
-              onChange={(e) => handleValePedagioChange('cpfCnpjResponsavel', formatCpfOrCnpj(e.target.value))}
-              onFocus={() => handleInputFocus('cpfCnpjResponsavel')}
+              style={getInputStyle('responsibleDocument')}
+              value={currentTollVoucher.responsibleDocument}
+              onChange={(e) => handleTollVoucherChange('responsibleDocument', formatCpfOrCnpj(e.target.value))}
+              onFocus={() => handleInputFocus('responsibleDocument')}
               onBlur={handleInputBlur}
               onClick={() => playClickSound()}
               placeholder="000.000.000-00"
             />
           </div>
           <div style={styles.formGroup}>
-            <AddButton onClick={handleAddValePedagio} label="Adicionar Vale Pedágio" />
+            <AddButton onClick={handleAddTollVoucher} label="Adicionar Vale Pedágio" />
           </div>
         </div>
 
         {/* Lista de vales pedágio adicionados */}
-        {valePedagioList.length > 0 && (
+        {tollVoucherList.length > 0 && (
           <div style={styles.valePedagioList}>
             <div style={{fontSize: '12px', fontWeight: '600', marginBottom: '8px', color: 'var(--text-secondary)'}}>
               Vales Pedágio Adicionados:
             </div>
-            {valePedagioList.map((vale) => (
+            {tollVoucherList.map((vale) => (
               <div key={vale.id} style={styles.valePedagioItem}>
                 <div>
-                  <strong>CNPJ:</strong> {vale.cnpjFornecedor} | 
-                  <strong> Comprovante:</strong> {vale.numeroComprovante} | 
-                  <strong> Valor:</strong> {vale.valorVale} | 
-                  <strong> Responsável:</strong> {vale.cpfCnpjResponsavel}
+                  <strong>CNPJ:</strong> {vale.supplierCnpj} | 
+                  <strong> Comprovante:</strong> {vale.receiptNumber} | 
+                  <strong> Valor:</strong> {vale.voucherValue} | 
+                  <strong> Responsável:</strong> {vale.responsibleDocument}
                 </div>
-                <button
+                  <button
                   style={styles.removeButton}
-                  onClick={() => handleRemoveValePedagio(vale.id)}
+                  onClick={() => handleRemoveTollVoucher(vale.id)}
                   title="Remover vale pedágio"
                 >
                   ×
@@ -402,8 +402,8 @@ export function FreightTab({ formData, onUpdateFormData }: FreightTabProps): JSX
               onClick={() => playClickSound()}
             >
               <option value="">Selecione a categoria</option>
-              {categoriasVeiculares.map(categoria => (
-                <option key={categoria} value={categoria}>{categoria}</option>
+              {vehicleCategories.map(category => (
+                <option key={category} value={category}>{category}</option>
               ))}
             </select>
             <div style={systemStyles.select.arrow}>
@@ -595,10 +595,10 @@ export function FreightTab({ formData, onUpdateFormData }: FreightTabProps): JSX
             <label style={styles.label}>CIOT</label>
             <input
               type="text"
-              style={getInputStyle('ciot')}
-              value={currentCiot.ciot}
-              onChange={(e) => handleCiotChange('ciot', e.target.value)}
-              onFocus={() => handleInputFocus('ciot')}
+              style={getInputStyle('ciotCode')}
+              value={currentCiot.ciotCode}
+              onChange={(e) => handleCiotChange('ciotCode', e.target.value)}
+              onFocus={() => handleInputFocus('ciotCode')}
               onBlur={handleInputBlur}
               onClick={() => playClickSound()}
               placeholder="12345678901234567890"
@@ -608,10 +608,10 @@ export function FreightTab({ formData, onUpdateFormData }: FreightTabProps): JSX
             <label style={styles.label}>CPF/CNPJ Responsável pela geração do CIOT</label>
             <input
               type="text"
-              style={getInputStyle('cpfCnpjResponsavelCiot')}
-              value={currentCiot.cpfCnpjResponsavel}
-              onChange={(e) => handleCiotChange('cpfCnpjResponsavel', formatCpfOrCnpj(e.target.value))}
-              onFocus={() => handleInputFocus('cpfCnpjResponsavelCiot')}
+              style={getInputStyle('responsibleDocument')}
+              value={currentCiot.responsibleDocument}
+              onChange={(e) => handleCiotChange('responsibleDocument', formatCpfOrCnpj(e.target.value))}
+              onFocus={() => handleInputFocus('responsibleDocument')}
               onBlur={handleInputBlur}
               onClick={() => playClickSound()}
               placeholder="000.000.000-00"
@@ -631,8 +631,8 @@ export function FreightTab({ formData, onUpdateFormData }: FreightTabProps): JSX
             {ciotList.map((ciot) => (
               <div key={ciot.id} style={styles.ciotItem}>
                 <div>
-                  <strong>CIOT:</strong> {ciot.ciot} | 
-                  <strong> CPF/CNPJ:</strong> {ciot.cpfCnpjResponsavel}
+                  <strong>CIOT:</strong> {ciot.ciotCode} | 
+                  <strong> CPF/CNPJ:</strong> {ciot.responsibleDocument}
                 </div>
                 <button
                   style={styles.removeButton}

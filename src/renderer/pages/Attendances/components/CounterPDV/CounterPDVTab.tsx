@@ -130,11 +130,11 @@ export function CounterPDVTab({ initialOrderType = 'counter', initialSelectedTab
     if (!selectedProduct) return;
 
     // Mapear complementos para o formato CartComplement
-    const cartComplements: CartComplement[] = complements.map(comp => ({
-      id: comp.complement.id,
-      name: comp.complement.name,
-      quantity: comp.quantity,
-      price: comp.complement.price
+    const cartComplements: CartComplement[] = complements.map(complement => ({
+      id: complement.complement.id,
+      name: complement.complement.name,
+      quantity: complement.quantity,
+      price: complement.complement.price
     }));
 
     // Se estamos editando um item, atualizar o item existente
@@ -187,15 +187,15 @@ export function CounterPDVTab({ initialOrderType = 'counter', initialSelectedTab
       
       // Preparar complementos já selecionados para edição
       if (item.complements && item.complements.length > 0) {
-        const selectedComps = item.complements.map(comp => ({
+        const selectedComplements = item.complements.map(complement => ({
           complement: {
-            id: comp.id,
-            name: comp.name,
-            price: comp.price
+            id: complement.id,
+            name: complement.name,
+            price: complement.price
           },
-          quantity: comp.quantity
+          quantity: complement.quantity
         }));
-        setEditingItemComplements(selectedComps);
+        setEditingItemComplements(selectedComplements);
       }
       
       setViewMode('complements');
@@ -274,8 +274,8 @@ export function CounterPDVTab({ initialOrderType = 'counter', initialSelectedTab
     cartItems.forEach(item => {
       total += item.price * item.quantity;
       if (item.complements) {
-        item.complements.forEach(comp => {
-          total += comp.price * comp.quantity;
+        item.complements.forEach(complement => {
+          total += complement.price * complement.quantity;
         });
       }
     });

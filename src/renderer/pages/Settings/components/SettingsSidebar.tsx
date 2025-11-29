@@ -28,16 +28,16 @@ export function SettingsSidebar({ activeTab, onSelectTab }: SettingsSidebarProps
   const { systemStyles, systemColors } = useTheme();
 
   const settingsItems: SettingsItem[] = [
-    { id: 'empresa', label: 'Empresa', icon: AppIcons.Document },
+    { id: 'company', label: 'Empresa', icon: AppIcons.Document },
     { id: 'fiscal', label: 'Fiscal', icon: AppIcons.Invoice },
     { id: 'email', label: 'Email', icon: AppIcons.Mail },
-    { id: 'recebimentos', label: 'Recebimentos', icon: AppIcons.Dollar },
-    { id: 'pagamento', label: 'Formas de Pagamento', icon: AppIcons.Invoice },
-    { id: 'impressoras', label: 'Impressoras', icon: AppIcons.Settings },
-    { id: 'balanca', label: 'Balança', icon: AppIcons.Config },
-    { id: 'gaveta', label: 'Gaveta', icon: AppIcons.Folder },
+    { id: 'receivables', label: 'Recebimentos', icon: AppIcons.Dollar },
+    { id: 'payments', label: 'Formas de Pagamento', icon: AppIcons.Invoice },
+    { id: 'printers', label: 'Impressoras', icon: AppIcons.Settings },
+    { id: 'scale', label: 'Balança', icon: AppIcons.Config },
+    { id: 'cashDrawer', label: 'Gaveta', icon: AppIcons.Folder },
     { id: 'dock', label: 'Dock', icon: AppIcons.Settings },
-    { id: 'parametros', label: 'Parâmetros', icon: AppIcons.Config }
+    { id: 'parameters', label: 'Parâmetros', icon: AppIcons.Config }
   ];
 
   const handleItemClick = (tab: SettingsTab) => {

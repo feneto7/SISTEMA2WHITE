@@ -79,8 +79,8 @@ export function RoutesTab({ formData, onUpdateFormData }: RoutesTabProps): JSX.E
             <input
               type="text"
               style={styles.input}
-              value={formData.nomeRota}
-              onChange={(e) => handleInputChange('nomeRota', e.target.value)}
+              value={formData.routeName}
+              onChange={(e) => handleInputChange('routeName', e.target.value)}
               onClick={() => playClickSound()}
               placeholder="São Paulo - Rio de Janeiro"
             />
@@ -90,8 +90,8 @@ export function RoutesTab({ formData, onUpdateFormData }: RoutesTabProps): JSX.E
             <input
               type="text"
               style={styles.input}
-              value={formData.origem}
-              onChange={(e) => handleInputChange('origem', e.target.value)}
+              value={formData.origin}
+              onChange={(e) => handleInputChange('origin', e.target.value)}
               onClick={() => playClickSound()}
               placeholder="São Paulo/SP"
             />
@@ -101,8 +101,8 @@ export function RoutesTab({ formData, onUpdateFormData }: RoutesTabProps): JSX.E
             <input
               type="text"
               style={styles.input}
-              value={formData.destino}
-              onChange={(e) => handleInputChange('destino', e.target.value)}
+              value={formData.destination}
+              onChange={(e) => handleInputChange('destination', e.target.value)}
               onClick={() => playClickSound()}
               placeholder="Rio de Janeiro/RJ"
             />
@@ -112,8 +112,8 @@ export function RoutesTab({ formData, onUpdateFormData }: RoutesTabProps): JSX.E
             <input
               type="number"
               style={styles.input}
-              value={formData.distancia}
-              onChange={(e) => handleInputChange('distancia', e.target.value)}
+              value={formData.distanceKm}
+              onChange={(e) => handleInputChange('distanceKm', e.target.value)}
               onClick={() => playClickSound()}
               placeholder="430"
             />
@@ -123,8 +123,8 @@ export function RoutesTab({ formData, onUpdateFormData }: RoutesTabProps): JSX.E
             <input
               type="text"
               style={styles.input}
-              value={formData.tempoEstimado}
-              onChange={(e) => handleInputChange('tempoEstimado', e.target.value)}
+              value={formData.estimatedTime}
+              onChange={(e) => handleInputChange('estimatedTime', e.target.value)}
               onClick={() => playClickSound()}
               placeholder="5h30min"
             />
@@ -134,8 +134,8 @@ export function RoutesTab({ formData, onUpdateFormData }: RoutesTabProps): JSX.E
             <input
               type="number"
               style={styles.input}
-              value={formData.combustivelEstimado}
-              onChange={(e) => handleInputChange('combustivelEstimado', e.target.value)}
+              value={formData.estimatedFuel}
+              onChange={(e) => handleInputChange('estimatedFuel', e.target.value)}
               onClick={() => playClickSound()}
               placeholder="50"
             />
@@ -152,8 +152,8 @@ export function RoutesTab({ formData, onUpdateFormData }: RoutesTabProps): JSX.E
             <input
               type="time"
               style={styles.input}
-              value={formData.horarioSaida}
-              onChange={(e) => handleInputChange('horarioSaida', e.target.value)}
+              value={formData.departureTime}
+              onChange={(e) => handleInputChange('departureTime', e.target.value)}
               onClick={() => playClickSound()}
             />
           </div>
@@ -162,8 +162,8 @@ export function RoutesTab({ formData, onUpdateFormData }: RoutesTabProps): JSX.E
             <input
               type="time"
               style={styles.input}
-              value={formData.horarioChegada}
-              onChange={(e) => handleInputChange('horarioChegada', e.target.value)}
+              value={formData.arrivalTime}
+              onChange={(e) => handleInputChange('arrivalTime', e.target.value)}
               onClick={() => playClickSound()}
             />
           </div>
@@ -172,8 +172,8 @@ export function RoutesTab({ formData, onUpdateFormData }: RoutesTabProps): JSX.E
             <div style={{ position: 'relative' as const }}>
               <select
                 style={styles.select}
-                value={formData.diasSemana}
-                onChange={(e) => handleInputChange('diasSemana', e.target.value)}
+                value={formData.weekDays}
+                onChange={(e) => handleInputChange('weekDays', e.target.value)}
                 onClick={() => playClickSound()}
               >
                 <option value="">Selecione</option>
@@ -199,8 +199,8 @@ export function RoutesTab({ formData, onUpdateFormData }: RoutesTabProps): JSX.E
             <input
               type="number"
               style={styles.input}
-              value={formData.pedagio}
-              onChange={(e) => handleInputChange('pedagio', e.target.value)}
+              value={formData.tollValue}
+              onChange={(e) => handleInputChange('tollValue', e.target.value)}
               onClick={() => playClickSound()}
               placeholder="45.50"
             />
@@ -210,18 +210,18 @@ export function RoutesTab({ formData, onUpdateFormData }: RoutesTabProps): JSX.E
             <input
               type="text"
               style={styles.input}
-              value={formData.pontosParada}
-              onChange={(e) => handleInputChange('pontosParada', e.target.value)}
+              value={formData.stopPoints}
+              onChange={(e) => handleInputChange('stopPoints', e.target.value)}
               onClick={() => playClickSound()}
               placeholder="Posto BR, Restaurante"
             />
           </div>
           <div style={{...styles.formGroup, ...styles.fullWidth}}>
             <label style={styles.label}>Observações</label>
-            <textarea
+              <textarea
               style={styles.textarea}
-              value={formData.observacoes}
-              onChange={(e) => handleInputChange('observacoes', e.target.value)}
+              value={formData.notes}
+              onChange={(e) => handleInputChange('notes', e.target.value)}
               onClick={() => playClickSound()}
               placeholder="Observações importantes sobre a rota..."
             />
@@ -229,7 +229,7 @@ export function RoutesTab({ formData, onUpdateFormData }: RoutesTabProps): JSX.E
           <div style={styles.formGroup}>
             <div style={systemStyles.checkbox.container}>
               <div style={systemStyles.checkbox.box}>
-                {formData.ativo && (
+                {formData.active && (
                   <svg style={systemStyles.checkbox.checkmark} viewBox="0 0 10 10">
                     <polyline points="1,5 4,8 9,1" stroke="#FFFFFF" strokeWidth="2" fill="none" />
                   </svg>

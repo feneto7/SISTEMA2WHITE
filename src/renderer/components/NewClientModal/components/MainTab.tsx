@@ -86,20 +86,20 @@ export function MainTab({ clientType, formData, onUpdateFormData }: MainTabProps
   const [focusedField, setFocusedField] = useState<string | null>(null);
 
   // Função para consultar CNPJ na API BrasilAPI
-  const consultarCNPJ = async (cnpj: string) => {
+  const consultCNPJ = async (cnpj: string) => {
     setIsLoadingCNPJ(true);
     try {
       // Remove formatação do CNPJ para consulta
-      const cnpjLimpo = cnpj.replace(/\D/g, '');
+      const cleanCnpj = cnpj.replace(/\D/g, '');
       
       // Verifica se o CNPJ tem 14 dígitos
-      if (cnpjLimpo.length !== 14) {
+      if (cleanCnpj.length !== 14) {
         return;
       }
 
-      console.log('Consultando CNPJ:', cnpjLimpo);
+      console.log('Consultando CNPJ:', cleanCnpj);
       
-      const response = await fetch(`https://brasilapi.com.br/api/cnpj/v1/${cnpjLimpo}`);
+      const response = await fetch(`https://brasilapi.com.br/api/cnpj/v1/${cleanCnpj}`);
       
       if (!response.ok) {
         throw new Error(`Erro na consulta: ${response.status}`);
@@ -117,14 +117,14 @@ export function MainTab({ clientType, formData, onUpdateFormData }: MainTabProps
       console.log('⚠️ Email não disponível na API - deve ser preenchido manualmente');
       
       // Preenche dados de endereço
-      const enderecoCompleto = [
+      const completeAddress = [
         data.descricao_tipo_logradouro,
         data.logradouro,
         data.numero,
         data.complemento
       ].filter(Boolean).join(', ');
       
-      onUpdateFormData('address', enderecoCompleto);
+      onUpdateFormData('address', completeAddress);
       onUpdateFormData('city', data.municipio || '');
       onUpdateFormData('state', data.uf || '');
       onUpdateFormData('zipCode', data.cep || '');
@@ -141,19 +141,19 @@ export function MainTab({ clientType, formData, onUpdateFormData }: MainTabProps
       
       // Preenche telefone se disponível
       if (data.ddd_telefone_1) {
-        const telefone = data.ddd_telefone_1.replace(/\D/g, '');
-        if (telefone.length >= 10) {
-          const telefoneFormatado = telefone.length === 10 
-            ? `(${telefone.slice(0, 2)}) ${telefone.slice(2, 6)}-${telefone.slice(6)}`
-            : `(${telefone.slice(0, 2)}) ${telefone.slice(2, 7)}-${telefone.slice(7, 11)}`;
-          onUpdateFormData('phone', telefoneFormatado);
+        const phone = data.ddd_telefone_1.replace(/\D/g, '');
+        if (phone.length >= 10) {
+          const formattedPhone = phone.length === 10 
+            ? `(${phone.slice(0, 2)}) ${phone.slice(2, 6)}-${phone.slice(6)}`
+            : `(${phone.slice(0, 2)}) ${phone.slice(2, 7)}-${phone.slice(7, 11)}`;
+          onUpdateFormData('phone', formattedPhone);
         }
       }
       
       console.log('Campos preenchidos automaticamente:', {
         razaoSocial: data.razao_social,
         nomeFantasia: data.nome_fantasia,
-        endereco: enderecoCompleto,
+        endereco: completeAddress,
         cidade: data.municipio,
         estado: data.uf,
         cep: data.cep,
@@ -270,10 +270,10 @@ export function MainTab({ clientType, formData, onUpdateFormData }: MainTabProps
     
     // Se for CNPJ e estiver completo (14 dígitos), consulta a API
     if (clientType === 'company') {
-      const cnpjLimpo = value.replace(/\D/g, '');
-      if (cnpjLimpo.length === 14) {
+      const cleanCnpj = value.replace(/\D/g, '');
+      if (cleanCnpj.length === 14) {
         console.log('CNPJ completo detectado, consultando API...');
-        await consultarCNPJ(formatted);
+        await consultCNPJ(formatted);
       }
     }
   };

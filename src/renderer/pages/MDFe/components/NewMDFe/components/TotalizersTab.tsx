@@ -16,29 +16,29 @@ interface TotalizersTabProps {
   onUpdateFormData: (field: string, value: any) => void;
 }
 
-interface Lacre {
+interface Seal {
   id: string;
-  numeroLacre: string;
+  sealNumber: string;
 }
 
-interface AutorizadoDownload {
+interface AuthorizedDownload {
   id: string;
-  cpfCnpj: string;
+  document: string;
 }
 
 export function TotalizersTab({ formData, onUpdateFormData }: TotalizersTabProps): JSX.Element {
   const playClickSound = useClickSound();
   const { systemStyles, systemColors } = useTheme();
   const [focusedField, setFocusedField] = useState<string | null>(null);
-  const [lacreList, setLacreList] = useState<Lacre[]>([]);
-  const [currentLacre, setCurrentLacre] = useState<Lacre>({
+  const [sealList, setSealList] = useState<Seal[]>([]);
+  const [currentSeal, setCurrentSeal] = useState<Seal>({
     id: '',
-    numeroLacre: ''
+    sealNumber: ''
   });
-  const [autorizadoList, setAutorizadoList] = useState<AutorizadoDownload[]>([]);
-  const [currentAutorizado, setCurrentAutorizado] = useState<AutorizadoDownload>({
+  const [authorizedList, setAuthorizedList] = useState<AuthorizedDownload[]>([]);
+  const [currentAuthorized, setCurrentAuthorized] = useState<AuthorizedDownload>({
     id: '',
-    cpfCnpj: ''
+    document: ''
   });
   const formContainerRef = useRef<HTMLDivElement>(null);
 
@@ -49,17 +49,17 @@ export function TotalizersTab({ formData, onUpdateFormData }: TotalizersTabProps
     return fractional.has(code) ? '0' : '1'; // '03' (UN) é inteiro
   };
 
-  const currentUnitType = normalizeUnitType(getUnitTypeFromCode(formData.codUnidadeMedidaCarga));
+  const currentUnitType = normalizeUnitType(getUnitTypeFromCode(formData.cargoUnitCode));
 
   // Sincroniza listas com formData quando o componente monta ou quando muda
   useEffect(() => {
-    if (formData.lacreList && Array.isArray(formData.lacreList)) {
-      setLacreList(formData.lacreList);
+    if (formData.sealList && Array.isArray(formData.sealList)) {
+      setSealList(formData.sealList);
     }
-    if (formData.autorizadoList && Array.isArray(formData.autorizadoList)) {
-      setAutorizadoList(formData.autorizadoList);
+    if (formData.authorizedList && Array.isArray(formData.authorizedList)) {
+      setAuthorizedList(formData.authorizedList);
     }
-  }, [formData.lacreList, formData.autorizadoList]);
+  }, [formData.sealList, formData.authorizedList]);
 
   const handleInputChange = (field: string, value: string) => {
     onUpdateFormData(field, value);
@@ -81,65 +81,65 @@ export function TotalizersTab({ formData, onUpdateFormData }: TotalizersTabProps
   };
 
   // Funções para gerenciar lacres
-  const handleLacreChange = (field: keyof Lacre, value: string) => {
-    setCurrentLacre(prev => ({
+  const handleSealChange = (field: keyof Seal, value: string) => {
+    setCurrentSeal(prev => ({
       ...prev,
       [field]: value
     }));
   };
 
-  const handleAddLacre = () => {
+  const handleAddSeal = () => {
     playClickSound();
-    if (currentLacre.numeroLacre) {
-      const newLacre: Lacre = {
-        ...currentLacre,
+    if (currentSeal.sealNumber) {
+      const newSeal: Seal = {
+        ...currentSeal,
         id: Date.now().toString()
       };
-      setLacreList(prev => [...prev, newLacre]);
-      onUpdateFormData('lacreList', [...lacreList, newLacre]);
-      setCurrentLacre({
+      setSealList(prev => [...prev, newSeal]);
+      onUpdateFormData('sealList', [...sealList, newSeal]);
+      setCurrentSeal({
         id: '',
-        numeroLacre: ''
+        sealNumber: ''
       });
     }
   };
 
-  const handleRemoveLacre = (id: string) => {
+  const handleRemoveSeal = (id: string) => {
     playClickSound();
-    const updatedList = lacreList.filter(lacre => lacre.id !== id);
-    setLacreList(updatedList);
-    onUpdateFormData('lacreList', updatedList);
+    const updatedList = sealList.filter(seal => seal.id !== id);
+    setSealList(updatedList);
+    onUpdateFormData('sealList', updatedList);
   };
 
   // Funções para gerenciar autorizados para download
-  const handleAutorizadoChange = (field: keyof AutorizadoDownload, value: string) => {
-    setCurrentAutorizado(prev => ({
+  const handleAuthorizedChange = (field: keyof AuthorizedDownload, value: string) => {
+    setCurrentAuthorized(prev => ({
       ...prev,
-      [field]: field === 'cpfCnpj' ? formatCpfOrCnpj(value) : value
+      [field]: field === 'document' ? formatCpfOrCnpj(value) : value
     }));
   };
 
-  const handleAddAutorizado = () => {
+  const handleAddAuthorized = () => {
     playClickSound();
-    if (currentAutorizado.cpfCnpj) {
-      const newAutorizado: AutorizadoDownload = {
-        ...currentAutorizado,
+    if (currentAuthorized.document) {
+      const newAuthorized: AuthorizedDownload = {
+        ...currentAuthorized,
         id: Date.now().toString()
       };
-      setAutorizadoList(prev => [...prev, newAutorizado]);
-      onUpdateFormData('autorizadoList', [...autorizadoList, newAutorizado]);
-      setCurrentAutorizado({
+      setAuthorizedList(prev => [...prev, newAuthorized]);
+      onUpdateFormData('authorizedList', [...authorizedList, newAuthorized]);
+      setCurrentAuthorized({
         id: '',
-        cpfCnpj: ''
+        document: ''
       });
     }
   };
 
-  const handleRemoveAutorizado = (id: string) => {
+  const handleRemoveAuthorized = (id: string) => {
     playClickSound();
-    const updatedList = autorizadoList.filter(autorizado => autorizado.id !== id);
-    setAutorizadoList(updatedList);
-    onUpdateFormData('autorizadoList', updatedList);
+    const updatedList = authorizedList.filter(authorized => authorized.id !== id);
+    setAuthorizedList(updatedList);
+    onUpdateFormData('authorizedList', updatedList);
   };
 
   const styles = {
@@ -297,10 +297,10 @@ export function TotalizersTab({ formData, onUpdateFormData }: TotalizersTabProps
             <label style={styles.label}>Qnt. total de NF-e relacionadas</label>
             <input
               type="text"
-              style={getInputStyle('qntTotalNFe')}
-              value={formData.qntTotalNFe || ''}
-              onChange={(e) => handleInputChange('qntTotalNFe', e.target.value)}
-              onFocus={() => handleInputFocus('qntTotalNFe')}
+              style={getInputStyle('totalInvoicesCount')}
+              value={formData.totalInvoicesCount || ''}
+              onChange={(e) => handleInputChange('totalInvoicesCount', e.target.value)}
+              onFocus={() => handleInputFocus('totalInvoicesCount')}
               onBlur={handleInputBlur}
               onClick={() => playClickSound()}
               placeholder="1"
@@ -310,18 +310,18 @@ export function TotalizersTab({ formData, onUpdateFormData }: TotalizersTabProps
             <label style={styles.label}>Valor Total da Carga</label>
             <input
               type="text"
-              style={getInputStyle('valorTotalCarga')}
-              value={formData.valorTotalCarga || ''}
-              onChange={(e) => handleInputChange('valorTotalCarga', e.target.value)}
-              onFocus={() => handleInputFocus('valorTotalCarga')}
+              style={getInputStyle('totalCargoValue')}
+              value={formData.totalCargoValue || ''}
+              onChange={(e) => handleInputChange('totalCargoValue', e.target.value)}
+              onFocus={() => handleInputFocus('totalCargoValue')}
               onBlur={handleInputBlur}
               onClick={() => playClickSound()}
               placeholder="0,00"
             />
             {/* Mensagem de aviso sobre peso bruto - só aparece após importar nota sem peso */}
-            {formData.notasSemPesoBruto && formData.notasSemPesoBruto.length > 0 && (
+            {formData.invoicesWithoutGrossWeight && formData.invoicesWithoutGrossWeight.length > 0 && (
               <div style={styles.warningMessage}>
-                A(s) nota(s) {formData.notasSemPesoBruto.join(',')}, não contém peso bruto informado, o Peso Total da Carga será divergente!
+                A(s) nota(s) {formData.invoicesWithoutGrossWeight.join(',')}, não contém peso bruto informado, o Peso Total da Carga será divergente!
               </div>
             )}
           </div>
@@ -344,7 +344,7 @@ export function TotalizersTab({ formData, onUpdateFormData }: TotalizersTabProps
                     '05': 'LTR',
                     '06': 'MMBTU'
                   };
-                  return mapInv[formData.codUnidadeMedidaCarga] || '';
+                  return mapInv[formData.cargoUnitCode] || '';
                 })()}
                 onChange={(e) => {
                   playClickSound();
@@ -359,8 +359,8 @@ export function TotalizersTab({ formData, onUpdateFormData }: TotalizersTabProps
                   const sigla = e.target.value;
                   const codigo = map[sigla] || '';
                   // Atualiza código e limpa o campo de peso para evitar formatos inconsistentes ao trocar unidade
-                  handleInputChange('codUnidadeMedidaCarga', codigo);
-                  handleInputChange('pesoTotalCarga', '');
+                  handleInputChange('cargoUnitCode', codigo);
+                  handleInputChange('totalCargoWeight', '');
                 }}
                 onFocus={() => handleInputFocus('codUnidadeMedidaCarga')}
                 onBlur={handleInputBlur}
@@ -383,11 +383,11 @@ export function TotalizersTab({ formData, onUpdateFormData }: TotalizersTabProps
             <label style={styles.label}>Peso Total da Carga</label>
             <input
               type="text"
-              style={getInputStyle('pesoTotalCarga')}
-              value={formData.pesoTotalCarga || ''}
+              style={getInputStyle('totalCargoWeight')}
+              value={formData.totalCargoWeight || ''}
               onChange={(e) => {
                 const formatted = formatQuantityByUnitType(e.target.value, currentUnitType);
-                handleInputChange('pesoTotalCarga', formatted);
+                handleInputChange('totalCargoWeight', formatted);
               }}
               onFocus={() => handleInputFocus('pesoTotalCarga')}
               onBlur={handleInputBlur}
@@ -409,10 +409,10 @@ export function TotalizersTab({ formData, onUpdateFormData }: TotalizersTabProps
             <div style={{display: 'flex', alignItems: 'center'}}>
               <input
                 type="text"
-                style={getInputStyle('numeroLacre')}
-                value={currentLacre.numeroLacre}
-                onChange={(e) => handleLacreChange('numeroLacre', e.target.value)}
-                onFocus={() => handleInputFocus('numeroLacre')}
+                style={getInputStyle('sealNumber')}
+                value={currentSeal.sealNumber}
+                onChange={(e) => handleSealChange('sealNumber', e.target.value)}
+                onFocus={() => handleInputFocus('sealNumber')}
                 onBlur={handleInputBlur}
                 onClick={() => playClickSound()}
                 placeholder="Número do lacre"
@@ -423,25 +423,25 @@ export function TotalizersTab({ formData, onUpdateFormData }: TotalizersTabProps
             </div>
           </div>
           <div style={styles.formGroup}>
-            <AddButton onClick={handleAddLacre} label="Adicionar Lacre" />
+            <AddButton onClick={handleAddSeal} label="Adicionar Lacre" />
           </div>
         </div>
 
         {/* Lista de lacres */}
         <div style={styles.lacreList}>
-          {lacreList.length > 0 ? (
+          {sealList.length > 0 ? (
             <div style={{width: '100%'}}>
                               <div style={{fontSize: '12px', fontWeight: '600', marginBottom: '8px', color: systemColors.text.secondary}}>
                 Lacres Adicionados:
               </div>
-              {lacreList.map((lacre) => (
-                <div key={lacre.id} style={styles.lacreItem}>
+              {sealList.map((seal) => (
+                <div key={seal.id} style={styles.lacreItem}>
                   <div>
-                    <strong>Nº Lacre:</strong> {lacre.numeroLacre}
+                    <strong>Nº Lacre:</strong> {seal.sealNumber}
                   </div>
                   <button
                     style={styles.removeButton}
-                    onClick={() => handleRemoveLacre(lacre.id)}
+                    onClick={() => handleRemoveSeal(seal.id)}
                     title="Remover lacre"
                   >
                     ×
@@ -466,10 +466,10 @@ export function TotalizersTab({ formData, onUpdateFormData }: TotalizersTabProps
             <div style={{display: 'flex', alignItems: 'center'}}>
               <input
                 type="text"
-                style={getInputStyle('cpfCnpjAutorizado')}
-                value={currentAutorizado.cpfCnpj}
-                onChange={(e) => handleAutorizadoChange('cpfCnpj', e.target.value)}
-                onFocus={() => handleInputFocus('cpfCnpjAutorizado')}
+                style={getInputStyle('authorizedDocument')}
+                value={currentAuthorized.document}
+                onChange={(e) => handleAuthorizedChange('document', e.target.value)}
+                onFocus={() => handleInputFocus('authorizedDocument')}
                 onBlur={handleInputBlur}
                 onClick={() => playClickSound()}
                 placeholder="000.000.000-00"
@@ -480,25 +480,24 @@ export function TotalizersTab({ formData, onUpdateFormData }: TotalizersTabProps
             </div>
           </div>
           <div style={styles.formGroup}>
-            <AddButton onClick={handleAddAutorizado} label="Adicionar Autorizado" />
+            <AddButton onClick={handleAddAuthorized} label="Adicionar Autorizado" />
           </div>
         </div>
 
         {/* Lista de autorizados */}
         <div style={styles.autorizadoList}>
-          {autorizadoList.length > 0 ? (
+          {authorizedList.length > 0 ? (
             <div style={{width: '100%'}}>
                             <div style={{fontSize: '12px', fontWeight: '600', marginBottom: '8px', color: systemColors.text.secondary}}>
               Autorizados Adicionados:
             </div>
-              {autorizadoList.map((autorizado) => (
-                <div key={autorizado.id} style={styles.autorizadoItem}>
+              {authorizedList.map((authorized) => (
+                <div key={authorized.id} style={styles.autorizadoItem}>
                   <div>
-                    <strong>CPF/CNPJ:</strong> {autorizado.cpfCnpj}
                   </div>
                   <button
                     style={styles.removeButton}
-                    onClick={() => handleRemoveAutorizado(autorizado.id)}
+                    onClick={() => handleRemoveAuthorized(authorized.id)}
                     title="Remover autorizado"
                   >
                     ×
@@ -526,10 +525,10 @@ export function TotalizersTab({ formData, onUpdateFormData }: TotalizersTabProps
                   WebkitAppearance: 'none' as const,
                   MozAppearance: 'none' as const
                 }}
-              value={formData.tipoCarga || ''}
+              value={formData.cargoType || ''}
               onChange={(e) => {
                 playClickSound();
-                handleInputChange('tipoCarga', e.target.value);
+                handleInputChange('cargoType', e.target.value);
               }}
               onFocus={() => handleInputFocus('tipoCarga')}
               onBlur={handleInputBlur}
@@ -559,9 +558,9 @@ export function TotalizersTab({ formData, onUpdateFormData }: TotalizersTabProps
               style={{
                 ...styles.textarea
               }}
-              value={formData.descricaoProduto || ''}
-              onChange={(e) => handleInputChange('descricaoProduto', e.target.value)}
-              onFocus={() => handleInputFocus('descricaoProduto')}
+              value={formData.productDescription || ''}
+              onChange={(e) => handleInputChange('productDescription', e.target.value)}
+              onFocus={() => handleInputFocus('productDescription')}
               onBlur={handleInputBlur}
               onClick={() => playClickSound()}
               placeholder="Descrição detalhada do produto"
@@ -585,10 +584,10 @@ export function TotalizersTab({ formData, onUpdateFormData }: TotalizersTabProps
             <label style={{...styles.label, height: '32px', display: 'flex', alignItems: 'center'}}>Código NCM</label>
             <input
               type="text"
-              style={getInputStyle('codigoNCM')}
-              value={formData.codigoNCM || ''}
-              onChange={(e) => handleInputChange('codigoNCM', e.target.value)}
-              onFocus={() => handleInputFocus('codigoNCM')}
+              style={getInputStyle('ncmCode')}
+              value={formData.ncmCode || ''}
+              onChange={(e) => handleInputChange('ncmCode', e.target.value)}
+              onFocus={() => handleInputFocus('ncmCode')}
               onBlur={handleInputBlur}
               onClick={() => playClickSound()}
               placeholder="Código NCM"
@@ -605,10 +604,10 @@ export function TotalizersTab({ formData, onUpdateFormData }: TotalizersTabProps
             <label style={styles.label}>CEP Local de Carregamento</label>
             <input
               type="text"
-              style={getInputStyle('cepLocalCarregamento')}
-              value={formData.cepLocalCarregamento || ''}
-              onChange={(e) => handleInputChange('cepLocalCarregamento', e.target.value)}
-              onFocus={() => handleInputFocus('cepLocalCarregamento')}
+              style={getInputStyle('loadingZipCode')}
+              value={formData.loadingZipCode || ''}
+              onChange={(e) => handleInputChange('loadingZipCode', e.target.value)}
+              onFocus={() => handleInputFocus('loadingZipCode')}
               onBlur={handleInputBlur}
               onClick={() => playClickSound()}
               placeholder="00000-000"
@@ -618,10 +617,10 @@ export function TotalizersTab({ formData, onUpdateFormData }: TotalizersTabProps
             <label style={styles.label}>CEP Local de Descarregamento</label>
             <input
               type="text"
-              style={getInputStyle('cepLocalDescarregamento')}
-              value={formData.cepLocalDescarregamento || ''}
-              onChange={(e) => handleInputChange('cepLocalDescarregamento', e.target.value)}
-              onFocus={() => handleInputFocus('cepLocalDescarregamento')}
+              style={getInputStyle('unloadingZipCode')}
+              value={formData.unloadingZipCode || ''}
+              onChange={(e) => handleInputChange('unloadingZipCode', e.target.value)}
+              onFocus={() => handleInputFocus('unloadingZipCode')}
               onBlur={handleInputBlur}
               onClick={() => playClickSound()}
               placeholder="00000-000"

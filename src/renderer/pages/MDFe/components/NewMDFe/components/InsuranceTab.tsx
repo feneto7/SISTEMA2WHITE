@@ -11,33 +11,33 @@ interface InsuranceTabProps {
   onUpdateFormData: (field: string, value: any) => void;
 }
 
-interface Averbacao {
+interface Endorsement {
   id: string;
-  numeroAverbacao: string;
+  endorsementNumber: string;
 }
 
 export function InsuranceTab({ formData, onUpdateFormData }: InsuranceTabProps): JSX.Element {
   const playClickSound = useClickSound();
   const { systemStyles, systemColors } = useTheme();
   const [focusedField, setFocusedField] = useState<string | null>(null);
-  const [averbacaoList, setAverbacaoList] = useState<Averbacao[]>([]);
-  const [currentAverbacao, setCurrentAverbacao] = useState<Averbacao>({
+  const [endorsementList, setEndorsementList] = useState<Endorsement[]>([]);
+  const [currentEndorsement, setCurrentEndorsement] = useState<Endorsement>({
     id: '',
-    numeroAverbacao: ''
+    endorsementNumber: ''
   });
-  const [exibirDadosSeguro, setExibirDadosSeguro] = useState(false);
+  const [showInsuranceData, setShowInsuranceData] = useState(false);
   const formContainerRef = useRef<HTMLDivElement>(null);
 
 
   // Sincroniza lista com formData quando o componente monta ou quando muda
   useEffect(() => {
-    if (formData.averbacaoList && Array.isArray(formData.averbacaoList)) {
-      setAverbacaoList(formData.averbacaoList);
+    if (formData.endorsementList && Array.isArray(formData.endorsementList)) {
+      setEndorsementList(formData.endorsementList);
     }
-    if (formData.exibirDadosSeguro !== undefined) {
-      setExibirDadosSeguro(formData.exibirDadosSeguro);
+    if (formData.showInsuranceData !== undefined) {
+      setShowInsuranceData(formData.showInsuranceData);
     }
-  }, [formData.averbacaoList, formData.exibirDadosSeguro]);
+  }, [formData.endorsementList, formData.showInsuranceData]);
 
   const handleInputChange = (field: string, value: string) => {
     onUpdateFormData(field, value);
@@ -59,41 +59,41 @@ export function InsuranceTab({ formData, onUpdateFormData }: InsuranceTabProps):
   };
 
   // Funções para gerenciar averbações
-  const handleAverbacaoChange = (field: keyof Averbacao, value: string) => {
-    setCurrentAverbacao(prev => ({
+  const handleEndorsementChange = (field: keyof Endorsement, value: string) => {
+    setCurrentEndorsement(prev => ({
       ...prev,
       [field]: value
     }));
   };
 
-  const handleAddAverbacao = () => {
+  const handleAddEndorsement = () => {
     playClickSound();
-    if (currentAverbacao.numeroAverbacao) {
-      const newAverbacao: Averbacao = {
-        ...currentAverbacao,
+    if (currentEndorsement.endorsementNumber) {
+      const newEndorsement: Endorsement = {
+        ...currentEndorsement,
         id: Date.now().toString()
       };
-      setAverbacaoList(prev => [...prev, newAverbacao]);
-      onUpdateFormData('averbacaoList', [...averbacaoList, newAverbacao]);
-      setCurrentAverbacao({
+      setEndorsementList(prev => [...prev, newEndorsement]);
+      onUpdateFormData('endorsementList', [...endorsementList, newEndorsement]);
+      setCurrentEndorsement({
         id: '',
-        numeroAverbacao: ''
+        endorsementNumber: ''
       });
     }
   };
 
-  const handleRemoveAverbacao = (id: string) => {
+  const handleRemoveEndorsement = (id: string) => {
     playClickSound();
-    const updatedList = averbacaoList.filter(averbacao => averbacao.id !== id);
-    setAverbacaoList(updatedList);
-    onUpdateFormData('averbacaoList', updatedList);
+    const updatedList = endorsementList.filter(endorsement => endorsement.id !== id);
+    setEndorsementList(updatedList);
+    onUpdateFormData('endorsementList', updatedList);
   };
 
   const handleCheckboxChange = () => {
     playClickSound();
-    const newValue = !exibirDadosSeguro;
-    setExibirDadosSeguro(newValue);
-    onUpdateFormData('exibirDadosSeguro', newValue);
+    const newValue = !showInsuranceData;
+    setShowInsuranceData(newValue);
+    onUpdateFormData('showInsuranceData', newValue);
   };
 
   const styles = {
@@ -287,10 +287,10 @@ export function InsuranceTab({ formData, onUpdateFormData }: InsuranceTabProps):
             <label style={styles.label}>Número da Averbação</label>
             <div style={{display: 'flex', alignItems: 'center'}}>
               <input
-                type="text"
-                style={getInputStyle('numeroAverbacao')}
-                value={currentAverbacao.numeroAverbacao}
-                onChange={(e) => handleAverbacaoChange('numeroAverbacao', e.target.value)}
+              type="text"
+              style={getInputStyle('endorsementNumber')}
+              value={currentEndorsement.endorsementNumber}
+              onChange={(e) => handleEndorsementChange('endorsementNumber', e.target.value)}
                 onFocus={() => handleInputFocus('numeroAverbacao')}
                 onBlur={handleInputBlur}
                 onClick={() => playClickSound()}
@@ -302,24 +302,24 @@ export function InsuranceTab({ formData, onUpdateFormData }: InsuranceTabProps):
             </div>
           </div>
           <div style={styles.formGroup}>
-            <AddButton onClick={handleAddAverbacao} label="Número da Averbação" />
+            <AddButton onClick={handleAddEndorsement} label="Número da Averbação" />
           </div>
         </div>
 
         {/* Lista de averbações adicionadas */}
-        {averbacaoList.length > 0 && (
+        {endorsementList.length > 0 && (
           <div style={styles.averbacaoList}>
             <div style={{fontSize: '12px', fontWeight: '600', marginBottom: '8px', color: systemColors.text.secondary}}>
               Averbações Adicionadas:
             </div>
-            {averbacaoList.map((averbacao) => (
-              <div key={averbacao.id} style={styles.averbacaoItem}>
+            {endorsementList.map((endorsement) => (
+              <div key={endorsement.id} style={styles.averbacaoItem}>
                 <div>
-                  <strong>Número:</strong> {averbacao.numeroAverbacao}
+                  <strong>Número:</strong> {endorsement.endorsementNumber}
                 </div>
                 <button
                   style={styles.removeButton}
-                  onClick={() => handleRemoveAverbacao(averbacao.id)}
+                  onClick={() => handleRemoveEndorsement(endorsement.id)}
                   title="Remover averbação"
                 >
                   ×
@@ -339,10 +339,10 @@ export function InsuranceTab({ formData, onUpdateFormData }: InsuranceTabProps):
           <div 
             style={{
               ...systemStyles.checkbox.box,
-              ...(exibirDadosSeguro ? systemStyles.checkbox.boxChecked : {})
+              ...(showInsuranceData ? systemStyles.checkbox.boxChecked : {})
             }}
           >
-            {exibirDadosSeguro && (
+            {showInsuranceData && (
               <svg 
                 viewBox="0 0 14 14" 
                 style={systemStyles.checkbox.checkmark}

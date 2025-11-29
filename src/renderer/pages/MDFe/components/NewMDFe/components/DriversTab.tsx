@@ -13,75 +13,75 @@ interface DriversTabProps {
 
 interface Driver {
   id: string;
-  nomeCondutor: string;
-  cpfCondutor: string;
-  cnhCondutor: string;
-  categoriaCnh: string;
-  validadeCnh: string;
-  telefoneCondutor: string;
-  emailCondutor: string;
-  enderecoCondutor: string;
-  cidadeCondutor: string;
-  ufCondutor: string;
-  cepCondutor: string;
+  name: string;
+  cpf: string;
+  cnh: string;
+  cnhCategory: string;
+  cnhExpiration: string;
+  phone: string;
+  email: string;
+  address: string;
+  city: string;
+  state: string;
+  zipCode: string;
 }
 
 export function DriversTab({ formData, onUpdateFormData }: DriversTabProps): JSX.Element {
   const playClickSound = useClickSound();
   const { systemStyles, systemColors } = useTheme();
   const [focusedField, setFocusedField] = useState<string | null>(null);
-  const [condutorSelecionado, setCondutorSelecionado] = useState<string>('');
-  const [novoCondutor, setNovoCondutor] = useState({
-    nomeCondutor: '',
-    cpfCondutor: '',
-    cnhCondutor: ''
+  const [selectedDriver, setSelectedDriver] = useState<string>('');
+  const [newDriver, setNewDriver] = useState({
+    name: '',
+    cpf: '',
+    cnh: ''
   });
   
   const formContainerRef = useRef<HTMLDivElement>(null);
 
-  // Dados mockados de condutores cadastrados
-  const [condutoresCadastrados] = useState<Driver[]>([
+  // Mocked registered drivers for selection
+  const [registeredDrivers] = useState<Driver[]>([
     {
       id: '1',
-      nomeCondutor: 'João Silva',
-      cpfCondutor: '123.456.789-00',
-      cnhCondutor: '12345678901',
-      categoriaCnh: 'C',
-      validadeCnh: '2025-12-31',
-      telefoneCondutor: '(11) 99999-9999',
-      emailCondutor: 'joao@email.com',
-      enderecoCondutor: 'Rua das Flores, 123',
-      cidadeCondutor: 'São Paulo',
-      ufCondutor: 'SP',
-      cepCondutor: '01234-567'
+      name: 'João Silva',
+      cpf: '123.456.789-00',
+      cnh: '12345678901',
+      cnhCategory: 'C',
+      cnhExpiration: '2025-12-31',
+      phone: '(11) 99999-9999',
+      email: 'joao@email.com',
+      address: 'Rua das Flores, 123',
+      city: 'São Paulo',
+      state: 'SP',
+      zipCode: '01234-567'
     },
     {
       id: '2',
-      nomeCondutor: 'Maria Santos',
-      cpfCondutor: '987.654.321-00',
-      cnhCondutor: '98765432109',
-      categoriaCnh: 'D',
-      validadeCnh: '2026-06-15',
-      telefoneCondutor: '(11) 88888-8888',
-      emailCondutor: 'maria@email.com',
-      enderecoCondutor: 'Av. Paulista, 1000',
-      cidadeCondutor: 'São Paulo',
-      ufCondutor: 'SP',
-      cepCondutor: '01310-100'
+      name: 'Maria Santos',
+      cpf: '987.654.321-00',
+      cnh: '98765432109',
+      cnhCategory: 'D',
+      cnhExpiration: '2026-06-15',
+      phone: '(11) 88888-8888',
+      email: 'maria@email.com',
+      address: 'Av. Paulista, 1000',
+      city: 'São Paulo',
+      state: 'SP',
+      zipCode: '01310-100'
     },
     {
       id: '3',
-      nomeCondutor: 'Pedro Costa',
-      cpfCondutor: '111.222.333-44',
-      cnhCondutor: '11223344556',
-      categoriaCnh: 'E',
-      validadeCnh: '2027-03-20',
-      telefoneCondutor: '(11) 77777-7777',
-      emailCondutor: 'pedro@email.com',
-      enderecoCondutor: 'Rua Augusta, 500',
-      cidadeCondutor: 'São Paulo',
-      ufCondutor: 'SP',
-      cepCondutor: '01305-000'
+      name: 'Pedro Costa',
+      cpf: '111.222.333-44',
+      cnh: '11223344556',
+      cnhCategory: 'E',
+      cnhExpiration: '2027-03-20',
+      phone: '(11) 77777-7777',
+      email: 'pedro@email.com',
+      address: 'Rua Augusta, 500',
+      city: 'São Paulo',
+      state: 'SP',
+      zipCode: '01305-000'
     }
   ]);
 
@@ -102,11 +102,11 @@ export function DriversTab({ formData, onUpdateFormData }: DriversTabProps): JSX
 
   const getInputProps = (field: string, placeholder: string = '', type: string = 'text') => ({
     type,
-    value: novoCondutor[field as keyof typeof novoCondutor] || '',
+    value: newDriver[field as keyof typeof newDriver] || '',
     onChange: (e: React.ChangeEvent<HTMLInputElement>) => {
       const raw = e.target.value;
       const formatted = /cpf/i.test(field) ? formatCpfOrCnpj(raw) : raw;
-      setNovoCondutor(prev => ({
+      setNewDriver(prev => ({
         ...prev,
         [field]: formatted
       }));
@@ -118,59 +118,59 @@ export function DriversTab({ formData, onUpdateFormData }: DriversTabProps): JSX
     placeholder
   });
 
-  const handleCondutorSelect = (condutorId: string) => {
+  const handleDriverSelect = (driverId: string) => {
     playClickSound();
-    setCondutorSelecionado(condutorId);
+    setSelectedDriver(driverId);
   };
 
-  const handleAdicionarCondutorCadastrado = () => {
+  const handleAddRegisteredDriver = () => {
     playClickSound();
-    if (condutorSelecionado) {
-      const condutor = condutoresCadastrados.find(c => c.id === condutorSelecionado);
-      if (condutor) {
-        const condutoresAtuais = formData.condutoresSelecionados || [];
-        const condutorJaExiste = condutoresAtuais.some((c: Driver) => c.id === condutor.id);
+    if (selectedDriver) {
+      const driver = registeredDrivers.find(c => c.id === selectedDriver);
+      if (driver) {
+        const currentDrivers = formData.selectedDrivers || [];
+        const driverAlreadyExists = currentDrivers.some((c: Driver) => c.id === driver.id);
         
-        if (!condutorJaExiste) {
-          onUpdateFormData('condutoresSelecionados', [...condutoresAtuais, condutor]);
-          setCondutorSelecionado('');
+        if (!driverAlreadyExists) {
+          onUpdateFormData('selectedDrivers', [...currentDrivers, driver]);
+          setSelectedDriver('');
         }
       }
     }
   };
 
-  const handleAdicionarNovoCondutor = () => {
+  const handleAddNewDriver = () => {
     playClickSound();
-    if (novoCondutor.nomeCondutor && novoCondutor.cpfCondutor && novoCondutor.cnhCondutor) {
-      const novoCondutorCompleto: Driver = {
+    if (newDriver.name && newDriver.cpf && newDriver.cnh) {
+      const newDriverComplete: Driver = {
         id: Date.now().toString(),
-        ...novoCondutor,
-        categoriaCnh: '',
-        validadeCnh: '',
-        telefoneCondutor: '',
-        emailCondutor: '',
-        enderecoCondutor: '',
-        cidadeCondutor: '',
-        ufCondutor: '',
-        cepCondutor: ''
+        ...newDriver,
+        cnhCategory: '',
+        cnhExpiration: '',
+        phone: '',
+        email: '',
+        address: '',
+        city: '',
+        state: '',
+        zipCode: ''
       };
       
-      const condutoresAtuais = formData.condutoresSelecionados || [];
-      onUpdateFormData('condutoresSelecionados', [...condutoresAtuais, novoCondutorCompleto]);
+      const currentDrivers = formData.selectedDrivers || [];
+      onUpdateFormData('selectedDrivers', [...currentDrivers, newDriverComplete]);
       
-      setNovoCondutor({
-        nomeCondutor: '',
-        cpfCondutor: '',
-        cnhCondutor: ''
+      setNewDriver({
+        name: '',
+        cpf: '',
+        cnh: ''
       });
     }
   };
 
-  const handleRemoverCondutor = (condutorId: string) => {
+  const handleRemoveDriver = (driverId: string) => {
     playClickSound();
-    const condutoresAtuais = formData.condutoresSelecionados || [];
-    const condutoresFiltrados = condutoresAtuais.filter((c: Driver) => c.id !== condutorId);
-    onUpdateFormData('condutoresSelecionados', condutoresFiltrados);
+    const currentDrivers = formData.selectedDrivers || [];
+    const filteredDrivers = currentDrivers.filter((c: Driver) => c.id !== driverId);
+    onUpdateFormData('selectedDrivers', filteredDrivers);
   };
 
   const styles = {
@@ -315,16 +315,16 @@ export function DriversTab({ formData, onUpdateFormData }: DriversTabProps): JSX
                   WebkitAppearance: 'none' as const,
                   MozAppearance: 'none' as const
                 }}
-                value={condutorSelecionado}
-                onChange={(e) => handleCondutorSelect(e.target.value)}
+                value={selectedDriver}
+                onChange={(e) => handleDriverSelect(e.target.value)}
                 onFocus={() => handleInputFocus('condutorSelecionado')}
                 onBlur={handleInputBlur}
                 onClick={() => playClickSound()}
               >
                 <option value="">Selecione um condutor cadastrado</option>
-                {condutoresCadastrados.map((condutor) => (
-                  <option key={condutor.id} value={condutor.id}>
-                    {condutor.nomeCondutor} - {condutor.cpfCondutor} ({condutor.categoriaCnh})
+                {registeredDrivers.map((driver) => (
+                  <option key={driver.id} value={driver.id}>
+                    {driver.name} - {driver.cpf} ({driver.cnhCategory})
                   </option>
                 ))}
               </select>
@@ -333,8 +333,8 @@ export function DriversTab({ formData, onUpdateFormData }: DriversTabProps): JSX
               </div>
             </div>
             <AddButton
-              onClick={handleAdicionarCondutorCadastrado}
-              disabled={!condutorSelecionado}
+              onClick={handleAddRegisteredDriver}
+              disabled={!selectedDriver}
               label="Adicionar Condutor"
             />
           </div>
@@ -350,20 +350,20 @@ export function DriversTab({ formData, onUpdateFormData }: DriversTabProps): JSX
         <div style={styles.formGrid}>
           <div style={styles.formGroup}>
             <label style={styles.label}>Nome Completo *</label>
-            <input {...getInputProps('nomeCondutor', 'João Silva')} />
+            <input {...getInputProps('name', 'João Silva')} />
           </div>
           <div style={styles.formGroup}>
             <label style={styles.label}>CPF *</label>
-            <input {...getInputProps('cpfCondutor', '123.456.789-00')} />
+            <input {...getInputProps('cpf', '123.456.789-00')} />
           </div>
           <div style={styles.formGroup}>
             <label style={styles.label}>CNH *</label>
-            <input {...getInputProps('cnhCondutor', '12345678901')} />
+            <input {...getInputProps('cnh', '12345678901')} />
           </div>
           <div style={styles.formGroup}>
             <AddButton
-              onClick={handleAdicionarNovoCondutor}
-              disabled={!novoCondutor.nomeCondutor || !novoCondutor.cpfCondutor || !novoCondutor.cnhCondutor}
+              onClick={handleAddNewDriver}
+              disabled={!newDriver.name || !newDriver.cpf || !newDriver.cnh}
               label="Adicionar Novo Condutor"
             />
           </div>
@@ -374,24 +374,24 @@ export function DriversTab({ formData, onUpdateFormData }: DriversTabProps): JSX
       <div style={styles.section}>
         <h4 style={styles.sectionTitle}>Condutores Selecionados</h4>
         <div style={styles.condutoresList}>
-          {formData.condutoresSelecionados && formData.condutoresSelecionados.length > 0 ? (
-            formData.condutoresSelecionados.map((condutor: Driver, index: number) => (
+          {formData.selectedDrivers && formData.selectedDrivers.length > 0 ? (
+            formData.selectedDrivers.map((driver: Driver, index: number) => (
               <div
-                key={condutor.id}
+                key={driver.id}
                 style={{
                   ...styles.condutorItem,
-                  ...(index === formData.condutoresSelecionados.length - 1 ? styles.condutorItemLast : {})
+                  ...(index === formData.selectedDrivers.length - 1 ? styles.condutorItemLast : {})
                 }}
               >
                 <div style={styles.condutorInfo}>
-                  <div style={styles.condutorName}>{condutor.nomeCondutor}</div>
+                  <div style={styles.condutorName}>{driver.name}</div>
                   <div style={styles.condutorDetails}>
-                    CPF: {condutor.cpfCondutor} | CNH: {condutor.cnhCondutor}
+                    CPF: {driver.cpf} | CNH: {driver.cnh}
                   </div>
                 </div>
                 <button
                   style={styles.removeButton}
-                  onClick={() => handleRemoverCondutor(condutor.id)}
+                  onClick={() => handleRemoveDriver(driver.id)}
                 >
                   Remover
                 </button>

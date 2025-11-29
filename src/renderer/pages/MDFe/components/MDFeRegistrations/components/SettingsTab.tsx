@@ -27,8 +27,8 @@ export function SettingsTab({ formData, onUpdateFormData }: SettingsTabProps): J
             <label style={systemStyles.input.label}>Ambiente</label>
             <select
               style={systemStyles.select.field}
-              value={formData.ambiente}
-              onChange={(e) => handleInputChange('ambiente', e.target.value)}
+              value={formData.environment}
+              onChange={(e) => handleInputChange('environment', e.target.value)}
               onClick={() => playClickSound()}
             >
               <option value="homologacao">Homologação</option>
@@ -40,8 +40,8 @@ export function SettingsTab({ formData, onUpdateFormData }: SettingsTabProps): J
             <input
               type="text"
               style={systemStyles.input.field}
-              value={formData.serie}
-              onChange={(e) => handleInputChange('serie', e.target.value)}
+              value={formData.series}
+              onChange={(e) => handleInputChange('series', e.target.value)}
               onClick={() => playClickSound()}
               placeholder="001"
             />
@@ -51,8 +51,8 @@ export function SettingsTab({ formData, onUpdateFormData }: SettingsTabProps): J
             <input
               type="number"
               style={systemStyles.input.field}
-              value={formData.numeroInicial}
-              onChange={(e) => handleInputChange('numeroInicial', e.target.value)}
+              value={formData.initialNumber}
+              onChange={(e) => handleInputChange('initialNumber', e.target.value)}
               onClick={() => playClickSound()}
               placeholder="1"
             />
@@ -69,8 +69,8 @@ export function SettingsTab({ formData, onUpdateFormData }: SettingsTabProps): J
             <input
               type="text"
               style={systemStyles.input.field}
-              value={formData.certificadoDigital}
-              onChange={(e) => handleInputChange('certificadoDigital', e.target.value)}
+              value={formData.digitalCertificatePath}
+              onChange={(e) => handleInputChange('digitalCertificatePath', e.target.value)}
               onClick={() => playClickSound()}
               placeholder="C:\certificados\certificado.p12"
             />
@@ -80,8 +80,8 @@ export function SettingsTab({ formData, onUpdateFormData }: SettingsTabProps): J
             <input
               type="password"
               style={systemStyles.input.field}
-              value={formData.senhaCertificado}
-              onChange={(e) => handleInputChange('senhaCertificado', e.target.value)}
+              value={formData.digitalCertificatePassword}
+              onChange={(e) => handleInputChange('digitalCertificatePassword', e.target.value)}
               onClick={() => playClickSound()}
               placeholder="Senha do certificado"
             />
@@ -91,8 +91,8 @@ export function SettingsTab({ formData, onUpdateFormData }: SettingsTabProps): J
             <input
               type="date"
               style={systemStyles.input.field}
-              value={formData.validadeCertificado}
-              onChange={(e) => handleInputChange('validadeCertificado', e.target.value)}
+              value={formData.digitalCertificateExpiration}
+              onChange={(e) => handleInputChange('digitalCertificateExpiration', e.target.value)}
               onClick={() => playClickSound()}
             />
           </div>
@@ -108,8 +108,8 @@ export function SettingsTab({ formData, onUpdateFormData }: SettingsTabProps): J
             <input
               type="text"
               style={systemStyles.input.field}
-              value={formData.emitente}
-              onChange={(e) => handleInputChange('emitente', e.target.value)}
+              value={formData.issuerName}
+              onChange={(e) => handleInputChange('issuerName', e.target.value)}
               onClick={() => playClickSound()}
               placeholder="Empresa Transportadora LTDA"
             />
@@ -119,8 +119,8 @@ export function SettingsTab({ formData, onUpdateFormData }: SettingsTabProps): J
             <input
               type="text"
               style={systemStyles.input.field}
-              value={formData.cnpjEmitente}
-              onChange={(e) => handleInputChange('cnpjEmitente', e.target.value)}
+              value={formData.issuerCnpj}
+              onChange={(e) => handleInputChange('issuerCnpj', e.target.value)}
               onClick={() => playClickSound()}
               placeholder="12.345.678/0001-90"
             />
@@ -130,8 +130,8 @@ export function SettingsTab({ formData, onUpdateFormData }: SettingsTabProps): J
             <input
               type="text"
               style={systemStyles.input.field}
-              value={formData.enderecoEmitente}
-              onChange={(e) => handleInputChange('enderecoEmitente', e.target.value)}
+              value={formData.issuerAddress}
+              onChange={(e) => handleInputChange('issuerAddress', e.target.value)}
               onClick={() => playClickSound()}
               placeholder="Rua das Empresas, 123"
             />
@@ -141,8 +141,8 @@ export function SettingsTab({ formData, onUpdateFormData }: SettingsTabProps): J
             <input
               type="text"
               style={systemStyles.input.field}
-              value={formData.cidadeEmitente}
-              onChange={(e) => handleInputChange('cidadeEmitente', e.target.value)}
+              value={formData.issuerCity}
+              onChange={(e) => handleInputChange('issuerCity', e.target.value)}
               onClick={() => playClickSound()}
               placeholder="São Paulo"
             />
@@ -152,8 +152,8 @@ export function SettingsTab({ formData, onUpdateFormData }: SettingsTabProps): J
             <input
               type="text"
               style={systemStyles.input.field}
-              value={formData.ufEmitente}
-              onChange={(e) => handleInputChange('ufEmitente', e.target.value)}
+              value={formData.issuerState}
+              onChange={(e) => handleInputChange('issuerState', e.target.value)}
               onClick={() => playClickSound()}
               placeholder="SP"
             />
@@ -163,8 +163,8 @@ export function SettingsTab({ formData, onUpdateFormData }: SettingsTabProps): J
             <input
               type="text"
               style={systemStyles.input.field}
-              value={formData.cepEmitente}
-              onChange={(e) => handleInputChange('cepEmitente', e.target.value)}
+              value={formData.issuerZipCode}
+              onChange={(e) => handleInputChange('issuerZipCode', e.target.value)}
               onClick={() => playClickSound()}
               placeholder="01234-567"
             />
@@ -174,8 +174,8 @@ export function SettingsTab({ formData, onUpdateFormData }: SettingsTabProps): J
             <input
               type="text"
               style={systemStyles.input.field}
-              value={formData.telefoneEmitente}
-              onChange={(e) => handleInputChange('telefoneEmitente', e.target.value)}
+              value={formData.issuerPhone}
+              onChange={(e) => handleInputChange('issuerPhone', e.target.value)}
               onClick={() => playClickSound()}
               placeholder="(11) 3333-4444"
             />
@@ -185,8 +185,8 @@ export function SettingsTab({ formData, onUpdateFormData }: SettingsTabProps): J
             <input
               type="email"
               style={systemStyles.input.field}
-              value={formData.emailEmitente}
-              onChange={(e) => handleInputChange('emailEmitente', e.target.value)}
+              value={formData.issuerEmail}
+              onChange={(e) => handleInputChange('issuerEmail', e.target.value)}
               onClick={() => playClickSound()}
               placeholder="contato@empresa.com"
             />
@@ -224,8 +224,8 @@ export function SettingsTab({ formData, onUpdateFormData }: SettingsTabProps): J
             <label style={systemStyles.input.label}>
               <input
                 type="checkbox"
-                checked={formData.backupAutomatico}
-                onChange={(e) => onUpdateFormData('backupAutomatico', e.target.checked)}
+                checked={formData.automaticBackup}
+                onChange={(e) => onUpdateFormData('automaticBackup', e.target.checked)}
                 onClick={() => playClickSound()}
                 style={{ marginRight: '8px' }}
               />
@@ -236,8 +236,8 @@ export function SettingsTab({ formData, onUpdateFormData }: SettingsTabProps): J
             <label style={systemStyles.input.label}>
               <input
                 type="checkbox"
-                checked={formData.notificacoesEmail}
-                onChange={(e) => onUpdateFormData('notificacoesEmail', e.target.checked)}
+                checked={formData.emailNotifications}
+                onChange={(e) => onUpdateFormData('emailNotifications', e.target.checked)}
                 onClick={() => playClickSound()}
                 style={{ marginRight: '8px' }}
               />
@@ -248,8 +248,8 @@ export function SettingsTab({ formData, onUpdateFormData }: SettingsTabProps): J
             <label style={systemStyles.input.label}>
               <input
                 type="checkbox"
-                checked={formData.logDetalhado}
-                onChange={(e) => onUpdateFormData('logDetalhado', e.target.checked)}
+                checked={formData.detailedLog}
+                onChange={(e) => onUpdateFormData('detailedLog', e.target.checked)}
                 onClick={() => playClickSound()}
                 style={{ marginRight: '8px' }}
               />

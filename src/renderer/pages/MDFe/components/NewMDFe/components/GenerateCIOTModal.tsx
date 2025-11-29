@@ -15,8 +15,8 @@ interface GenerateCIOTModalProps {
 
 interface Vehicle {
   id: string;
-  placa: string;
-  rntrc: string;
+  licensePlate: string;
+  rntrcCode: string;
 }
 
 export function GenerateCIOTModal({ isOpen, onClose, onSave }: GenerateCIOTModalProps): JSX.Element | null {
@@ -25,35 +25,35 @@ export function GenerateCIOTModal({ isOpen, onClose, onSave }: GenerateCIOTModal
   const [vehicles, setVehicles] = useState<Vehicle[]>([]);
   const [currentVehicle, setCurrentVehicle] = useState<Vehicle>({
     id: '',
-    placa: '',
-    rntrc: ''
+    licensePlate: '',
+    rntrcCode: ''
   });
   const formContainerRef = useRef<HTMLDivElement>(null);
 
 
   const [formData, setFormData] = useState({
-    tipoViagem: 'Padrão',
-    cpfCnpjContratante: '',
-    cpfCnpjContratado: '',
-    rntrcContratado: '000000000',
-    cpfCnpjDestinatario: '',
-    municipioOrigem: 'Conceição do Almeida',
-    municipioDestino: 'Conceição do Almeida',
-    codigoNaturezaCarga: '',
-    pesoCarga: '0.00',
-    dataInicioViagem: '',
-    dataFimViagem: '',
-    qntdTarifas: '0',
-    valorTarifas: '0,00',
-    valorBruto: '0,00',
-    valorPagar: '0,00',
-    valorAdiantamento: '0,00',
-    valorPago: '0,00',
-    valorSEST: '0,00',
-    valorINSS: '0,00',
-    valePedagio: '0,00',
-    valeCombustivel: '0,00',
-    valeIRRF: '0,00'
+    travelType: 'Padrão',
+    contractorDocument: '',
+    hiredDocument: '',
+    hiredRntrc: '000000000',
+    recipientDocument: '',
+    originCity: 'Conceição do Almeida',
+    destinationCity: 'Conceição do Almeida',
+    cargoNatureCode: '',
+    cargoWeight: '0.00',
+    tripStartDate: '',
+    tripEndDate: '',
+    feesQuantity: '0',
+    feesValue: '0,00',
+    grossValue: '0,00',
+    amountToPay: '0,00',
+    advanceValue: '0,00',
+    paidValue: '0,00',
+    sestValue: '0,00',
+    inssValue: '0,00',
+    tollVoucherValue: '0,00',
+    fuelVoucherValue: '0,00',
+    irrfVoucherValue: '0,00'
   });
 
   const handleInputChange = (field: string, value: string) => {
@@ -85,7 +85,7 @@ export function GenerateCIOTModal({ isOpen, onClose, onSave }: GenerateCIOTModal
 
   const handleAddVehicle = () => {
     playClickSound();
-    if (currentVehicle.placa && currentVehicle.rntrc) {
+    if (currentVehicle.licensePlate && currentVehicle.rntrcCode) {
       const newVehicle: Vehicle = {
         ...currentVehicle,
         id: Date.now().toString()
@@ -93,8 +93,8 @@ export function GenerateCIOTModal({ isOpen, onClose, onSave }: GenerateCIOTModal
       setVehicles(prev => [...prev, newVehicle]);
       setCurrentVehicle({
         id: '',
-        placa: '',
-        rntrc: ''
+        licensePlate: '',
+        rntrcCode: ''
       });
     }
   };
@@ -106,31 +106,31 @@ export function GenerateCIOTModal({ isOpen, onClose, onSave }: GenerateCIOTModal
 
   const handleClose = () => {
     setFormData({
-      tipoViagem: 'Padrão',
-      cpfCnpjContratante: '',
-      cpfCnpjContratado: '',
-      rntrcContratado: '000000000',
-      cpfCnpjDestinatario: '',
-      municipioOrigem: 'Conceição do Almeida',
-      municipioDestino: 'Conceição do Almeida',
-      codigoNaturezaCarga: '',
-      pesoCarga: '0.00',
-      dataInicioViagem: '',
-      dataFimViagem: '',
-      qntdTarifas: '0',
-      valorTarifas: '0,00',
-      valorBruto: '0,00',
-      valorPagar: '0,00',
-      valorAdiantamento: '0,00',
-      valorPago: '0,00',
-      valorSEST: '0,00',
-      valorINSS: '0,00',
-      valePedagio: '0,00',
-      valeCombustivel: '0,00',
-      valeIRRF: '0,00'
+      travelType: 'Padrão',
+      contractorDocument: '',
+      hiredDocument: '',
+      hiredRntrc: '000000000',
+      recipientDocument: '',
+      originCity: 'Conceição do Almeida',
+      destinationCity: 'Conceição do Almeida',
+      cargoNatureCode: '',
+      cargoWeight: '0.00',
+      tripStartDate: '',
+      tripEndDate: '',
+      feesQuantity: '0',
+      feesValue: '0,00',
+      grossValue: '0,00',
+      amountToPay: '0,00',
+      advanceValue: '0,00',
+      paidValue: '0,00',
+      sestValue: '0,00',
+      inssValue: '0,00',
+      tollVoucherValue: '0,00',
+      fuelVoucherValue: '0,00',
+      irrfVoucherValue: '0,00'
     });
     setVehicles([]);
-    setCurrentVehicle({ id: '', placa: '', rntrc: '' });
+    setCurrentVehicle({ id: '', licensePlate: '', rntrcCode: '' });
     onClose();
   };
 
@@ -279,10 +279,10 @@ export function GenerateCIOTModal({ isOpen, onClose, onSave }: GenerateCIOTModal
                 <label style={styles.label}>Tipo de Viagem</label>
                 <input
                   type="text"
-                  style={getInputStyle('tipoViagem')}
-                  value={formData.tipoViagem}
-                  onChange={(e) => handleInputChange('tipoViagem', e.target.value)}
-                  onFocus={() => handleInputFocus('tipoViagem')}
+                  style={getInputStyle('travelType')}
+                  value={formData.travelType}
+                  onChange={(e) => handleInputChange('travelType', e.target.value)}
+                  onFocus={() => handleInputFocus('travelType')}
                   onBlur={handleInputBlur}
                   onClick={() => playClickSound()}
                 />
@@ -291,10 +291,10 @@ export function GenerateCIOTModal({ isOpen, onClose, onSave }: GenerateCIOTModal
                 <label style={styles.label}>CPF/CNPJ do Contratante</label>
                 <input
                   type="text"
-                  style={getInputStyle('cpfCnpjContratante')}
-                  value={formData.cpfCnpjContratante}
-                  onChange={(e) => handleInputChange('cpfCnpjContratante', formatCpfOrCnpj(e.target.value))}
-                  onFocus={() => handleInputFocus('cpfCnpjContratante')}
+                  style={getInputStyle('contractorDocument')}
+                  value={formData.contractorDocument}
+                  onChange={(e) => handleInputChange('contractorDocument', formatCpfOrCnpj(e.target.value))}
+                  onFocus={() => handleInputFocus('contractorDocument')}
                   onBlur={handleInputBlur}
                   onClick={() => playClickSound()}
                   placeholder="000.000.000-00"
@@ -304,10 +304,10 @@ export function GenerateCIOTModal({ isOpen, onClose, onSave }: GenerateCIOTModal
                 <label style={styles.label}>CPF/CNPJ do Contratado</label>
                 <input
                   type="text"
-                  style={getInputStyle('cpfCnpjContratado')}
-                  value={formData.cpfCnpjContratado}
-                  onChange={(e) => handleInputChange('cpfCnpjContratado', formatCpfOrCnpj(e.target.value))}
-                  onFocus={() => handleInputFocus('cpfCnpjContratado')}
+                  style={getInputStyle('hiredDocument')}
+                  value={formData.hiredDocument}
+                  onChange={(e) => handleInputChange('hiredDocument', formatCpfOrCnpj(e.target.value))}
+                  onFocus={() => handleInputFocus('hiredDocument')}
                   onBlur={handleInputBlur}
                   onClick={() => playClickSound()}
                   placeholder="000.000.000-00"
@@ -317,10 +317,10 @@ export function GenerateCIOTModal({ isOpen, onClose, onSave }: GenerateCIOTModal
                 <label style={styles.label}>RNTRC do Contratado</label>
                 <input
                   type="text"
-                  style={getInputStyle('rntrcContratado')}
-                  value={formData.rntrcContratado}
-                  onChange={(e) => handleInputChange('rntrcContratado', e.target.value)}
-                  onFocus={() => handleInputFocus('rntrcContratado')}
+                  style={getInputStyle('hiredRntrc')}
+                  value={formData.hiredRntrc}
+                  onChange={(e) => handleInputChange('hiredRntrc', e.target.value)}
+                  onFocus={() => handleInputFocus('hiredRntrc')}
                   onBlur={handleInputBlur}
                   onClick={() => playClickSound()}
                 />
@@ -336,10 +336,10 @@ export function GenerateCIOTModal({ isOpen, onClose, onSave }: GenerateCIOTModal
                 <label style={styles.label}>Placa</label>
                 <input
                   type="text"
-                  style={getInputStyle('placa')}
-                  value={currentVehicle.placa}
-                  onChange={(e) => handleVehicleChange('placa', e.target.value)}
-                  onFocus={() => handleInputFocus('placa')}
+                  style={getInputStyle('licensePlate')}
+                  value={currentVehicle.licensePlate}
+                  onChange={(e) => handleVehicleChange('licensePlate', e.target.value)}
+                  onFocus={() => handleInputFocus('licensePlate')}
                   onBlur={handleInputBlur}
                   onClick={() => playClickSound()}
                   placeholder="ABC-1234"
@@ -349,10 +349,10 @@ export function GenerateCIOTModal({ isOpen, onClose, onSave }: GenerateCIOTModal
                 <label style={styles.label}>RNTRC</label>
                 <input
                   type="text"
-                  style={getInputStyle('rntrc')}
-                  value={currentVehicle.rntrc}
-                  onChange={(e) => handleVehicleChange('rntrc', e.target.value)}
-                  onFocus={() => handleInputFocus('rntrc')}
+                  style={getInputStyle('rntrcCode')}
+                  value={currentVehicle.rntrcCode}
+                  onChange={(e) => handleVehicleChange('rntrcCode', e.target.value)}
+                  onFocus={() => handleInputFocus('rntrcCode')}
                   onBlur={handleInputBlur}
                   onClick={() => playClickSound()}
                   placeholder="123456789"
@@ -372,8 +372,8 @@ export function GenerateCIOTModal({ isOpen, onClose, onSave }: GenerateCIOTModal
                 {vehicles.map((vehicle) => (
                   <div key={vehicle.id} style={styles.vehicleItem}>
                     <div>
-                      <strong>PLACA:</strong> {vehicle.placa} | 
-                      <strong> RNTRC:</strong> {vehicle.rntrc}
+                      <strong>PLACA:</strong> {vehicle.licensePlate} | 
+                      <strong> RNTRC:</strong> {vehicle.rntrcCode}
                     </div>
                     <button
                       style={styles.removeButton}
@@ -396,10 +396,10 @@ export function GenerateCIOTModal({ isOpen, onClose, onSave }: GenerateCIOTModal
                 <label style={styles.label}>CPF/CNPJ do Destinatário</label>
                 <input
                   type="text"
-                  style={getInputStyle('cpfCnpjDestinatario')}
-                  value={formData.cpfCnpjDestinatario}
-                  onChange={(e) => handleInputChange('cpfCnpjDestinatario', formatCpfOrCnpj(e.target.value))}
-                  onFocus={() => handleInputFocus('cpfCnpjDestinatario')}
+                  style={getInputStyle('recipientDocument')}
+                  value={formData.recipientDocument}
+                  onChange={(e) => handleInputChange('recipientDocument', formatCpfOrCnpj(e.target.value))}
+                  onFocus={() => handleInputFocus('recipientDocument')}
                   onBlur={handleInputBlur}
                   onClick={() => playClickSound()}
                   placeholder="000.000.000-00"
@@ -409,10 +409,10 @@ export function GenerateCIOTModal({ isOpen, onClose, onSave }: GenerateCIOTModal
                 <label style={styles.label}>Município de Origem</label>
                 <input
                   type="text"
-                  style={getInputStyle('municipioOrigem')}
-                  value={formData.municipioOrigem}
-                  onChange={(e) => handleInputChange('municipioOrigem', e.target.value)}
-                  onFocus={() => handleInputFocus('municipioOrigem')}
+                  style={getInputStyle('originCity')}
+                  value={formData.originCity}
+                  onChange={(e) => handleInputChange('originCity', e.target.value)}
+                  onFocus={() => handleInputFocus('originCity')}
                   onBlur={handleInputBlur}
                   onClick={() => playClickSound()}
                 />
@@ -421,10 +421,10 @@ export function GenerateCIOTModal({ isOpen, onClose, onSave }: GenerateCIOTModal
                 <label style={styles.label}>Município de Destino</label>
                 <input
                   type="text"
-                  style={getInputStyle('municipioDestino')}
-                  value={formData.municipioDestino}
-                  onChange={(e) => handleInputChange('municipioDestino', e.target.value)}
-                  onFocus={() => handleInputFocus('municipioDestino')}
+                  style={getInputStyle('destinationCity')}
+                  value={formData.destinationCity}
+                  onChange={(e) => handleInputChange('destinationCity', e.target.value)}
+                  onFocus={() => handleInputFocus('destinationCity')}
                   onBlur={handleInputBlur}
                   onClick={() => playClickSound()}
                 />
@@ -433,10 +433,10 @@ export function GenerateCIOTModal({ isOpen, onClose, onSave }: GenerateCIOTModal
                 <label style={styles.label}>Código da Natureza da Carga</label>
                 <input
                   type="text"
-                  style={getInputStyle('codigoNaturezaCarga')}
-                  value={formData.codigoNaturezaCarga}
-                  onChange={(e) => handleInputChange('codigoNaturezaCarga', e.target.value)}
-                  onFocus={() => handleInputFocus('codigoNaturezaCarga')}
+                  style={getInputStyle('cargoNatureCode')}
+                  value={formData.cargoNatureCode}
+                  onChange={(e) => handleInputChange('cargoNatureCode', e.target.value)}
+                  onFocus={() => handleInputFocus('cargoNatureCode')}
                   onBlur={handleInputBlur}
                   onClick={() => playClickSound()}
                   placeholder="Código da carga"
@@ -453,10 +453,10 @@ export function GenerateCIOTModal({ isOpen, onClose, onSave }: GenerateCIOTModal
                 <label style={styles.label}>Peso da Carga</label>
                 <input
                   type="text"
-                  style={getInputStyle('pesoCarga')}
-                  value={formData.pesoCarga}
-                  onChange={(e) => handleInputChange('pesoCarga', e.target.value)}
-                  onFocus={() => handleInputFocus('pesoCarga')}
+                  style={getInputStyle('cargoWeight')}
+                  value={formData.cargoWeight}
+                  onChange={(e) => handleInputChange('cargoWeight', e.target.value)}
+                  onFocus={() => handleInputFocus('cargoWeight')}
                   onBlur={handleInputBlur}
                   onClick={() => playClickSound()}
                 />
@@ -465,10 +465,10 @@ export function GenerateCIOTModal({ isOpen, onClose, onSave }: GenerateCIOTModal
                 <label style={styles.label}>Data Início da Viagem</label>
                 <input
                   type="date"
-                  style={getInputStyle('dataInicioViagem')}
-                  value={formData.dataInicioViagem}
-                  onChange={(e) => handleInputChange('dataInicioViagem', e.target.value)}
-                  onFocus={() => handleInputFocus('dataInicioViagem')}
+                  style={getInputStyle('tripStartDate')}
+                  value={formData.tripStartDate}
+                  onChange={(e) => handleInputChange('tripStartDate', e.target.value)}
+                  onFocus={() => handleInputFocus('tripStartDate')}
                   onBlur={handleInputBlur}
                   onClick={() => playClickSound()}
                 />
@@ -477,10 +477,10 @@ export function GenerateCIOTModal({ isOpen, onClose, onSave }: GenerateCIOTModal
                 <label style={styles.label}>Data Fim da Viagem</label>
                 <input
                   type="date"
-                  style={getInputStyle('dataFimViagem')}
-                  value={formData.dataFimViagem}
-                  onChange={(e) => handleInputChange('dataFimViagem', e.target.value)}
-                  onFocus={() => handleInputFocus('dataFimViagem')}
+                  style={getInputStyle('tripEndDate')}
+                  value={formData.tripEndDate}
+                  onChange={(e) => handleInputChange('tripEndDate', e.target.value)}
+                  onFocus={() => handleInputFocus('tripEndDate')}
                   onBlur={handleInputBlur}
                   onClick={() => playClickSound()}
                 />
@@ -496,10 +496,10 @@ export function GenerateCIOTModal({ isOpen, onClose, onSave }: GenerateCIOTModal
                 <label style={styles.label}>Qntd. de Tarifas</label>
                 <input
                   type="text"
-                  style={getInputStyle('qntdTarifas')}
-                  value={formData.qntdTarifas}
-                  onChange={(e) => handleInputChange('qntdTarifas', e.target.value)}
-                  onFocus={() => handleInputFocus('qntdTarifas')}
+                  style={getInputStyle('feesQuantity')}
+                  value={formData.feesQuantity}
+                  onChange={(e) => handleInputChange('feesQuantity', e.target.value)}
+                  onFocus={() => handleInputFocus('feesQuantity')}
                   onBlur={handleInputBlur}
                   onClick={() => playClickSound()}
                 />
@@ -508,10 +508,10 @@ export function GenerateCIOTModal({ isOpen, onClose, onSave }: GenerateCIOTModal
                 <label style={styles.label}>Valor das Tarifas</label>
                 <input
                   type="text"
-                  style={getInputStyle('valorTarifas')}
-                  value={formData.valorTarifas}
-                  onChange={(e) => handleInputChange('valorTarifas', e.target.value)}
-                  onFocus={() => handleInputFocus('valorTarifas')}
+                  style={getInputStyle('feesValue')}
+                  value={formData.feesValue}
+                  onChange={(e) => handleInputChange('feesValue', e.target.value)}
+                  onFocus={() => handleInputFocus('feesValue')}
                   onBlur={handleInputBlur}
                   onClick={() => playClickSound()}
                 />
@@ -520,10 +520,10 @@ export function GenerateCIOTModal({ isOpen, onClose, onSave }: GenerateCIOTModal
                 <label style={styles.label}>Valor Bruto</label>
                 <input
                   type="text"
-                  style={getInputStyle('valorBruto')}
-                  value={formData.valorBruto}
-                  onChange={(e) => handleInputChange('valorBruto', e.target.value)}
-                  onFocus={() => handleInputFocus('valorBruto')}
+                  style={getInputStyle('grossValue')}
+                  value={formData.grossValue}
+                  onChange={(e) => handleInputChange('grossValue', e.target.value)}
+                  onFocus={() => handleInputFocus('grossValue')}
                   onBlur={handleInputBlur}
                   onClick={() => playClickSound()}
                 />
@@ -532,10 +532,10 @@ export function GenerateCIOTModal({ isOpen, onClose, onSave }: GenerateCIOTModal
                 <label style={styles.label}>Valor à Pagar</label>
                 <input
                   type="text"
-                  style={getInputStyle('valorPagar')}
-                  value={formData.valorPagar}
-                  onChange={(e) => handleInputChange('valorPagar', e.target.value)}
-                  onFocus={() => handleInputFocus('valorPagar')}
+                  style={getInputStyle('amountToPay')}
+                  value={formData.amountToPay}
+                  onChange={(e) => handleInputChange('amountToPay', e.target.value)}
+                  onFocus={() => handleInputFocus('amountToPay')}
                   onBlur={handleInputBlur}
                   onClick={() => playClickSound()}
                 />
@@ -544,10 +544,10 @@ export function GenerateCIOTModal({ isOpen, onClose, onSave }: GenerateCIOTModal
                 <label style={styles.label}>Valor do Adiantamento</label>
                 <input
                   type="text"
-                  style={getInputStyle('valorAdiantamento')}
-                  value={formData.valorAdiantamento}
-                  onChange={(e) => handleInputChange('valorAdiantamento', e.target.value)}
-                  onFocus={() => handleInputFocus('valorAdiantamento')}
+                  style={getInputStyle('advanceValue')}
+                  value={formData.advanceValue}
+                  onChange={(e) => handleInputChange('advanceValue', e.target.value)}
+                  onFocus={() => handleInputFocus('advanceValue')}
                   onBlur={handleInputBlur}
                   onClick={() => playClickSound()}
                 />
@@ -556,10 +556,10 @@ export function GenerateCIOTModal({ isOpen, onClose, onSave }: GenerateCIOTModal
                 <label style={styles.label}>Valor do Pago</label>
                 <input
                   type="text"
-                  style={getInputStyle('valorPago')}
-                  value={formData.valorPago}
-                  onChange={(e) => handleInputChange('valorPago', e.target.value)}
-                  onFocus={() => handleInputFocus('valorPago')}
+                  style={getInputStyle('paidValue')}
+                  value={formData.paidValue}
+                  onChange={(e) => handleInputChange('paidValue', e.target.value)}
+                  onFocus={() => handleInputFocus('paidValue')}
                   onBlur={handleInputBlur}
                   onClick={() => playClickSound()}
                 />
@@ -568,10 +568,10 @@ export function GenerateCIOTModal({ isOpen, onClose, onSave }: GenerateCIOTModal
                 <label style={styles.label}>Valor SEST</label>
                 <input
                   type="text"
-                  style={getInputStyle('valorSEST')}
-                  value={formData.valorSEST}
-                  onChange={(e) => handleInputChange('valorSEST', e.target.value)}
-                  onFocus={() => handleInputFocus('valorSEST')}
+                  style={getInputStyle('sestValue')}
+                  value={formData.sestValue}
+                  onChange={(e) => handleInputChange('sestValue', e.target.value)}
+                  onFocus={() => handleInputFocus('sestValue')}
                   onBlur={handleInputBlur}
                   onClick={() => playClickSound()}
                 />
@@ -580,10 +580,10 @@ export function GenerateCIOTModal({ isOpen, onClose, onSave }: GenerateCIOTModal
                 <label style={styles.label}>Valor do INSS</label>
                 <input
                   type="text"
-                  style={getInputStyle('valorINSS')}
-                  value={formData.valorINSS}
-                  onChange={(e) => handleInputChange('valorINSS', e.target.value)}
-                  onFocus={() => handleInputFocus('valorINSS')}
+                  style={getInputStyle('inssValue')}
+                  value={formData.inssValue}
+                  onChange={(e) => handleInputChange('inssValue', e.target.value)}
+                  onFocus={() => handleInputFocus('inssValue')}
                   onBlur={handleInputBlur}
                   onClick={() => playClickSound()}
                 />
@@ -592,10 +592,10 @@ export function GenerateCIOTModal({ isOpen, onClose, onSave }: GenerateCIOTModal
                 <label style={styles.label}>Vale Pedágio</label>
                 <input
                   type="text"
-                  style={getInputStyle('valePedagio')}
-                  value={formData.valePedagio}
-                  onChange={(e) => handleInputChange('valePedagio', e.target.value)}
-                  onFocus={() => handleInputFocus('valePedagio')}
+                  style={getInputStyle('tollVoucherValue')}
+                  value={formData.tollVoucherValue}
+                  onChange={(e) => handleInputChange('tollVoucherValue', e.target.value)}
+                  onFocus={() => handleInputFocus('tollVoucherValue')}
                   onBlur={handleInputBlur}
                   onClick={() => playClickSound()}
                 />
@@ -604,10 +604,10 @@ export function GenerateCIOTModal({ isOpen, onClose, onSave }: GenerateCIOTModal
                 <label style={styles.label}>Vale Combustível</label>
                 <input
                   type="text"
-                  style={getInputStyle('valeCombustivel')}
-                  value={formData.valeCombustivel}
-                  onChange={(e) => handleInputChange('valeCombustivel', e.target.value)}
-                  onFocus={() => handleInputFocus('valeCombustivel')}
+                  style={getInputStyle('fuelVoucherValue')}
+                  value={formData.fuelVoucherValue}
+                  onChange={(e) => handleInputChange('fuelVoucherValue', e.target.value)}
+                  onFocus={() => handleInputFocus('fuelVoucherValue')}
                   onBlur={handleInputBlur}
                   onClick={() => playClickSound()}
                 />
@@ -616,10 +616,10 @@ export function GenerateCIOTModal({ isOpen, onClose, onSave }: GenerateCIOTModal
                 <label style={styles.label}>Vale do IRRF</label>
                 <input
                   type="text"
-                  style={getInputStyle('valeIRRF')}
-                  value={formData.valeIRRF}
-                  onChange={(e) => handleInputChange('valeIRRF', e.target.value)}
-                  onFocus={() => handleInputFocus('valeIRRF')}
+                  style={getInputStyle('irrfVoucherValue')}
+                  value={formData.irrfVoucherValue}
+                  onChange={(e) => handleInputChange('irrfVoucherValue', e.target.value)}
+                  onFocus={() => handleInputFocus('irrfVoucherValue')}
                   onBlur={handleInputBlur}
                   onClick={() => playClickSound()}
                 />

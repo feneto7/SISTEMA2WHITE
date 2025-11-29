@@ -11,18 +11,18 @@ import {
   isValidMDFeStatus
 } from '../types/mdfeStatus';
 
-// Interface para MDFe
+// Interface para MDF-e (campos em inglês)
 export interface MDFe {
   id: string;
-  numero: string;
-  serie: string;
-  chave: string;
-  emitente: string;
-  destinatario: string;
-  valor: number;
+  number: string;
+  series: string;
+  accessKey: string;
+  issuer: string;
+  recipient: string;
+  value: number;
   status: MDFeStatus;
-  dataEmissao: string;
-  dataAutorizacao?: string;
+  issueDate: string;
+  authorizationDate?: string;
 }
 
 interface MDFeListProps {
@@ -531,18 +531,18 @@ const MDFeRow = React.memo<MDFeRowProps>(({
     >
       <div style={styles.rowCell} className="cell-numero">
         <div>
-          <div style={styles.clientName}>{mdfe.numero}/{mdfe.serie}</div>
-          <div style={styles.emailText}>{mdfe.chave}</div>
+          <div style={styles.clientName}>{mdfe.number}/{mdfe.series}</div>
+          <div style={styles.emailText}>{mdfe.accessKey}</div>
         </div>
       </div>
       <div style={styles.rowCell} className="cell-emitente">
-        <span style={styles.emailText}>{mdfe.emitente}</span>
+        <span style={styles.emailText}>{mdfe.issuer}</span>
       </div>
       <div style={styles.rowCell} className="cell-destinatario">
-        <span style={styles.phoneText}>{mdfe.destinatario}</span>
+        <span style={styles.phoneText}>{mdfe.recipient}</span>
       </div>
       <div style={styles.rowCell} className="cell-valor">
-        <span style={styles.emailText}>{formatCurrency(mdfe.valor)}</span>
+        <span style={styles.emailText}>{formatCurrency(mdfe.value)}</span>
       </div>
       <div style={styles.rowCell} className="cell-status">
         <span style={getStatusStyle(mdfe.status)}>
