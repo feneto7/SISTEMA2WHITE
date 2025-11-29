@@ -10,7 +10,7 @@ interface User {
   id: string;
   name: string;
   email: string;
-  role: string;
+  profileName: string;
   status: 'active' | 'inactive';
   lastAccess: string;
 }
@@ -253,13 +253,13 @@ const UserRow = React.memo(React.forwardRef<HTMLDivElement, UserRowProps>(({
       <div style={{ display: 'flex', alignItems: 'center' }} className="cell-role">
         <span style={{
           fontSize: '11px',
-          color: user.role === 'admin' ? '#FF9500' : '#34C759',
-          background: user.role === 'admin' ? 'rgba(255, 149, 0, 0.1)' : 'rgba(52, 199, 89, 0.1)',
+          color: user.profileName.toLowerCase().includes('admin') ? '#FF9500' : '#34C759',
+          background: user.profileName.toLowerCase().includes('admin') ? 'rgba(255, 149, 0, 0.1)' : 'rgba(52, 199, 89, 0.1)',
           padding: '4px 10px',
           borderRadius: '6px',
           fontWeight: '600'
         }}>
-          {user.role === 'admin' ? 'Administrador' : 'Usuário'}
+          {user.profileName || 'Usuário'}
         </span>
       </div>
       <div style={{ display: 'flex', alignItems: 'center' }} className="cell-status">
