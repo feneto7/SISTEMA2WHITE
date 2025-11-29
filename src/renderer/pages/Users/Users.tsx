@@ -1,16 +1,18 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useTheme } from '../../styles/ThemeProvider';
 import { UserSearchBox, UserList, NewUserModal } from './components';
 import { useNavigation } from '../../router/Navigation';
 import { useClickSound } from '../../hooks/useClickSound';
 import { BackButton } from '../../components/BackButton';
+import { apiGet, apiPost, apiPut } from '../../utils/apiService';
 
 // Interface para usuário do sistema
 interface User {
   id: string;
   name: string;
   email: string;
-  role: string;
+  profileName: string;
+  profileId?: string | null;
   status: 'active' | 'inactive';
   lastAccess: string;
 }
@@ -22,79 +24,149 @@ export function Users(): JSX.Element {
   const { navigate } = useNavigation();
   const playClickSound = useClickSound();
   const [searchTerm, setSearchTerm] = useState('');
-  const [users, setUsers] = useState<User[]>([
-    {
-      id: '1',
-      name: 'João Silva',
-      email: 'joao.silva@email.com',
-      role: 'admin',
-      status: 'active',
-      lastAccess: '2024-10-26'
-    },
-    {
-      id: '2',
-      name: 'Maria Oliveira',
-      email: 'maria.oliveira@email.com',
-      role: 'user',
-      status: 'active',
-      lastAccess: '2024-10-25'
-    },
-    {
-      id: '3',
-      name: 'Pedro Santos',
-      email: 'pedro.santos@email.com',
-      role: 'user',
-      status: 'inactive',
-      lastAccess: '2024-10-20'
-    },
-    {
-      id: '4',
-      name: 'Ana Costa',
-      email: 'ana.costa@email.com',
-      role: 'admin',
-      status: 'active',
-      lastAccess: '2024-10-26'
-    },
-    {
-      id: '5',
-      name: 'Carlos Lima',
-      email: 'carlos.lima@email.com',
-      role: 'user',
-      status: 'active',
-      lastAccess: '2024-10-24'
-    }
-  ]);
+  const [users, setUsers] = useState<User[]>([]);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [loadError, setLoadError] = useState<string | null>(null);
+  const [editingUser, setEditingUser] = useState<User | null>(null);
 
+  // Lista filtrada para busca em memória
   const filteredUsers = users.filter(user =>
     user.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
     user.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    user.role.toLowerCase().includes(searchTerm.toLowerCase())
+    user.profileName.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   // Funções de callback para ações dos usuários
   const handleEditUser = (user: User) => {
-    console.log('Editar usuário:', user);
+    setEditingUser(user);
+    setIsNewUserModalOpen(true);
   };
 
   const handleDeleteUser = (user: User) => {
     console.log('Excluir usuário:', user);
   };
 
-  const handleSaveNewUser = (userData: {
+  type NewUserFormData = {
+    id?: string;
     name: string;
     email: string;
     password: string;
     confirmPassword: string;
-    role: 'admin' | 'user';
-  }) => {
-    console.log('Salvar novo usuário:', userData);
-    // Aqui você adicionaria a lógica para salvar o usuário
+    role: string;
+  };
+
+  type ApiUser = {
+    id: string;
+    name: string;
+    email: string;
+    permission_profile?: {
+      name: string;
+    };
+    permission_profile_id?: number | string | null;
+    status?: string;
+    last_access_at?: string;
+  };
+
+  const mapApiUserToUser = (apiUser: ApiUser): User => ({
+    id: String(apiUser.id),
+    name: apiUser.name,
+    email: apiUser.email,
+    profileName: apiUser.permission_profile?.name || 'Usuário',
+    profileId: apiUser.permission_profile_id !== undefined && apiUser.permission_profile_id !== null
+      ? String(apiUser.permission_profile_id)
+      : null,
+    status: apiUser.status === 'inactive' ? 'inactive' : 'active',
+    lastAccess: apiUser.last_access_at || ''
+  });
+
+  const handleSaveNewUser = async (userData: NewUserFormData) => {
+    try {
+      // Atualização de usuário
+      if (userData.id) {
+        const body: Record<string, any> = {
+          name: userData.name,
+          email: userData.email
+        };
+
+        if (userData.password) {
+          body.password = userData.password;
+          body.password_confirmation = userData.confirmPassword;
+        }
+
+        if (userData.role) {
+          body.permission_profile_id = userData.role;
+        }
+
+        const response = await apiPut<{ message: string; data: ApiUser }>(`/api/users/${userData.id}`, body);
+
+        if (response.ok && response.data?.data) {
+          const updatedUser = mapApiUserToUser(response.data.data);
+          setUsers(prev =>
+            prev.map(user => (user.id === updatedUser.id ? updatedUser : user))
+          );
+        } else {
+          throw new Error(response.data?.message || 'Erro ao atualizar usuário');
+        }
+      } else {
+        // Criação de usuário
+        const body = {
+          name: userData.name,
+          email: userData.email,
+          password: userData.password,
+          password_confirmation: userData.confirmPassword,
+          permission_profile_id: userData.role || null
+        };
+
+        const response = await apiPost<{ message: string; user: ApiUser }>('/api/users', body);
+
+        if (response.ok && response.data?.user) {
+          const createdUser = mapApiUserToUser(response.data.user);
+          setUsers(prev => [...prev, createdUser]);
+        } else {
+          throw new Error(response.data?.message || 'Erro ao criar usuário');
+        }
+      }
+    } catch (error: any) {
+      console.error('Erro ao salvar usuário:', error);
+      alert(error?.message || 'Erro ao salvar usuário');
+    } finally {
+      setEditingUser(null);
+    }
   };
 
   const [nameColumnWidth, setNameColumnWidth] = useState<number>(300);
   const [isNewUserModalOpen, setIsNewUserModalOpen] = useState(false);
   const minWidth = 200;
   const maxWidth = 500;
+
+  // Carrega usuários da API do tenant
+  useEffect(() => {
+        const loadUsers = async () => {
+      try {
+        setIsLoading(true);
+        setLoadError(null);
+
+        const response = await apiGet<{ message: string; data: ApiUser[] }>('/api/users');
+
+        if (response.ok && Array.isArray(response.data?.data)) {
+          const apiUsers = response.data.data;
+
+          const mappedUsers: User[] = apiUsers.map((apiUser) => mapApiUserToUser(apiUser));
+
+          setUsers(mappedUsers);
+        } else {
+          throw new Error(response.data?.message || 'Erro ao carregar usuários');
+        }
+      } catch (error: any) {
+        console.error('Erro ao carregar usuários:', error);
+        setLoadError(error?.message || 'Erro ao carregar usuários');
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    loadUsers();
+  }, []);
 
   return (
     <div style={{
@@ -121,7 +193,7 @@ export function Users(): JSX.Element {
       <UserSearchBox
         searchTerm={searchTerm}
         onSearchChange={setSearchTerm}
-        placeholder="Buscar usuários por nome, email ou função..."
+        placeholder="Buscar usuários por nome, email ou perfil..."
         resultsCount={filteredUsers.length}
         onNewUserClick={() => {
           playClickSound();
@@ -166,7 +238,7 @@ export function Users(): JSX.Element {
             Nome
           </div>
           <div style={systemStyles.list.headerCell}>Email</div>
-          <div style={systemStyles.list.headerCell}>Função</div>
+          <div style={systemStyles.list.headerCell}>Perfil</div>
           <div style={systemStyles.list.headerCell}>Status</div>
           <div style={systemStyles.list.headerCell}>Ações</div>
         </div>
@@ -176,19 +248,57 @@ export function Users(): JSX.Element {
           flex: 1,
           overflow: 'auto'
         }}>
-          <UserList 
-            users={filteredUsers} 
-            nameColumnWidth={nameColumnWidth}
-            onEditUser={handleEditUser}
-            onDeleteUser={handleDeleteUser}
-          />
+          {isLoading ? (
+            <div style={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              height: '100%',
+              fontSize: 14,
+              color: systemColors.text.secondary
+            }}>
+              Carregando usuários...
+            </div>
+          ) : loadError ? (
+            <div style={{
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+              justifyContent: 'center',
+              height: '100%',
+              gap: 8,
+              fontSize: 13,
+              color: systemColors.text.secondary
+            }}>
+              <span>{loadError}</span>
+              <span>Tente novamente mais tarde.</span>
+            </div>
+          ) : (
+            <UserList 
+              users={filteredUsers} 
+              nameColumnWidth={nameColumnWidth}
+              onEditUser={handleEditUser}
+              onDeleteUser={handleDeleteUser}
+            />
+          )}
         </div>
       </div>
 
       {/* Modal de Novo Usuário */}
       <NewUserModal
         isOpen={isNewUserModalOpen}
-        onClose={() => setIsNewUserModalOpen(false)}
+        onClose={() => {
+          setIsNewUserModalOpen(false);
+          setEditingUser(null);
+        }}
+        editingUser={editingUser
+          ? {
+              id: editingUser.id,
+              name: editingUser.name,
+              email: editingUser.email,
+              profileId: editingUser.profileId ?? undefined
+            }
+          : null}
         onSave={handleSaveNewUser}
       />
     </div>

@@ -5,59 +5,121 @@ import { UserForm } from './UserForm';
 import { AppIcons } from '../../../components/Icons/AppIcons';
 import { WindowHeader } from '../../../components/WindowHeader/WindowHeader';
 
+interface NewUserFormData {
+  id?: string;
+  name: string;
+  email: string;
+  password: string;
+  confirmPassword: string;
+  role: string;
+}
+
+interface EditingUserSummary {
+  id: string;
+  name: string;
+  email: string;
+  profileId?: string | null;
+}
+
 interface NewUserModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onSave: (userData: {
-    name: string;
-    email: string;
-    password: string;
-    confirmPassword: string;
-    role: 'admin' | 'user';
-  }) => void;
+  editingUser?: EditingUserSummary | null;
+  onSave: (userData: NewUserFormData) => void;
 }
 
-// Modal de Novo Usuário
-// Permite criar novos usuários com permissões e dados básicos
-export function NewUserModal({ isOpen, onClose, onSave }: NewUserModalProps): JSX.Element | null {
+// Modal de Usuário
+// Usado tanto para criar quanto para editar usuários na tabela users
+export function NewUserModal({ isOpen, onClose, editingUser, onSave }: NewUserModalProps): JSX.Element | null {
   const playClickSound = useClickSound();
   const { systemStyles, systemColors } = useTheme();
   const [isCloseHovered, setIsCloseHovered] = useState(false);
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<NewUserFormData>({
     name: '',
     email: '',
     password: '',
     confirmPassword: '',
-    role: 'user' as 'admin' | 'user'
+    role: ''
   });
+
+  const isEditMode = !!editingUser;
+
+  // Sincroniza dados quando abrir o modal para edição
+  React.useEffect(() => {
+    if (isOpen && editingUser) {
+      setFormData({
+        id: editingUser.id,
+        name: editingUser.name,
+        email: editingUser.email,
+        password: '',
+        confirmPassword: '',
+        role: editingUser.profileId || ''
+      });
+    }
+
+    if (isOpen && !editingUser) {
+      setFormData({
+        id: undefined,
+        name: '',
+        email: '',
+        password: '',
+        confirmPassword: '',
+        role: ''
+      });
+    }
+  }, [isOpen, editingUser]);
 
   // Função para fechar o modal
   const handleClose = () => {
     setFormData({
+      id: undefined,
       name: '',
       email: '',
       password: '',
       confirmPassword: '',
-      role: 'user'
+      role: ''
     });
     onClose();
   };
 
-  // Função para salvar o usuário
+  // Função para salvar/atualizar o usuário
   const handleSave = () => {
-    if (!formData.name || !formData.email || !formData.password || !formData.confirmPassword) {
-      alert('Preencha todos os campos obrigatórios');
+    if (!formData.name || !formData.email) {
+      alert('Preencha nome e email');
       return;
     }
 
-    if (formData.password !== formData.confirmPassword) {
-      alert('As senhas não coincidem');
-      return;
-    }
+    if (!isEditMode) {
+      // Criação exige senha obrigatória
+      if (!formData.password || !formData.confirmPassword) {
+        alert('Preencha a senha e a confirmação');
+        return;
+      }
 
-    if (formData.password.length < 6) {
-      alert('A senha deve ter pelo menos 6 caracteres');
-      return;
+      if (formData.password !== formData.confirmPassword) {
+        alert('As senhas não coincidem');
+        return;
+      }
+
+      if (formData.password.length < 6) {
+        alert('A senha deve ter pelo menos 6 caracteres');
+        return;
+      }
+    } else {
+      // Edição: senha é opcional; se preenchida, valida
+      const hasPasswordChange = formData.password || formData.confirmPassword;
+
+      if (hasPasswordChange) {
+        if (formData.password !== formData.confirmPassword) {
+          alert('As senhas não coincidem');
+          return;
+        }
+
+        if (formData.password.length < 6) {
+          alert('A senha deve ter pelo menos 6 caracteres');
+          return;
+        }
+      }
     }
 
     onSave(formData);
@@ -99,7 +161,7 @@ export function NewUserModal({ isOpen, onClose, onSave }: NewUserModalProps): JS
         flexDirection: 'column' as const,
         overflow: 'hidden'
       }}>
-        <WindowHeader title="Novo Usuário" onClose={handleClose} />
+        <WindowHeader title={isEditMode ? 'Editar Usuário' : 'Novo Usuário'} onClose={handleClose} />
 
         {/* Conteúdo do modal */}
         <div style={{
@@ -149,7 +211,7 @@ export function NewUserModal({ isOpen, onClose, onSave }: NewUserModalProps): JS
             }}
           >
             <AppIcons.Save size={14} />
-            Salvar
+            {isEditMode ? 'Atualizar' : 'Salvar'}
           </button>
         </div>
       </div>

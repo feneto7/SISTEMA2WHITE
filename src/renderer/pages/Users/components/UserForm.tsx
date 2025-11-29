@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useTheme } from '../../../styles/ThemeProvider';
 import { AddButton } from '../../../components/AddButton/AddButton';
 import { NewRoleModal } from './NewRoleModal';
+import { apiGet } from '../../../utils/apiService';
 
 // Componente de ícone de olho aberto
 const EyeIcon = ({ size = 16, color = 'currentColor' }: { size?: number; color?: string }) => (
@@ -25,9 +26,9 @@ interface UserFormProps {
     email: string;
     password: string;
     confirmPassword: string;
-    role: 'admin' | 'user';
+    role: string;
   };
-  onFormDataChange: (field: string, value: string | 'admin' | 'user') => void;
+  onFormDataChange: (field: string, value: string) => void;
 }
 
 // Formulário de usuário com campos básicos
@@ -39,6 +40,8 @@ export function UserForm({ formData, onFormDataChange }: UserFormProps): JSX.Ele
   const [isPasswordFocused, setIsPasswordFocused] = useState(false);
   const [isConfirmPasswordFocused, setIsConfirmPasswordFocused] = useState(false);
   const [isRoleModalOpen, setIsRoleModalOpen] = useState(false);
+  const [profiles, setProfiles] = useState<{ id: string; name: string }[]>([]);
+  const [isLoadingProfiles, setIsLoadingProfiles] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const { systemStyles, systemColors } = useTheme();
@@ -47,6 +50,29 @@ export function UserForm({ formData, onFormDataChange }: UserFormProps): JSX.Ele
   const getInputStyle = () => ({
     ...systemStyles.input.field
   });
+
+  useEffect(() => {
+    const loadProfiles = async () => {
+      try {
+        setIsLoadingProfiles(true);
+        type ApiProfile = {
+          id: string;
+          name: string;
+        };
+        const response = await apiGet<{ message: string; data: ApiProfile[] }>('/api/permission-profiles');
+        if (response.ok && Array.isArray(response.data?.data)) {
+          const apiProfiles = response.data.data;
+          setProfiles(apiProfiles.map((p) => ({ id: String(p.id), name: p.name })));
+        }
+      } catch (error) {
+        console.error('Erro ao carregar perfis de permissão:', error);
+      } finally {
+        setIsLoadingProfiles(false);
+      }
+    };
+
+    loadProfiles();
+  }, []);
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
@@ -94,11 +120,17 @@ export function UserForm({ formData, onFormDataChange }: UserFormProps): JSX.Ele
           <div style={systemStyles.select.container}>
             <select
               value={formData.role}
-              onChange={(e) => onFormDataChange('role', e.target.value as 'admin' | 'user')}
+              onChange={(e) => onFormDataChange('role', e.target.value)}
               style={systemStyles.select.field}
             >
-              <option value="user">Usuário</option>
-              <option value="admin">Administrador</option>
+              <option value="">
+                {isLoadingProfiles ? 'Carregando perfis...' : 'Selecione um perfil'}
+              </option>
+              {profiles.map((profile) => (
+                <option key={profile.id} value={profile.id}>
+                  {profile.name}
+                </option>
+              ))}
             </select>
             <div style={systemStyles.select.arrow}>
               <div style={systemStyles.select.arrowIcon}></div>
