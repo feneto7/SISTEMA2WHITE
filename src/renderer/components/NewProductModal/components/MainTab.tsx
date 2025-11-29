@@ -15,18 +15,18 @@ export function MainTab({ onFormDataChange }: MainTabProps): JSX.Element {
   const playClickSound = useClickSound();
   const { systemStyles, systemColors } = useTheme();
   
-  // Estados dos campos do formulário
+  // Estados dos campos do formulário (todos os campos em inglês)
   const [formData, setFormData] = useState({
-    descricao: '',
-    categoria: '',
-    unidadeMedida: '',
-    codigoBarras: '',
-    precoCusto: '',
-    margem: '',
-    precoVenda: '',
-    referencia: '',
-    marca: '',
-    fornecedor: ''
+    description: '',
+    category: '',
+    measurementUnit: '',
+    barcode: '',
+    costPrice: '',
+    margin: '',
+    salePrice: '',
+    reference: '',
+    brand: '',
+    supplier: ''
   });
 
   // Estados de foco dos campos
@@ -97,7 +97,7 @@ export function MainTab({ onFormDataChange }: MainTabProps): JSX.Element {
   // Controle do modal de nova categoria
   const [isCategoryModalOpen, setIsCategoryModalOpen] = useState(false);
 
-  const unidadesMedida = [
+  const measurementUnits = [
     'Unidade',
     'Kg',
     'Litro',
@@ -108,7 +108,7 @@ export function MainTab({ onFormDataChange }: MainTabProps): JSX.Element {
     'Grama'
   ];
 
-  const marcas = [
+  const brands = [
     'Apple',
     'Samsung',
     'Nike',
@@ -119,7 +119,7 @@ export function MainTab({ onFormDataChange }: MainTabProps): JSX.Element {
     'Outros'
   ];
 
-  const fornecedores = [
+  const suppliers = [
     'Fornecedor A',
     'Fornecedor B',
     'Fornecedor C',
@@ -193,12 +193,12 @@ export function MainTab({ onFormDataChange }: MainTabProps): JSX.Element {
                style={{
                  ...systemStyles.input.field
                }}
-              value={formData.descricao}
+              value={formData.description}
               onChange={(e) => {
-                handleInputChange('descricao', e.target.value);
+                handleInputChange('description', e.target.value);
               }}
               onClick={playClickSound}
-              onFocus={() => setFocusedField('descricao')}
+              onFocus={() => setFocusedField('description')}
               onBlur={() => setFocusedField(null)}
               placeholder="Nome do produto"
             />
@@ -214,12 +214,12 @@ export function MainTab({ onFormDataChange }: MainTabProps): JSX.Element {
                      ...systemStyles.select.field,
                      width: '100%'
                    }}
-                  value={formData.categoria}
+                  value={formData.category}
                   onChange={(e) => {
-                    handleInputChange('categoria', e.target.value);
+                    handleInputChange('category', e.target.value);
                   }}
                   onClick={playClickSound}
-                  onFocus={() => setFocusedField('categoria')}
+                  onFocus={() => setFocusedField('category')}
                   onBlur={() => setFocusedField(null)}
                 >
                   <option value="">Selecione uma categoria</option>
@@ -251,17 +251,17 @@ export function MainTab({ onFormDataChange }: MainTabProps): JSX.Element {
                      ...systemStyles.select.field,
                      width: '100%'
                    }}
-                  value={formData.unidadeMedida}
+                  value={formData.measurementUnit}
                   onChange={(e) => {
-                    handleInputChange('unidadeMedida', e.target.value);
+                    handleInputChange('measurementUnit', e.target.value);
                   }}
                   onClick={playClickSound}
-                  onFocus={() => setFocusedField('unidadeMedida')}
+                  onFocus={() => setFocusedField('measurementUnit')}
                   onBlur={() => setFocusedField(null)}
                 >
                   <option value="">Selecione a unidade</option>
-                  {unidadesMedida.map(unidade => (
-                    <option key={unidade} value={unidade}>{unidade}</option>
+                  {measurementUnits.map(unit => (
+                    <option key={unit} value={unit}>{unit}</option>
                   ))}
                 </select>
                 <div style={systemStyles.select.arrow}>
@@ -286,12 +286,12 @@ export function MainTab({ onFormDataChange }: MainTabProps): JSX.Element {
                style={{
                  ...systemStyles.input.field
                }}
-              value={formData.codigoBarras}
+              value={formData.barcode}
               onChange={(e) => {
-                handleInputChange('codigoBarras', e.target.value);
+                handleInputChange('barcode', e.target.value);
               }}
               onClick={playClickSound}
-              onFocus={() => setFocusedField('codigoBarras')}
+              onFocus={() => setFocusedField('barcode')}
               onBlur={() => setFocusedField(null)}
               placeholder="Ex: 7891234567890"
             />
@@ -305,12 +305,12 @@ export function MainTab({ onFormDataChange }: MainTabProps): JSX.Element {
                style={{
                  ...systemStyles.input.field
                }}
-              value={formData.referencia}
+              value={formData.reference}
               onChange={(e) => {
                 playClickSound();
-                handleInputChange('referencia', e.target.value);
+                handleInputChange('reference', e.target.value);
               }}
-              onFocus={() => setFocusedField('referencia')}
+              onFocus={() => setFocusedField('reference')}
               onBlur={() => setFocusedField(null)}
               placeholder="Código de referência"
             />
@@ -328,13 +328,13 @@ export function MainTab({ onFormDataChange }: MainTabProps): JSX.Element {
             if (prev.includes(newCategory.description)) return prev;
             return [...prev, newCategory.description];
           });
-          handleInputChange('categoria', newCategory.description);
+          handleInputChange('category', newCategory.description);
         }}
         onEdit={(oldDescription, updated) => {
           setCategories((prev) => prev.map((c) => (c === oldDescription ? updated.description : c)));
           // se a selecionada era a antiga, atualizar seleção
-          if (formData.categoria === oldDescription) {
-            handleInputChange('categoria', updated.description);
+          if (formData.category === oldDescription) {
+            handleInputChange('category', updated.description);
           }
         }}
       />
@@ -366,22 +366,22 @@ export function MainTab({ onFormDataChange }: MainTabProps): JSX.Element {
                style={{
                  ...systemStyles.input.field
                }}
-              value={formData.precoCusto}
+              value={formData.costPrice}
               onChange={(e) => {
                 playClickSound();
                 const formatted = formatCurrency(e.target.value);
-                handleInputChange('precoCusto', formatted);
+                handleInputChange('costPrice', formatted);
                 
                 // Calcular preço de venda automaticamente se há margem
-                if (formData.margem) {
-                  const marginValue = formData.margem.replace(/\D/g, '');
+                if (formData.margin) {
+                  const marginValue = formData.margin.replace(/\D/g, '');
                   if (marginValue) {
-                    const sellingPrice = calculateSellingPrice(formatted, formData.margem);
-                    handleInputChange('precoVenda', sellingPrice);
+                    const sellingPrice = calculateSellingPrice(formatted, formData.margin);
+                    handleInputChange('salePrice', sellingPrice);
                   }
                 }
               }}
-              onFocus={() => setFocusedField('precoCusto')}
+              onFocus={() => setFocusedField('costPrice')}
               onBlur={() => setFocusedField(null)}
               placeholder="R$ 0,00"
             />
@@ -395,20 +395,20 @@ export function MainTab({ onFormDataChange }: MainTabProps): JSX.Element {
                style={{
                  ...systemStyles.input.field
                }}
-              value={formData.margem}
+              value={formData.margin}
               onChange={(e) => {
                 playClickSound();
                 const numericValue = e.target.value.replace(/\D/g, '');
                 const formatted = numericValue ? `${numericValue}%` : '';
-                handleInputChange('margem', formatted);
+                handleInputChange('margin', formatted);
                 
                 // Calcular preço de venda automaticamente
-                if (formData.precoCusto && numericValue) {
-                  const sellingPrice = calculateSellingPrice(formData.precoCusto, formatted);
-                  handleInputChange('precoVenda', sellingPrice);
+                if (formData.costPrice && numericValue) {
+                  const sellingPrice = calculateSellingPrice(formData.costPrice, formatted);
+                  handleInputChange('salePrice', sellingPrice);
                 }
               }}
-              onFocus={() => setFocusedField('margem')}
+              onFocus={() => setFocusedField('margin')}
               onBlur={() => setFocusedField(null)}
               placeholder="Ex: 30%"
             />
@@ -422,13 +422,13 @@ export function MainTab({ onFormDataChange }: MainTabProps): JSX.Element {
                style={{
                  ...systemStyles.input.field
                }}
-              value={formData.precoVenda}
+              value={formData.salePrice}
               onChange={(e) => {
                 playClickSound();
                 const formatted = formatCurrency(e.target.value);
-                handleInputChange('precoVenda', formatted);
+                handleInputChange('salePrice', formatted);
               }}
-              onFocus={() => setFocusedField('precoVenda')}
+              onFocus={() => setFocusedField('salePrice')}
               onBlur={() => setFocusedField(null)}
               placeholder="R$ 0,00"
             />
@@ -463,17 +463,17 @@ export function MainTab({ onFormDataChange }: MainTabProps): JSX.Element {
                  style={{
                    ...systemStyles.select.field
                  }}
-                value={formData.marca}
+                value={formData.brand}
                 onChange={(e) => {
                   playClickSound();
-                  handleInputChange('marca', e.target.value);
+                  handleInputChange('brand', e.target.value);
                 }}
-                onFocus={() => setFocusedField('marca')}
+                onFocus={() => setFocusedField('brand')}
                 onBlur={() => setFocusedField(null)}
               >
                 <option value="">Selecione uma marca</option>
-                {marcas.map(marca => (
-                  <option key={marca} value={marca}>{marca}</option>
+                {brands.map(brand => (
+                  <option key={brand} value={brand}>{brand}</option>
                 ))}
               </select>
               <div style={systemStyles.select.arrow}>
@@ -490,17 +490,17 @@ export function MainTab({ onFormDataChange }: MainTabProps): JSX.Element {
                  style={{
                    ...systemStyles.select.field
                  }}
-                value={formData.fornecedor}
+                value={formData.supplier}
                 onChange={(e) => {
                   playClickSound();
-                  handleInputChange('fornecedor', e.target.value);
+                  handleInputChange('supplier', e.target.value);
                 }}
-                onFocus={() => setFocusedField('fornecedor')}
+                onFocus={() => setFocusedField('supplier')}
                 onBlur={() => setFocusedField(null)}
               >
                 <option value="">Selecione um fornecedor</option>
-                {fornecedores.map(fornecedor => (
-                  <option key={fornecedor} value={fornecedor}>{fornecedor}</option>
+                {suppliers.map(supplier => (
+                  <option key={supplier} value={supplier}>{supplier}</option>
                 ))}
               </select>
               <div style={systemStyles.select.arrow}>
@@ -543,8 +543,8 @@ export function MainTab({ onFormDataChange }: MainTabProps): JSX.Element {
                 onClick={playClickSound}
               >
                 <option value="">Selecione</option>
-                {unidadesMedida.map(unidade => (
-                  <option key={unidade} value={unidade}>{unidade}</option>
+                {measurementUnits.map((unit) => (
+                  <option key={unit} value={unit}>{unit}</option>
                 ))}
               </select>
               <div style={systemStyles.select.arrow}>

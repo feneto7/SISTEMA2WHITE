@@ -36,7 +36,7 @@ export function AddressTab({ formData, onUpdateFormData }: AddressTabProps): JSX
   const { systemStyles, systemColors } = useTheme();
   
   // Lista completa de UFs brasileiras
-  const ufsBrasileiras = [
+  const brazilianStates = [
     'AC', 'AL', 'AP', 'AM', 'BA', 'CE', 'DF', 'ES', 'GO', 'MA',
     'MT', 'MS', 'MG', 'PA', 'PB', 'PR', 'PE', 'PI', 'RJ', 'RN',
     'RS', 'RO', 'RR', 'SC', 'SP', 'SE', 'TO'
@@ -135,8 +135,8 @@ export function AddressTab({ formData, onUpdateFormData }: AddressTabProps): JSX
               onClick={playClickSound}
             >
               <option value="">Selecione o estado</option>
-              {ufsBrasileiras.map(uf => (
-                <option key={uf} value={uf}>{uf}</option>
+              {brazilianStates.map(state => (
+                <option key={state} value={state}>{state}</option>
               ))}
             </select>
             <div style={systemStyles.select.arrow}>

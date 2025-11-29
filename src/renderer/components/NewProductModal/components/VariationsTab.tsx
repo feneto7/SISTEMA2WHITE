@@ -10,18 +10,18 @@ interface VariationsTabProps {
 
 interface VariationAttribute {
   id: string;
-  nome: string;
-  tipo: 'texto' | 'numero' | 'moeda' | 'dropdown';
-  opcoes?: string[];
-  obrigatorio: boolean;
+  name: string;
+  type: 'texto' | 'numero' | 'moeda' | 'dropdown';
+  options?: string[];
+  required: boolean;
 }
 
 interface ProductVariation {
   id: string;
-  atributos: { [key: string]: string };
-  preco: string;
-  estoque: string;
-  codigoBarras: string;
+  attributes: { [key: string]: string };
+  price: string;
+  stock: string;
+  barcode: string;
 }
 
 export function VariationsTab({ onFormDataChange }: VariationsTabProps): JSX.Element {
@@ -29,21 +29,21 @@ export function VariationsTab({ onFormDataChange }: VariationsTabProps): JSX.Ele
   const { systemStyles, systemColors } = useTheme();
   
   // Estados das variações do produto
-  const [variacoes, setVariacoes] = useState<ProductVariation[]>([]);
-  const [atributosVariacao, setAtributosVariacao] = useState<VariationAttribute[]>([]);
+  const [variations, setVariations] = useState<ProductVariation[]>([]);
+  const [variationAttributes, setVariationAttributes] = useState<VariationAttribute[]>([]);
   const [focusedField, setFocusedField] = useState<string | null>(null);
   
   // Estados para os campos de entrada
-  const [novoAtributoNome, setNovoAtributoNome] = useState('');
-  const [novoAtributoTipo, setNovoAtributoTipo] = useState<'texto' | 'numero' | 'moeda' | 'dropdown'>('texto');
-  const [novoAtributoOpcoes, setNovoAtributoOpcoes] = useState('');
-  const [novoAtributoObrigatorio, setNovoAtributoObrigatorio] = useState(false);
+  const [newAttributeName, setNewAttributeName] = useState('');
+  const [newAttributeType, setNewAttributeType] = useState<'texto' | 'numero' | 'moeda' | 'dropdown'>('texto');
+  const [newAttributeOptions, setNewAttributeOptions] = useState('');
+  const [newAttributeRequired, setNewAttributeRequired] = useState(false);
   
   // Estados para nova variação
-  const [novaVariacaoAtributos, setNovaVariacaoAtributos] = useState<{ [key: string]: string }>({});
-  const [novoPreco, setNovoPreco] = useState('');
-  const [novoEstoque, setNovoEstoque] = useState('');
-  const [novoCodigoBarras, setNovoCodigoBarras] = useState('');
+  const [newVariationAttributes, setNewVariationAttributes] = useState<{ [key: string]: string }>({});
+  const [newPrice, setNewPrice] = useState('');
+  const [newStock, setNewStock] = useState('');
+  const [newBarcode, setNewBarcode] = useState('');
 
   // Função para formatar valor monetário
   const formatCurrency = (value: string): string => {
@@ -59,90 +59,93 @@ export function VariationsTab({ onFormDataChange }: VariationsTabProps): JSX.Ele
   };
 
   // Função para adicionar novo atributo de variação
-  const adicionarAtributo = () => {
-    if (!novoAtributoNome) return;
+  const addAttribute = () => {
+    if (!newAttributeName) return;
     
     playClickSound();
-    const novoAtributo: VariationAttribute = {
+    const newAttribute: VariationAttribute = {
       id: Date.now().toString(),
-      nome: novoAtributoNome,
-      tipo: novoAtributoTipo,
-      opcoes: novoAtributoTipo === 'dropdown' ? novoAtributoOpcoes.split(',').map(op => op.trim()).filter(op => op) : undefined,
-      obrigatorio: novoAtributoObrigatorio
+      name: newAttributeName,
+      type: newAttributeType,
+      options: newAttributeType === 'dropdown' ? newAttributeOptions.split(',').map(op => op.trim()).filter(op => op) : undefined,
+      required: newAttributeRequired
     };
     
-    setAtributosVariacao([...atributosVariacao, novoAtributo]);
+    setVariationAttributes([...variationAttributes, newAttribute]);
     
     // Limpar campos
-    setNovoAtributoNome('');
-    setNovoAtributoTipo('texto');
-    setNovoAtributoOpcoes('');
-    setNovoAtributoObrigatorio(false);
+    setNewAttributeName('');
+    setNewAttributeType('texto');
+    setNewAttributeOptions('');
+    setNewAttributeRequired(false);
   };
 
   // Função para remover atributo
-  const removerAtributo = (id: string) => {
+  const removeAttribute = (id: string) => {
     playClickSound();
-    const novosAtributos = atributosVariacao.filter(atributo => atributo.id !== id);
-    setAtributosVariacao(novosAtributos);
+    const newAttributes = variationAttributes.filter(attribute => attribute.id !== id);
+    setVariationAttributes(newAttributes);
     
     // Limpar variações existentes se removemos um atributo obrigatório
-    if (novosAtributos.length === 0) {
-      setVariacoes([]);
+    if (newAttributes.length === 0) {
+      setVariations([]);
       if (onFormDataChange) {
-        onFormDataChange({ variacoes: [], atributosVariacao: novosAtributos });
+        // Envia estrutura de variações limpa para o formulário pai
+        onFormDataChange({ variations: [], variationAttributes: newAttributes });
       }
     }
   };
 
   // Função para adicionar nova variação
-  const adicionarVariacao = () => {
-    const atributosObrigatorios = atributosVariacao.filter(attr => attr.obrigatorio);
-    const todosPreenchidos = atributosObrigatorios.every(attr => novaVariacaoAtributos[attr.nome]);
+  const addVariation = () => {
+    const requiredAttributes = variationAttributes.filter(attr => attr.required);
+    const allFilled = requiredAttributes.every(attr => newVariationAttributes[attr.name]);
     
-    if (!todosPreenchidos || !novoPreco) return;
+    if (!allFilled || !newPrice) return;
     
     playClickSound();
-    const novaVariacao: ProductVariation = {
+    const newVariation: ProductVariation = {
       id: Date.now().toString(),
-      atributos: { ...novaVariacaoAtributos },
-      preco: novoPreco,
-      estoque: novoEstoque || '0',
-      codigoBarras: novoCodigoBarras || ''
+      attributes: { ...newVariationAttributes },
+      price: newPrice,
+      stock: newStock || '0',
+      barcode: newBarcode || ''
     };
     
-    const novasVariacoes = [...variacoes, novaVariacao];
-    setVariacoes(novasVariacoes);
+    const newVariations = [...variations, newVariation];
+    setVariations(newVariations);
     
     // Limpar campos
-    setNovaVariacaoAtributos({});
-    setNovoPreco('');
-    setNovoEstoque('');
-    setNovoCodigoBarras('');
+    setNewVariationAttributes({});
+    setNewPrice('');
+    setNewStock('');
+    setNewBarcode('');
     
     if (onFormDataChange) {
-      onFormDataChange({ variacoes: novasVariacoes, atributosVariacao });
+      // Envia variações atualizadas para o formulário pai
+      onFormDataChange({ variations: newVariations, variationAttributes });
     }
   };
 
   // Função para remover variação
-  const removerVariacao = (id: string) => {
+  const removeVariation = (id: string) => {
     playClickSound();
-    const novasVariacoes = variacoes.filter(variacao => variacao.id !== id);
-    setVariacoes(novasVariacoes);
+    const newVariations = variations.filter(variation => variation.id !== id);
+    setVariations(newVariations);
     
     if (onFormDataChange) {
-      onFormDataChange({ variacoes: novasVariacoes, atributosVariacao });
+      // Envia variações atualizadas para o formulário pai
+      onFormDataChange({ variations: newVariations, variationAttributes });
     }
   };
 
   // Renderizar campo de input baseado no tipo do atributo
-  const renderAtributoInput = (atributo: VariationAttribute, value: string, onChange: (value: string) => void) => {
+  const renderAttributeInput = (attribute: VariationAttribute, value: string, onChange: (value: string) => void) => {
     const baseStyle = {
       ...systemStyles.input.field
     };
 
-    switch (atributo.tipo) {
+    switch (attribute.type) {
       case 'dropdown':
         return (
           <div style={{ position: 'relative' as const }}>
@@ -153,12 +156,12 @@ export function VariationsTab({ onFormDataChange }: VariationsTabProps): JSX.Ele
                 playClickSound();
                 onChange(e.target.value);
               }}
-              onFocus={() => setFocusedField(`atributo_${atributo.id}`)}
+              onFocus={() => setFocusedField(`attribute_${attribute.id}`)}
               onBlur={() => setFocusedField(null)}
             >
               <option value="">Selecione</option>
-              {atributo.opcoes?.map(opcao => (
-                <option key={opcao} value={opcao}>{opcao}</option>
+              {attribute.options?.map(option => (
+                <option key={option} value={option}>{option}</option>
               ))}
             </select>
             <div style={systemStyles.select.arrow}>
@@ -177,7 +180,7 @@ export function VariationsTab({ onFormDataChange }: VariationsTabProps): JSX.Ele
               const numericValue = e.target.value.replace(/\D/g, '');
               onChange(numericValue);
             }}
-            onFocus={() => setFocusedField(`atributo_${atributo.id}`)}
+            onFocus={() => setFocusedField(`attribute_${attribute.id}`)}
             onBlur={() => setFocusedField(null)}
             placeholder="Ex: 40"
           />
@@ -193,7 +196,7 @@ export function VariationsTab({ onFormDataChange }: VariationsTabProps): JSX.Ele
               const formatted = formatCurrency(e.target.value);
               onChange(formatted);
             }}
-            onFocus={() => setFocusedField(`atributo_${atributo.id}`)}
+            onFocus={() => setFocusedField(`attribute_${attribute.id}`)}
             onBlur={() => setFocusedField(null)}
             placeholder="R$ 0,00"
           />
@@ -206,7 +209,7 @@ export function VariationsTab({ onFormDataChange }: VariationsTabProps): JSX.Ele
             style={baseStyle}
             value={value}
             onChange={(e) => onChange(e.target.value)}
-            onFocus={() => setFocusedField(`atributo_${atributo.id}`)}
+            onFocus={() => setFocusedField(`attribute_${attribute.id}`)}
             onBlur={() => setFocusedField(null)}
             placeholder="Digite o valor"
           />
@@ -270,8 +273,8 @@ export function VariationsTab({ onFormDataChange }: VariationsTabProps): JSX.Ele
               style={{
                 ...systemStyles.input.field
               }}
-              value={novoAtributoNome}
-              onChange={(e) => setNovoAtributoNome(e.target.value)}
+              value={newAttributeName}
+              onChange={(e) => setNewAttributeName(e.target.value)}
               onFocus={() => setFocusedField('novoAtributoNome')}
               onBlur={() => setFocusedField(null)}
               placeholder="Ex: Tamanho, Cor, Material"
@@ -287,10 +290,10 @@ export function VariationsTab({ onFormDataChange }: VariationsTabProps): JSX.Ele
                   ...systemStyles.select.field,
                   width: '100%'
                 }}
-                value={novoAtributoTipo}
+                value={newAttributeType}
                 onChange={(e) => {
                   playClickSound();
-                  setNovoAtributoTipo(e.target.value as any);
+                  setNewAttributeType(e.target.value as any);
                 }}
                 onFocus={() => setFocusedField('novoAtributoTipo')}
                 onBlur={() => setFocusedField(null)}
@@ -313,14 +316,14 @@ export function VariationsTab({ onFormDataChange }: VariationsTabProps): JSX.Ele
               type="text"
               style={{
                 ...systemStyles.input.field,
-                ...(novoAtributoTipo !== 'dropdown' ? { opacity: 0.5, cursor: 'not-allowed' } : {})
+                ...(newAttributeType !== 'dropdown' ? { opacity: 0.5, cursor: 'not-allowed' } : {})
               }}
-              value={novoAtributoOpcoes}
-              onChange={(e) => setNovoAtributoOpcoes(e.target.value)}
+              value={newAttributeOptions}
+              onChange={(e) => setNewAttributeOptions(e.target.value)}
               onFocus={() => setFocusedField('novoAtributoOpcoes')}
               onBlur={() => setFocusedField(null)}
               placeholder="Ex: P, M, G, GG"
-              disabled={novoAtributoTipo !== 'dropdown'}
+              disabled={newAttributeType !== 'dropdown'}
             />
           </div>
 
@@ -328,8 +331,8 @@ export function VariationsTab({ onFormDataChange }: VariationsTabProps): JSX.Ele
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginTop: '20px' }}>
             <input
               type="checkbox"
-              checked={novoAtributoObrigatorio}
-              onChange={(e) => setNovoAtributoObrigatorio(e.target.checked)}
+              checked={newAttributeRequired}
+              onChange={(e) => setNewAttributeRequired(e.target.checked)}
               style={{ margin: 0, width: '14px', height: '14px' }}
             />
             <label style={{ fontSize: '11px', fontWeight: '400', color: systemColors.text.primary, margin: 0 }}>Obrigatório</label>
@@ -347,15 +350,15 @@ export function VariationsTab({ onFormDataChange }: VariationsTabProps): JSX.Ele
               background: 'linear-gradient(to bottom, #34C759, #2FAD4F)',
               border: '0.5px solid #2FAD4F'
             }}
-            onClick={adicionarAtributo}
-            disabled={!novoAtributoNome}
+            onClick={addAttribute}
+            disabled={!newAttributeName}
           >
             Adicionar
           </button>
         </div>
 
         {/* Lista de atributos configurados */}
-        {atributosVariacao.length > 0 && (
+        {variationAttributes.length > 0 && (
           <div style={{ marginBottom: '20px' }}>
             <h5 style={{
               fontSize: '13px',
@@ -369,9 +372,9 @@ export function VariationsTab({ onFormDataChange }: VariationsTabProps): JSX.Ele
               Atributos Configurados:
             </h5>
             <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
-              {atributosVariacao.map((atributo) => (
+              {variationAttributes.map((attribute) => (
                 <div
-                  key={atributo.id}
+                  key={attribute.id}
                   style={{
                     display: 'flex',
                     alignItems: 'center',
@@ -384,9 +387,9 @@ export function VariationsTab({ onFormDataChange }: VariationsTabProps): JSX.Ele
                     fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, Helvetica, Arial, sans-serif'
                   }}
                 >
-                  <span style={{ fontWeight: '600' }}>{atributo.nome}</span>
-                  <span style={{ color: '#666' }}>({atributo.tipo})</span>
-                  {atributo.obrigatorio && (
+                  <span style={{ fontWeight: '600' }}>{attribute.name}</span>
+                  <span style={{ color: '#666' }}>({attribute.type})</span>
+                  {attribute.required && (
                     <span style={{ color: '#ff3b30', fontSize: '10px' }}>OBRIGATÓRIO</span>
                   )}
                   <button
@@ -405,7 +408,7 @@ export function VariationsTab({ onFormDataChange }: VariationsTabProps): JSX.Ele
                       fontSize: '10px',
                       fontWeight: 'bold'
                     }}
-                    onClick={() => removerAtributo(atributo.id)}
+                    onClick={() => removeAttribute(attribute.id)}
                     title="Remover atributo"
                   >
                     ×
@@ -418,7 +421,7 @@ export function VariationsTab({ onFormDataChange }: VariationsTabProps): JSX.Ele
       </div>
 
       {/* Seção de cadastro de variações */}
-      {atributosVariacao.length > 0 && (
+      {variationAttributes.length > 0 && (
         <div style={{ marginBottom: '24px' }}>
           <h4 style={{
             fontSize: '13px',
@@ -433,19 +436,19 @@ export function VariationsTab({ onFormDataChange }: VariationsTabProps): JSX.Ele
           {/* Campos para nova variação */}
           <div style={{
             display: 'grid',
-            gridTemplateColumns: `repeat(${atributosVariacao.length}, 1fr) 1fr 1fr 1fr`,
+            gridTemplateColumns: `repeat(${variationAttributes.length}, 1fr) 1fr 1fr 1fr`,
             gap: '12px',
             marginBottom: '16px',
             padding: '16px'
           }}>
             {/* Campos dinâmicos para atributos */}
-            {atributosVariacao.map((atributo) => (
-              <div key={atributo.id}>
-                <label style={systemStyles.input.label}>{atributo.nome}:</label>
-                {renderAtributoInput(
-                  atributo,
-                  novaVariacaoAtributos[atributo.nome] || '',
-                  (value) => setNovaVariacaoAtributos(prev => ({ ...prev, [atributo.nome]: value }))
+            {variationAttributes.map((attribute) => (
+              <div key={attribute.id}>
+                <label style={systemStyles.input.label}>{attribute.name}:</label>
+                {renderAttributeInput(
+                  attribute,
+                  newVariationAttributes[attribute.name] || '',
+                  (value) => setNewVariationAttributes(prev => ({ ...prev, [attribute.name]: value }))
                 )}
               </div>
             ))}
@@ -458,10 +461,10 @@ export function VariationsTab({ onFormDataChange }: VariationsTabProps): JSX.Ele
                 style={{
                   ...systemStyles.input.field
                 }}
-                value={novoPreco}
+                value={newPrice}
                 onChange={(e) => {
                   const formatted = formatCurrency(e.target.value);
-                  setNovoPreco(formatted);
+                  setNewPrice(formatted);
                 }}
                 onFocus={() => setFocusedField('novoPreco')}
                 onBlur={() => setFocusedField(null)}
@@ -477,10 +480,10 @@ export function VariationsTab({ onFormDataChange }: VariationsTabProps): JSX.Ele
                 style={{
                   ...systemStyles.input.field
                 }}
-                value={novoEstoque}
+                value={newStock}
                 onChange={(e) => {
                   const numericValue = e.target.value.replace(/\D/g, '');
-                  setNovoEstoque(numericValue);
+                  setNewStock(numericValue);
                 }}
                 onFocus={() => setFocusedField('novoEstoque')}
                 onBlur={() => setFocusedField(null)}
@@ -496,8 +499,8 @@ export function VariationsTab({ onFormDataChange }: VariationsTabProps): JSX.Ele
                 style={{
                   ...systemStyles.input.field
                 }}
-                value={novoCodigoBarras}
-                onChange={(e) => setNovoCodigoBarras(e.target.value)}
+                value={newBarcode}
+                onChange={(e) => setNewBarcode(e.target.value)}
                 onFocus={() => setFocusedField('novoCodigoBarras')}
                 onBlur={() => setFocusedField(null)}
                 placeholder="Opcional"
@@ -515,15 +518,15 @@ export function VariationsTab({ onFormDataChange }: VariationsTabProps): JSX.Ele
                 height: '32px',
                 minWidth: '120px'
               }}
-              onClick={adicionarVariacao}
-              disabled={!novoPreco || !atributosVariacao.every(attr => !attr.obrigatorio || novaVariacaoAtributos[attr.nome])}
+              onClick={addVariation}
+              disabled={!newPrice || !variationAttributes.every(attr => !attr.required || newVariationAttributes[attr.name])}
             >
               Adicionar Variação
             </button>
           </div>
 
           {/* Lista de variações */}
-          {variacoes.length > 0 ? (
+          {variations.length > 0 ? (
             <div style={{
               display: 'flex',
               flexDirection: 'column' as const,
@@ -532,7 +535,7 @@ export function VariationsTab({ onFormDataChange }: VariationsTabProps): JSX.Ele
               {/* Cabeçalho da tabela */}
               <div style={{
                 display: 'grid',
-                gridTemplateColumns: `60px repeat(${atributosVariacao.length}, 1fr) 1fr 1fr 1fr 60px`,
+                gridTemplateColumns: `60px repeat(${variationAttributes.length}, 1fr) 1fr 1fr 1fr 60px`,
                 gap: '12px',
                 padding: '12px 16px',
                 backgroundColor: '#f0f0f0',
@@ -543,8 +546,8 @@ export function VariationsTab({ onFormDataChange }: VariationsTabProps): JSX.Ele
                 fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, Helvetica, Arial, sans-serif'
               }}>
                 <div>#</div>
-                {atributosVariacao.map(atributo => (
-                  <div key={atributo.id}>{atributo.nome}</div>
+                {variationAttributes.map(attribute => (
+                  <div key={attribute.id}>{attribute.name}</div>
                 ))}
                 <div>Preço</div>
                 <div>Estoque</div>
@@ -553,12 +556,12 @@ export function VariationsTab({ onFormDataChange }: VariationsTabProps): JSX.Ele
               </div>
 
               {/* Linhas das variações */}
-              {variacoes.map((variacao, index) => (
+              {variations.map((variation, index) => (
                 <div
-                  key={variacao.id}
+                  key={variation.id}
                   style={{
                     display: 'grid',
-                    gridTemplateColumns: `60px repeat(${atributosVariacao.length}, 1fr) 1fr 1fr 1fr 60px`,
+                    gridTemplateColumns: `60px repeat(${variationAttributes.length}, 1fr) 1fr 1fr 1fr 60px`,
                     gap: '12px',
                     alignItems: 'center',
                     padding: '12px 16px',
@@ -577,14 +580,14 @@ export function VariationsTab({ onFormDataChange }: VariationsTabProps): JSX.Ele
                     #{index + 1}
                   </span>
                   
-                  {atributosVariacao.map(atributo => (
-                    <div key={atributo.id} style={{
+                  {variationAttributes.map(attribute => (
+                    <div key={attribute.id} style={{
                       fontSize: '13px',
                       color: '#333',
                       fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, Helvetica, Arial, sans-serif',
                       fontWeight: '500'
                     }}>
-                      {variacao.atributos[atributo.nome] || '-'}
+                      {variation.attributes[attribute.name] || '-'}
                     </div>
                   ))}
                   
@@ -594,7 +597,7 @@ export function VariationsTab({ onFormDataChange }: VariationsTabProps): JSX.Ele
                     color: '#007aff',
                     fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, Helvetica, Arial, sans-serif'
                   }}>
-                    {variacao.preco}
+                    {variation.price}
                   </div>
                   
                   <div style={{
@@ -602,7 +605,7 @@ export function VariationsTab({ onFormDataChange }: VariationsTabProps): JSX.Ele
                     color: '#333',
                     fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, Helvetica, Arial, sans-serif'
                   }}>
-                    {variacao.estoque}
+                    {variation.stock}
                   </div>
                   
                   <div style={{
@@ -610,7 +613,7 @@ export function VariationsTab({ onFormDataChange }: VariationsTabProps): JSX.Ele
                     color: '#666',
                     fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, Helvetica, Arial, sans-serif'
                   }}>
-                    {variacao.codigoBarras || '-'}
+                    {variation.barcode || '-'}
                   </div>
                   
                   <button
@@ -630,7 +633,7 @@ export function VariationsTab({ onFormDataChange }: VariationsTabProps): JSX.Ele
                       fontWeight: 'bold',
                       transition: 'all 0.15s ease'
                     }}
-                    onClick={() => removerVariacao(variacao.id)}
+                    onClick={() => removeVariation(variation.id)}
                     title="Remover variação"
                   >
                     ×

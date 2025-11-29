@@ -30,61 +30,61 @@ export function MDFePage(): JSX.Element {
   const [mdfes, setMdfes] = useState<MDFe[]>([
     {
       id: '1',
-      numero: '000001',
-      serie: '001',
-      chave: '31240123456789000123550010000000010000000001',
-      emitente: 'Netinove Consultoria e Sistemas',
-      destinatario: 'Digital Marketing Corp',
-      valor: 1500.00,
+      number: '000001',
+      series: '001',
+      accessKey: '31240123456789000123550010000000010000000001',
+      issuer: 'Netinove Consultoria e Sistemas',
+      recipient: 'Digital Marketing Corp',
+      value: 1500.0,
       status: 'autorizado',
-      dataEmissao: '2024-01-15',
-      dataAutorizacao: '2024-01-15'
+      issueDate: '2024-01-15',
+      authorizationDate: '2024-01-15'
     },
     {
       id: '2',
-      numero: '000002',
-      serie: '001',
-      chave: '31240123456789000123550010000000020000000002',
-      emitente: 'Netinove Consultoria e Sistemas',
-      destinatario: 'João Silva Santos',
-      valor: 850.50,
+      number: '000002',
+      series: '001',
+      accessKey: '31240123456789000123550010000000020000000002',
+      issuer: 'Netinove Consultoria e Sistemas',
+      recipient: 'João Silva Santos',
+      value: 850.5,
       status: 'transmitidoAguardando',
-      dataEmissao: '2024-01-20'
+      issueDate: '2024-01-20'
     },
     {
       id: '3',
-      numero: '000003',
-      serie: '001',
-      chave: '31240123456789000123550010000000030000000003',
-      emitente: 'Netinove Consultoria e Sistemas',
-      destinatario: 'Maria Oliveira Costa',
-      valor: 2200.75,
+      number: '000003',
+      series: '001',
+      accessKey: '31240123456789000123550010000000030000000003',
+      issuer: 'Netinove Consultoria e Sistemas',
+      recipient: 'Maria Oliveira Costa',
+      value: 2200.75,
       status: 'autorizado',
-      dataEmissao: '2024-02-01',
-      dataAutorizacao: '2024-02-01'
+      issueDate: '2024-02-01',
+      authorizationDate: '2024-02-01'
     },
     {
       id: '4',
-      numero: '000004',
-      serie: '001',
-      chave: '31240123456789000123550010000000040000000004',
-      emitente: 'Netinove Consultoria e Sistemas',
-      destinatario: 'Pedro Almeida',
-      valor: 1200.00,
+      number: '000004',
+      series: '001',
+      accessKey: '31240123456789000123550010000000040000000004',
+      issuer: 'Netinove Consultoria e Sistemas',
+      recipient: 'Pedro Almeida',
+      value: 1200.0,
       status: 'cancelado',
-      dataEmissao: '2024-02-10',
-      dataAutorizacao: '2024-02-10'
+      issueDate: '2024-02-10',
+      authorizationDate: '2024-02-10'
     },
     {
       id: '5',
-      numero: '000005',
-      serie: '001',
-      chave: '31240123456789000123550010000000050000000005',
-      emitente: 'Netinove Consultoria e Sistemas',
-      destinatario: 'Digital Marketing Corp',
-      valor: 3000.00,
+      number: '000005',
+      series: '001',
+      accessKey: '31240123456789000123550010000000050000000005',
+      issuer: 'Netinove Consultoria e Sistemas',
+      recipient: 'Digital Marketing Corp',
+      value: 3000.0,
       status: 'rejeitado',
-      dataEmissao: '2024-02-15'
+      issueDate: '2024-02-15'
     }
   ]);
 

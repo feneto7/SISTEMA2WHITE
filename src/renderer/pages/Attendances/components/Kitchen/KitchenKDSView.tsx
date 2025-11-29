@@ -177,9 +177,9 @@ export function KitchenKDSView({
 
                           {item.complements && item.complements.length > 0 && (
                             <ul style={systemStyles.kitchen.kdsComplementList}>
-                              {item.complements.map(complement => (
-                                <li key={complement} style={systemStyles.kitchen.kdsComplementItem}>
-                                  • {complement}
+                              {item.complements.map(complementItem => (
+                                <li key={complementItem} style={systemStyles.kitchen.kdsComplementItem}>
+                                  • {complementItem}
                                 </li>
                               ))}
                             </ul>

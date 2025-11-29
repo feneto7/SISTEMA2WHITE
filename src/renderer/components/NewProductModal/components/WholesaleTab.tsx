@@ -10,8 +10,8 @@ interface WholesaleTabProps {
 
 interface WholesalePrice {
   id: string;
-  quantidadeMinima: string;
-  precoUnitario: string;
+  minimumQuantity: string;
+  unitPrice: string;
 }
 
 export function WholesaleTab({ onFormDataChange }: WholesaleTabProps): JSX.Element {
@@ -19,12 +19,12 @@ export function WholesaleTab({ onFormDataChange }: WholesaleTabProps): JSX.Eleme
   const { systemStyles, systemColors } = useTheme();
   
   // Estados dos preços de atacado
-  const [precosAtacado, setPrecosAtacado] = useState<WholesalePrice[]>([]);
+  const [wholesalePrices, setWholesalePrices] = useState<WholesalePrice[]>([]);
   const [focusedField, setFocusedField] = useState<string | null>(null);
   
   // Estados para os campos de entrada
-  const [novaQuantidade, setNovaQuantidade] = useState('');
-  const [novoPreco, setNovoPreco] = useState('');
+  const [newQuantity, setNewQuantity] = useState('');
+  const [newPrice, setNewPrice] = useState('');
 
   // Função para formatar valor monetário
   const formatCurrency = (value: string): string => {
@@ -40,41 +40,43 @@ export function WholesaleTab({ onFormDataChange }: WholesaleTabProps): JSX.Eleme
   };
 
   // Função para adicionar novo preço de atacado
-  const adicionarPrecoAtacado = () => {
-    if (!novaQuantidade || !novoPreco) return;
+  const addWholesalePrice = () => {
+    if (!newQuantity || !newPrice) return;
     
     playClickSound();
-    const novoPrecoItem: WholesalePrice = {
+    const newPriceItem: WholesalePrice = {
       id: Date.now().toString(),
-      quantidadeMinima: novaQuantidade,
-      precoUnitario: novoPreco
+      minimumQuantity: newQuantity,
+      unitPrice: newPrice
     };
     
-    const novosPrecos = [...precosAtacado, novoPrecoItem];
-    setPrecosAtacado(novosPrecos);
+    const newPrices = [...wholesalePrices, newPriceItem];
+    setWholesalePrices(newPrices);
     
     // Limpar campos
-    setNovaQuantidade('');
-    setNovoPreco('');
+    setNewQuantity('');
+    setNewPrice('');
     
     if (onFormDataChange) {
-      onFormDataChange({ precosAtacado: novosPrecos });
+      // Envia preços de atacado atualizados para o formulário pai
+      onFormDataChange({ wholesalePrices: newPrices });
     }
   };
 
   // Função para remover preço de atacado
-  const removerPrecoAtacado = (id: string) => {
+  const removeWholesalePrice = (id: string) => {
     playClickSound();
-    const novosPrecos = precosAtacado.filter(preco => preco.id !== id);
-    setPrecosAtacado(novosPrecos);
+    const newPrices = wholesalePrices.filter(price => price.id !== id);
+    setWholesalePrices(newPrices);
     
     if (onFormDataChange) {
-      onFormDataChange({ precosAtacado: novosPrecos });
+      // Envia preços de atacado atualizados para o formulário pai
+      onFormDataChange({ wholesalePrices: newPrices });
     }
   };
 
   // Usar a ordem original de adição (sem ordenação)
-  const precosOrdenados = precosAtacado;
+  const sortedPrices = wholesalePrices;
 
   return (
     <div>
@@ -131,12 +133,12 @@ export function WholesaleTab({ onFormDataChange }: WholesaleTabProps): JSX.Eleme
               style={{
                 ...systemStyles.input.field
               }}
-              value={novaQuantidade}
+              value={newQuantity}
               onChange={(e) => {
                 const numericValue = e.target.value.replace(/\D/g, '');
-                setNovaQuantidade(numericValue);
+                setNewQuantity(numericValue);
               }}
-              onFocus={() => setFocusedField('novaQuantidade')}
+              onFocus={() => setFocusedField('newQuantity')}
               onBlur={() => setFocusedField(null)}
               placeholder="Ex: 10"
             />
@@ -150,12 +152,12 @@ export function WholesaleTab({ onFormDataChange }: WholesaleTabProps): JSX.Eleme
               style={{
                 ...systemStyles.input.field
               }}
-              value={novoPreco}
+              value={newPrice}
               onChange={(e) => {
                 const formatted = formatCurrency(e.target.value);
-                setNovoPreco(formatted);
+                  setNewPrice(formatted);
               }}
-              onFocus={() => setFocusedField('novoPreco')}
+              onFocus={() => setFocusedField('newPrice')}
               onBlur={() => setFocusedField(null)}
               placeholder="R$ 0,00"
             />
@@ -170,23 +172,23 @@ export function WholesaleTab({ onFormDataChange }: WholesaleTabProps): JSX.Eleme
               height: '28px',
               alignSelf: 'flex-end'
             }}
-            onClick={adicionarPrecoAtacado}
-            disabled={!novaQuantidade || !novoPreco}
+            onClick={addWholesalePrice}
+            disabled={!newQuantity || !newPrice}
           >
             Adicionar
           </button>
         </div>
 
         {/* Lista de preços */}
-        {precosOrdenados.length > 0 ? (
+        {sortedPrices.length > 0 ? (
           <div style={{
             display: 'flex',
             flexDirection: 'column' as const,
             gap: '8px'
           }}>
-            {precosOrdenados.map((preco, index) => (
+            {sortedPrices.map((price, index) => (
               <div
-                key={preco.id}
+                key={price.id}
                 style={{
                   display: 'flex',
                   justifyContent: 'space-between',
@@ -218,7 +220,7 @@ export function WholesaleTab({ onFormDataChange }: WholesaleTabProps): JSX.Eleme
                     color: '#333',
                     fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, Helvetica, Arial, sans-serif'
                   }}>
-                    <strong>{preco.quantidadeMinima} unidades</strong> ou mais
+                    <strong>{price.minimumQuantity} unidades</strong> ou mais
                   </div>
                   
                   <div style={{
@@ -227,7 +229,7 @@ export function WholesaleTab({ onFormDataChange }: WholesaleTabProps): JSX.Eleme
                     color: '#007aff',
                     fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, Helvetica, Arial, sans-serif'
                   }}>
-                    {preco.precoUnitario}
+                    {price.unitPrice}
                   </div>
                 </div>
                 
@@ -248,7 +250,7 @@ export function WholesaleTab({ onFormDataChange }: WholesaleTabProps): JSX.Eleme
                     fontWeight: 'bold',
                     transition: 'all 0.15s ease'
                   }}
-                  onClick={() => removerPrecoAtacado(preco.id)}
+                  onClick={() => removeWholesalePrice(price.id)}
                   title="Remover preço"
                 >
                   ×

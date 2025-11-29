@@ -11,53 +11,53 @@ import { LoadingSpinner } from '../../../components/LoadingSpinner/LoadingSpinne
 import { formatCNPJ } from '../../../utils/documentFormatter';
 
 // Interface para município
-interface Municipio {
+interface City {
   nome: string;
   codigo_ibge: string;
 }
 
-// Interface para resposta da API BrasilAPI
+// Interface para resposta da API BrasilAPI (campos internos em inglês)
 interface CNPJResponse {
   cnpj: string;
-  razao_social: string;
-  nome_fantasia: string;
-  situacao_cadastral: number;
-  descricao_situacao_cadastral: string;
-  cnae_fiscal: number;
-  cnae_fiscal_descricao: string;
-  descricao_tipo_logradouro: string;
-  logradouro: string;
-  numero: string;
-  complemento: string;
-  bairro: string;
-  cep: string;
-  uf: string;
-  codigo_municipio: number;
-  municipio: string;
-  ddd_telefone_1: string;
-  ddd_telefone_2: string;
-  opcao_pelo_simples: boolean;
-  opcao_pelo_mei: boolean;
+  corporateName: string;              // razao_social
+  tradeName: string;                  // nome_fantasia
+  registrationStatus: number;         // situacao_cadastral
+  registrationStatusDescription: string; // descricao_situacao_cadastral
+  mainActivityCode: number;           // cnae_fiscal
+  mainActivityDescription: string;    // cnae_fiscal_descricao
+  streetTypeDescription: string;      // descricao_tipo_logradouro
+  street: string;                     // logradouro
+  addressNumber: string;              // numero
+  addressComplement: string;          // complemento
+  district: string;                   // bairro
+  zipCode: string;                    // cep
+  state: string;                      // uf
+  cityCode: number;                   // codigo_municipio
+  city: string;                       // municipio
+  phone1: string;                     // ddd_telefone_1
+  phone2: string;                     // ddd_telefone_2
+  simpleNationalOptIn: boolean;       // opcao_pelo_simples
+  individualMicroEntrepreneurOptIn: boolean; // opcao_pelo_mei
 }
 
 export function CompanyForm(): JSX.Element {
   const { systemStyles, systemColors } = useTheme();
-  const [empresaData, setEmpresaData] = useState({
-    nomeEmpresarial: '',
-    nomeFantasia: '',
+  const [companyData, setCompanyData] = useState({
+    businessName: '',
+    tradeName: '',
     cnpj: '',
-    inscricaoEstadual: '',
-    inscricaoMunicipal: '',
+    stateRegistration: '',
+    municipalRegistration: '',
     cnae: '',
-    regimeTributario: '',
-    rua: '',
-    numero: '',
-    cep: '',
-    complemento: '',
-    cidade: '',
-    uf: '',
-    bairro: '',
-    telefone: '',
+    taxRegime: '',
+    street: '',
+    addressNumber: '',
+    zipCode: '',
+    addressComplement: '',
+    city: '',
+    state: '',
+    district: '',
+    phone: '',
     email: ''
   });
 
@@ -65,25 +65,25 @@ export function CompanyForm(): JSX.Element {
   const [showSuccessMessage, setShowSuccessMessage] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
   const [isLoadingCNPJ, setIsLoadingCNPJ] = useState(false);
-  const [municipios, setMunicipios] = useState<Municipio[]>([]);
-  const [loadingMunicipios, setLoadingMunicipios] = useState(false);
-  const [municipioSelecionado, setMunicipioSelecionado] = useState<Municipio | null>(null);
+  const [cities, setCities] = useState<City[]>([]);
+  const [loadingCities, setLoadingCities] = useState(false);
+  const [selectedCity, setSelectedCity] = useState<City | null>(null);
   const [isLoadingCompany, setIsLoadingCompany] = useState(false);
   const [companyId, setCompanyId] = useState<number | null>(null);
 
   // Lista de UFs brasileiras
-  const ufsBrasileiras = [
+  const brazilianStates = [
     'AC', 'AL', 'AP', 'AM', 'BA', 'CE', 'DF', 'ES', 'GO', 'MA',
     'MT', 'MS', 'MG', 'PA', 'PB', 'PR', 'PE', 'PI', 'RJ', 'RN',
     'RS', 'RO', 'RR', 'SC', 'SP', 'SE', 'TO'
   ];
 
   const handleInputChange = (field: string, value: string) => {
-    setEmpresaData(prev => {
+    setCompanyData(prev => {
       const newData = { ...prev, [field]: value };
       // Se mudar a UF, limpa a cidade
-      if (field === 'uf') {
-        newData.cidade = '';
+      if (field === 'state') {
+        newData.city = '';
       }
       return newData;
     });
@@ -93,15 +93,15 @@ export function CompanyForm(): JSX.Element {
   };
 
   // Função para buscar municípios da API BrasilAPI
-  const fetchMunicipios = async (uf: string) => {
-    if (!uf) {
-      setMunicipios([]);
+  const fetchCities = async (stateCode: string) => {
+    if (!stateCode) {
+      setCities([]);
       return;
     }
     
-    setLoadingMunicipios(true);
+    setLoadingCities(true);
     try {
-      const response = await fetch(`https://brasilapi.com.br/api/ibge/municipios/v1/${uf}?providers=dados-abertos-br,gov,wikipedia`);
+      const response = await fetch(`https://brasilapi.com.br/api/ibge/municipios/v1/${stateCode}?providers=dados-abertos-br,gov,wikipedia`);
       
       if (!response.ok) {
         throw new Error(`Erro ao buscar municípios: ${response.status}`);
@@ -111,48 +111,48 @@ export function CompanyForm(): JSX.Element {
       
       // Mapear os dados para o formato esperado
       // Remove o estado entre parênteses do nome do município (ex: "SÃO FELIPE (BAHIA)" -> "SÃO FELIPE")
-      const municipiosFormatados: Municipio[] = data.map((municipio: any) => ({
-        nome: municipio.nome.replace(/\s*\([^)]*\)\s*$/, '').trim(),
-        codigo_ibge: municipio.codigo_ibge
+      const formattedCities: City[] = data.map((city: any) => ({
+        nome: city.nome.replace(/\s*\([^)]*\)\s*$/, '').trim(),
+        codigo_ibge: city.codigo_ibge
       }));
       
-      setMunicipios(municipiosFormatados);
-      console.log(`Municípios de ${uf} carregados:`, municipiosFormatados.length);
+      setCities(formattedCities);
+      console.log(`Municípios de ${stateCode} carregados:`, formattedCities.length);
       
       // Se houver uma cidade pendente para preencher (vinda da consulta de CNPJ), tenta preenchê-la
-      const cidadePendente = empresaData.cidade;
-      if (cidadePendente && municipiosFormatados.length > 0) {
-        const municipioEncontrado = municipiosFormatados.find(m => 
-          m.nome.toLowerCase().trim() === cidadePendente.toLowerCase().trim()
+      const pendingCity = companyData.city;
+      if (pendingCity && formattedCities.length > 0) {
+        const foundCity = formattedCities.find(m => 
+          m.nome.toLowerCase().trim() === pendingCity.toLowerCase().trim()
         );
-        if (municipioEncontrado) {
-          setMunicipioSelecionado(municipioEncontrado);
+        if (foundCity) {
+          setSelectedCity(foundCity);
         }
       }
     } catch (error) {
-      console.error(`Erro ao buscar municípios de ${uf}:`, error);
-      setMunicipios([]);
+      console.error(`[CompanyForm] Erro ao buscar municípios de ${stateCode}:`, error);
+      setCities([]);
     } finally {
-      setLoadingMunicipios(false);
+      setLoadingCities(false);
     }
   };
 
   // Busca cidade e UF pelo código IBGE (otimizado)
-  const buscarCidadeEUFPorCodigoIBGE = async (codigoIBGE: number, stateId?: number): Promise<{ cidade: string; uf: string } | null> => {
+  const fetchCityAndStateByIBGECode = async (ibgeCode: number, stateId?: number): Promise<{ city: string; state: string } | null> => {
     try {
       // Se temos state_id, busca apenas na UF correspondente (muito mais rápido)
-      if (stateId && stateId > 0 && stateId <= ufsBrasileiras.length) {
-        const uf = ufsBrasileiras[stateId - 1];
+      if (stateId && stateId > 0 && stateId <= brazilianStates.length) {
+        const uf = brazilianStates[stateId - 1];
         try {
           const response = await fetch(`https://brasilapi.com.br/api/ibge/municipios/v1/${uf}?providers=dados-abertos-br,gov,wikipedia`);
           
           if (response.ok) {
-            const municipiosData = await response.json();
-            const municipio = municipiosData.find((m: any) => parseInt(m.codigo_ibge, 10) === codigoIBGE);
+            const citiesData = await response.json();
+            const city = citiesData.find((m: any) => parseInt(m.codigo_ibge, 10) === ibgeCode);
             
-            if (municipio) {
-              const nomeCidade = municipio.nome.replace(/\s*\([^)]*\)\s*$/, '').trim();
-              return { cidade: nomeCidade, uf: uf };
+            if (city) {
+              const cityName = city.nome.replace(/\s*\([^)]*\)\s*$/, '').trim();
+              return { city: cityName, state: uf };
             }
           }
         } catch (error) {
@@ -161,20 +161,20 @@ export function CompanyForm(): JSX.Element {
       }
       
       // Se não encontrou ou não tem state_id, busca nas UFs mais comuns primeiro (otimizado)
-      const ufsPrioritarias = ['SP', 'RJ', 'MG', 'RS', 'PR', 'SC', 'BA', 'GO', 'PE', 'CE'];
+      const priorityUFs = ['SP', 'RJ', 'MG', 'RS', 'PR', 'SC', 'BA', 'GO', 'PE', 'CE'];
       
       // Faz requisições em paralelo para as UFs prioritárias (muito mais rápido)
-      const promisesPrioritarias = ufsPrioritarias.map(async (uf) => {
+      const priorityPromises = priorityUFs.map(async (uf) => {
         try {
           const response = await fetch(`https://brasilapi.com.br/api/ibge/municipios/v1/${uf}?providers=dados-abertos-br,gov,wikipedia`);
           
           if (response.ok) {
-            const municipiosData = await response.json();
-            const municipio = municipiosData.find((m: any) => parseInt(m.codigo_ibge, 10) === codigoIBGE);
+            const citiesData = await response.json();
+            const city = citiesData.find((m: any) => parseInt(m.codigo_ibge, 10) === ibgeCode);
             
-            if (municipio) {
-              const nomeCidade = municipio.nome.replace(/\s*\([^)]*\)\s*$/, '').trim();
-              return { cidade: nomeCidade, uf: uf };
+            if (city) {
+              const cityName = city.nome.replace(/\s*\([^)]*\)\s*$/, '').trim();
+              return { city: cityName, state: uf };
             }
           }
         } catch (error) {
@@ -184,26 +184,26 @@ export function CompanyForm(): JSX.Element {
       });
       
       // Aguarda todas as requisições prioritárias em paralelo
-      const resultados = await Promise.all(promisesPrioritarias);
-      const resultadoEncontrado = resultados.find(r => r !== null);
+      const results = await Promise.all(priorityPromises);
+      const foundResult = results.find(r => r !== null);
       
-      if (resultadoEncontrado) {
-        return resultadoEncontrado;
+      if (foundResult) {
+        return foundResult;
       }
       
       // Se não encontrou nas prioritárias, busca nas demais (sequencial, mas raramente necessário)
-      const outrasUFs = ufsBrasileiras.filter(uf => !ufsPrioritarias.includes(uf));
-      for (const uf of outrasUFs) {
+      const otherUFs = brazilianStates.filter(uf => !priorityUFs.includes(uf));
+      for (const uf of otherUFs) {
         try {
           const response = await fetch(`https://brasilapi.com.br/api/ibge/municipios/v1/${uf}?providers=dados-abertos-br,gov,wikipedia`);
           
           if (response.ok) {
-            const municipiosData = await response.json();
-            const municipio = municipiosData.find((m: any) => parseInt(m.codigo_ibge, 10) === codigoIBGE);
+            const citiesData = await response.json();
+            const city = citiesData.find((m: any) => parseInt(m.codigo_ibge, 10) === ibgeCode);
             
-            if (municipio) {
-              const nomeCidade = municipio.nome.replace(/\s*\([^)]*\)\s*$/, '').trim();
-              return { cidade: nomeCidade, uf: uf };
+            if (city) {
+              const cityName = city.nome.replace(/\s*\([^)]*\)\s*$/, '').trim();
+              return { city: cityName, state: uf };
             }
           }
         } catch (error) {
@@ -267,49 +267,49 @@ export function CompanyForm(): JSX.Element {
             let ufValue = '';
             if (address?.state_id) {
               const stateIndex = address.state_id - 1;
-              if (stateIndex >= 0 && stateIndex < ufsBrasileiras.length) {
-                ufValue = ufsBrasileiras[stateIndex];
+              if (stateIndex >= 0 && stateIndex < brazilianStates.length) {
+                ufValue = brazilianStates[stateIndex];
               }
             }
             
             // Preenche dados básicos primeiro (sem esperar busca da cidade)
-            const dadosEmpresa = {
-              nomeEmpresarial: company.name || '',
-              nomeFantasia: company.legal_name || '',
+            const companyInfo = {
+              businessName: company.name || '',
+              tradeName: company.legal_name || '',
               cnpj: cnpjFormatted,
-              inscricaoEstadual: company.ie || '',
-              inscricaoMunicipal: company.im || '',
+              stateRegistration: company.ie || '',
+              municipalRegistration: company.im || '',
               cnae: company.cnae || '',
-              regimeTributario: '',
-              rua: address?.street || '',
-              numero: address?.number?.toString() || '',
-              cep: address?.zipcode || '',
-              complemento: address?.complement || '',
-              cidade: '', // Será preenchido depois
-              uf: ufValue,
-              bairro: address?.district || '',
-              telefone: phoneContact?.value || '',
+              taxRegime: '',
+              street: address?.street || '',
+              addressNumber: address?.number?.toString() || '',
+              zipCode: address?.zipcode || '',
+              addressComplement: address?.complement || '',
+              city: '', // Será preenchido depois
+              state: ufValue,
+              district: address?.district || '',
+              phone: phoneContact?.value || '',
               email: emailContact?.value || ''
             };
             
-            console.log('[CompanyForm] Dados básicos da empresa preenchidos:', dadosEmpresa);
+            console.log('[CompanyForm] Dados básicos da empresa preenchidos:', companyInfo);
             
             // Atualiza o estado com os dados básicos primeiro (renderiza imediatamente)
-            setEmpresaData(dadosEmpresa);
+            setCompanyData(companyInfo);
             
             // Busca cidade de forma assíncrona (não bloqueia a renderização)
             if (address?.city_id) {
               console.log('[CompanyForm] Buscando cidade pelo código IBGE:', address.city_id, 'state_id:', address.state_id);
               // Não usa await aqui - busca em background
-              buscarCidadeEUFPorCodigoIBGE(address.city_id, address.state_id)
-                .then((cidadeEUF) => {
-                  if (cidadeEUF) {
-                    console.log('[CompanyForm] Cidade e UF encontradas:', cidadeEUF);
+              fetchCityAndStateByIBGECode(address.city_id, address.state_id)
+                .then((cityAndState) => {
+                  if (cityAndState) {
+                    console.log('[CompanyForm] Cidade e UF encontradas:', cityAndState);
                     // Atualiza apenas a cidade sem recarregar tudo
-                    setEmpresaData(prev => ({
+                    setCompanyData(prev => ({
                       ...prev,
-                      cidade: cidadeEUF.cidade,
-                      uf: cidadeEUF.uf || prev.uf // Mantém UF se já estava preenchida
+                      city: cityAndState.city,
+                      state: cityAndState.state || prev.state // Mantém UF se já estava preenchida
                     }));
                   }
                 })
@@ -335,118 +335,141 @@ export function CompanyForm(): JSX.Element {
 
   // Carrega municípios quando a UF mudar
   useEffect(() => {
-    if (empresaData.uf) {
-      fetchMunicipios(empresaData.uf);
+    if (companyData.state) {
+      fetchCities(companyData.state);
     } else {
-      setMunicipios([]);
-      setMunicipioSelecionado(null);
+      setCities([]);
+      setSelectedCity(null);
     }
-  }, [empresaData.uf]);
+  }, [companyData.state]);
 
   // Atualiza município selecionado quando a cidade ou municípios mudarem
   useEffect(() => {
-    if (!empresaData.cidade || municipios.length === 0) {
-      setMunicipioSelecionado(null);
+    if (!companyData.city || cities.length === 0) {
+      setSelectedCity(null);
       return;
     }
     
     // Tenta encontrar o município correspondente (busca case-insensitive)
-    const municipio = municipios.find(m => 
-      m.nome.toLowerCase().trim() === empresaData.cidade.toLowerCase().trim()
+    const city = cities.find(m => 
+      m.nome.toLowerCase().trim() === companyData.city.toLowerCase().trim()
     );
     
-    if (municipio) {
-      setMunicipioSelecionado(municipio);
+    if (city) {
+      setSelectedCity(city);
     } else {
       // Se não encontrou, tenta buscar por similaridade (pode ser que a API retorne com acentos diferentes)
-      const municipioSimilar = municipios.find(m => 
+      const similarCity = cities.find(m => 
         m.nome.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '') === 
-        empresaData.cidade.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+        companyData.city.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '')
       );
-      setMunicipioSelecionado(municipioSimilar || null);
+      setSelectedCity(similarCity || null);
     }
-  }, [empresaData.cidade, municipios]);
+  }, [companyData.city, cities]);
 
   // Função para consultar CNPJ na API BrasilAPI
-  const consultarCNPJ = async (cnpj: string) => {
+  const consultCNPJ = async (cnpj: string) => {
     setIsLoadingCNPJ(true);
     try {
       // Remove formatação do CNPJ para consulta
-      const cnpjLimpo = cnpj.replace(/\D/g, '');
+      const cleanCnpj = cnpj.replace(/\D/g, '');
       
       // Verifica se o CNPJ tem 14 dígitos
-      if (cnpjLimpo.length !== 14) {
+      if (cleanCnpj.length !== 14) {
         return;
       }
 
-      console.log('Consultando CNPJ:', cnpjLimpo);
+      console.log('Consultando CNPJ:', cleanCnpj);
       
-      const response = await fetch(`https://brasilapi.com.br/api/cnpj/v1/${cnpjLimpo}`);
+      const response = await fetch(`https://brasilapi.com.br/api/cnpj/v1/${cleanCnpj}`);
       
       if (!response.ok) {
         throw new Error(`Erro na consulta: ${response.status}`);
       }
       
-      const data: CNPJResponse = await response.json();
+      const apiData = await response.json();
+
+      const data: CNPJResponse = {
+        cnpj: apiData.cnpj,
+        corporateName: apiData.razao_social,
+        tradeName: apiData.nome_fantasia,
+        registrationStatus: apiData.situacao_cadastral,
+        registrationStatusDescription: apiData.descricao_situacao_cadastral,
+        mainActivityCode: apiData.cnae_fiscal,
+        mainActivityDescription: apiData.cnae_fiscal_descricao,
+        streetTypeDescription: apiData.descricao_tipo_logradouro,
+        street: apiData.logradouro,
+        addressNumber: apiData.numero,
+        addressComplement: apiData.complemento,
+        district: apiData.bairro,
+        zipCode: apiData.cep,
+        state: apiData.uf,
+        cityCode: apiData.codigo_municipio,
+        city: apiData.municipio,
+        phone1: apiData.ddd_telefone_1,
+        phone2: apiData.ddd_telefone_2,
+        simpleNationalOptIn: apiData.opcao_pelo_simples,
+        individualMicroEntrepreneurOptIn: apiData.opcao_pelo_mei
+      };
       
-      console.log('Dados recebidos da API:', data);
+      console.log('Dados recebidos da API (normalizados):', data);
       
       // Preenche os campos automaticamente
-      handleInputChange('nomeEmpresarial', data.razao_social || '');
-      handleInputChange('nomeFantasia', data.nome_fantasia || '');
+      handleInputChange('businessName', data.corporateName || '');
+      handleInputChange('tradeName', data.tradeName || '');
       
       // Preenche dados de endereço
-      handleInputChange('rua', data.logradouro || '');
-      handleInputChange('numero', data.numero || '');
-      handleInputChange('complemento', data.complemento || '');
-      handleInputChange('bairro', data.bairro || '');
-      handleInputChange('cep', data.cep || '');
+      handleInputChange('street', data.street || '');
+      handleInputChange('addressNumber', data.addressNumber || '');
+      handleInputChange('addressComplement', data.addressComplement || '');
+      handleInputChange('district', data.district || '');
+      handleInputChange('zipCode', data.zipCode || '');
       
       // UF deve estar em maiúsculas para funcionar com a API de municípios
-      const uf = (data.uf || '').toUpperCase();
-      const municipioNome = data.municipio || '';
+      const uf = (data.state || '').toUpperCase();
+      const cityName = data.city || '';
       
       // Preenche UF primeiro para carregar os municípios
-      handleInputChange('uf', uf);
+      handleInputChange('state', uf);
       
       // Preenche a cidade (será encontrada pelo useEffect quando os municípios carregarem)
-      if (municipioNome) {
-        handleInputChange('cidade', municipioNome);
+      if (cityName) {
+        handleInputChange('city', cityName);
       }
       
       // Preenche CNAE (converte número para string)
-      if (data.cnae_fiscal) {
-        handleInputChange('cnae', data.cnae_fiscal.toString());
+      if (data.mainActivityCode) {
+        handleInputChange('cnae', data.mainActivityCode.toString());
       }
       
       // Preenche telefone se disponível
-      if (data.ddd_telefone_1) {
-        const telefone = data.ddd_telefone_1.replace(/\D/g, '');
-        if (telefone.length >= 10) {
-          const telefoneFormatado = telefone.length === 10 
-            ? `(${telefone.slice(0, 2)}) ${telefone.slice(2, 6)}-${telefone.slice(6)}`
-            : `(${telefone.slice(0, 2)}) ${telefone.slice(2, 7)}-${telefone.slice(7, 11)}`;
-          handleInputChange('telefone', telefoneFormatado);
+      if (data.phone1) {
+        const phone = data.phone1.replace(/\D/g, '');
+        if (phone.length >= 10) {
+          const formattedPhone = phone.length === 10 
+            ? `(${phone.slice(0, 2)}) ${phone.slice(2, 6)}-${phone.slice(6)}`
+            : `(${phone.slice(0, 2)}) ${phone.slice(2, 7)}-${phone.slice(7, 11)}`;
+          handleInputChange('phone', formattedPhone);
         }
       }
       
       // Define regime tributário baseado na opção pelo simples
-      if (data.opcao_pelo_simples) {
-        if (data.opcao_pelo_mei) {
-          handleInputChange('regimeTributario', 'mei');
+      if (data.simpleNationalOptIn) {
+        if (data.individualMicroEntrepreneurOptIn) {
+          handleInputChange('taxRegime', 'mei');
         } else {
-          handleInputChange('regimeTributario', 'simples-nacional');
+          handleInputChange('taxRegime', 'simples-nacional');
         }
       }
       
       console.log('Campos preenchidos automaticamente:', {
-        razaoSocial: data.razao_social,
-        nomeFantasia: data.nome_fantasia,
-        endereco: data.logradouro,
-        cidade: data.municipio,
-        estado: data.uf,
-        cep: data.cep,
-        cnae: data.cnae_fiscal
+        corporateName: data.corporateName,
+        tradeName: data.tradeName,
+        street: data.street,
+        city: data.city,
+        state: data.state,
+        zipCode: data.zipCode,
+        mainActivityCode: data.mainActivityCode
       });
       
     } catch (error) {
@@ -470,10 +493,10 @@ export function CompanyForm(): JSX.Element {
     handleInputChange('cnpj', formatted);
     
     // Se estiver completo (14 dígitos), consulta a API
-    const cnpjLimpo = value.replace(/\D/g, '');
-    if (cnpjLimpo.length === 14) {
+    const cleanCnpj = value.replace(/\D/g, '');
+    if (cleanCnpj.length === 14) {
       console.log('CNPJ completo detectado, consultando API...');
-      await consultarCNPJ(formatted);
+        await consultCNPJ(formatted);
     }
   };
 
@@ -491,11 +514,11 @@ export function CompanyForm(): JSX.Element {
   const validateForm = (): string[] => {
     const errors: string[] = [];
     
-    if (!empresaData.nomeEmpresarial.trim()) {
+    if (!companyData.businessName.trim()) {
       errors.push('Nome Empresarial é obrigatório');
     }
     
-    if (!empresaData.rua.trim()) {
+    if (!companyData.street.trim()) {
       errors.push('Rua/Av é obrigatória');
     }
     
@@ -517,64 +540,64 @@ export function CompanyForm(): JSX.Element {
 
     try {
       // Prepara dados no formato esperado pela API
-      const cnpjClean = cleanCNPJ(empresaData.cnpj);
+      const cnpjClean = cleanCNPJ(companyData.cnpj);
       
       // Prepara endereço
       const addresses = [];
-      if (empresaData.rua.trim()) {
+      if (companyData.street.trim()) {
         // Tenta encontrar o município se não estiver selecionado
-        let municipioAtual = municipioSelecionado;
-        if (!municipioAtual && empresaData.cidade && municipios.length > 0) {
-          municipioAtual = municipios.find(m => 
-            m.nome.toLowerCase().trim() === empresaData.cidade.toLowerCase().trim()
+        let currentCity = selectedCity;
+        if (!currentCity && companyData.city && cities.length > 0) {
+          currentCity = cities.find(m => 
+            m.nome.toLowerCase().trim() === companyData.city.toLowerCase().trim()
           ) || null;
         }
         
         // Converte código IBGE para inteiro
-        const cityId = municipioAtual?.codigo_ibge 
-          ? parseInt(municipioAtual.codigo_ibge, 10) 
+        const cityId = currentCity?.codigo_ibge 
+          ? parseInt(currentCity.codigo_ibge, 10) 
           : null;
         
         // Log para debug
-        if (empresaData.cidade && !cityId) {
-          console.warn('[CompanyForm] Município não encontrado para cidade:', empresaData.cidade);
-          console.log('[CompanyForm] Municípios disponíveis:', municipios.map(m => m.nome));
+        if (companyData.city && !cityId) {
+          console.warn('[CompanyForm] Município não encontrado para cidade:', companyData.city);
+          console.log('[CompanyForm] Municípios disponíveis:', cities.map(m => m.nome));
         }
         
         addresses.push({
-          street: empresaData.rua.trim(),
-          number: empresaData.numero ? parseInt(empresaData.numero, 10) || null : null,
-          complement: empresaData.complemento.trim() || null,
-          district: empresaData.bairro.trim() || null,
+          street: companyData.street.trim(),
+          number: companyData.addressNumber ? parseInt(companyData.addressNumber, 10) || null : null,
+          complement: companyData.addressComplement.trim() || null,
+          district: companyData.district.trim() || null,
           city_id: cityId,
           state_id: null, // TODO: Implementar busca de state_id quando tiver tabela de estados
-          zipcode: cleanCEP(empresaData.cep) || null
+          zipcode: cleanCEP(companyData.zipCode) || null
         });
       }
 
       // Prepara contatos
       const contacts = [];
-      if (empresaData.telefone.trim()) {
+      if (companyData.phone.trim()) {
         contacts.push({
           type: 'phone',
-          value: empresaData.telefone.trim()
+          value: companyData.phone.trim()
         });
       }
-      if (empresaData.email.trim()) {
+      if (companyData.email.trim()) {
         contacts.push({
           type: 'email',
-          value: empresaData.email.trim()
+          value: companyData.email.trim()
         });
       }
 
       // Monta payload da API
       const payload: any = {
-        name: empresaData.nomeEmpresarial.trim(),
-        legalName: empresaData.nomeFantasia.trim() || null,
+        name: companyData.businessName.trim(),
+        legalName: companyData.tradeName.trim() || null,
         cnpj: cnpjClean || null,
-        ie: empresaData.inscricaoEstadual.trim() || null,
-        im: empresaData.inscricaoMunicipal.trim() || null,
-        cnae: empresaData.cnae.trim() || null
+        ie: companyData.stateRegistration.trim() || null,
+        im: companyData.municipalRegistration.trim() || null,
+        cnae: companyData.cnae.trim() || null
       };
 
       // Adiciona arrays apenas se tiverem dados
@@ -598,21 +621,21 @@ export function CompanyForm(): JSX.Element {
         
         // Salva dados da empresa no localStorage para uso em outras partes do sistema
         localStorage.setItem('companyData', JSON.stringify({
-          nomeEmpresarial: empresaData.nomeEmpresarial,
-          nomeFantasia: empresaData.nomeFantasia,
+          businessName: companyData.businessName,
+          tradeName: companyData.tradeName,
           cnpj: cnpjClean,
-          inscricaoEstadual: empresaData.inscricaoEstadual,
-          inscricaoMunicipal: empresaData.inscricaoMunicipal,
-          cnae: empresaData.cnae,
-          rua: empresaData.rua,
-          numero: empresaData.numero,
-          cep: empresaData.cep,
-          complemento: empresaData.complemento,
-          cidade: empresaData.cidade,
-          uf: empresaData.uf,
-          bairro: empresaData.bairro,
-          telefone: empresaData.telefone,
-          email: empresaData.email
+          stateRegistration: companyData.stateRegistration,
+          municipalRegistration: companyData.municipalRegistration,
+          cnae: companyData.cnae,
+          street: companyData.street,
+          addressNumber: companyData.addressNumber,
+          zipCode: companyData.zipCode,
+          addressComplement: companyData.addressComplement,
+          city: companyData.city,
+          state: companyData.state,
+          district: companyData.district,
+          phone: companyData.phone,
+          email: companyData.email
         }));
         
         // Remove mensagem de sucesso após 5 segundos
@@ -756,8 +779,8 @@ export function CompanyForm(): JSX.Element {
             <input
               type="text"
               style={styles.input}
-              value={empresaData.nomeEmpresarial}
-              onChange={(e) => handleInputChange('nomeEmpresarial', e.target.value)}
+              value={companyData.businessName}
+              onChange={(e) => handleInputChange('businessName', e.target.value)}
             />
           </div>
           
@@ -766,8 +789,8 @@ export function CompanyForm(): JSX.Element {
             <input
               type="text"
               style={styles.input}
-              value={empresaData.nomeFantasia}
-              onChange={(e) => handleInputChange('nomeFantasia', e.target.value)}
+              value={companyData.tradeName}
+              onChange={(e) => handleInputChange('tradeName', e.target.value)}
             />
           </div>
         </div>
@@ -795,7 +818,7 @@ export function CompanyForm(): JSX.Element {
                   opacity: isLoadingCNPJ ? 0.7 : 1,
                   cursor: isLoadingCNPJ ? 'not-allowed' : 'text'
                 }}
-                value={empresaData.cnpj}
+                value={companyData.cnpj}
                 onChange={(e) => handleCNPJChange(e.target.value)}
                 placeholder="00.000.000/0000-00"
                 maxLength={18}
@@ -821,8 +844,8 @@ export function CompanyForm(): JSX.Element {
             <input
               type="text"
               style={styles.input}
-              value={empresaData.inscricaoEstadual}
-              onChange={(e) => handleInputChange('inscricaoEstadual', e.target.value)}
+              value={companyData.stateRegistration}
+              onChange={(e) => handleInputChange('stateRegistration', e.target.value)}
             />
           </div>
         </div>
@@ -833,8 +856,8 @@ export function CompanyForm(): JSX.Element {
             <input
               type="text"
               style={styles.input}
-              value={empresaData.inscricaoMunicipal}
-              onChange={(e) => handleInputChange('inscricaoMunicipal', e.target.value)}
+              value={companyData.municipalRegistration}
+              onChange={(e) => handleInputChange('municipalRegistration', e.target.value)}
             />
           </div>
           
@@ -843,7 +866,7 @@ export function CompanyForm(): JSX.Element {
             <input
               type="text"
               style={styles.input}
-              value={empresaData.cnae}
+              value={companyData.cnae}
               onChange={(e) => handleInputChange('cnae', e.target.value)}
             />
           </div>
@@ -853,8 +876,8 @@ export function CompanyForm(): JSX.Element {
             <div style={styles.selectWrapper}>
               <select
                 style={styles.select}
-                value={empresaData.regimeTributario}
-                onChange={(e) => handleInputChange('regimeTributario', e.target.value)}
+                value={companyData.taxRegime}
+                onChange={(e) => handleInputChange('taxRegime', e.target.value)}
               >
                 <option value="">Selecione...</option>
                 <option value="simples-nacional">Simples Nacional</option>
@@ -880,8 +903,8 @@ export function CompanyForm(): JSX.Element {
             <input
               type="text"
               style={styles.input}
-              value={empresaData.rua}
-              onChange={(e) => handleInputChange('rua', e.target.value)}
+              value={companyData.street}
+              onChange={(e) => handleInputChange('street', e.target.value)}
             />
           </div>
         </div>
@@ -892,8 +915,8 @@ export function CompanyForm(): JSX.Element {
             <input
               type="text"
               style={styles.input}
-              value={empresaData.numero}
-              onChange={(e) => handleInputChange('numero', e.target.value)}
+              value={companyData.addressNumber}
+              onChange={(e) => handleInputChange('addressNumber', e.target.value)}
             />
           </div>
           
@@ -902,8 +925,8 @@ export function CompanyForm(): JSX.Element {
             <input
               type="text"
               style={styles.input}
-              value={empresaData.cep}
-              onChange={(e) => handleInputChange('cep', e.target.value)}
+              value={companyData.zipCode}
+              onChange={(e) => handleInputChange('zipCode', e.target.value)}
             />
           </div>
           
@@ -912,8 +935,8 @@ export function CompanyForm(): JSX.Element {
             <input
               type="text"
               style={styles.input}
-              value={empresaData.complemento}
-              onChange={(e) => handleInputChange('complemento', e.target.value)}
+              value={companyData.addressComplement}
+              onChange={(e) => handleInputChange('addressComplement', e.target.value)}
             />
           </div>
         </div>
@@ -924,11 +947,11 @@ export function CompanyForm(): JSX.Element {
             <div style={styles.selectWrapper}>
               <select
                 style={styles.select}
-                value={empresaData.uf}
-                onChange={(e) => handleInputChange('uf', e.target.value)}
+                value={companyData.state}
+                onChange={(e) => handleInputChange('state', e.target.value)}
               >
                 <option value="">Selecione a UF</option>
-                {ufsBrasileiras.map(uf => (
+                {brazilianStates.map(uf => (
                   <option key={uf} value={uf}>{uf}</option>
                 ))}
               </select>
@@ -941,7 +964,7 @@ export function CompanyForm(): JSX.Element {
           <div style={styles.formGroup}>
             <label style={styles.label}>
               Cidade
-              {loadingMunicipios && (
+              {loadingCities && (
                 <span style={{
                   marginLeft: '8px',
                   fontSize: '10px',
@@ -956,27 +979,27 @@ export function CompanyForm(): JSX.Element {
               <select
                 style={{
                   ...styles.select,
-                  opacity: loadingMunicipios ? 0.7 : 1
+                  opacity: loadingCities ? 0.7 : 1
                 }}
-                value={empresaData.cidade}
                 onChange={(e) => {
-                  handleInputChange('cidade', e.target.value);
+                  handleInputChange('city', e.target.value);
                   // Encontra o município selecionado para obter o código IBGE
-                  const municipio = municipios.find(m => m.nome === e.target.value);
-                  setMunicipioSelecionado(municipio || null);
+                  const city = cities.find(m => m.nome === e.target.value);
+                  setSelectedCity(city || null);
                 }}
-                disabled={!empresaData.uf || loadingMunicipios}
+                value={companyData.city}
+                disabled={!companyData.state || loadingCities}
               >
                 <option value="">
-                  {!empresaData.uf 
+                  {!companyData.state 
                     ? 'Selecione uma UF primeiro' 
-                    : loadingMunicipios 
+                    : loadingCities 
                       ? 'Carregando municípios...'
                       : 'Selecione o município'}
                 </option>
-                {municipios.map(municipio => (
-                  <option key={municipio.codigo_ibge} value={municipio.nome}>
-                    {municipio.nome}
+                {cities.map(cityItem => (
+                  <option key={cityItem.codigo_ibge} value={cityItem.nome}>
+                    {cityItem.nome}
                   </option>
                 ))}
               </select>
@@ -993,8 +1016,8 @@ export function CompanyForm(): JSX.Element {
             <input
               type="text"
               style={styles.input}
-              value={empresaData.bairro}
-              onChange={(e) => handleInputChange('bairro', e.target.value)}
+              value={companyData.district}
+              onChange={(e) => handleInputChange('district', e.target.value)}
             />
           </div>
         </div>
@@ -1010,8 +1033,8 @@ export function CompanyForm(): JSX.Element {
             <input
               type="text"
               style={styles.input}
-              value={empresaData.telefone}
-              onChange={(e) => handleInputChange('telefone', e.target.value)}
+              value={companyData.phone}
+              onChange={(e) => handleInputChange('phone', e.target.value)}
             />
           </div>
           
@@ -1020,7 +1043,7 @@ export function CompanyForm(): JSX.Element {
             <input
               type="email"
               style={styles.input}
-              value={empresaData.email}
+              value={companyData.email}
               onChange={(e) => handleInputChange('email', e.target.value)}
             />
           </div>

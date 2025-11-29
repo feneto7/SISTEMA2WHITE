@@ -5,22 +5,22 @@ import { WindowHeader } from '../../../../../components/WindowHeader/WindowHeade
 
 interface Driver {
   id: string;
-  nomeMotorista: string;
-  cpfMotorista: string;
-  rgMotorista: string;
-  cnhMotorista: string;
-  categoriaCnh: string;
-  validadeCnh: string;
-  telefoneMotorista: string;
-  emailMotorista: string;
-  enderecoMotorista: string;
-  cidadeMotorista: string;
-  ufMotorista: string;
-  cepMotorista: string;
-  dataNascimento: string;
-  estadoCivil: string;
-  nomePai: string;
-  nomeMae: string;
+  name: string;
+  cpf: string;
+  rg: string;
+  cnh: string;
+  cnhCategory: string;
+  cnhExpiration: string;
+  phone: string;
+  email: string;
+  address: string;
+  city: string;
+  state: string;
+  zipCode: string;
+  birthDate: string;
+  maritalStatus: string;
+  fatherName: string;
+  motherName: string;
 }
 
 interface NewDriverModalProps {
@@ -35,22 +35,22 @@ export function NewDriverModal({ isOpen, onClose, onSave, editingDriver }: NewDr
   const { systemStyles, systemColors } = useTheme();
   const [focusedField, setFocusedField] = useState<string | null>(null);
   const [formData, setFormData] = useState<Partial<Driver>>({
-    nomeMotorista: '',
-    cpfMotorista: '',
-    rgMotorista: '',
-    cnhMotorista: '',
-    categoriaCnh: '',
-    validadeCnh: '',
-    telefoneMotorista: '',
-    emailMotorista: '',
-    enderecoMotorista: '',
-    cidadeMotorista: '',
-    ufMotorista: '',
-    cepMotorista: '',
-    dataNascimento: '',
-    estadoCivil: '',
-    nomePai: '',
-    nomeMae: ''
+    name: '',
+    cpf: '',
+    rg: '',
+    cnh: '',
+    cnhCategory: '',
+    cnhExpiration: '',
+    phone: '',
+    email: '',
+    address: '',
+    city: '',
+    state: '',
+    zipCode: '',
+    birthDate: '',
+    maritalStatus: '',
+    fatherName: '',
+    motherName: ''
   });
 
   // Initialize data when modal opens or when editingDriver changes
@@ -60,22 +60,22 @@ export function NewDriverModal({ isOpen, onClose, onSave, editingDriver }: NewDr
         setFormData(editingDriver);
       } else {
         setFormData({
-          nomeMotorista: '',
-          cpfMotorista: '',
-          rgMotorista: '',
-          cnhMotorista: '',
-          categoriaCnh: '',
-          validadeCnh: '',
-          telefoneMotorista: '',
-          emailMotorista: '',
-          enderecoMotorista: '',
-          cidadeMotorista: '',
-          ufMotorista: '',
-          cepMotorista: '',
-          dataNascimento: '',
-          estadoCivil: '',
-          nomePai: '',
-          nomeMae: ''
+          name: '',
+          cpf: '',
+          rg: '',
+          cnh: '',
+          cnhCategory: '',
+          cnhExpiration: '',
+          phone: '',
+          email: '',
+          address: '',
+          city: '',
+          state: '',
+          zipCode: '',
+          birthDate: '',
+          maritalStatus: '',
+          fatherName: '',
+          motherName: ''
         });
       }
     }
@@ -112,29 +112,29 @@ export function NewDriverModal({ isOpen, onClose, onSave, editingDriver }: NewDr
   });
 
   const handleSave = () => {
-    if (!formData.nomeMotorista || !formData.cpfMotorista || !formData.cnhMotorista) {
+    if (!formData.name || !formData.cpf || !formData.cnh) {
       alert('Nome, CPF e CNH são obrigatórios');
       return;
     }
 
     const driverData: Driver = {
       id: editingDriver?.id || Date.now().toString(),
-      nomeMotorista: formData.nomeMotorista || '',
-      cpfMotorista: formData.cpfMotorista || '',
-      rgMotorista: formData.rgMotorista || '',
-      cnhMotorista: formData.cnhMotorista || '',
-      categoriaCnh: formData.categoriaCnh || '',
-      validadeCnh: formData.validadeCnh || '',
-      telefoneMotorista: formData.telefoneMotorista || '',
-      emailMotorista: formData.emailMotorista || '',
-      enderecoMotorista: formData.enderecoMotorista || '',
-      cidadeMotorista: formData.cidadeMotorista || '',
-      ufMotorista: formData.ufMotorista || '',
-      cepMotorista: formData.cepMotorista || '',
-      dataNascimento: formData.dataNascimento || '',
-      estadoCivil: formData.estadoCivil || '',
-      nomePai: formData.nomePai || '',
-      nomeMae: formData.nomeMae || ''
+      name: formData.name || '',
+      cpf: formData.cpf || '',
+      rg: formData.rg || '',
+      cnh: formData.cnh || '',
+      cnhCategory: formData.cnhCategory || '',
+      cnhExpiration: formData.cnhExpiration || '',
+      phone: formData.phone || '',
+      email: formData.email || '',
+      address: formData.address || '',
+      city: formData.city || '',
+      state: formData.state || '',
+      zipCode: formData.zipCode || '',
+      birthDate: formData.birthDate || '',
+      maritalStatus: formData.maritalStatus || '',
+      fatherName: formData.fatherName || '',
+      motherName: formData.motherName || ''
     };
 
     onSave(driverData);
@@ -143,22 +143,22 @@ export function NewDriverModal({ isOpen, onClose, onSave, editingDriver }: NewDr
 
   const handleClose = () => {
     setFormData({
-      nomeMotorista: '',
-      cpfMotorista: '',
-      rgMotorista: '',
-      cnhMotorista: '',
-      categoriaCnh: '',
-      validadeCnh: '',
-      telefoneMotorista: '',
-      emailMotorista: '',
-      enderecoMotorista: '',
-      cidadeMotorista: '',
-      ufMotorista: '',
-      cepMotorista: '',
-      dataNascimento: '',
-      estadoCivil: '',
-      nomePai: '',
-      nomeMae: ''
+      name: '',
+      cpf: '',
+      rg: '',
+      cnh: '',
+      cnhCategory: '',
+      cnhExpiration: '',
+      phone: '',
+      email: '',
+      address: '',
+      city: '',
+      state: '',
+      zipCode: '',
+      birthDate: '',
+      maritalStatus: '',
+      fatherName: '',
+      motherName: ''
     });
     onClose();
   };
@@ -254,15 +254,15 @@ export function NewDriverModal({ isOpen, onClose, onSave, editingDriver }: NewDr
             <div style={styles.grid}>
               <div style={styles.group}>
                 <label style={styles.label}>Nome Completo *</label>
-                <input {...getInputProps('nomeMotorista', 'João da Silva')} />
+                <input {...getInputProps('name', 'João da Silva')} />
               </div>
               <div style={styles.group}>
                 <label style={styles.label}>CPF *</label>
-                <input {...getInputProps('cpfMotorista', '123.456.789-00')} />
+                <input {...getInputProps('cpf', '123.456.789-00')} />
               </div>
               <div style={styles.group}>
                 <label style={styles.label}>RG</label>
-                <input {...getInputProps('rgMotorista', '12.345.678-9')} />
+                <input {...getInputProps('rg', '12.345.678-9')} />
               </div>
               <div style={styles.group}>
                 <label style={styles.label}>Data de Nascimento</label>
@@ -271,7 +271,7 @@ export function NewDriverModal({ isOpen, onClose, onSave, editingDriver }: NewDr
               <div style={styles.group}>
                 <label style={styles.label}>Estado Civil</label>
                 <div style={{ position: 'relative' as const }}>
-                  <select {...getInputProps('estadoCivil', 'Selecione')}>
+                  <select {...getInputProps('maritalStatus', 'Selecione')}>
                     <option value="">Selecione</option>
                     <option value="solteiro">Solteiro</option>
                     <option value="casado">Casado</option>
@@ -285,11 +285,11 @@ export function NewDriverModal({ isOpen, onClose, onSave, editingDriver }: NewDr
               </div>
               <div style={styles.group}>
                 <label style={styles.label}>Nome do Pai</label>
-                <input {...getInputProps('nomePai', 'José da Silva')} />
+                <input {...getInputProps('fatherName', 'José da Silva')} />
               </div>
               <div style={styles.group}>
                 <label style={styles.label}>Nome da Mãe</label>
-                <input {...getInputProps('nomeMae', 'Maria da Silva')} />
+                <input {...getInputProps('motherName', 'Maria da Silva')} />
               </div>
             </div>
           </div>
@@ -300,12 +300,12 @@ export function NewDriverModal({ isOpen, onClose, onSave, editingDriver }: NewDr
             <div style={styles.grid}>
               <div style={styles.group}>
                 <label style={styles.label}>Número da CNH *</label>
-                <input {...getInputProps('cnhMotorista', '12345678901')} />
+                <input {...getInputProps('cnh', '12345678901')} />
               </div>
               <div style={styles.group}>
                 <label style={styles.label}>Categoria</label>
                 <div style={{ position: 'relative' as const }}>
-                  <select {...getInputProps('categoriaCnh', 'Selecione')}>
+                  <select {...getInputProps('cnhCategory', 'Selecione')}>
                     <option value="">Selecione</option>
                     <option value="A">A - Motocicleta</option>
                     <option value="B">B - Carro</option>
@@ -320,7 +320,7 @@ export function NewDriverModal({ isOpen, onClose, onSave, editingDriver }: NewDr
               </div>
               <div style={styles.group}>
                 <label style={styles.label}>Validade da CNH</label>
-                <input {...getInputProps('validadeCnh', '', 'date')} />
+                <input {...getInputProps('cnhExpiration', '', 'date')} />
               </div>
             </div>
           </div>
@@ -331,11 +331,11 @@ export function NewDriverModal({ isOpen, onClose, onSave, editingDriver }: NewDr
             <div style={styles.grid}>
               <div style={styles.group}>
                 <label style={styles.label}>Telefone</label>
-                <input {...getInputProps('telefoneMotorista', '(11) 99999-9999')} />
+                <input {...getInputProps('phone', '(11) 99999-9999')} />
               </div>
               <div style={styles.group}>
                 <label style={styles.label}>E-mail</label>
-                <input {...getInputProps('emailMotorista', 'joao@email.com', 'email')} />
+                <input {...getInputProps('email', 'joao@email.com', 'email')} />
               </div>
             </div>
           </div>
@@ -346,19 +346,19 @@ export function NewDriverModal({ isOpen, onClose, onSave, editingDriver }: NewDr
             <div style={styles.grid}>
               <div style={{...styles.group, ...styles.fullWidth}}>
                 <label style={styles.label}>Endereço Completo</label>
-                <input {...getInputProps('enderecoMotorista', 'Rua das Flores, 123, Bairro Centro')} />
+                <input {...getInputProps('address', 'Rua das Flores, 123, Bairro Centro')} />
               </div>
               <div style={styles.group}>
                 <label style={styles.label}>Cidade</label>
-                <input {...getInputProps('cidadeMotorista', 'São Paulo')} />
+                <input {...getInputProps('city', 'São Paulo')} />
               </div>
               <div style={styles.group}>
                 <label style={styles.label}>UF</label>
-                <input {...getInputProps('ufMotorista', 'SP')} />
+                <input {...getInputProps('state', 'SP')} />
               </div>
               <div style={styles.group}>
                 <label style={styles.label}>CEP</label>
-                <input {...getInputProps('cepMotorista', '01234-567')} />
+                <input {...getInputProps('zipCode', '01234-567')} />
               </div>
             </div>
           </div>

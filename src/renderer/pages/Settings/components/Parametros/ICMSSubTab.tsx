@@ -21,7 +21,7 @@ export function ICMSSubTab(): JSX.Element {
   const [configs, setConfigs] = useState<ICMSConfig[]>([]);
   const { systemStyles, systemColors } = useTheme();
 
-  const tipos = [
+  const types = [
     'Consumidor Final',
     'Contribuinte ICMS',
     'ISENTO'
@@ -62,7 +62,7 @@ export function ICMSSubTab(): JSX.Element {
       </div>
 
       <TaxFormICMS
-        tipos={tipos}
+        tipos={types}
         cstLabel={cstLabel}
         onSubmit={handleAddConfig}
       />

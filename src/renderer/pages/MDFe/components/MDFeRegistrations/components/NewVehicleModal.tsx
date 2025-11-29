@@ -5,22 +5,22 @@ import { WindowHeader } from '../../../../../components/WindowHeader/WindowHeade
 
 interface Vehicle {
   id: string;
-  placa: string;
-  renavam: string;
-  chassi: string;
-  marca: string;
-  modelo: string;
-  anoFabricacao: string;
-  anoModelo: string;
-  cor: string;
-  combustivel: string;
-  capacidade: string;
-  proprietario: string;
-  cpfCnpjProprietario: string;
-  enderecoProprietario: string;
-  cidadeProprietario: string;
-  ufProprietario: string;
-  cepProprietario: string;
+  licensePlate: string;
+  renavamCode: string;
+  chassis: string;
+  brand: string;
+  model: string;
+  manufacturingYear: string;
+  modelYear: string;
+  color: string;
+  fuelType: string;
+  capacityKg: string;
+  ownerName: string;
+  ownerDocument: string;
+  ownerAddress: string;
+  ownerCity: string;
+  ownerState: string;
+  ownerZipCode: string;
 }
 
 interface NewVehicleModalProps {
@@ -35,22 +35,22 @@ export function NewVehicleModal({ isOpen, onClose, onSave, editingVehicle }: New
   const { systemStyles, systemColors } = useTheme();
   const [focusedField, setFocusedField] = useState<string | null>(null);
   const [formData, setFormData] = useState<Partial<Vehicle>>({
-    placa: '',
-    renavam: '',
-    chassi: '',
-    marca: '',
-    modelo: '',
-    anoFabricacao: '',
-    anoModelo: '',
-    cor: '',
-    combustivel: '',
-    capacidade: '',
-    proprietario: '',
-    cpfCnpjProprietario: '',
-    enderecoProprietario: '',
-    cidadeProprietario: '',
-    ufProprietario: '',
-    cepProprietario: ''
+    licensePlate: '',
+    renavamCode: '',
+    chassis: '',
+    brand: '',
+    model: '',
+    manufacturingYear: '',
+    modelYear: '',
+    color: '',
+    fuelType: '',
+    capacityKg: '',
+    ownerName: '',
+    ownerDocument: '',
+    ownerAddress: '',
+    ownerCity: '',
+    ownerState: '',
+    ownerZipCode: ''
   });
 
   // Initialize data when modal opens or when editingVehicle changes
@@ -60,22 +60,22 @@ export function NewVehicleModal({ isOpen, onClose, onSave, editingVehicle }: New
         setFormData(editingVehicle);
       } else {
         setFormData({
-          placa: '',
-          renavam: '',
-          chassi: '',
-          marca: '',
-          modelo: '',
-          anoFabricacao: '',
-          anoModelo: '',
-          cor: '',
-          combustivel: '',
-          capacidade: '',
-          proprietario: '',
-          cpfCnpjProprietario: '',
-          enderecoProprietario: '',
-          cidadeProprietario: '',
-          ufProprietario: '',
-          cepProprietario: ''
+          licensePlate: '',
+          renavamCode: '',
+          chassis: '',
+          brand: '',
+          model: '',
+          manufacturingYear: '',
+          modelYear: '',
+          color: '',
+          fuelType: '',
+          capacityKg: '',
+          ownerName: '',
+          ownerDocument: '',
+          ownerAddress: '',
+          ownerCity: '',
+          ownerState: '',
+          ownerZipCode: ''
         });
       }
     }
@@ -112,29 +112,29 @@ export function NewVehicleModal({ isOpen, onClose, onSave, editingVehicle }: New
   });
 
   const handleSave = () => {
-    if (!formData.placa || !formData.marca || !formData.modelo) {
+    if (!formData.licensePlate || !formData.brand || !formData.model) {
       alert('Placa, marca e modelo são obrigatórios');
       return;
     }
 
     const vehicleData: Vehicle = {
       id: editingVehicle?.id || Date.now().toString(),
-      placa: formData.placa || '',
-      renavam: formData.renavam || '',
-      chassi: formData.chassi || '',
-      marca: formData.marca || '',
-      modelo: formData.modelo || '',
-      anoFabricacao: formData.anoFabricacao || '',
-      anoModelo: formData.anoModelo || '',
-      cor: formData.cor || '',
-      combustivel: formData.combustivel || '',
-      capacidade: formData.capacidade || '',
-      proprietario: formData.proprietario || '',
-      cpfCnpjProprietario: formData.cpfCnpjProprietario || '',
-      enderecoProprietario: formData.enderecoProprietario || '',
-      cidadeProprietario: formData.cidadeProprietario || '',
-      ufProprietario: formData.ufProprietario || '',
-      cepProprietario: formData.cepProprietario || ''
+      licensePlate: formData.licensePlate || '',
+      renavamCode: formData.renavamCode || '',
+      chassis: formData.chassis || '',
+      brand: formData.brand || '',
+      model: formData.model || '',
+      manufacturingYear: formData.manufacturingYear || '',
+      modelYear: formData.modelYear || '',
+      color: formData.color || '',
+      fuelType: formData.fuelType || '',
+      capacityKg: formData.capacityKg || '',
+      ownerName: formData.ownerName || '',
+      ownerDocument: formData.ownerDocument || '',
+      ownerAddress: formData.ownerAddress || '',
+      ownerCity: formData.ownerCity || '',
+      ownerState: formData.ownerState || '',
+      ownerZipCode: formData.ownerZipCode || ''
     };
 
     onSave(vehicleData);
@@ -143,22 +143,22 @@ export function NewVehicleModal({ isOpen, onClose, onSave, editingVehicle }: New
 
   const handleClose = () => {
     setFormData({
-      placa: '',
-      renavam: '',
-      chassi: '',
-      marca: '',
-      modelo: '',
-      anoFabricacao: '',
-      anoModelo: '',
-      cor: '',
-      combustivel: '',
-      capacidade: '',
-      proprietario: '',
-      cpfCnpjProprietario: '',
-      enderecoProprietario: '',
-      cidadeProprietario: '',
-      ufProprietario: '',
-      cepProprietario: ''
+      licensePlate: '',
+      renavamCode: '',
+      chassis: '',
+      brand: '',
+      model: '',
+      manufacturingYear: '',
+      modelYear: '',
+      color: '',
+      fuelType: '',
+      capacityKg: '',
+      ownerName: '',
+      ownerDocument: '',
+      ownerAddress: '',
+      ownerCity: '',
+      ownerState: '',
+      ownerZipCode: ''
     });
     onClose();
   };
@@ -255,43 +255,43 @@ export function NewVehicleModal({ isOpen, onClose, onSave, editingVehicle }: New
               {/* Vehicle fields with proper styling */}
               <div style={styles.group}>
                 <label style={styles.label}>Placa *</label>
-                <input {...getInputProps('placa', 'ABC-1234')} />
+                <input {...getInputProps('licensePlate', 'ABC-1234')} />
               </div>
               <div style={styles.group}>
                 <label style={styles.label}>RENAVAM</label>
-                <input {...getInputProps('renavam', '12345678901')} />
+                <input {...getInputProps('renavamCode', '12345678901')} />
               </div>
               <div style={styles.group}>
                 <label style={styles.label}>Chassi</label>
-                <input {...getInputProps('chassi', '9BWZZZZ377VT00426')} />
+                <input {...getInputProps('chassis', '9BWZZZZ377VT00426')} />
               </div>
               <div style={styles.group}>
                 <label style={styles.label}>Marca *</label>
-                <input {...getInputProps('marca', 'Volkswagen')} />
+                <input {...getInputProps('brand', 'Volkswagen')} />
               </div>
               <div style={styles.group}>
                 <label style={styles.label}>Modelo *</label>
-                <input {...getInputProps('modelo', 'Gol')} />
+                <input {...getInputProps('model', 'Gol')} />
               </div>
               <div style={styles.group}>
                 <label style={styles.label}>Ano Fabricação</label>
-                <input {...getInputProps('anoFabricacao', '2023')} />
+                <input {...getInputProps('manufacturingYear', '2023')} />
               </div>
               <div style={styles.group}>
                 <label style={styles.label}>Ano Modelo</label>
-                <input {...getInputProps('anoModelo', '2024')} />
+                <input {...getInputProps('modelYear', '2024')} />
               </div>
               <div style={styles.group}>
                 <label style={styles.label}>Cor</label>
-                <input {...getInputProps('cor', 'Branco')} />
+                <input {...getInputProps('color', 'Branco')} />
               </div>
               <div style={styles.group}>
                 <label style={styles.label}>Combustível</label>
-                <input {...getInputProps('combustivel', 'Flex')} />
+                <input {...getInputProps('fuelType', 'Flex')} />
               </div>
               <div style={styles.group}>
                 <label style={styles.label}>Capacidade (kg)</label>
-                <input {...getInputProps('capacidade', '1500')} />
+                <input {...getInputProps('capacityKg', '1500')} />
               </div>
             </div>
           </div>
@@ -302,27 +302,27 @@ export function NewVehicleModal({ isOpen, onClose, onSave, editingVehicle }: New
             <div style={styles.grid}>
               <div style={styles.group}>
                 <label style={styles.label}>Nome/Razão Social</label>
-                <input {...getInputProps('proprietario', 'João Silva')} />
+                <input {...getInputProps('ownerName', 'João Silva')} />
               </div>
               <div style={styles.group}>
                 <label style={styles.label}>CPF/CNPJ</label>
-                <input {...getInputProps('cpfCnpjProprietario', '123.456.789-00')} />
+                <input {...getInputProps('ownerDocument', '123.456.789-00')} />
               </div>
               <div style={styles.group}>
                 <label style={styles.label}>Endereço</label>
-                <input {...getInputProps('enderecoProprietario', 'Rua das Flores, 123')} />
+                <input {...getInputProps('ownerAddress', 'Rua das Flores, 123')} />
               </div>
               <div style={styles.group}>
                 <label style={styles.label}>Cidade</label>
-                <input {...getInputProps('cidadeProprietario', 'São Paulo')} />
+                <input {...getInputProps('ownerCity', 'São Paulo')} />
               </div>
               <div style={styles.group}>
                 <label style={styles.label}>UF</label>
-                <input {...getInputProps('ufProprietario', 'SP')} />
+                <input {...getInputProps('ownerState', 'SP')} />
               </div>
               <div style={styles.group}>
                 <label style={styles.label}>CEP</label>
-                <input {...getInputProps('cepProprietario', '01234-567')} />
+                <input {...getInputProps('ownerZipCode', '01234-567')} />
               </div>
             </div>
           </div>

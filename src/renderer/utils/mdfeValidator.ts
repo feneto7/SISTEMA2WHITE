@@ -9,117 +9,117 @@ export interface ValidationError {
 
 export interface MDFeFormData {
   // Documents data
-  notasFiscais: any[];
-  documentosAnexos: any[];
-  observacoes: string;
+  invoices: any[];
+  attachedDocuments: any[];
+  notes: string;
   
   // Transport data
-  veiculoSelecionado: string;
-  placa: string;
+  selectedVehicle: string;
+  licensePlate: string;
   renavam: string;
-  chassi: string;
-  marca: string;
-  modelo: string;
-  anoFabricacao: string;
-  anoModelo: string;
-  cor: string;
-  combustivel: string;
-  capacidade: string;
-  capacidadeM3: string;
-  tipoCarroceria: string;
-  tipoRodado: string;
-  tara: string;
-  ufVeiculo: string;
-  proprietario: string;
-  cpfCnpjProprietario: string;
-  enderecoProprietario: string;
-  cidadeProprietario: string;
-  ufProprietario: string;
-  cepProprietario: string;
-  proprietarioNaoEmitente: boolean;
-  rntrc: string;
-  tipoProprietario: string;
-  ie: string;
-  ufProprietarioCompleto: string;
+  chassis: string;
+  brand: string;
+  model: string;
+  manufacturingYear: string;
+  modelYear: string;
+  color: string;
+  fuelType: string;
+  capacityKg: string;
+  capacityM3: string;
+  bodyType: string;
+  wheelType: string;
+  tareWeight: string;
+  vehicleState: string;
+  ownerName: string;
+  ownerDocument: string;
+  ownerAddress: string;
+  ownerCity: string;
+  ownerState: string;
+  ownerZipCode: string;
+  isOwnerNotIssuer: boolean;
+  rntrcCode: string;
+  ownerType: string;
+  ownerStateRegistration: string;
+  ownerFullState: string;
   
-  // Condutores data
-  condutoresSelecionados: any[];
-  condutorSelecionado: string;
-  nomeCondutor: string;
-  cpfCondutor: string;
-  cnhCondutor: string;
-  categoriaCnh: string;
-  validadeCnh: string;
-  telefoneCondutor: string;
-  emailCondutor: string;
-  enderecoCondutor: string;
-  cidadeCondutor: string;
-  ufCondutor: string;
-  cepCondutor: string;
+  // Drivers data
+  selectedDrivers: any[];
+  selectedDriverId: string;
+  driverName: string;
+  driverCpf: string;
+  driverCnh: string;
+  driverCnhCategory: string;
+  driverCnhValidity: string;
+  driverPhone: string;
+  driverEmail: string;
+  driverAddress: string;
+  driverCity: string;
+  driverState: string;
+  driverZipCode: string;
   
   // Route data
-  municipioCarregamento: string;
-  ufCarregamento: string;
-  ufsPercurso: string[];
-  municipioDescarregamento: string;
-  ufDescarregamento: string;
+  loadingCity: string;
+  loadingState: string;
+  routeStates: string[];
+  unloadingCity: string;
+  unloadingState: string;
   
   // Freight data
-  valePedagioList: any[];
-  categoriaVeicular: string;
+  tollVoucherList: any[];
+  vehicleCategory: string;
   
   // Payment data
-  nomeResponsavel: string;
-  cpfCnpjResponsavel: string;
-  valorTotalContrato: string;
-  formaPagamento: string;
-  numeroBanco: string;
-  numeroAgencia: string;
-  pix: string;
-  cnpjIpef: string;
+  paymentResponsibleName: string;
+  paymentResponsibleDocument: string;
+  contractTotalValue: string;
+  paymentMethod: string;
+  bankNumber: string;
+  agencyNumber: string;
+  pixKey: string;
+  ipefCnpj: string;
   
   // CIOT data
   ciotList: any[];
   
   // Insurance data
-  responsavelSeguro: string;
-  cpfCnpjResponsavelSeguro: string;
-  nomeSeguradora: string;
-  cnpjSeguradora: string;
-  numeroApolice: string;
-  averbacaoList: any[];
-  exibirDadosSeguro: boolean;
+  insuranceResponsible: string;
+  insuranceResponsibleDocument: string;
+  insuranceCompanyName: string;
+  insuranceCompanyCnpj: string;
+  policyNumber: string;
+  endorsementList: any[];
+  showInsuranceData: boolean;
   
   // Totalizers data
-  qntTotalNFe: string;
-  valorTotalCarga: string;
-  codUnidadeMedidaCarga: string;
-  pesoTotalCarga: string;
-  lacreList: any[];
-  autorizadoList: any[];
-  notasSemPesoBruto: any[];
+  totalInvoicesCount: string;
+  totalCargoValue: string;
+  cargoUnitCode: string;
+  totalCargoWeight: string;
+  sealList: any[];
+  authorizedList: any[];
+  invoicesWithoutGrossWeight: any[];
   
   // Product data
-  tipoCarga: string;
-  descricaoProduto: string;
+  cargoType: string;
+  productDescription: string;
   gtin: string;
-  codigoNCM: string;
-  cepLocalCarregamento: string;
-  cepLocalDescarregamento: string;
+  ncmCode: string;
+  loadingZipCode: string;
+  unloadingZipCode: string;
   
   // MDF-e basic data
-  tipoMDFe: string;
-  numero: string;
-  serie: string;
-  chave: string;
-  emitente: string;
-  destinatario: string;
-  valor: number;
+  mdfeType: string;
+  mdfeNumber: string;
+  mdfeSeries: string;
+  accessKey: string;
+  issuer: string;
+  recipient: string;
+  mdfeValue: number;
   status: string;
-  dataEmissao: string;
+  issueDate: string;
   
-  // Tipo de emitente (do Settings)
-  tipoEmitente?: string; // 'prestador' | 'nao_prestador'
+  // Issuer type (from Settings)
+  issuerType?: string; // 'prestador' | 'nao_prestador'
 }
 
 /**
@@ -130,71 +130,71 @@ export function validateMDFe(formData: MDFeFormData): ValidationError[] {
   const errors: ValidationError[] = [];
   
   // Busca tipo de emitente do localStorage (configurado em Settings > Fiscal > MDF-e)
-  const tipoEmitente = formData.tipoEmitente || localStorage.getItem('mdfe_tipo_emitente') || 'prestador';
-  const isPrestador = tipoEmitente !== 'nao_prestador';
+  const issuerType = formData.issuerType || localStorage.getItem('mdfe_tipo_emitente') || 'prestador';
+  const isServiceProvider = issuerType !== 'nao_prestador';
 
   // Validação da aba Documentos
-  if (!formData.notasFiscais || formData.notasFiscais.length === 0) {
+  if (!formData.invoices || formData.invoices.length === 0) {
     errors.push({
-      field: 'notasFiscais',
+      field: 'invoices',
       message: 'Pelo menos uma nota fiscal deve ser adicionada',
       tab: 'Documentos'
     });
   }
 
   // Validação da aba Transporte
-  if (!formData.veiculoSelecionado) {
+  if (!formData.selectedVehicle) {
     errors.push({
-      field: 'veiculoSelecionado',
+      field: 'selectedVehicle',
       message: 'Vehículo deve ser selecionado',
       tab: 'Transporte'
     });
   }
 
   // Normaliza a placa removendo caracteres não alfanuméricos e aplicando maiúsculas
-  const normalizedPlate = (formData.placa || '').replace(/[^a-zA-Z0-9]/g, '').toUpperCase();
+  const normalizedPlate = (formData.licensePlate || '').replace(/[^a-zA-Z0-9]/g, '').toUpperCase();
   const isOldPattern = /^[A-Z]{3}[0-9]{4}$/.test(normalizedPlate); // ABC1234
   const isMercosulPattern = /^[A-Z]{3}[0-9][A-Z][0-9]{2}$/.test(normalizedPlate); // ABC1D23
 
   if (!normalizedPlate || normalizedPlate.length !== 7 || !(isOldPattern || isMercosulPattern)) {
     errors.push({
-      field: 'placa',
+      field: 'licensePlate',
       message: 'Placa do veículo é obrigatória e deve ter 7 caracteres (formato ABC1234 ou ABC1D23)',
       tab: 'Transporte'
     });
   }
 
   // Validação Tipo de Carroceria (obrigatório)
-  if (!formData.tipoCarroceria || formData.tipoCarroceria.trim() === '') {
+  if (!formData.bodyType || formData.bodyType.trim() === '') {
     errors.push({
-      field: 'tipoCarroceria',
+      field: 'bodyType',
       message: 'Tipo de Carroceria é obrigatório',
       tab: 'Transporte'
     });
   }
 
   // Validação Tipo de Rodado (obrigatório)
-  if (!formData.tipoRodado || formData.tipoRodado.trim() === '') {
+  if (!formData.wheelType || formData.wheelType.trim() === '') {
     errors.push({
-      field: 'tipoRodado',
+      field: 'wheelType',
       message: 'Tipo de Rodado é obrigatório',
       tab: 'Transporte'
     });
   }
 
   // Validação Tara (obrigatório)
-  if (!formData.tara || formData.tara.trim() === '' || parseFloat(formData.tara) <= 0) {
+  if (!formData.tareWeight || formData.tareWeight.trim() === '' || parseFloat(formData.tareWeight) <= 0) {
     errors.push({
-      field: 'tara',
+      field: 'tareWeight',
       message: 'Tara (KG) é obrigatória e deve ser maior que zero',
       tab: 'Transporte'
     });
   }
 
   // Validação UF do Veículo (obrigatório)
-  if (!formData.ufVeiculo || formData.ufVeiculo.trim() === '') {
+  if (!formData.vehicleState || formData.vehicleState.trim() === '') {
     errors.push({
-      field: 'ufVeiculo',
+      field: 'vehicleState',
       message: 'UF do veículo é obrigatória',
       tab: 'Transporte'
     });
@@ -209,35 +209,35 @@ export function validateMDFe(formData: MDFeFormData): ValidationError[] {
   }
 
   // RNTRC só é obrigatório para prestador de serviço de transporte
-  if (isPrestador && (!formData.rntrc || formData.rntrc.replace(/\D/g, '').length === 0)) {
+  if (isServiceProvider && (!formData.rntrcCode || formData.rntrcCode.replace(/\D/g, '').length === 0)) {
     errors.push({
-      field: 'rntrc',
+      field: 'rntrcCode',
       message: 'RNTRC é obrigatório para prestador de serviço de transporte',
       tab: 'Transporte'
     });
   }
 
   // Dados do proprietário só são obrigatórios quando o proprietário NÃO é o emitente
-  if (formData.proprietarioNaoEmitente) {
-    if (!formData.tipoProprietario || !formData.proprietario) {
+  if (formData.isOwnerNotIssuer) {
+    if (!formData.ownerType || !formData.ownerName) {
       errors.push({
-        field: 'proprietario',
+        field: 'ownerName',
         message: 'Proprietário do veículo é obrigatório',
         tab: 'Transporte'
       });
     }
 
-    if (!formData.cpfCnpjProprietario) {
+    if (!formData.ownerDocument) {
       errors.push({
-        field: 'cpfCnpjProprietario',
+        field: 'ownerDocument',
         message: 'CPF/CNPJ do proprietário é obrigatório',
         tab: 'Transporte'
       });
     }
 
-    if (!formData.ufProprietario) {
+    if (!formData.ownerState) {
       errors.push({
-        field: 'ufProprietario',
+        field: 'ownerState',
         message: 'UF do proprietário é obrigatório',
         tab: 'Transporte'
       });
@@ -246,111 +246,111 @@ export function validateMDFe(formData: MDFeFormData): ValidationError[] {
 
   // Validação da aba Condutores
   // Condutores são obrigatórios independente do tipo de emitente
-  if (!formData.condutoresSelecionados || formData.condutoresSelecionados.length === 0) {
+  if (!formData.selectedDrivers || formData.selectedDrivers.length === 0) {
     errors.push({
-      field: 'condutoresSelecionados',
+      field: 'selectedDrivers',
       message: 'Pelo menos um condutor deve ser adicionado',
       tab: 'Condutores'
     });
   }
 
   // Validação da aba Rota
-  if (!formData.municipioCarregamento) {
+  if (!formData.loadingCity) {
     errors.push({
-      field: 'municipioCarregamento',
+      field: 'loadingCity',
       message: 'Município de carregamento é obrigatório',
       tab: 'Rota'
     });
   }
 
-  if (!formData.ufCarregamento) {
+  if (!formData.loadingState) {
     errors.push({
-      field: 'ufCarregamento',
+      field: 'loadingState',
       message: 'UF de carregamento é obrigatória',
       tab: 'Rota'
     });
   }
 
-  if (!formData.municipioDescarregamento) {
+  if (!formData.unloadingCity) {
     errors.push({
-      field: 'municipioDescarregamento',
+      field: 'unloadingCity',
       message: 'Município de descarregamento é obrigatório',
       tab: 'Rota'
     });
   }
 
-  if (!formData.ufDescarregamento) {
+  if (!formData.unloadingState) {
     errors.push({
-      field: 'ufDescarregamento',
+      field: 'unloadingState',
       message: 'UF de descarregamento é obrigatória',
       tab: 'Rota'
     });
   }
 
   // Validação da aba Totalizadores
-  if (!formData.qntTotalNFe || parseFloat(formData.qntTotalNFe) <= 0) {
+  if (!formData.totalInvoicesCount || parseFloat(formData.totalInvoicesCount) <= 0) {
     errors.push({
-      field: 'qntTotalNFe',
+      field: 'totalInvoicesCount',
       message: 'Quantidade total de NF-es é obrigatória e deve ser maior que zero',
       tab: 'Totalizadores'
     });
   }
 
-  if (!formData.valorTotalCarga || parseFloat(formData.valorTotalCarga) <= 0) {
+  if (!formData.totalCargoValue || parseFloat(formData.totalCargoValue) <= 0) {
     errors.push({
-      field: 'valorTotalCarga',
+      field: 'totalCargoValue',
       message: 'Valor total da carga é obrigatório e deve ser maior que zero',
       tab: 'Totalizadores'
     });
   }
 
-  if (!formData.codUnidadeMedidaCarga) {
+  if (!formData.cargoUnitCode) {
     errors.push({
-      field: 'codUnidadeMedidaCarga',
+      field: 'cargoUnitCode',
       message: 'Código da unidade de medida é obrigatório (01-KG, 02-TON)',
       tab: 'Totalizadores'
     });
   }
 
-  if (!formData.pesoTotalCarga || parseFloat(formData.pesoTotalCarga) <= 0) {
+  if (!formData.totalCargoWeight || parseFloat(formData.totalCargoWeight) <= 0) {
     errors.push({
-      field: 'pesoTotalCarga',
+      field: 'totalCargoWeight',
       message: 'Peso total da carga é obrigatório e deve ser maior que zero',
       tab: 'Totalizadores'
     });
   }
 
   // Validação Tipo da Carga (obrigatório)
-  if (!formData.tipoCarga || formData.tipoCarga.trim() === '') {
+  if (!formData.cargoType || formData.cargoType.trim() === '') {
     errors.push({
-      field: 'tipoCarga',
+      field: 'cargoType',
       message: 'Tipo da Carga é obrigatório',
       tab: 'Totalizadores'
     });
   }
 
   // Validação Descrição do Produto (obrigatório)
-  if (!formData.descricaoProduto || formData.descricaoProduto.trim() === '') {
+  if (!formData.productDescription || formData.productDescription.trim() === '') {
     errors.push({
-      field: 'descricaoProduto',
+      field: 'productDescription',
       message: 'Descrição do Produto é obrigatória',
       tab: 'Totalizadores'
     });
   }
 
   // Validação CEP Local de Carregamento (obrigatório)
-  if (!formData.cepLocalCarregamento || formData.cepLocalCarregamento.trim() === '') {
+  if (!formData.loadingZipCode || formData.loadingZipCode.trim() === '') {
     errors.push({
-      field: 'cepLocalCarregamento',
+      field: 'loadingZipCode',
       message: 'CEP Local de Carregamento é obrigatório',
       tab: 'Totalizadores'
     });
   }
 
   // Validação CEP Local de Descarregamento (obrigatório)
-  if (!formData.cepLocalDescarregamento || formData.cepLocalDescarregamento.trim() === '') {
+  if (!formData.unloadingZipCode || formData.unloadingZipCode.trim() === '') {
     errors.push({
-      field: 'cepLocalDescarregamento',
+      field: 'unloadingZipCode',
       message: 'CEP Local de Descarregamento é obrigatório',
       tab: 'Totalizadores'
     });
@@ -359,16 +359,16 @@ export function validateMDFe(formData: MDFeFormData): ValidationError[] {
   // Categoria veicular não é obrigatória (removida conforme solicitação)
 
   // Validação do seguro e pagamento (obrigatórios apenas para prestador de serviço de transporte)
-  if (formData.tipoMDFe === 'rodoviario' && isPrestador) {
-    const camposSeguroObrigatorios = [
-      { field: 'responsavelSeguro', label: 'Responsável pelo seguro', value: formData.responsavelSeguro },
-      { field: 'cpfCnpjResponsavelSeguro', label: 'CPF/CNPJ do responsável pelo seguro', value: formData.cpfCnpjResponsavelSeguro },
-      { field: 'nomeSeguradora', label: 'Nome da seguradora', value: formData.nomeSeguradora },
-      { field: 'cnpjSeguradora', label: 'CNPJ da seguradora', value: formData.cnpjSeguradora },
-      { field: 'numeroApolice', label: 'Número da apólice', value: formData.numeroApolice }
+  if (formData.mdfeType === 'rodoviario' && isServiceProvider) {
+    const requiredInsuranceFields = [
+      { field: 'insuranceResponsible', label: 'Responsável pelo seguro', value: formData.insuranceResponsible },
+      { field: 'insuranceResponsibleDocument', label: 'CPF/CNPJ do responsável pelo seguro', value: formData.insuranceResponsibleDocument },
+      { field: 'insuranceCompanyName', label: 'Nome da seguradora', value: formData.insuranceCompanyName },
+      { field: 'insuranceCompanyCnpj', label: 'CNPJ da seguradora', value: formData.insuranceCompanyCnpj },
+      { field: 'policyNumber', label: 'Número da apólice', value: formData.policyNumber }
     ];
 
-    camposSeguroObrigatorios.forEach(({ field, label, value }) => {
+    requiredInsuranceFields.forEach(({ field, label, value }) => {
       if (!value || String(value).trim() === '') {
         errors.push({
           field,
@@ -378,14 +378,14 @@ export function validateMDFe(formData: MDFeFormData): ValidationError[] {
       }
     });
 
-    const camposPagamentoObrigatorios = [
-      { field: 'nomeResponsavel', label: 'Nome do responsável (pagamento)', value: formData.nomeResponsavel },
-      { field: 'cpfCnpjResponsavel', label: 'CPF/CNPJ do responsável (pagamento)', value: formData.cpfCnpjResponsavel },
-      { field: 'valorTotalContrato', label: 'Valor total do contrato', value: formData.valorTotalContrato },
-      { field: 'formaPagamento', label: 'Forma de pagamento', value: formData.formaPagamento }
+    const requiredPaymentFields = [
+      { field: 'paymentResponsibleName', label: 'Nome do responsável (pagamento)', value: formData.paymentResponsibleName },
+      { field: 'paymentResponsibleDocument', label: 'CPF/CNPJ do responsável (pagamento)', value: formData.paymentResponsibleDocument },
+      { field: 'contractTotalValue', label: 'Valor total do contrato', value: formData.contractTotalValue },
+      { field: 'paymentMethod', label: 'Forma de pagamento', value: formData.paymentMethod }
     ];
 
-    camposPagamentoObrigatorios.forEach(({ field, label, value }) => {
+    requiredPaymentFields.forEach(({ field, label, value }) => {
       if (!value || String(value).trim() === '') {
         errors.push({
           field,
@@ -395,9 +395,9 @@ export function validateMDFe(formData: MDFeFormData): ValidationError[] {
       }
     });
 
-    if (parseCurrency(formData.valorTotalContrato) <= 0) {
+    if (parseCurrency(formData.contractTotalValue) <= 0) {
       errors.push({
-        field: 'valorTotalContrato',
+      field: 'contractTotalValue',
         message: 'Valor total do contrato deve ser maior que zero',
         tab: 'Frete'
       });
@@ -442,35 +442,35 @@ export interface CompanyData {
 export function generateMDFeJSON(formData: MDFeFormData, companyData?: CompanyData): any {
   // Formato de data ISO para Laravel (aceita ISO string)
   const timestamp = new Date().toISOString();
-  const modal = getModalCode(formData.tipoMDFe);
+  const modal = getModalCode(formData.mdfeType);
   
   // Busca ambiente fiscal configurado (Settings > Fiscal > Certificado Digital)
-  const ambienteFiscal = localStorage.getItem('fiscal_environment') || 'homologacao';
-  const tpAmb = ambienteFiscal === 'producao' ? '1' : '2';
+  const fiscalEnvironment = localStorage.getItem('fiscal_environment') || 'homologacao';
+  const tpAmb = fiscalEnvironment === 'producao' ? '1' : '2';
   
   // Busca código do município de carregamento das notas importadas (primeira nota)
-  const primeiraNotaFiscal = Array.isArray(formData.notasFiscais) && formData.notasFiscais.length > 0 
-    ? formData.notasFiscais[0] 
+  const firstInvoice = Array.isArray(formData.invoices) && formData.invoices.length > 0 
+    ? formData.invoices[0] 
     : null;
-  const codigoMunCarrega = primeiraNotaFiscal?.emitenteCodigoMunicipio || 
-    getMunicipioCode(formData.municipioCarregamento, formData.ufCarregamento);
+  const loadingCityCode = firstInvoice?.emitenteCodigoMunicipio || 
+    getCityCode(formData.loadingCity, formData.loadingState);
 
   // Gera número do MDF-e se não estiver preenchido (formato: 000000001)
-  const numeroMDF = formData.numero || generateNextMDFeNumber();
+  const mdfNumber = formData.mdfeNumber || generateNextMDFeNumber();
 
   // Busca tipo de emitente do localStorage (configurado em Settings > Fiscal > MDF-e)
-  const tipoEmitente = formData.tipoEmitente || localStorage.getItem('mdfe_tipo_emitente') || 'prestador';
-  const tpEmit = tipoEmitente === 'nao_prestador' ? "2" : "1"; // 1-Prestador, 2-Não prestador
+  const issuerType = formData.issuerType || localStorage.getItem('mdfe_tipo_emitente') || 'prestador';
+  const tpEmit = issuerType === 'nao_prestador' ? "2" : "1"; // 1-Prestador, 2-Não prestador
 
   // Monta a seção ide (identificação) - campos obrigatórios
   const ide: any = {
-    cUF: getCUFCode(formData.ufCarregamento),
+    cUF: getCUFCode(formData.loadingState),
     tpAmb: tpAmb, // 1-Produção, 2-Homologação (vem das configurações)
     tpEmit: tpEmit, // 1-Prestador de serviço de transporte, 2-Não prestador
     tpTransp: "0", // 0-Não se aplica (quando for ETC ou CTC)
     mod: "58", // Modelo do MDF-e (API espera "mod", não "modelo")
-    serie: formData.serie || "001",
-    nMDF: numeroMDF,
+    serie: formData.mdfeSeries || "001",
+    nMDF: mdfNumber,
     cMDF: generateCMDF(formData),
     cDV: calculateCheckDigit(formData),
     modal: modal, // 1-Rodoviário, 2-Aéreo, 3-Aquaviário, 4-Ferroviário
@@ -478,19 +478,19 @@ export function generateMDFeJSON(formData: MDFeFormData, companyData?: CompanyDa
     tpEmis: "1", // 1-Normal, 2-Contingência
     procEmi: "0", // 0-Emissão com aplicativo do contribuinte
     verProc: "1.0.0",
-    UFIni: formData.ufCarregamento,
-    UFFim: formData.ufDescarregamento,
+    UFIni: formData.loadingState,
+    UFFim: formData.unloadingState,
     infMunCarrega: [{
-      cMunCarrega: codigoMunCarrega,
-      xMunCarrega: formData.municipioCarregamento
+      cMunCarrega: loadingCityCode,
+      xMunCarrega: formData.loadingCity
     }],
     dhIniViagem: timestamp
   };
 
   // Adiciona percurso (obrigatório pela API, mesmo que vazio)
   // Se não houver UFs de percurso, adiciona pelo menos a UF inicial
-  if (formData.ufsPercurso && formData.ufsPercurso.length > 0) {
-    ide.infPercurso = formData.ufsPercurso
+  if (formData.routeStates && formData.routeStates.length > 0) {
+    ide.infPercurso = formData.routeStates
       .filter((uf: any) => typeof uf === 'string' ? uf : uf.uf) // Aceita string ou objeto com propriedade 'uf'
       .map((uf: any) => ({
         UFPer: typeof uf === 'string' ? uf : uf.uf // Extrai apenas a sigla da UF
@@ -498,7 +498,7 @@ export function generateMDFeJSON(formData: MDFeFormData, companyData?: CompanyDa
   } else {
     // Se não houver percurso definido, adiciona pelo menos a UF inicial
     ide.infPercurso = [{
-      UFPer: formData.ufCarregamento
+      UFPer: formData.loadingState
     }];
   }
 
@@ -511,7 +511,7 @@ export function generateMDFeJSON(formData: MDFeFormData, companyData?: CompanyDa
     const address = companyData.addresses && companyData.addresses.length > 0 ? companyData.addresses[0] : null;
     
     // Lista de UFs brasileiras para mapear state_id para sigla
-    const ufsBrasileiras = [
+    const brazilianStates = [
       'AC', 'AL', 'AP', 'AM', 'BA', 'CE', 'DF', 'ES', 'GO', 'MA',
       'MT', 'MS', 'MG', 'PA', 'PB', 'PR', 'PE', 'PI', 'RJ', 'RN',
       'RS', 'RO', 'RR', 'SC', 'SP', 'SE', 'TO'
@@ -519,8 +519,8 @@ export function generateMDFeJSON(formData: MDFeFormData, companyData?: CompanyDa
     
     // Determina UF a partir do state_id se disponível
     let ufValue = '';
-    if (address?.state_id && address.state_id > 0 && address.state_id <= ufsBrasileiras.length) {
-      ufValue = ufsBrasileiras[address.state_id - 1];
+    if (address?.state_id && address.state_id > 0 && address.state_id <= brazilianStates.length) {
+      ufValue = brazilianStates[address.state_id - 1];
     }
     
     emit = {
@@ -545,28 +545,28 @@ export function generateMDFeJSON(formData: MDFeFormData, companyData?: CompanyDa
   } else {
     // Fallback: usa dados do proprietário do formulário (comportamento antigo)
     emit = {
-      CNPJ: formatCNPJ(formData.cpfCnpjProprietario),
-      xNome: formData.proprietario,
-      xFant: formData.proprietario,
+      CNPJ: formatCNPJ(formData.ownerDocument),
+      xNome: formData.ownerName,
+      xFant: formData.ownerName,
       enderEmit: {
-        xLgr: formData.enderecoProprietario,
+        xLgr: formData.ownerAddress,
         nro: "S/N",
         xBairro: "Centro",
-        cMun: getMunicipioCode(formData.cidadeProprietario, formData.ufProprietario),
-        xMun: formData.cidadeProprietario,
-        CEP: formatCEP(formData.cepProprietario),
-        UF: formData.ufProprietario
+        cMun: getCityCode(formData.ownerCity, formData.ownerState),
+        xMun: formData.ownerCity,
+        CEP: formatCEP(formData.ownerZipCode),
+        UF: formData.ownerState
       }
     };
     
     // Adiciona IE apenas se preenchido
-    if (formData.ie) {
-      emit.IE = formData.ie;
+    if (formData.ownerStateRegistration) {
+      emit.IE = formData.ownerStateRegistration;
     }
   }
 
   // Adiciona telefone apenas se preenchido
-  if (formData.enderecoProprietario) {
+  if (formData.ownerAddress) {
     // Aqui você pode adicionar campos opcionais do endereço se existirem no formulário
   }
 
@@ -576,12 +576,12 @@ export function generateMDFeJSON(formData: MDFeFormData, companyData?: CompanyDa
     emit,
     infModal: generateInfModalJSON(formData),
     tot: {
-      qNFe: formData.qntTotalNFe || "0",
+      qNFe: formData.totalInvoicesCount || "0",
       qCTe: "0",
       qMDFe: "0",
-      vCarga: parseFloat(formData.valorTotalCarga || "0").toFixed(2),
-      cUnid: formData.codUnidadeMedidaCarga || "01", // 01-KG, 02-TON
-      qCarga: parseFloat(formData.pesoTotalCarga || "0").toFixed(3)
+      vCarga: parseFloat(formData.totalCargoValue || "0").toFixed(2),
+      cUnid: formData.cargoUnitCode || "01", // 01-KG, 02-TON
+      qCarga: parseFloat(formData.totalCargoWeight || "0").toFixed(3)
     }
   };
 
@@ -591,18 +591,18 @@ export function generateMDFeJSON(formData: MDFeFormData, companyData?: CompanyDa
   }
 
   // Adiciona autorizados apenas se houver
-  if (formData.autorizadoList && formData.autorizadoList.length > 0) {
-    mdfeJSON.autXML = formData.autorizadoList
-      .filter((autorizado: any) => autorizado && autorizado.cpfCnpj)
+  if (formData.authorizedList && formData.authorizedList.length > 0) {
+    mdfeJSON.autXML = formData.authorizedList
+      .filter((autorizado: any) => autorizado && autorizado.document)
       .map((autorizado: any) => ({
-        CNPJ: formatCNPJ(autorizado.cpfCnpj)
+        CNPJ: formatCNPJ(autorizado.document)
       }));
   }
 
   // Adiciona informações adicionais apenas se houver observações
-  if (formData.observacoes && formData.observacoes.trim() !== "") {
+  if (formData.notes && formData.notes.trim() !== "") {
     mdfeJSON.infAdic = {
-      infCpl: formData.observacoes
+      infCpl: formData.notes
     };
   }
 
@@ -680,7 +680,7 @@ function formatCEP(cep: string): string {
   return cep.replace(/\D/g, '');
 }
 
-function getMunicipioCode(cidade: string, uf: string): string {
+function getCityCode(city: string, uf: string): string {
   // TODO: A API deve ter uma tabela completa de códigos de municípios do IBGE
   // Por enquanto, retorna um código genérico
   return '9999999';
@@ -689,75 +689,75 @@ function getMunicipioCode(cidade: string, uf: string): string {
 // Gera a seção infModal em JSON para transporte rodoviário
 // Apenas campos preenchidos são incluídos
 function generateInfModalJSON(formData: MDFeFormData): any {
-  if (formData.tipoMDFe === 'rodoviario') {
+  if (formData.mdfeType === 'rodoviario') {
     // Monta veículo de tração (campos obrigatórios)
     const veicTracao: any = {
       cInt: "001",
-      placa: formData.placa.replace(/[^a-zA-Z0-9]/g, '').toUpperCase(),
+      placa: formData.licensePlate.replace(/[^a-zA-Z0-9]/g, '').toUpperCase(),
       RENAVAM: formData.renavam,
-      tpRod: formData.tipoRodado || "01", // 01-Truck, 02-Toco, 03-Cavalo Mecânico, etc
-      tpCar: formData.tipoCarroceria || "00", // 00-Não aplicável, 01-Aberta, 02-Fechada/Baú, etc
-      UF: formData.ufVeiculo || formData.ufProprietario
+      tpRod: formData.wheelType || "01", // 01-Truck, 02-Toco, 03-Cavalo Mecânico, etc
+      tpCar: formData.bodyType || "00", // 00-Não aplicável, 01-Aberta, 02-Fechada/Baú, etc
+      UF: formData.vehicleState || formData.ownerState
     };
 
     // Adiciona tara apenas se preenchido
-    if (formData.tara && formData.tara !== "0") {
-      veicTracao.tara = formData.tara;
+    if (formData.tareWeight && formData.tareWeight !== "0") {
+      veicTracao.tara = formData.tareWeight;
     }
 
     // Adiciona capacidade em KG apenas se preenchido
-    if (formData.capacidade && formData.capacidade !== "0") {
-      veicTracao.capKG = formData.capacidade;
+    if (formData.capacityKg && formData.capacityKg !== "0") {
+      veicTracao.capKG = formData.capacityKg;
     }
 
     // Adiciona capacidade em M3 apenas se preenchido
-    if (formData.capacidadeM3 && formData.capacidadeM3 !== "0") {
-      veicTracao.capM3 = formData.capacidadeM3;
+    if (formData.capacityM3 && formData.capacityM3 !== "0") {
+      veicTracao.capM3 = formData.capacityM3;
     }
 
     // Adiciona condutores apenas se houver
-    if (formData.condutoresSelecionados && formData.condutoresSelecionados.length > 0) {
-      const condutoresValidos = formData.condutoresSelecionados
-        .filter((condutor: any) => {
-          const nome = condutor?.nome || condutor?.nomeCondutor;
-          const cpf = condutor?.cpf || condutor?.cpfCondutor;
-          return nome && cpf;
+    if (formData.selectedDrivers && formData.selectedDrivers.length > 0) {
+      const validDrivers = formData.selectedDrivers
+        .filter((driver: any) => {
+          const name = driver?.name || driver?.nome || driver?.nomeCondutor;
+          const cpf = driver?.cpf || driver?.cpfCondutor;
+          return name && cpf;
         })
-        .map((condutor: any) => {
-          const nome = condutor.nome || condutor.nomeCondutor;
-          const cpf = condutor.cpf || condutor.cpfCondutor;
+        .map((driver: any) => {
+          const name = driver.name || driver.nome || driver.nomeCondutor;
+          const cpf = driver.cpf || driver.cpfCondutor;
           return {
-            xNome: nome,
+            xNome: name,
             CPF: formatCNPJ(cpf)
           };
         });
       
       // Só adiciona se houver condutores válidos
-      if (condutoresValidos.length > 0) {
-        veicTracao.condutor = condutoresValidos;
+      if (validDrivers.length > 0) {
+        veicTracao.condutor = validDrivers;
       }
     }
 
     // Adiciona proprietário apenas se não for o emitente
-    if (formData.proprietarioNaoEmitente && formData.proprietario) {
+    if (formData.isOwnerNotIssuer && formData.ownerName) {
       const prop: any = {
-        RNTRC: formData.rntrc || "",
-        xNome: formData.proprietario,
-        UF: formData.ufProprietario,
-        tpProp: formData.tipoProprietario || "0" // 0-TAC Agregado, 1-TAC Independente, 2-Outros
+        RNTRC: formData.rntrcCode || "",
+        xNome: formData.ownerName,
+        UF: formData.ownerState,
+        tpProp: formData.ownerType || "0" // 0-TAC Agregado, 1-TAC Independente, 2-Outros
       };
 
       // Adiciona CPF ou CNPJ
-      const cpfCnpjLimpo = formatCNPJ(formData.cpfCnpjProprietario);
-      if (cpfCnpjLimpo.length === 11) {
-        prop.CPF = cpfCnpjLimpo;
-      } else if (cpfCnpjLimpo.length === 14) {
-        prop.CNPJ = cpfCnpjLimpo;
+      const cleanCpfCnpj = formatCNPJ(formData.ownerDocument);
+      if (cleanCpfCnpj.length === 11) {
+        prop.CPF = cleanCpfCnpj;
+      } else if (cleanCpfCnpj.length === 14) {
+        prop.CNPJ = cleanCpfCnpj;
       }
 
       // Adiciona IE apenas se preenchido
-      if (formData.ie) {
-        prop.IE = formData.ie;
+      if (formData.ownerStateRegistration) {
+        prop.IE = formData.ownerStateRegistration;
       }
 
       veicTracao.prop = prop;
@@ -769,9 +769,9 @@ function generateInfModalJSON(formData: MDFeFormData): any {
     };
 
     // Adiciona RNTRC apenas se preenchido
-    if (formData.rntrc) {
+    if (formData.rntrcCode) {
       rodo.infANTT = {
-        RNTRC: formData.rntrc
+        RNTRC: formData.rntrcCode
       };
     }
 
@@ -782,11 +782,11 @@ function generateInfModalJSON(formData: MDFeFormData): any {
     }
 
     // Adiciona lacres apenas se houver
-    if (formData.lacreList && formData.lacreList.length > 0) {
-      rodo.lacRodo = formData.lacreList
-        .filter((lacre: any) => lacre && lacre.numeroLacre)
-        .map((lacre: any) => ({
-          nLacre: lacre.numeroLacre
+    if (formData.sealList && formData.sealList.length > 0) {
+      rodo.lacRodo = formData.sealList
+        .filter((seal: any) => seal && seal.sealNumber)
+        .map((seal: any) => ({
+          nLacre: seal.sealNumber
         }));
     }
 
@@ -797,16 +797,16 @@ function generateInfModalJSON(formData: MDFeFormData): any {
     }
 
     // Adiciona vale pedágio apenas se houver
-    if (formData.valePedagioList && formData.valePedagioList.length > 0) {
-      rodo.infContratante = formData.valePedagioList
-        .filter((vale: any) => vale && vale.cnpjFornecedor && vale.nomeResponsavel)
-        .map((vale: any) => ({
-          CNPJ: formatCNPJ(vale.cnpjFornecedor),
+    if (formData.tollVoucherList && formData.tollVoucherList.length > 0) {
+      rodo.infContratante = formData.tollVoucherList
+        .filter((toll: any) => toll && toll.supplierCnpj && toll.responsibleDocument)
+        .map((toll: any) => ({
+          CNPJ: formatCNPJ(toll.supplierCnpj),
           infPag: [{
-            xNome: vale.nomeResponsavel,
-            CPF: formatCNPJ(vale.cpfResponsavel),
-            vContrato: parseFloat(vale.valor || "0").toFixed(2),
-            indPag: vale.formaPagamento === "credito" ? "0" : "1" // 0-Pagamento à Vista, 1-Pagamento à Prazo
+            xNome: toll.responsibleName || '',
+            CPF: formatCNPJ(toll.responsibleDocument),
+            vContrato: parseFloat(toll.voucherValue || "0").toFixed(2),
+            indPag: (formData.paymentMethod || '').toLowerCase() === "credito" ? "0" : "1" // 0-Pagamento à Vista, 1-Pagamento à Prazo
           }]
         }));
     }
@@ -814,11 +814,11 @@ function generateInfModalJSON(formData: MDFeFormData): any {
     // Adiciona CIOT apenas se houver
     if (formData.ciotList && formData.ciotList.length > 0) {
       rodo.infCIOT = formData.ciotList
-        .filter((ciot: any) => ciot && ciot.numero)
-        .map((ciot: any) => ({
-          CIOT: ciot.numero,
-          CPF: ciot.cpf ? formatCNPJ(ciot.cpf) : undefined,
-          CNPJ: ciot.cnpj ? formatCNPJ(ciot.cnpj) : undefined
+        .filter((ciotItem: any) => ciotItem && ciotItem.ciotCode)
+        .map((ciotItem: any) => ({
+          CIOT: ciotItem.ciotCode,
+          CPF: formatCNPJ(ciotItem.responsibleDocument || ''),
+          CNPJ: undefined
         }));
     }
 
@@ -831,15 +831,15 @@ function generateInfModalJSON(formData: MDFeFormData): any {
 
 // Gera a seção infDoc em JSON com as notas fiscais e municípios de descarga
 function generateInfDocJSON(formData: MDFeFormData): any {
-  const notas = Array.isArray(formData.notasFiscais) ? formData.notasFiscais : [];
+  const notas = Array.isArray(formData.invoices) ? formData.invoices : [];
   if (notas.length === 0) {
     return null;
   }
 
-  const municipiosMap = new Map<
+  const citiesMap = new Map<
     string,
     {
-      municipio: string;
+      city: string;
       uf: string;
       codigoMunicipio?: string;
       nfes: Array<{ chNFe: string; indReentrega: string }>;
@@ -847,84 +847,84 @@ function generateInfDocJSON(formData: MDFeFormData): any {
   >();
 
   notas.forEach((nota: any) => {
-    if (!nota || !nota.chave) {
+    if (!nota || !nota.accessKey) {
       return;
     }
 
-    const ufDestino =
-      nota.destinatarioUF ||
+    const destinationUF =
+      nota.recipientState ||
       nota.ufDestino ||
       nota.ufDestinatario ||
-      formData.ufDescarregamento;
+      formData.unloadingState;
 
-    const municipioDestino =
-      nota.destinatarioMunicipioNome ||
+    const destinationCity =
+      nota.recipientCityName ||
       nota.destinatarioMunicipio ||
       nota.cidadeDestinatario ||
-      formData.municipioDescarregamento;
+      formData.unloadingCity;
 
-    const codigoMunicipioDestino =
-      nota.destinatarioCodigoMunicipio ||
+    const destinationCityCode =
+      nota.recipientCityCode ||
       '';
 
-    if (!ufDestino || !municipioDestino) {
+    if (!destinationUF || !destinationCity) {
       return;
     }
 
-    const key = `${ufDestino.toUpperCase()}-${municipioDestino.toUpperCase()}`;
+    const key = `${destinationUF.toUpperCase()}-${destinationCity.toUpperCase()}`;
 
-    if (!municipiosMap.has(key)) {
-      municipiosMap.set(key, {
-        municipio: municipioDestino,
-        uf: ufDestino,
-        codigoMunicipio: codigoMunicipioDestino,
+    if (!citiesMap.has(key)) {
+      citiesMap.set(key, {
+        city: destinationCity,
+        uf: destinationUF,
+        codigoMunicipio: destinationCityCode,
         nfes: []
       });
     }
 
-    const indReentrega = nota.indReentrega || '0';
+    const indReentrega = nota.reinvoicingIndicator || '0';
 
-    municipiosMap.get(key)!.nfes.push({
-      chNFe: nota.chave,
+    citiesMap.get(key)!.nfes.push({
+      chNFe: nota.accessKey,
       indReentrega
     });
   });
 
-  const municipiosDescarga = Array.from(municipiosMap.values())
+  const unloadingCities = Array.from(citiesMap.values())
     .filter((item) => item.nfes.length > 0)
     .map((item) => ({
       cMunDescarga:
         item.codigoMunicipio ||
-        getMunicipioCode(item.municipio, item.uf),
-      xMunDescarga: item.municipio,
+        getCityCode(item.city, item.uf),
+      xMunDescarga: item.city,
       infNFe: item.nfes
     }));
 
-  if (municipiosDescarga.length > 0) {
+  if (unloadingCities.length > 0) {
     return {
-      infMunDescarga: municipiosDescarga
+      infMunDescarga: unloadingCities
     };
   }
 
   // Fallback: usa município/UF configurados manualmente caso não existam dados nas notas
-  if (formData.municipioDescarregamento && formData.ufDescarregamento) {
-    const nfesValidas = notas
-      .filter((nota: any) => nota && nota.chave)
+  if (formData.unloadingCity && formData.unloadingState) {
+    const validInvoices = notas
+      .filter((nota: any) => nota && nota.accessKey)
       .map((nota: any) => ({
-        chNFe: nota.chave,
-        indReentrega: nota.indReentrega || '0'
+        chNFe: nota.accessKey,
+        indReentrega: nota.reinvoicingIndicator || '0'
       }));
 
-    if (nfesValidas.length > 0) {
+    if (validInvoices.length > 0) {
       return {
         infMunDescarga: [
           {
-            cMunDescarga: getMunicipioCode(
-              formData.municipioDescarregamento,
-              formData.ufDescarregamento
+            cMunDescarga: getCityCode(
+              formData.unloadingCity,
+              formData.unloadingState
             ),
-            xMunDescarga: formData.municipioDescarregamento,
-            infNFe: nfesValidas
+            xMunDescarga: formData.unloadingCity,
+            infNFe: validInvoices
           }
         ]
       };
@@ -936,42 +936,42 @@ function generateInfDocJSON(formData: MDFeFormData): any {
 
 // Gera a seção de seguro em JSON
 function generateSegJSON(formData: MDFeFormData): any[] {
-  const responsavel = (formData.responsavelSeguro || '').toLowerCase();
-  const documentoResponsavel = formatCNPJ(formData.cpfCnpjResponsavelSeguro);
-  const documentoSeguradora = formatCNPJ(formData.cnpjSeguradora);
+  const responsible = (formData.insuranceResponsible || '').toLowerCase();
+  const responsibleDocument = formatCNPJ(formData.insuranceResponsibleDocument);
+  const insuranceCompanyDocument = formatCNPJ(formData.insuranceCompanyCnpj);
 
-  const possuiDadosObrigatorios =
-    formData.nomeSeguradora &&
-    documentoSeguradora &&
-    formData.numeroApolice &&
-    documentoResponsavel;
+  const hasRequiredData =
+    formData.insuranceCompanyName &&
+    insuranceCompanyDocument &&
+    formData.policyNumber &&
+    responsibleDocument;
 
-  if (!possuiDadosObrigatorios) {
+  if (!hasRequiredData) {
     return [];
   }
 
   const seg: any = {
     infResp: {
-      respSeg: responsavel.includes('contrat') ? '2' : '1'
+      respSeg: responsible.includes('contrat') ? '2' : '1'
     },
     infSeg: {
-      xSeg: formData.nomeSeguradora,
-      CNPJ: documentoSeguradora
+      xSeg: formData.insuranceCompanyName,
+      CNPJ: insuranceCompanyDocument
     },
-    nApol: formData.numeroApolice
+    nApol: formData.policyNumber
   };
 
-  if (documentoResponsavel.length === 11) {
-    seg.infResp.CPF = documentoResponsavel;
-  } else if (documentoResponsavel.length === 14) {
-    seg.infResp.CNPJ = documentoResponsavel;
+  if (responsibleDocument.length === 11) {
+    seg.infResp.CPF = responsibleDocument;
+  } else if (responsibleDocument.length === 14) {
+    seg.infResp.CNPJ = responsibleDocument;
   }
 
   // Adiciona averbações apenas se houver
-  if (formData.averbacaoList && formData.averbacaoList.length > 0) {
-    seg.nAver = formData.averbacaoList
-      .filter((averb: any) => averb && averb.numeroAverbacao)
-      .map((averb: any) => averb.numeroAverbacao);
+  if (formData.endorsementList && formData.endorsementList.length > 0) {
+    seg.nAver = formData.endorsementList
+      .filter((endorsement: any) => endorsement && endorsement.numeroAverbacao)
+      .map((endorsement: any) => endorsement.numeroAverbacao);
   }
 
   return [seg];
@@ -979,46 +979,46 @@ function generateSegJSON(formData: MDFeFormData): any[] {
 
 // Gera a seção de informações de pagamento do frete
 function generateInfPagJSON(formData: MDFeFormData): any[] {
-  if (!formData.nomeResponsavel || !formData.cpfCnpjResponsavel) {
+  if (!formData.paymentResponsibleName || !formData.paymentResponsibleDocument) {
     return [];
   }
 
-  const documentoResponsavel = formatCNPJ(formData.cpfCnpjResponsavel);
-  const valorContrato = parseCurrency(formData.valorTotalContrato || '0');
-  const formaNormalizada = normalizeFormaPagamento(formData.formaPagamento || '');
+  const responsibleDocument = formatCNPJ(formData.paymentResponsibleDocument);
+  const contractValue = parseCurrency(formData.contractTotalValue || '0');
+  const normalizedPaymentMethod = normalizeFormaPagamento(formData.paymentMethod || '');
 
   const infPag: any = {
-    xNome: formData.nomeResponsavel,
+    xNome: formData.paymentResponsibleName,
     comp: [
       {
         tpComp: '01',
-        vComp: valorContrato.toFixed(2)
+        vComp: contractValue.toFixed(2)
       }
     ],
-    vContrato: valorContrato.toFixed(2),
-    vPrest: valorContrato.toFixed(2),
-    indPag: formaNormalizada === 'avista' ? '0' : '1',
+    vContrato: contractValue.toFixed(2),
+    vPrest: contractValue.toFixed(2),
+    indPag: normalizedPaymentMethod === 'avista' ? '0' : '1',
     infPrazo: []
   };
 
-  if (documentoResponsavel.length === 11) {
-    infPag.CPF = documentoResponsavel;
-  } else if (documentoResponsavel.length === 14) {
-    infPag.CNPJ = documentoResponsavel;
+  if (responsibleDocument.length === 11) {
+    infPag.CPF = responsibleDocument;
+  } else if (responsibleDocument.length === 14) {
+    infPag.CNPJ = responsibleDocument;
   }
 
-  if (formData.numeroBanco && formData.numeroAgencia) {
+  if (formData.bankNumber && formData.agencyNumber) {
     infPag.infBanc = {
-      codBanco: formData.numeroBanco,
-      codAgencia: formData.numeroAgencia
+      codBanco: formData.bankNumber,
+      codAgencia: formData.agencyNumber
     };
-  } else if (formData.pix) {
+  } else if (formData.pixKey) {
     infPag.infBanc = {
-      chavePIX: formData.pix
+      chavePIX: formData.pixKey
     };
-  } else if (formData.cnpjIpef) {
+  } else if (formData.ipefCnpj) {
     infPag.infBanc = {
-      CNPJIPEF: formatCNPJ(formData.cnpjIpef)
+      CNPJIPEF: formatCNPJ(formData.ipefCnpj)
     };
   }
 

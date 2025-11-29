@@ -6,22 +6,22 @@ import { NewVehicleModal } from './index';
 
 interface Vehicle {
   id: string;
-  placa: string;
-  renavam: string;
-  chassi: string;
-  marca: string;
-  modelo: string;
-  anoFabricacao: string;
-  anoModelo: string;
-  cor: string;
-  combustivel: string;
-  capacidade: string;
-  proprietario: string;
-  cpfCnpjProprietario: string;
-  enderecoProprietario: string;
-  cidadeProprietario: string;
-  ufProprietario: string;
-  cepProprietario: string;
+  licensePlate: string;
+  renavamCode: string;
+  chassis: string;
+  brand: string;
+  model: string;
+  manufacturingYear: string;
+  modelYear: string;
+  color: string;
+  fuelType: string;
+  capacityKg: string;
+  ownerName: string;
+  ownerDocument: string;
+  ownerAddress: string;
+  ownerCity: string;
+  ownerState: string;
+  ownerZipCode: string;
 }
 
 interface VehicleTabProps {
@@ -198,10 +198,10 @@ export function VehicleTab({ formData, onUpdateFormData }: VehicleTabProps): JSX
                   e.currentTarget.style.background = 'transparent';
                 }}
               >
-                <div style={styles.rowCell}>{vehicle.placa}</div>
-                <div style={styles.rowCell}>{vehicle.marca} {vehicle.modelo}</div>
-                <div style={styles.rowCell}>{vehicle.anoFabricacao}</div>
-                <div style={styles.rowCell}>{vehicle.proprietario}</div>
+                <div style={styles.rowCell}>{vehicle.licensePlate}</div>
+                <div style={styles.rowCell}>{vehicle.brand} {vehicle.model}</div>
+                <div style={styles.rowCell}>{vehicle.manufacturingYear}</div>
+                <div style={styles.rowCell}>{vehicle.ownerName}</div>
                 <div style={styles.actionButtons}>
                   <button
                     style={styles.actionButton}

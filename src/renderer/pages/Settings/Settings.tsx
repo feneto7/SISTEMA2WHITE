@@ -13,34 +13,44 @@ import { PrintersTab } from './components/PrintersTab';
 import { ParametrosTab } from './components/ParametrosTab';
 import { useTheme } from '../../styles/ThemeProvider';
 
-export type SettingsTab = 'empresa' | 'fiscal' | 'email' | 'recebimentos' | 'pagamento' | 'impressoras' | 'balanca' | 'gaveta' | 'dock' | 'parametros';
+export type SettingsTab =
+  | 'company'
+  | 'fiscal'
+  | 'email'
+  | 'receivables'
+  | 'payments'
+  | 'printers'
+  | 'scale'
+  | 'cashDrawer'
+  | 'dock'
+  | 'parameters';
 
 function Settings(): JSX.Element {
   const { navigate } = useNavigation();
-  const [activeTab, setActiveTab] = useState<SettingsTab>('empresa');
+  const [activeTab, setActiveTab] = useState<SettingsTab>('company');
   const { systemStyles, systemColors } = useTheme();
 
   const renderContent = () => {
     switch (activeTab) {
-      case 'empresa':
+      case 'company':
         return <CompanyForm />;
       case 'fiscal':
         return <FiscalTab />;
       case 'email':
         return <div style={styles.placeholder}>Configurações de Email</div>;
-      case 'recebimentos':
+      case 'receivables':
         return <div style={styles.placeholder}>Configurações de Recebimentos</div>;
-      case 'pagamento':
+      case 'payments':
         return <div style={styles.placeholder}>Formas de Pagamento</div>;
-      case 'impressoras':
+      case 'printers':
         return <PrintersTab />;
-      case 'balanca':
+      case 'scale':
         return <div style={styles.placeholder}>Configurações de Balança</div>;
-      case 'gaveta':
+      case 'cashDrawer':
         return <div style={styles.placeholder}>Configurações de Gaveta</div>;
       case 'dock':
         return <div style={styles.placeholder}>Configurações do Dock</div>;
-      case 'parametros':
+      case 'parameters':
         return <ParametrosTab />;
       default:
         return null;

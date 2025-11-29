@@ -10,9 +10,9 @@ interface IngredientsTabProps {
 
 interface Ingredient {
   id: string;
-  produto: string;
-  quantidade: string;
-  unidade: string;
+  product: string;
+  quantity: string;
+  unit: string;
 }
 
 export function IngredientsTab({ onFormDataChange }: IngredientsTabProps): JSX.Element {
@@ -20,16 +20,16 @@ export function IngredientsTab({ onFormDataChange }: IngredientsTabProps): JSX.E
   const { systemStyles, systemColors } = useTheme();
   
   // Estados dos ingredientes/insumos
-  const [ingredientes, setIngredientes] = useState<Ingredient[]>([]);
+  const [ingredients, setIngredients] = useState<Ingredient[]>([]);
   const [focusedField, setFocusedField] = useState<string | null>(null);
   
   // Estados para os campos de entrada
-  const [novoProduto, setNovoProduto] = useState('');
-  const [novaQuantidade, setNovaQuantidade] = useState('');
-  const [novaUnidade, setNovaUnidade] = useState('');
+  const [newProduct, setNewProduct] = useState('');
+  const [newQuantity, setNewQuantity] = useState('');
+  const [newUnit, setNewUnit] = useState('');
 
   // Lista de produtos disponíveis no sistema (simulada)
-  const produtosDisponiveis = [
+  const availableProducts = [
     'Farinha de Trigo',
     'Açúcar',
     'Sal',
@@ -54,7 +54,7 @@ export function IngredientsTab({ onFormDataChange }: IngredientsTabProps): JSX.E
   ];
 
   // Unidades de medida comuns para ingredientes
-  const unidadesMedida = [
+  const measurementUnits = [
     'Gramas',
     'Kg',
     'Litros',
@@ -70,38 +70,40 @@ export function IngredientsTab({ onFormDataChange }: IngredientsTabProps): JSX.E
   ];
 
   // Função para adicionar novo ingrediente
-  const adicionarIngrediente = () => {
-    if (!novoProduto || !novaQuantidade || !novaUnidade) return;
+  const addIngredient = () => {
+    if (!newProduct || !newQuantity || !newUnit) return;
     
     playClickSound();
-    const novoIngrediente: Ingredient = {
+    const newIngredient: Ingredient = {
       id: Date.now().toString(),
-      produto: novoProduto,
-      quantidade: novaQuantidade,
-      unidade: novaUnidade
+      product: newProduct,
+      quantity: newQuantity,
+      unit: newUnit
     };
     
-    const novosIngredientes = [...ingredientes, novoIngrediente];
-    setIngredientes(novosIngredientes);
+    const newIngredients = [...ingredients, newIngredient];
+    setIngredients(newIngredients);
     
     // Limpar campos
-    setNovoProduto('');
-    setNovaQuantidade('');
-    setNovaUnidade('');
+    setNewProduct('');
+    setNewQuantity('');
+    setNewUnit('');
     
     if (onFormDataChange) {
-      onFormDataChange({ ingredientes: novosIngredientes });
+      // Envia ingredientes atualizados para o formulário pai
+      onFormDataChange({ ingredients: newIngredients });
     }
   };
 
   // Função para remover ingrediente
-  const removerIngrediente = (id: string) => {
+  const removeIngredient = (id: string) => {
     playClickSound();
-    const novosIngredientes = ingredientes.filter(ingrediente => ingrediente.id !== id);
-    setIngredientes(novosIngredientes);
+    const newIngredients = ingredients.filter(ingredient => ingredient.id !== id);
+    setIngredients(newIngredients);
     
     if (onFormDataChange) {
-      onFormDataChange({ ingredientes: novosIngredientes });
+      // Envia ingredientes atualizados para o formulário pai
+      onFormDataChange({ ingredients: newIngredients });
     }
   };
 
@@ -163,17 +165,17 @@ export function IngredientsTab({ onFormDataChange }: IngredientsTabProps): JSX.E
                   ...systemStyles.select.field,
                   width: '100%'
                 }}
-                value={novoProduto}
+                value={newProduct}
                 onChange={(e) => {
                   playClickSound();
-                  setNovoProduto(e.target.value);
+                  setNewProduct(e.target.value);
                 }}
-                onFocus={() => setFocusedField('novoProduto')}
+                onFocus={() => setFocusedField('newProduct')}
                 onBlur={() => setFocusedField(null)}
               >
                 <option value="">Selecione um produto</option>
-                {produtosDisponiveis.map(produto => (
-                  <option key={produto} value={produto}>{produto}</option>
+                {availableProducts.map(product => (
+                  <option key={product} value={product}>{product}</option>
                 ))}
               </select>
               <div style={systemStyles.select.arrow}>
@@ -190,11 +192,11 @@ export function IngredientsTab({ onFormDataChange }: IngredientsTabProps): JSX.E
               style={{
                 ...systemStyles.input.field
               }}
-              value={novaQuantidade}
+              value={newQuantity}
               onChange={(e) => {
-                setNovaQuantidade(e.target.value);
+                setNewQuantity(e.target.value);
               }}
-              onFocus={() => setFocusedField('novaQuantidade')}
+              onFocus={() => setFocusedField('newQuantity')}
               onBlur={() => setFocusedField(null)}
               placeholder="Ex: 200"
             />
@@ -209,17 +211,17 @@ export function IngredientsTab({ onFormDataChange }: IngredientsTabProps): JSX.E
                   ...systemStyles.select.field,
                   width: '100%'
                 }}
-                value={novaUnidade}
+                value={newUnit}
                 onChange={(e) => {
                   playClickSound();
-                  setNovaUnidade(e.target.value);
+                  setNewUnit(e.target.value);
                 }}
-                onFocus={() => setFocusedField('novaUnidade')}
+                onFocus={() => setFocusedField('newUnit')}
                 onBlur={() => setFocusedField(null)}
               >
                 <option value="">Selecione</option>
-                {unidadesMedida.map(unidade => (
-                  <option key={unidade} value={unidade}>{unidade}</option>
+                {measurementUnits.map(unit => (
+                  <option key={unit} value={unit}>{unit}</option>
                 ))}
               </select>
               <div style={systemStyles.select.arrow}>
@@ -237,23 +239,23 @@ export function IngredientsTab({ onFormDataChange }: IngredientsTabProps): JSX.E
               height: '28px',
               alignSelf: 'flex-end'
             }}
-            onClick={adicionarIngrediente}
-            disabled={!novoProduto || !novaQuantidade || !novaUnidade}
+            onClick={addIngredient}
+            disabled={!newProduct || !newQuantity || !newUnit}
           >
             Adicionar
           </button>
         </div>
 
         {/* Lista de ingredientes */}
-        {ingredientes.length > 0 ? (
+        {ingredients.length > 0 ? (
           <div style={{
             display: 'flex',
             flexDirection: 'column' as const,
             gap: '8px'
           }}>
-            {ingredientes.map((ingrediente, index) => (
+            {ingredients.map((ingredient, index) => (
               <div
-                key={ingrediente.id}
+                key={ingredient.id}
                 style={{
                   display: 'flex',
                   justifyContent: 'space-between',
@@ -286,7 +288,7 @@ export function IngredientsTab({ onFormDataChange }: IngredientsTabProps): JSX.E
                     fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, Helvetica, Arial, sans-serif',
                     fontWeight: '500'
                   }}>
-                    <strong>{ingrediente.produto}</strong>
+                    <strong>{ingredient.product}</strong>
                   </div>
                   
                   <div style={{
@@ -294,7 +296,7 @@ export function IngredientsTab({ onFormDataChange }: IngredientsTabProps): JSX.E
                     color: '#666',
                     fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, Helvetica, Arial, sans-serif'
                   }}>
-                    {ingrediente.quantidade} {ingrediente.unidade}
+                    {ingredient.quantity} {ingredient.unit}
                   </div>
                 </div>
                 
@@ -315,7 +317,7 @@ export function IngredientsTab({ onFormDataChange }: IngredientsTabProps): JSX.E
                     fontWeight: 'bold',
                     transition: 'all 0.15s ease'
                   }}
-                  onClick={() => removerIngrediente(ingrediente.id)}
+                  onClick={() => removeIngredient(ingredient.id)}
                   title="Remover ingrediente"
                 >
                   ×

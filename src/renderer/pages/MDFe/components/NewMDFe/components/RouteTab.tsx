@@ -10,47 +10,47 @@ interface RouteTabProps {
   onUpdateFormData: (field: string, value: any) => void;
 }
 
-interface UFPercurso {
+interface RouteStateItem {
   id: string;
-  uf: string;
-  ordem: number;
+  state: string;
+  order: number;
 }
 
-interface Municipio {
-  nome: string;
-  codigo_ibge: string;
+interface City {
+  name: string;
+  ibgeCode: string;
 }
 
 export function RouteTab({ formData, onUpdateFormData }: RouteTabProps): JSX.Element {
   const playClickSound = useClickSound();
   const { systemStyles, systemColors } = useTheme();
   const [focusedField, setFocusedField] = useState<string | null>(null);
-  const [novaUF, setNovaUF] = useState('');
-  const [municipiosCarregamento, setMunicipiosCarregamento] = useState<Municipio[]>([]);
-  const [municipiosDescarregamento, setMunicipiosDescarregamento] = useState<Municipio[]>([]);
-  const [loadingMunicipiosCarregamento, setLoadingMunicipiosCarregamento] = useState(false);
-  const [loadingMunicipiosDescarregamento, setLoadingMunicipiosDescarregamento] = useState(false);
+  const [newState, setNewState] = useState('');
+  const [loadingCities, setLoadingCities] = useState<City[]>([]);
+  const [unloadingCities, setUnloadingCities] = useState<City[]>([]);
+  const [loadingCitiesLoading, setLoadingCitiesLoading] = useState(false);
+  const [loadingUnloadingCities, setLoadingUnloadingCities] = useState(false);
   
   const formContainerRef = useRef<HTMLDivElement>(null);
 
 
   // Lista de UFs brasileiras
-  const ufsBrasileiras = [
+  const brazilianStates = [
     'AC', 'AL', 'AP', 'AM', 'BA', 'CE', 'DF', 'ES', 'GO', 'MA',
     'MT', 'MS', 'MG', 'PA', 'PB', 'PR', 'PE', 'PI', 'RJ', 'RN',
     'RS', 'RO', 'RR', 'SC', 'SP', 'SE', 'TO'
   ];
 
-  // Função para buscar municípios da API BrasilAPI
-  const fetchMunicipios = async (uf: string, tipo: 'carregamento' | 'descarregamento') => {
-    if (!uf) return;
+  // Função para buscar cidades da API BrasilAPI
+  const fetchCities = async (state: string, type: 'loading' | 'unloading') => {
+    if (!state) return;
     
-    const setLoading = tipo === 'carregamento' ? setLoadingMunicipiosCarregamento : setLoadingMunicipiosDescarregamento;
-    const setMunicipios = tipo === 'carregamento' ? setMunicipiosCarregamento : setMunicipiosDescarregamento;
+    const setLoading = type === 'loading' ? setLoadingCitiesLoading : setLoadingUnloadingCities;
+    const setCities = type === 'loading' ? setLoadingCities : setUnloadingCities;
     
     setLoading(true);
     try {
-      const response = await fetch(`https://brasilapi.com.br/api/ibge/municipios/v1/${uf}?providers=dados-abertos-br,gov,wikipedia`);
+      const response = await fetch(`https://brasilapi.com.br/api/ibge/municipios/v1/${state}?providers=dados-abertos-br,gov,wikipedia`);
       
       if (!response.ok) {
         throw new Error(`Erro ao buscar municípios: ${response.status}`);
@@ -60,16 +60,16 @@ export function RouteTab({ formData, onUpdateFormData }: RouteTabProps): JSX.Ele
       
       // Mapear os dados para o formato esperado
       // Remove o estado entre parênteses do nome do município (ex: "SÃO FELIPE (BAHIA)" -> "SÃO FELIPE")
-      const municipiosFormatados: Municipio[] = data.map((municipio: any) => ({
-        nome: municipio.nome.replace(/\s*\([^)]*\)\s*$/, '').trim(),
-        codigo_ibge: municipio.codigo_ibge
+      const formattedCities: City[] = data.map((city: any) => ({
+        name: city.nome.replace(/\s*\([^)]*\)\s*$/, '').trim(),
+        ibgeCode: city.codigo_ibge
       }));
       
-      setMunicipios(municipiosFormatados);
-      console.log(`Municípios de ${uf} carregados:`, municipiosFormatados.length);
+      setCities(formattedCities);
+      console.log(`Municípios de ${state} carregados:`, formattedCities.length);
     } catch (error) {
-      console.error(`Erro ao buscar municípios de ${uf}:`, error);
-      setMunicipios([]);
+      console.error(`Erro ao buscar municípios de ${state}:`, error);
+      setCities([]);
     } finally {
       setLoading(false);
     }
@@ -91,118 +91,118 @@ export function RouteTab({ formData, onUpdateFormData }: RouteTabProps): JSX.Ele
   };
 
   // Handler para mudança de UF de carregamento
-  const handleUFCarregamentoChange = (uf: string) => {
+  const handleLoadingStateChange = (state: string) => {
     playClickSound();
-    onUpdateFormData('ufCarregamento', uf);
-    onUpdateFormData('municipioCarregamento', '');
+    onUpdateFormData('loadingState', state);
+    onUpdateFormData('loadingCity', '');
   };
 
   // Handler para mudança de UF de descarregamento
-  const handleUFDescarregamentoChange = (uf: string) => {
+  const handleUnloadingStateChange = (state: string) => {
     playClickSound();
-    onUpdateFormData('ufDescarregamento', uf);
-    onUpdateFormData('municipioDescarregamento', '');
+    onUpdateFormData('unloadingState', state);
+    onUpdateFormData('unloadingCity', '');
   };
 
-  const handleAdicionarUF = () => {
-    if (!novaUF) return;
+  const handleAddStateToRoute = () => {
+    if (!newState) return;
     
     playClickSound();
-    const ufsAtuais = formData.ufsPercurso || [];
-    const novaUFItem: UFPercurso = {
+    const currentStates = formData.routeStates || [];
+    const newStateItem: RouteStateItem = {
       id: Date.now().toString(),
-      uf: novaUF,
-      ordem: ufsAtuais.length + 1
+      state: newState,
+      order: currentStates.length + 1
     };
     
-    onUpdateFormData('ufsPercurso', [...ufsAtuais, novaUFItem]);
-    setNovaUF('');
+    onUpdateFormData('routeStates', [...currentStates, newStateItem]);
+    setNewState('');
   };
 
-  const handleRemoverUF = (ufId: string) => {
+  const handleRemoveStateFromRoute = (stateId: string) => {
     playClickSound();
-    const ufsAtuais = formData.ufsPercurso || [];
-    const ufsFiltradas = ufsAtuais.filter((uf: UFPercurso) => uf.id !== ufId);
+    const currentStates = formData.routeStates || [];
+    const filteredStates = currentStates.filter((item: RouteStateItem) => item.id !== stateId);
     
     // Reordenar as UFs restantes
-    const ufsReordenadas = ufsFiltradas.map((uf: UFPercurso, index: number) => ({
-      ...uf,
-      ordem: index + 1
+    const reorderedStates = filteredStates.map((item: RouteStateItem, index: number) => ({
+      ...item,
+      order: index + 1
     }));
     
-    onUpdateFormData('ufsPercurso', ufsReordenadas);
+    onUpdateFormData('routeStates', reorderedStates);
   };
 
   useEffect(() => {
-    if (!formData.ufCarregamento) {
-      setMunicipiosCarregamento([]);
+    if (!formData.loadingState) {
+      setLoadingCities([]);
       return;
     }
-    fetchMunicipios(formData.ufCarregamento, 'carregamento');
-  }, [formData.ufCarregamento]);
+    fetchCities(formData.loadingState, 'loading');
+  }, [formData.loadingState]);
 
   useEffect(() => {
-    if (!formData.ufDescarregamento) {
-      setMunicipiosDescarregamento([]);
+    if (!formData.unloadingState) {
+      setUnloadingCities([]);
       return;
     }
-    fetchMunicipios(formData.ufDescarregamento, 'descarregamento');
-  }, [formData.ufDescarregamento]);
+    fetchCities(formData.unloadingState, 'unloading');
+  }, [formData.unloadingState]);
 
   useEffect(() => {
-    if (!formData.municipioCarregamento) {
+    if (!formData.loadingCity) {
       return;
     }
-    setMunicipiosCarregamento((prev) => {
+    setLoadingCities((prev) => {
       const exists = prev.some(
-        (municipio) => municipio.nome.toUpperCase() === formData.municipioCarregamento.toUpperCase()
+        (city) => city.name.toUpperCase() === formData.loadingCity.toUpperCase()
       );
       if (exists) {
         return prev;
       }
-      const notas = Array.isArray(formData.notasFiscais) ? formData.notasFiscais : [];
-      const notaReferencia = notas.find(
+      const notas = Array.isArray(formData.invoices) ? formData.invoices : [];
+      const referenceInvoice = notas.find(
         (nota: any) =>
-          (nota.emitenteMunicipioNome || '').toUpperCase() === formData.municipioCarregamento.toUpperCase()
+          (nota.issuerCityName || '').toUpperCase() === formData.loadingCity.toUpperCase()
       );
-      const codigoIBGE = notaReferencia?.emitenteCodigoMunicipio || formData.municipioCarregamento;
+      const ibgeCode = referenceInvoice?.issuerCityCode || formData.loadingCity;
       return [
         {
-          nome: formData.municipioCarregamento,
-          codigo_ibge: codigoIBGE
+          name: formData.loadingCity,
+          ibgeCode
         },
         ...prev
       ];
     });
-  }, [formData.municipioCarregamento, formData.notasFiscais]);
+  }, [formData.loadingCity, formData.invoices]);
 
   useEffect(() => {
-    if (!formData.municipioDescarregamento) {
+    if (!formData.unloadingCity) {
       return;
     }
-    setMunicipiosDescarregamento((prev) => {
+    setUnloadingCities((prev) => {
       const exists = prev.some(
-        (municipio) => municipio.nome.toUpperCase() === formData.municipioDescarregamento.toUpperCase()
+        (city) => city.name.toUpperCase() === formData.unloadingCity.toUpperCase()
       );
       if (exists) {
         return prev;
       }
-      const notas = Array.isArray(formData.notasFiscais) ? formData.notasFiscais : [];
-      const notaReferencia = notas.find(
+      const notas = Array.isArray(formData.invoices) ? formData.invoices : [];
+      const referenceInvoice = notas.find(
         (nota: any) =>
-          (nota.destinatarioMunicipioNome || '').toUpperCase() ===
-          formData.municipioDescarregamento.toUpperCase()
+          (nota.recipientCityName || '').toUpperCase() ===
+          formData.unloadingCity.toUpperCase()
       );
-      const codigoIBGE = notaReferencia?.destinatarioCodigoMunicipio || formData.municipioDescarregamento;
+      const ibgeCode = referenceInvoice?.recipientCityCode || formData.unloadingCity;
       return [
         {
-          nome: formData.municipioDescarregamento,
-          codigo_ibge: codigoIBGE
+          name: formData.unloadingCity,
+          ibgeCode
         },
         ...prev
       ];
     });
-  }, [formData.municipioDescarregamento, formData.notasFiscais]);
+  }, [formData.unloadingCity, formData.invoices]);
 
   const styles = {
     container: {
@@ -331,14 +331,14 @@ export function RouteTab({ formData, onUpdateFormData }: RouteTabProps): JSX.Ele
                   WebkitAppearance: 'none' as const,
                   MozAppearance: 'none' as const
                 }}
-                value={formData.ufCarregamento || ''}
-                onChange={(e) => handleUFCarregamentoChange(e.target.value)}
-                onFocus={() => handleInputFocus('ufCarregamento')}
+                value={formData.loadingState || ''}
+                onChange={(e) => handleLoadingStateChange(e.target.value)}
+                onFocus={() => handleInputFocus('loadingState')}
                 onBlur={handleInputBlur}
                 onClick={() => playClickSound()}
               >
                 <option value="">Selecione a UF</option>
-                {ufsBrasileiras.map(uf => (
+                {brazilianStates.map(uf => (
                   <option key={uf} value={uf}>{uf}</option>
                 ))}
               </select>
@@ -350,7 +350,7 @@ export function RouteTab({ formData, onUpdateFormData }: RouteTabProps): JSX.Ele
           <div style={styles.formGroup}>
             <label style={styles.label}>
               Município:
-              {loadingMunicipiosCarregamento && (
+              {loadingCitiesLoading && (
                 <span style={{
                   marginLeft: '8px',
                   fontSize: '10px',
@@ -368,28 +368,28 @@ export function RouteTab({ formData, onUpdateFormData }: RouteTabProps): JSX.Ele
                   appearance: 'none' as const,
                   WebkitAppearance: 'none' as const,
                   MozAppearance: 'none' as const,
-                  opacity: loadingMunicipiosCarregamento ? 0.7 : 1
+                  opacity: loadingCitiesLoading ? 0.7 : 1
                 }}
-                value={formData.municipioCarregamento || ''}
+                value={formData.loadingCity || ''}
                 onChange={(e) => {
                   playClickSound();
-                  onUpdateFormData('municipioCarregamento', e.target.value);
+                  onUpdateFormData('loadingCity', e.target.value);
                 }}
                 onFocus={() => handleInputFocus('municipioCarregamento')}
                 onBlur={handleInputBlur}
                 onClick={() => playClickSound()}
-                disabled={!formData.ufCarregamento || loadingMunicipiosCarregamento}
+                disabled={!formData.loadingState || loadingCitiesLoading}
               >
                 <option value="">
-                  {!formData.ufCarregamento 
+                  {!formData.loadingState 
                     ? 'Selecione uma UF primeiro' 
-                    : loadingMunicipiosCarregamento 
+                    : loadingCitiesLoading 
                       ? 'Carregando municípios...'
                       : 'Selecione o município'}
                 </option>
-                {municipiosCarregamento.map(municipio => (
-                  <option key={municipio.codigo_ibge} value={municipio.nome}>
-                    {municipio.nome}
+                {loadingCities.map(city => (
+                  <option key={city.ibgeCode} value={city.name}>
+                    {city.name}
                   </option>
                 ))}
               </select>
@@ -415,17 +415,17 @@ export function RouteTab({ formData, onUpdateFormData }: RouteTabProps): JSX.Ele
                   WebkitAppearance: 'none' as const,
                   MozAppearance: 'none' as const
                 }}
-                value={novaUF}
+                value={newState}
                 onChange={(e) => {
                   playClickSound();
-                  setNovaUF(e.target.value);
+                  setNewState(e.target.value);
                 }}
-                onFocus={() => handleInputFocus('novaUF')}
+                onFocus={() => handleInputFocus('routeNewState')}
                 onBlur={handleInputBlur}
                 onClick={() => playClickSound()}
               >
                 <option value="">Selecione uma UF</option>
-                {ufsBrasileiras.map(uf => (
+                {brazilianStates.map(uf => (
                   <option key={uf} value={uf}>{uf}</option>
                 ))}
               </select>
@@ -435,8 +435,8 @@ export function RouteTab({ formData, onUpdateFormData }: RouteTabProps): JSX.Ele
             </div>
           </div>
           <AddButton
-            onClick={handleAdicionarUF}
-            disabled={!novaUF}
+            onClick={handleAddStateToRoute}
+            disabled={!newState}
             label="Adicionar UF"
           />
         </div>
@@ -445,17 +445,17 @@ export function RouteTab({ formData, onUpdateFormData }: RouteTabProps): JSX.Ele
         </div>
 
         {/* Lista de UFs */}
-        {formData.ufsPercurso && formData.ufsPercurso.length > 0 ? (
+        {formData.routeStates && formData.routeStates.length > 0 ? (
           <div style={styles.ufsList}>
-            {formData.ufsPercurso.map((uf: UFPercurso, index: number) => (
-              <div key={uf.id} style={styles.ufItem}>
+            {formData.routeStates.map((routeState: RouteStateItem) => (
+              <div key={routeState.id} style={styles.ufItem}>
                 <div style={styles.ufInfo}>
-                  <span style={styles.ufOrder}>#{uf.ordem}</span>
-                  <span style={styles.ufName}>{uf.uf}</span>
+                  <span style={styles.ufOrder}>#{routeState.order}</span>
+                  <span style={styles.ufName}>{routeState.state}</span>
                 </div>
                 <button
                   style={styles.removeButton}
-                  onClick={() => handleRemoverUF(uf.id)}
+                  onClick={() => handleRemoveStateFromRoute(routeState.id)}
                   title="Remover UF"
                 >
                   ×
@@ -486,14 +486,14 @@ export function RouteTab({ formData, onUpdateFormData }: RouteTabProps): JSX.Ele
                   WebkitAppearance: 'none' as const,
                   MozAppearance: 'none' as const
                 }}
-                value={formData.ufDescarregamento || ''}
-                onChange={(e) => handleUFDescarregamentoChange(e.target.value)}
-                onFocus={() => handleInputFocus('ufDescarregamento')}
+                value={formData.unloadingState || ''}
+                onChange={(e) => handleUnloadingStateChange(e.target.value)}
+                onFocus={() => handleInputFocus('unloadingState')}
                 onBlur={handleInputBlur}
                 onClick={() => playClickSound()}
               >
                 <option value="">Selecione a UF</option>
-                {ufsBrasileiras.map(uf => (
+                {brazilianStates.map(uf => (
                   <option key={uf} value={uf}>{uf}</option>
                 ))}
               </select>
@@ -505,7 +505,7 @@ export function RouteTab({ formData, onUpdateFormData }: RouteTabProps): JSX.Ele
           <div style={styles.formGroup}>
             <label style={styles.label}>
               Município:
-              {loadingMunicipiosDescarregamento && (
+              {loadingUnloadingCities && (
                 <span style={{
                   marginLeft: '8px',
                   fontSize: '10px',
@@ -523,28 +523,28 @@ export function RouteTab({ formData, onUpdateFormData }: RouteTabProps): JSX.Ele
                   appearance: 'none' as const,
                   WebkitAppearance: 'none' as const,
                   MozAppearance: 'none' as const,
-                  opacity: loadingMunicipiosDescarregamento ? 0.7 : 1
+                  opacity: loadingUnloadingCities ? 0.7 : 1
                 }}
-                value={formData.municipioDescarregamento || ''}
+                value={formData.unloadingCity || ''}
                 onChange={(e) => {
                   playClickSound();
-                  onUpdateFormData('municipioDescarregamento', e.target.value);
+                  onUpdateFormData('unloadingCity', e.target.value);
                 }}
                 onFocus={() => handleInputFocus('municipioDescarregamento')}
                 onBlur={handleInputBlur}
                 onClick={() => playClickSound()}
-                disabled={!formData.ufDescarregamento || loadingMunicipiosDescarregamento}
+                disabled={!formData.unloadingState || loadingUnloadingCities}
               >
                 <option value="">
-                  {!formData.ufDescarregamento 
+                  {!formData.unloadingState 
                     ? 'Selecione uma UF primeiro' 
-                    : loadingMunicipiosDescarregamento 
+                    : loadingUnloadingCities 
                       ? 'Carregando municípios...'
                       : 'Selecione o município'}
                 </option>
-                {municipiosDescarregamento.map(municipio => (
-                  <option key={municipio.codigo_ibge} value={municipio.nome}>
-                    {municipio.nome}
+                {unloadingCities.map(city => (
+                  <option key={city.ibgeCode} value={city.name}>
+                    {city.name}
                   </option>
                 ))}
               </select>
