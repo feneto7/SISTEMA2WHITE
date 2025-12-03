@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useTheme } from '../../../../styles/ThemeProvider';
 import { useClickSound } from '../../../../hooks/useClickSound';
 import { DocumentsTab, TransportTab, DriversTab, RouteTab, FreightTab, InsuranceTab, TotalizersTab } from './components';
@@ -363,6 +363,80 @@ export function NewMDFe({ isOpen, onClose, onSave }: NewMDFeProps): JSX.Element 
     setMdfeType(newType);
     setFormData(prev => ({ ...prev, mdfeType: newType }));
   };
+
+  // Função para converter ambiente para código da API (1 = produção, 2 = homologação)
+  const getAmbCode = (env: 'producao' | 'homologacao'): string => {
+    return env === 'producao' ? '1' : '2';
+  };
+
+  // Carregar configuração de MDF-e da API quando o modal abrir
+  useEffect(() => {
+    if (!isOpen) return;
+
+    const loadMdfeConfig = async () => {
+      try {
+        // Busca o ambiente fiscal ativo do localStorage
+        const fiscalEnvironment = localStorage.getItem('fiscal_environment') as 'producao' | 'homologacao' | null;
+        const activeEnv = fiscalEnvironment || 'homologacao';
+        const amb = getAmbCode(activeEnv);
+
+        console.log('[NewMDFe] Carregando configuração de MDF-e para ambiente:', activeEnv, 'amb:', amb);
+
+        // Busca a configuração da API
+        const response = await apiGet(`/api/mdfe-config?amb=${amb}`, {
+          requireAuth: true
+        });
+
+        if (response.ok && response.data?.data) {
+          const config = Array.isArray(response.data.data) 
+            ? response.data.data[0] 
+            : response.data.data;
+
+          if (config) {
+            console.log('[NewMDFe] Configuração encontrada:', config);
+            
+            // Preenche número e série da MDF-e
+            setFormData(prev => ({
+              ...prev,
+              mdfeNumber: config.nMDF || '',
+              mdfeSeries: config.serie || '001'
+            }));
+
+            console.log('[NewMDFe] Número e série preenchidos:', {
+              numero: config.nMDF,
+              serie: config.serie
+            });
+          } else {
+            console.warn('[NewMDFe] Configuração não encontrada para ambiente:', activeEnv);
+            // Mantém valores padrão
+            setFormData(prev => ({
+              ...prev,
+              mdfeNumber: '',
+              mdfeSeries: '001'
+            }));
+          }
+        } else {
+          console.warn('[NewMDFe] Erro ao buscar configuração:', response.status);
+          // Mantém valores padrão em caso de erro
+          setFormData(prev => ({
+            ...prev,
+            mdfeNumber: '',
+            mdfeSeries: '001'
+          }));
+        }
+      } catch (error) {
+        console.error('[NewMDFe] Erro ao carregar configuração de MDF-e:', error);
+        // Mantém valores padrão em caso de erro
+        setFormData(prev => ({
+          ...prev,
+          mdfeNumber: '',
+          mdfeSeries: '001'
+        }));
+      }
+    };
+
+    loadMdfeConfig();
+  }, [isOpen]);
 
   if (!isOpen) return null;
 

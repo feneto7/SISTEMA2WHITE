@@ -33,7 +33,7 @@ export function TransportTab({ formData, onUpdateFormData }: TransportTabProps):
   const playClickSound = useClickSound();
   const { systemStyles, systemColors } = useTheme();
   const [focusedField, setFocusedField] = useState<string | null>(null);
-  const [proprietarioNaoEmitente, setProprietarioNaoEmitente] = useState(!!formData.proprietarioNaoEmitente);
+  const [proprietarioNaoEmitente, setProprietarioNaoEmitente] = useState(!!formData.isOwnerNotIssuer);
   const formContainerRef = useRef<HTMLDivElement>(null);
 
   // Adicionar animação CSS para o formulário adicional
@@ -189,13 +189,27 @@ export function TransportTab({ formData, onUpdateFormData }: TransportTabProps):
     playClickSound();
     const vehicle = veiculosCadastrados.find(v => v.id === vehicleId);
     if (vehicle) {
-      // Preencher todos os campos com os dados do veículo selecionado
-      Object.keys(vehicle).forEach(key => {
-        if (key !== 'id') {
-          onUpdateFormData(key, vehicle[key as keyof Vehicle]);
-        }
-      });
-      onUpdateFormData('veiculoSelecionado', vehicleId);
+      // Mapear campos do veículo (português) para campos do formData (inglês)
+      onUpdateFormData('selectedVehicle', vehicleId);
+      onUpdateFormData('licensePlate', vehicle.placa);
+      onUpdateFormData('renavam', vehicle.renavam);
+      onUpdateFormData('chassis', vehicle.chassi);
+      onUpdateFormData('brand', vehicle.marca);
+      onUpdateFormData('model', vehicle.modelo);
+      onUpdateFormData('manufacturingYear', vehicle.anoFabricacao);
+      onUpdateFormData('modelYear', vehicle.anoModelo);
+      onUpdateFormData('color', vehicle.cor);
+      onUpdateFormData('fuelType', vehicle.combustivel);
+      onUpdateFormData('capacityKg', vehicle.capacidade);
+      onUpdateFormData('ownerName', vehicle.proprietario);
+      onUpdateFormData('ownerDocument', vehicle.cpfCnpjProprietario);
+      onUpdateFormData('ownerAddress', vehicle.enderecoProprietario);
+      onUpdateFormData('ownerCity', vehicle.cidadeProprietario);
+      onUpdateFormData('ownerState', vehicle.ufProprietario);
+      onUpdateFormData('ownerZipCode', vehicle.cepProprietario);
+      if (vehicle.rntrc) {
+        onUpdateFormData('rntrcCode', vehicle.rntrc);
+      }
     }
   };
 
@@ -203,7 +217,7 @@ export function TransportTab({ formData, onUpdateFormData }: TransportTabProps):
     playClickSound();
     const newValue = !proprietarioNaoEmitente;
     setProprietarioNaoEmitente(newValue);
-    onUpdateFormData('proprietarioNaoEmitente', newValue);
+    onUpdateFormData('isOwnerNotIssuer', newValue);
   };
 
   const styles = {
@@ -323,9 +337,9 @@ export function TransportTab({ formData, onUpdateFormData }: TransportTabProps):
                 ...systemStyles.select.field,
                 paddingRight: '24px'
               }}
-              value={formData.veiculoSelecionado || ''}
+              value={formData.selectedVehicle || ''}
               onChange={(e) => handleVehicleSelect(e.target.value)}
-              onFocus={() => handleInputFocus('veiculoSelecionado')}
+              onFocus={() => handleInputFocus('selectedVehicle')}
               onBlur={handleInputBlur}
               onClick={() => playClickSound()}
             >
@@ -352,7 +366,7 @@ export function TransportTab({ formData, onUpdateFormData }: TransportTabProps):
         <div style={styles.formGrid}>
           <div style={styles.formGroup}>
             <label style={styles.label}>Placa *</label>
-            <input {...getInputProps('placa', 'ABC1234')} />
+            <input {...getInputProps('licensePlate', 'ABC1234')} />
           </div>
           <div style={styles.formGroup}>
             <label style={styles.label}>RENAVAM</label>
@@ -368,12 +382,12 @@ export function TransportTab({ formData, onUpdateFormData }: TransportTabProps):
                   WebkitAppearance: 'none' as const,
                   MozAppearance: 'none' as const
                 }}
-                value={formData.tipoCarroceria || ''}
+                value={formData.bodyType || ''}
                 onChange={(e) => {
                   playClickSound();
-                  handleInputChange('tipoCarroceria', e.target.value);
+                  handleInputChange('bodyType', e.target.value);
                 }}
-                onFocus={() => handleInputFocus('tipoCarroceria')}
+                onFocus={() => handleInputFocus('bodyType')}
                 onBlur={handleInputBlur}
                 onClick={() => playClickSound()}
               >
@@ -399,12 +413,12 @@ export function TransportTab({ formData, onUpdateFormData }: TransportTabProps):
                   WebkitAppearance: 'none' as const,
                   MozAppearance: 'none' as const
                 }}
-                value={formData.tipoRodado || ''}
+                value={formData.wheelType || ''}
                 onChange={(e) => {
                   playClickSound();
-                  handleInputChange('tipoRodado', e.target.value);
+                  handleInputChange('wheelType', e.target.value);
                 }}
-                onFocus={() => handleInputFocus('tipoRodado')}
+                onFocus={() => handleInputFocus('wheelType')}
                 onBlur={handleInputBlur}
                 onClick={() => playClickSound()}
               >
@@ -422,7 +436,7 @@ export function TransportTab({ formData, onUpdateFormData }: TransportTabProps):
           </div>
           <div style={styles.formGroup}>
             <label style={styles.label}>Tara (KG)</label>
-            <input {...getInputProps('tara', '2372')} />
+            <input {...getInputProps('tareWeight', '2372')} />
           </div>
           <div style={styles.formGroup}>
             <label style={styles.label}>UF</label>
@@ -434,12 +448,12 @@ export function TransportTab({ formData, onUpdateFormData }: TransportTabProps):
                   WebkitAppearance: 'none' as const,
                   MozAppearance: 'none' as const
                 }}
-                value={formData.ufVeiculo || ''}
+                value={formData.vehicleState || ''}
                 onChange={(e) => {
                   playClickSound();
-                  handleInputChange('ufVeiculo', e.target.value);
+                  handleInputChange('vehicleState', e.target.value);
                 }}
-                onFocus={() => handleInputFocus('ufVeiculo')}
+                onFocus={() => handleInputFocus('vehicleState')}
                 onBlur={handleInputBlur}
                 onClick={() => playClickSound()}
               >
@@ -455,39 +469,39 @@ export function TransportTab({ formData, onUpdateFormData }: TransportTabProps):
           </div>
           <div style={styles.formGroup}>
             <label style={styles.label}>Capacidade (KG)</label>
-            <input {...getInputProps('capacidade', '1500')} />
+            <input {...getInputProps('capacityKg', '1500')} />
           </div>
           <div style={styles.formGroup}>
             <label style={styles.label}>Capacidade (M3)</label>
-            <input {...getInputProps('capacidadeM3', '')} />
+            <input {...getInputProps('capacityM3', '')} />
           </div>
           <div style={styles.formGroup}>
             <label style={styles.label}>Chassi</label>
-            <input {...getInputProps('chassi', '9BWZZZZ377VT00426')} />
+            <input {...getInputProps('chassis', '9BWZZZZ377VT00426')} />
           </div>
           <div style={styles.formGroup}>
             <label style={styles.label}>Marca *</label>
-            <input {...getInputProps('marca', 'Volkswagen')} />
+            <input {...getInputProps('brand', 'Volkswagen')} />
           </div>
           <div style={styles.formGroup}>
             <label style={styles.label}>Modelo *</label>
-            <input {...getInputProps('modelo', 'Gol')} />
+            <input {...getInputProps('model', 'Gol')} />
           </div>
           <div style={styles.formGroup}>
             <label style={styles.label}>Ano Fabricação</label>
-            <input {...getInputProps('anoFabricacao', '2023')} />
+            <input {...getInputProps('manufacturingYear', '2023')} />
           </div>
           <div style={styles.formGroup}>
             <label style={styles.label}>Ano Modelo</label>
-            <input {...getInputProps('anoModelo', '2024')} />
+            <input {...getInputProps('modelYear', '2024')} />
           </div>
           <div style={styles.formGroup}>
             <label style={styles.label}>Cor</label>
-            <input {...getInputProps('cor', 'Branco')} />
+            <input {...getInputProps('color', 'Branco')} />
           </div>
           <div style={styles.formGroup}>
             <label style={styles.label}>Combustível</label>
-            <input {...getInputProps('combustivel', 'Flex')} />
+            <input {...getInputProps('fuelType', 'Flex')} />
           </div>
           <div style={styles.formGroup}>
             <label style={styles.label}>RNTRC</label>
@@ -536,19 +550,19 @@ export function TransportTab({ formData, onUpdateFormData }: TransportTabProps):
         <div style={styles.formGrid}>
           <div style={styles.formGroup}>
             <label style={styles.label}>Nome/Razão Social</label>
-            <input {...getInputProps('proprietario', 'João Silva')} />
+            <input {...getInputProps('ownerName', 'João Silva')} />
           </div>
           <div style={styles.formGroup}>
             <label style={styles.label}>CPF/CNPJ</label>
-            <input {...getInputProps('cpfCnpjProprietario', '123.456.789-00')} />
+            <input {...getInputProps('ownerDocument', '123.456.789-00')} />
           </div>
           <div style={{...styles.formGroup, ...styles.formGroupFull}}>
             <label style={styles.label}>Endereço</label>
-            <input {...getInputProps('enderecoProprietario', 'Rua das Flores, 123')} />
+            <input {...getInputProps('ownerAddress', 'Rua das Flores, 123')} />
           </div>
           <div style={styles.formGroup}>
             <label style={styles.label}>Cidade</label>
-            <input {...getInputProps('cidadeProprietario', 'São Paulo')} />
+            <input {...getInputProps('ownerCity', 'São Paulo')} />
           </div>
           <div style={styles.formGroup}>
             <label style={styles.label}>UF</label>
@@ -556,12 +570,12 @@ export function TransportTab({ formData, onUpdateFormData }: TransportTabProps):
               style={{
                 ...systemStyles.select.field
               }}
-              value={formData.ufProprietario || ''}
+              value={formData.ownerState || ''}
               onChange={(e) => {
                 playClickSound();
-                handleInputChange('ufProprietario', e.target.value);
+                handleInputChange('ownerState', e.target.value);
               }}
-              onFocus={() => handleInputFocus('ufProprietario')}
+              onFocus={() => handleInputFocus('ownerState')}
               onBlur={handleInputBlur}
               onClick={() => playClickSound()}
             >
@@ -573,7 +587,7 @@ export function TransportTab({ formData, onUpdateFormData }: TransportTabProps):
           </div>
           <div style={styles.formGroup}>
             <label style={styles.label}>CEP</label>
-            <input {...getInputProps('cepProprietario', '01234-567')} />
+            <input {...getInputProps('ownerZipCode', '01234-567')} />
           </div>
         </div>
 
@@ -583,19 +597,19 @@ export function TransportTab({ formData, onUpdateFormData }: TransportTabProps):
             <div style={styles.additionalFormGrid}>
               <div style={styles.formGroup}>
                 <label style={styles.label}>Tipo de Proprietário</label>
-                <input {...getInputProps('tipoProprietario', 'Pessoa Física')} />
+                <input {...getInputProps('ownerType', 'Pessoa Física')} />
               </div>
               <div style={styles.formGroup}>
                 <label style={styles.label}>CPF/CNPJ</label>
-                <input {...getInputProps('cpfCnpjProprietario', '123.456.789-00')} />
+                <input {...getInputProps('ownerDocument', '123.456.789-00')} />
               </div>
               <div style={styles.formGroup}>
                 <label style={styles.label}>Nome</label>
-                <input {...getInputProps('proprietario', 'João Silva')} />
+                <input {...getInputProps('ownerName', 'João Silva')} />
               </div>
               <div style={styles.formGroup}>
                 <label style={styles.label}>IE</label>
-                <input {...getInputProps('ie', '123456789')} />
+                <input {...getInputProps('ownerStateRegistration', '123456789')} />
               </div>
               <div style={styles.formGroup}>
                 <label style={styles.label}>UF</label>
@@ -603,12 +617,12 @@ export function TransportTab({ formData, onUpdateFormData }: TransportTabProps):
                   style={{
                     ...systemStyles.select.field
                   }}
-                  value={formData.ufProprietarioCompleto || ''}
+                  value={formData.ownerFullState || ''}
                   onChange={(e) => {
                     playClickSound();
-                    handleInputChange('ufProprietarioCompleto', e.target.value);
+                    handleInputChange('ownerFullState', e.target.value);
                   }}
-                  onFocus={() => handleInputFocus('ufProprietarioCompleto')}
+                  onFocus={() => handleInputFocus('ownerFullState')}
                   onBlur={handleInputBlur}
                   onClick={() => playClickSound()}
                 >

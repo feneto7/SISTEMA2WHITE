@@ -425,6 +425,16 @@ export interface CompanyData {
     city_id?: number;
     state_id?: number;
     zipcode?: string;
+    city?: {
+      id?: number;
+      name?: string;
+      state_id?: number;
+    };
+    state?: {
+      id?: number;
+      name?: string;
+      uf?: string;
+    };
   }>;
   contacts?: Array<{
     type: string;
@@ -517,11 +527,18 @@ export function generateMDFeJSON(formData: MDFeFormData, companyData?: CompanyDa
       'RS', 'RO', 'RR', 'SC', 'SP', 'SE', 'TO'
     ];
     
-    // Determina UF a partir do state_id se disponível
+    // Determina UF a partir do relacionamento state ou state_id
     let ufValue = '';
-    if (address?.state_id && address.state_id > 0 && address.state_id <= brazilianStates.length) {
+    if (address?.state?.uf) {
+      // Se tiver relacionamento state com UF, usa diretamente
+      ufValue = address.state.uf;
+    } else if (address?.state_id && address.state_id > 0 && address.state_id <= brazilianStates.length) {
+      // Fallback: mapeia state_id para UF usando array
       ufValue = brazilianStates[address.state_id - 1];
     }
+    
+    // Obtém nome da cidade do relacionamento city
+    const cityName = address?.city?.name || '';
     
     emit = {
       CNPJ: formatCNPJ(companyData.cnpj),
@@ -529,18 +546,18 @@ export function generateMDFeJSON(formData: MDFeFormData, companyData?: CompanyDa
       xFant: companyData.legal_name || companyData.name,
       enderEmit: {
         xLgr: address?.street || '',
-        nro: address?.number || 'S/N',
+        nro: address?.number ? String(address.number) : 'S/N',
         xBairro: address?.district || '',
         cMun: address?.city_id ? address.city_id.toString() : '9999999',
-        xMun: '', // Será preenchido pela API se necessário
-        CEP: formatCEP(address?.zipcode || ''),
-        UF: ufValue // Preenche UF se tiver state_id
+        xMun: cityName, // Nome da cidade do relacionamento
+        CEP: formatCEP(address?.zipcode ? String(address.zipcode) : ''),
+        UF: ufValue
       }
     };
     
     // Adiciona IE apenas se preenchido
     if (companyData.ie) {
-      emit.IE = companyData.ie;
+      emit.IE = String(companyData.ie);
     }
   } else {
     // Fallback: usa dados do proprietário do formulário (comportamento antigo)

@@ -369,7 +369,7 @@ export function FreightTab({ formData, onUpdateFormData }: FreightTabProps): JSX
                   <strong> Valor:</strong> {vale.voucherValue} | 
                   <strong> Responsável:</strong> {vale.responsibleDocument}
                 </div>
-                  <button
+                <button
                   style={styles.removeButton}
                   onClick={() => handleRemoveTollVoucher(vale.id)}
                   title="Remover vale pedágio"

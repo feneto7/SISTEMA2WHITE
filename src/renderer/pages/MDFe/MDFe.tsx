@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useTheme } from '../../styles/ThemeProvider';
 import { MDFeList, MDFe, NewMDFe } from './components';
 import { useNavigation } from '../../router/Navigation';
@@ -6,8 +6,9 @@ import { useClickSound } from '../../hooks/useClickSound';
 import { BackButton } from '../../components/BackButton';
 import { MDFeRegistrations } from './components/MDFeRegistrations';
 import { AppIcons } from '../../components/Icons/AppIcons';
-import { apiPost } from '../../utils/apiService';
+import { apiPost, apiGet } from '../../utils/apiService';
 import { Dialog } from '../../components/Dialog';
+import { MDFeStatus, mapLegacyStatus } from './types/mdfeStatus';
 
 // Página de MDF-e do sistema
 // Permite visualizar e gerenciar MDF-es emitidas
@@ -25,68 +26,86 @@ export function MDFePage(): JSX.Element {
   const [resultDialogType, setResultDialogType] = useState<'success' | 'error'>('success');
   const [resultMessage, setResultMessage] = useState('');
   const [resultHint, setResultHint] = useState('');
-  
-  // Dados mockados de MDF-es
-  const [mdfes, setMdfes] = useState<MDFe[]>([
-    {
-      id: '1',
-      number: '000001',
-      series: '001',
-      accessKey: '31240123456789000123550010000000010000000001',
-      issuer: 'Netinove Consultoria e Sistemas',
-      recipient: 'Digital Marketing Corp',
-      value: 1500.0,
-      status: 'autorizado',
-      issueDate: '2024-01-15',
-      authorizationDate: '2024-01-15'
-    },
-    {
-      id: '2',
-      number: '000002',
-      series: '001',
-      accessKey: '31240123456789000123550010000000020000000002',
-      issuer: 'Netinove Consultoria e Sistemas',
-      recipient: 'João Silva Santos',
-      value: 850.5,
-      status: 'transmitidoAguardando',
-      issueDate: '2024-01-20'
-    },
-    {
-      id: '3',
-      number: '000003',
-      series: '001',
-      accessKey: '31240123456789000123550010000000030000000003',
-      issuer: 'Netinove Consultoria e Sistemas',
-      recipient: 'Maria Oliveira Costa',
-      value: 2200.75,
-      status: 'autorizado',
-      issueDate: '2024-02-01',
-      authorizationDate: '2024-02-01'
-    },
-    {
-      id: '4',
-      number: '000004',
-      series: '001',
-      accessKey: '31240123456789000123550010000000040000000004',
-      issuer: 'Netinove Consultoria e Sistemas',
-      recipient: 'Pedro Almeida',
-      value: 1200.0,
-      status: 'cancelado',
-      issueDate: '2024-02-10',
-      authorizationDate: '2024-02-10'
-    },
-    {
-      id: '5',
-      number: '000005',
-      series: '001',
-      accessKey: '31240123456789000123550010000000050000000005',
-      issuer: 'Netinove Consultoria e Sistemas',
-      recipient: 'Digital Marketing Corp',
-      value: 3000.0,
-      status: 'rejeitado',
-      issueDate: '2024-02-15'
+  const [mdfes, setMdfes] = useState<MDFe[]>([]);
+  const [isLoadingMdfes, setIsLoadingMdfes] = useState(false);
+  const [loadError, setLoadError] = useState<string | null>(null);
+
+  // Tipo para resposta da API (campos em inglês conforme regras do projeto)
+  type ApiMdfe = {
+    id: number;
+    accessKey: string;
+    identification: {
+      number: string;
+      series: string;
+      initialState: string;
+      finalState: string;
+      issueDate: string;
+    } | null;
+    driver: string | null;
+    status: string;
+    lastEvent: {
+      statusCode: string;
+      reason: string;
+      eventType: string;
+      protocolNumber: string;
+      eventDate: string;
+    } | null;
+    createdAt: string;
+    updatedAt: string;
+  };
+
+  // Função para mapear dados da API (português) para interface em inglês
+  const mapApiMdfeToMdfe = (apiResponse: any): MDFe => {
+    const identification = apiResponse.ide;
+    const lastEvent = apiResponse.ultimoEvento;
+    
+    // Mapear status da API para o tipo MDFeStatus
+    const status: MDFeStatus = mapLegacyStatus(apiResponse.status);
+
+    return {
+      id: String(apiResponse.id),
+      number: identification?.nMDF || '000000',
+      series: identification?.serie || '000',
+      accessKey: apiResponse.chave || '',
+      initialState: identification?.UFIni || '',
+      finalState: identification?.UFFim || '',
+      driver: apiResponse.condutor || 'Não informado',
+      status: status,
+      issueDate: identification?.dhEmi ? new Date(identification.dhEmi).toISOString().split('T')[0] : '',
+      authorizationDate: lastEvent?.dhEvento ? new Date(lastEvent.dhEvento).toISOString().split('T')[0] : undefined
+    };
+  };
+
+  // Carregar MDF-es da API
+  const loadMdfes = async () => {
+    try {
+      setIsLoadingMdfes(true);
+      setLoadError(null);
+
+      const response = await apiGet('/api/mdfe', {
+        requireAuth: true
+      });
+
+      if (response.ok && response.data?.data) {
+        const apiMdfesList = response.data.data;
+        const mappedMdfes = apiMdfesList.map(mapApiMdfeToMdfe);
+        setMdfes(mappedMdfes);
+      } else {
+        throw new Error(response.data?.message || 'Erro ao carregar MDF-es');
+      }
+    } catch (error: any) {
+      console.error('Erro ao carregar MDF-es:', error);
+      setLoadError(error?.message || 'Não foi possível carregar as MDF-es');
+      setMdfes([]);
+    } finally {
+      setIsLoadingMdfes(false);
     }
-  ]);
+  };
+
+  // Carregar MDF-es ao montar o componente
+  useEffect(() => {
+    loadMdfes();
+  }, []);
 
   // Funções de callback para ações dos MDF-es
   const handleCloseMDFe = (mdfe: MDFe) => {
@@ -135,8 +154,8 @@ export function MDFePage(): JSX.Element {
         // Fecha o modal de criação
         setIsNewMDFeModalOpen(false);
         
-        // TODO: Atualizar lista de MDF-es após salvar
-        // Pode buscar novamente da API ou adicionar o novo item à lista
+        // Recarrega a lista de MDF-es após salvar
+        await loadMdfes();
       } else {
         // Erro na resposta da API
         const errorMessage = response.data?.message || response.data?.error || 'Erro ao salvar MDF-e';

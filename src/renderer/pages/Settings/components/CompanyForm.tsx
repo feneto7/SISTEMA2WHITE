@@ -6,7 +6,7 @@
 import React, { useState, useEffect } from 'react';
 import { useTheme } from '../../../styles/ThemeProvider';
 import { AppIcons } from '../../../components/Icons/AppIcons';
-import { apiPost, apiGet } from '../../../utils/apiService';
+import { apiPost, apiGet, apiPut } from '../../../utils/apiService';
 import { LoadingSpinner } from '../../../components/LoadingSpinner/LoadingSpinner';
 import { formatCNPJ } from '../../../utils/documentFormatter';
 
@@ -70,6 +70,7 @@ export function CompanyForm(): JSX.Element {
   const [selectedCity, setSelectedCity] = useState<City | null>(null);
   const [isLoadingCompany, setIsLoadingCompany] = useState(false);
   const [companyId, setCompanyId] = useState<number | null>(null);
+  const [isEditing, setIsEditing] = useState(false);
 
   // Lista de UFs brasileiras
   const brazilianStates = [
@@ -263,16 +264,30 @@ export function CompanyForm(): JSX.Element {
             
             const cnpjFormatted = company.cnpj ? formatCNPJ(company.cnpj) : '';
             
-            // Preenche UF primeiro se tiver state_id (rápido, sem requisição HTTP)
+            // Busca UF do relacionamento state (retornado pelo backend)
             let ufValue = '';
-            if (address?.state_id) {
-              const stateIndex = address.state_id - 1;
-              if (stateIndex >= 0 && stateIndex < brazilianStates.length) {
-                ufValue = brazilianStates[stateIndex];
-              }
+            let cityName = '';
+            let cityIbgeCode = '';
+            
+            if (address?.state?.uf) {
+              // Se o backend retornou o relacionamento state, usa a UF de lá
+              ufValue = address.state.uf;
+              console.log('[CompanyForm] UF obtida do relacionamento state:', ufValue);
             }
             
-            // Preenche dados básicos primeiro (sem esperar busca da cidade)
+            if (address?.city?.name) {
+              // Se o backend retornou o relacionamento city, usa o nome de lá
+              cityName = address.city.name;
+              console.log('[CompanyForm] Cidade obtida do relacionamento city:', cityName);
+            }
+            
+            // Se temos city_id, assume que é o código IBGE (salvo da API IBGE)
+            if (address?.city_id) {
+              cityIbgeCode = address.city_id.toString();
+              console.log('[CompanyForm] Código IBGE da cidade:', cityIbgeCode);
+            }
+            
+            // Preenche dados da empresa
             const companyInfo = {
               businessName: company.name || '',
               tradeName: company.legal_name || '',
@@ -285,37 +300,25 @@ export function CompanyForm(): JSX.Element {
               addressNumber: address?.number?.toString() || '',
               zipCode: address?.zipcode || '',
               addressComplement: address?.complement || '',
-              city: '', // Será preenchido depois
+              city: cityName,
               state: ufValue,
               district: address?.district || '',
               phone: phoneContact?.value || '',
               email: emailContact?.value || ''
             };
             
-            console.log('[CompanyForm] Dados básicos da empresa preenchidos:', companyInfo);
+            console.log('[CompanyForm] Dados da empresa preenchidos:', companyInfo);
             
-            // Atualiza o estado com os dados básicos primeiro (renderiza imediatamente)
+            // Atualiza o estado
             setCompanyData(companyInfo);
             
-            // Busca cidade de forma assíncrona (não bloqueia a renderização)
-            if (address?.city_id) {
-              console.log('[CompanyForm] Buscando cidade pelo código IBGE:', address.city_id, 'state_id:', address.state_id);
-              // Não usa await aqui - busca em background
-              fetchCityAndStateByIBGECode(address.city_id, address.state_id)
-                .then((cityAndState) => {
-                  if (cityAndState) {
-                    console.log('[CompanyForm] Cidade e UF encontradas:', cityAndState);
-                    // Atualiza apenas a cidade sem recarregar tudo
-                    setCompanyData(prev => ({
-                      ...prev,
-                      city: cityAndState.city,
-                      state: cityAndState.state || prev.state // Mantém UF se já estava preenchida
-                    }));
-                  }
-                })
-                .catch((error) => {
-                  console.error('[CompanyForm] Erro ao buscar cidade:', error);
-                });
+            // Se temos UF e cidade, cria o objeto selectedCity para que o select funcione
+            if (cityName && cityIbgeCode) {
+              setSelectedCity({
+                nome: cityName,
+                codigo_ibge: cityIbgeCode
+              });
+              console.log('[CompanyForm] selectedCity definido:', { nome: cityName, codigo_ibge: cityIbgeCode });
             }
           } else {
             console.log('[CompanyForm] Nenhuma empresa encontrada');
@@ -339,14 +342,27 @@ export function CompanyForm(): JSX.Element {
       fetchCities(companyData.state);
     } else {
       setCities([]);
-      setSelectedCity(null);
+      // Só limpa selectedCity se não tiver cidade preenchida
+      if (!companyData.city) {
+        setSelectedCity(null);
+      }
     }
   }, [companyData.state]);
 
   // Atualiza município selecionado quando a cidade ou municípios mudarem
   useEffect(() => {
-    if (!companyData.city || cities.length === 0) {
-      setSelectedCity(null);
+    // Se não tiver cidade ou já tiver selectedCity definido, não faz nada
+    if (!companyData.city) {
+      return;
+    }
+    
+    // Se já tem selectedCity e o nome bate, não precisa buscar de novo
+    if (selectedCity && selectedCity.nome === companyData.city) {
+      return;
+    }
+    
+    // Se não tem cidades carregadas, não tenta buscar
+    if (cities.length === 0) {
       return;
     }
     
@@ -357,13 +373,17 @@ export function CompanyForm(): JSX.Element {
     
     if (city) {
       setSelectedCity(city);
+      console.log('[CompanyForm] selectedCity atualizado de cities:', city);
     } else {
       // Se não encontrou, tenta buscar por similaridade (pode ser que a API retorne com acentos diferentes)
       const similarCity = cities.find(m => 
         m.nome.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '') === 
         companyData.city.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '')
       );
-      setSelectedCity(similarCity || null);
+      if (similarCity) {
+        setSelectedCity(similarCity);
+        console.log('[CompanyForm] selectedCity atualizado de cities (similar):', similarCity);
+    }
     }
   }, [companyData.city, cities]);
 
@@ -525,6 +545,16 @@ export function CompanyForm(): JSX.Element {
     return errors;
   };
 
+  // Alterna entre modo de edição e visualização
+  const handleToggleEdit = () => {
+    setIsEditing(!isEditing);
+    // Limpa mensagens ao entrar em modo de edição
+    if (!isEditing) {
+      setShowSuccessMessage(false);
+      setErrorMessage('');
+    }
+  };
+
   // Salva empresa na API
   const handleSave = async () => {
     // Valida campos obrigatórios
@@ -558,21 +588,37 @@ export function CompanyForm(): JSX.Element {
           ? parseInt(currentCity.codigo_ibge, 10) 
           : null;
         
+        // Não calcula state_id no frontend - o backend vai buscar pela UF
+        // Envia apenas a UF para o backend processar
+        
         // Log para debug
         if (companyData.city && !cityId) {
           console.warn('[CompanyForm] Município não encontrado para cidade:', companyData.city);
           console.log('[CompanyForm] Municípios disponíveis:', cities.map(m => m.nome));
         }
         
-        addresses.push({
+        // Monta objeto de endereço
+        // Envia a UF para o backend buscar o state_id correto
+        const addressData: any = {
           street: companyData.street.trim(),
           number: companyData.addressNumber ? parseInt(companyData.addressNumber, 10) || null : null,
           complement: companyData.addressComplement.trim() || null,
           district: companyData.district.trim() || null,
-          city_id: cityId,
-          state_id: null, // TODO: Implementar busca de state_id quando tiver tabela de estados
+          uf: companyData.state ? companyData.state.toUpperCase() : null,
           zipcode: cleanCEP(companyData.zipCode) || null
-        });
+        };
+
+        // Adiciona nome da cidade para o backend buscar/criar na tabela cities
+        // O backend vai buscar o state_id pela UF e depois buscar/criar a cidade
+        if (companyData.city && companyData.state) {
+          addressData.city_name = companyData.city;
+          // Código IBGE pode ser útil para referência, mas não é obrigatório
+          if (cityId) {
+            addressData.ibge_code = cityId;
+          }
+        }
+
+        addresses.push(addressData);
       }
 
       // Prepara contatos
@@ -608,14 +654,20 @@ export function CompanyForm(): JSX.Element {
         payload.contacts = contacts;
       }
 
-      // Chama API
-      const response = await apiPost('/api/companies', payload, { requireAuth: true });
+      // Chama API - usa PUT se tiver companyId (edição), POST se não tiver (criação)
+      const response = companyId 
+        ? await apiPut(`/api/companies/${companyId}`, payload, { requireAuth: true })
+        : await apiPost('/api/companies', payload, { requireAuth: true });
 
       if (response.ok) {
         setShowSuccessMessage(true);
+        setIsEditing(false); // Sai do modo de edição após salvar
         
         // Atualiza o ID da empresa se foi criada
         if (response.data?.data?.id && !companyId) {
+          setCompanyId(response.data.data.id);
+        } else if (companyId && response.data?.data?.id) {
+          // Garante que o ID está atualizado após edição
           setCompanyId(response.data.data.id);
         }
         
@@ -728,11 +780,23 @@ export function CompanyForm(): JSX.Element {
     input: {
       ...systemStyles.input.field
     },
+    inputDisabled: {
+      ...systemStyles.input.field,
+      opacity: 0.6,
+      cursor: 'not-allowed',
+      background: systemColors.background.secondary
+    },
     selectWrapper: {
       ...systemStyles.select.container
     },
     select: {
       ...systemStyles.select.field
+    },
+    selectDisabled: {
+      ...systemStyles.select.field,
+      opacity: 0.6,
+      cursor: 'not-allowed',
+      background: systemColors.background.secondary
     },
     selectArrow: {
       ...systemStyles.select.arrow
@@ -778,9 +842,10 @@ export function CompanyForm(): JSX.Element {
             <label style={styles.label}>Nome Empresarial</label>
             <input
               type="text"
-              style={styles.input}
+              style={styles.inputDisabled}
               value={companyData.businessName}
               onChange={(e) => handleInputChange('businessName', e.target.value)}
+              disabled={true}
             />
           </div>
           
@@ -788,9 +853,10 @@ export function CompanyForm(): JSX.Element {
             <label style={styles.label}>Nome Fantasia</label>
             <input
               type="text"
-              style={styles.input}
+              style={styles.inputDisabled}
               value={companyData.tradeName}
               onChange={(e) => handleInputChange('tradeName', e.target.value)}
+              disabled={true}
             />
           </div>
         </div>
@@ -814,15 +880,15 @@ export function CompanyForm(): JSX.Element {
               <input
                 type="text"
                 style={{
-                  ...styles.input,
-                  opacity: isLoadingCNPJ ? 0.7 : 1,
-                  cursor: isLoadingCNPJ ? 'not-allowed' : 'text'
+                  ...styles.inputDisabled,
+                  opacity: isLoadingCNPJ ? 0.7 : 0.6,
+                  cursor: 'not-allowed'
                 }}
                 value={companyData.cnpj}
                 onChange={(e) => handleCNPJChange(e.target.value)}
                 placeholder="00.000.000/0000-00"
                 maxLength={18}
-                disabled={isLoadingCNPJ}
+                disabled={true}
               />
               {isLoadingCNPJ && (
                 <div style={{
@@ -843,9 +909,10 @@ export function CompanyForm(): JSX.Element {
             <label style={styles.label}>Inscrição Estadual</label>
             <input
               type="text"
-              style={styles.input}
+              style={styles.inputDisabled}
               value={companyData.stateRegistration}
               onChange={(e) => handleInputChange('stateRegistration', e.target.value)}
+              disabled={true}
             />
           </div>
         </div>
@@ -855,9 +922,10 @@ export function CompanyForm(): JSX.Element {
             <label style={styles.label}>Inscrição Municipal</label>
             <input
               type="text"
-              style={styles.input}
+              style={!isEditing ? styles.inputDisabled : styles.input}
               value={companyData.municipalRegistration}
               onChange={(e) => handleInputChange('municipalRegistration', e.target.value)}
+              disabled={!isEditing}
             />
           </div>
           
@@ -865,9 +933,10 @@ export function CompanyForm(): JSX.Element {
             <label style={styles.label}>CNAE</label>
             <input
               type="text"
-              style={styles.input}
+              style={!isEditing ? styles.inputDisabled : styles.input}
               value={companyData.cnae}
               onChange={(e) => handleInputChange('cnae', e.target.value)}
+              disabled={!isEditing}
             />
           </div>
           
@@ -875,9 +944,10 @@ export function CompanyForm(): JSX.Element {
             <label style={styles.label}>Regime Tributário</label>
             <div style={styles.selectWrapper}>
               <select
-                style={styles.select}
+                style={!isEditing ? styles.selectDisabled : styles.select}
                 value={companyData.taxRegime}
                 onChange={(e) => handleInputChange('taxRegime', e.target.value)}
+                disabled={!isEditing}
               >
                 <option value="">Selecione...</option>
                 <option value="simples-nacional">Simples Nacional</option>
@@ -902,9 +972,10 @@ export function CompanyForm(): JSX.Element {
             <label style={styles.label}>Rua/Av</label>
             <input
               type="text"
-              style={styles.input}
+              style={!isEditing ? styles.inputDisabled : styles.input}
               value={companyData.street}
               onChange={(e) => handleInputChange('street', e.target.value)}
+              disabled={!isEditing}
             />
           </div>
         </div>
@@ -914,9 +985,10 @@ export function CompanyForm(): JSX.Element {
             <label style={styles.label}>Número</label>
             <input
               type="text"
-              style={styles.input}
+              style={!isEditing ? styles.inputDisabled : styles.input}
               value={companyData.addressNumber}
               onChange={(e) => handleInputChange('addressNumber', e.target.value)}
+              disabled={!isEditing}
             />
           </div>
           
@@ -924,9 +996,10 @@ export function CompanyForm(): JSX.Element {
             <label style={styles.label}>CEP</label>
             <input
               type="text"
-              style={styles.input}
+              style={!isEditing ? styles.inputDisabled : styles.input}
               value={companyData.zipCode}
               onChange={(e) => handleInputChange('zipCode', e.target.value)}
+              disabled={!isEditing}
             />
           </div>
           
@@ -934,9 +1007,10 @@ export function CompanyForm(): JSX.Element {
             <label style={styles.label}>Complemento</label>
             <input
               type="text"
-              style={styles.input}
+              style={!isEditing ? styles.inputDisabled : styles.input}
               value={companyData.addressComplement}
               onChange={(e) => handleInputChange('addressComplement', e.target.value)}
+              disabled={!isEditing}
             />
           </div>
         </div>
@@ -946,9 +1020,10 @@ export function CompanyForm(): JSX.Element {
             <label style={styles.label}>UF</label>
             <div style={styles.selectWrapper}>
               <select
-                style={styles.select}
+                style={!isEditing ? styles.selectDisabled : styles.select}
                 value={companyData.state}
                 onChange={(e) => handleInputChange('state', e.target.value)}
+                disabled={!isEditing}
               >
                 <option value="">Selecione a UF</option>
                 {brazilianStates.map(uf => (
@@ -978,8 +1053,8 @@ export function CompanyForm(): JSX.Element {
             <div style={styles.selectWrapper}>
               <select
                 style={{
-                  ...styles.select,
-                  opacity: loadingCities ? 0.7 : 1
+                  ...(!isEditing ? styles.selectDisabled : styles.select),
+                  opacity: loadingCities ? 0.7 : (!isEditing ? 0.6 : 1)
                 }}
                 onChange={(e) => {
                   handleInputChange('city', e.target.value);
@@ -988,7 +1063,7 @@ export function CompanyForm(): JSX.Element {
                   setSelectedCity(city || null);
                 }}
                 value={companyData.city}
-                disabled={!companyData.state || loadingCities}
+                disabled={!companyData.state || loadingCities || !isEditing}
               >
                 <option value="">
                   {!companyData.state 
@@ -1015,9 +1090,10 @@ export function CompanyForm(): JSX.Element {
             <label style={styles.label}>Bairro/Distrito</label>
             <input
               type="text"
-              style={styles.input}
+              style={!isEditing ? styles.inputDisabled : styles.input}
               value={companyData.district}
               onChange={(e) => handleInputChange('district', e.target.value)}
+              disabled={!isEditing}
             />
           </div>
         </div>
@@ -1032,9 +1108,10 @@ export function CompanyForm(): JSX.Element {
             <label style={styles.label}>Telefone</label>
             <input
               type="text"
-              style={styles.input}
+              style={!isEditing ? styles.inputDisabled : styles.input}
               value={companyData.phone}
               onChange={(e) => handleInputChange('phone', e.target.value)}
+              disabled={!isEditing}
             />
           </div>
           
@@ -1042,9 +1119,10 @@ export function CompanyForm(): JSX.Element {
             <label style={styles.label}>Email</label>
             <input
               type="email"
-              style={styles.input}
+              style={!isEditing ? styles.inputDisabled : styles.input}
               value={companyData.email}
               onChange={(e) => handleInputChange('email', e.target.value)}
+              disabled={!isEditing}
             />
           </div>
         </div>
@@ -1124,7 +1202,7 @@ export function CompanyForm(): JSX.Element {
         </div>
       )}
 
-      {/* Botão Salvar */}
+      {/* Botão Editar/Salvar */}
       <div style={{ 
         display: 'flex', 
         justifyContent: 'flex-end',
@@ -1132,6 +1210,7 @@ export function CompanyForm(): JSX.Element {
         paddingTop: '24px',
         borderTop: `1px solid ${systemColors.border.light}`
       }}>
+        {isEditing ? (
         <button
           onClick={handleSave}
           disabled={isSaving}
@@ -1168,6 +1247,29 @@ export function CompanyForm(): JSX.Element {
             </>
           )}
         </button>
+        ) : (
+          <button
+            onClick={handleToggleEdit}
+            style={{
+              ...systemStyles.button.default,
+              display: 'flex',
+              alignItems: 'center',
+              gap: '8px',
+              padding: '8px 20px'
+            }}
+            onMouseEnter={(e) => {
+              if (systemStyles.button.defaultHover) {
+                e.currentTarget.style.background = systemStyles.button.defaultHover.background;
+              }
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.background = systemStyles.button.default.background;
+            }}
+          >
+            <AppIcons.Edit size={14} />
+            Editar
+          </button>
+        )}
       </div>
     </div>
   );
