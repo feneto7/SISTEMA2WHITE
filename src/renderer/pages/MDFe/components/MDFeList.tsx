@@ -17,9 +17,9 @@ export interface MDFe {
   number: string;
   series: string;
   accessKey: string;
-  issuer: string;
-  recipient: string;
-  value: number;
+  initialState: string;
+  finalState: string;
+  driver: string;
   status: MDFeStatus;
   issueDate: string;
   authorizationDate?: string;
@@ -51,10 +51,14 @@ export const MDFeList = React.memo<MDFeListProps>(({ mdfes, onCloseMDFe, onDetai
     },
     listHeader: {
       ...systemStyles.list.header,
-      display: 'grid' as const
+      display: 'grid' as const,
+      padding: '12px 16px',
+      gap: 0
     },
     headerCell: {
-      ...systemStyles.list.headerCell
+      ...systemStyles.list.headerCell,
+      display: 'flex',
+      alignItems: 'center'
     },
     headerCellDivider: {
       display: 'inline-block',
@@ -65,7 +69,8 @@ export const MDFeList = React.memo<MDFeListProps>(({ mdfes, onCloseMDFe, onDetai
       verticalAlign: 'middle'
     },
     listContent: {
-      ...systemStyles.list.content
+      ...systemStyles.list.content,
+      padding: 0
     },
     listRow: {
       padding: '12px 16px',
@@ -82,7 +87,9 @@ export const MDFeList = React.memo<MDFeListProps>(({ mdfes, onCloseMDFe, onDetai
       fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, Helvetica, Arial, sans-serif',
       overflow: 'hidden' as const,
       textOverflow: 'ellipsis' as const,
-      whiteSpace: 'nowrap' as const
+      whiteSpace: 'nowrap' as const,
+      display: 'flex',
+      alignItems: 'center'
     },
     clientName: {
       fontSize: '13px',
@@ -255,22 +262,22 @@ export const MDFeList = React.memo<MDFeListProps>(({ mdfes, onCloseMDFe, onDetai
       <div style={styles.listContainer}>
         <div style={{
           ...styles.listHeader,
-          gridTemplateColumns: '2fr 1fr 1fr 1fr 0.8fr 80px'
+          gridTemplateColumns: '2fr 0.8fr 0.8fr 1.2fr 1fr 80px'
         }}>
           <div style={styles.headerCell}>
             Número/Série
             <div style={styles.headerCellDivider}></div>
           </div>
           <div style={styles.headerCell}>
-            Emitente
+            UF Inicial
             <div style={styles.headerCellDivider}></div>
           </div>
           <div style={styles.headerCell}>
-            Destinatário
+            UF Final
             <div style={styles.headerCellDivider}></div>
           </div>
           <div style={styles.headerCell}>
-            Valor
+            Condutor
             <div style={styles.headerCellDivider}></div>
           </div>
           <div style={styles.headerCell}>Status</div>
@@ -289,22 +296,22 @@ export const MDFeList = React.memo<MDFeListProps>(({ mdfes, onCloseMDFe, onDetai
       <div style={styles.listContainer}>
         <div style={{
           ...styles.listHeader,
-          gridTemplateColumns: '2fr 1fr 1fr 1fr 0.8fr 80px'
+          gridTemplateColumns: '2fr 0.8fr 0.8fr 1.2fr 1fr 80px'
         }}>
           <div style={styles.headerCell}>
             Número/Série
             <div style={styles.headerCellDivider}></div>
           </div>
           <div style={styles.headerCell}>
-            Emitente
+            UF Inicial
             <div style={styles.headerCellDivider}></div>
           </div>
           <div style={styles.headerCell}>
-            Destinatário
+            UF Final
             <div style={styles.headerCellDivider}></div>
           </div>
           <div style={styles.headerCell}>
-            Valor
+            Condutor
             <div style={styles.headerCellDivider}></div>
           </div>
           <div style={styles.headerCell}>Status</div>
@@ -328,22 +335,22 @@ export const MDFeList = React.memo<MDFeListProps>(({ mdfes, onCloseMDFe, onDetai
     <div style={styles.listContainer}>
       <div style={{
         ...styles.listHeader,
-        gridTemplateColumns: '2fr 1fr 1fr 1fr 0.8fr 80px'
+        gridTemplateColumns: '2fr 0.8fr 0.8fr 1.5fr 0.8fr 80px'
       }}>
         <div style={styles.headerCell}>
           Número/Série
           <div style={styles.headerCellDivider}></div>
         </div>
         <div style={styles.headerCell}>
-          Emitente
+          UF Inicial
           <div style={styles.headerCellDivider}></div>
         </div>
         <div style={styles.headerCell}>
-          Destinatário
+          UF Final
           <div style={styles.headerCellDivider}></div>
         </div>
         <div style={styles.headerCell}>
-          Valor
+          Condutor
           <div style={styles.headerCellDivider}></div>
         </div>
         <div style={styles.headerCell}>Status</div>
@@ -393,7 +400,9 @@ const MDFeRow = React.memo<MDFeRowProps>(({
       fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, Helvetica, Arial, sans-serif',
       overflow: 'hidden' as const,
       textOverflow: 'ellipsis' as const,
-      whiteSpace: 'nowrap' as const
+      whiteSpace: 'nowrap' as const,
+      display: 'flex',
+      alignItems: 'center'
     },
     clientName: {
       fontSize: '13px',
@@ -450,7 +459,7 @@ const MDFeRow = React.memo<MDFeRowProps>(({
   const rowStyle = useMemo(() => {
     const baseStyle = {
       ...styles.listRow,
-      gridTemplateColumns: '2fr 1fr 1fr 1fr 0.8fr 80px',
+      gridTemplateColumns: '2fr 0.8fr 0.8fr 1.2fr 1fr 80px',
       animationDelay: `${index * 0.05}s`,
       cursor: 'pointer',
       transition: 'all 0.15s ease'
@@ -515,12 +524,6 @@ const MDFeRow = React.memo<MDFeRowProps>(({
     };
   };
 
-  const formatCurrency = (value: number) => {
-    return new Intl.NumberFormat('pt-BR', {
-      style: 'currency',
-      currency: 'BRL'
-    }).format(value);
-  };
 
   return (
     <div
@@ -535,14 +538,14 @@ const MDFeRow = React.memo<MDFeRowProps>(({
           <div style={styles.emailText}>{mdfe.accessKey}</div>
         </div>
       </div>
-      <div style={styles.rowCell} className="cell-emitente">
-        <span style={styles.emailText}>{mdfe.issuer}</span>
+      <div style={styles.rowCell} className="cell-uf-inicial">
+        <span style={styles.phoneText}>{mdfe.initialState}</span>
       </div>
-      <div style={styles.rowCell} className="cell-destinatario">
-        <span style={styles.phoneText}>{mdfe.recipient}</span>
+      <div style={styles.rowCell} className="cell-uf-final">
+        <span style={styles.phoneText}>{mdfe.finalState}</span>
       </div>
-      <div style={styles.rowCell} className="cell-valor">
-        <span style={styles.emailText}>{formatCurrency(mdfe.value)}</span>
+      <div style={styles.rowCell} className="cell-condutor">
+        <span style={styles.phoneText}>{mdfe.driver}</span>
       </div>
       <div style={styles.rowCell} className="cell-status">
         <span style={getStatusStyle(mdfe.status)}>
