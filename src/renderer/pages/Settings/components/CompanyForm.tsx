@@ -118,7 +118,6 @@ export function CompanyForm(): JSX.Element {
       }));
       
       setCities(formattedCities);
-      console.log(`Municípios de ${stateCode} carregados:`, formattedCities.length);
       
       // Se houver uma cidade pendente para preencher (vinda da consulta de CNPJ), tenta preenchê-la
       const pendingCity = companyData.city;
@@ -131,7 +130,6 @@ export function CompanyForm(): JSX.Element {
         }
       }
     } catch (error) {
-      console.error(`[CompanyForm] Erro ao buscar municípios de ${stateCode}:`, error);
       setCities([]);
     } finally {
       setLoadingCities(false);
@@ -157,7 +155,7 @@ export function CompanyForm(): JSX.Element {
             }
           }
         } catch (error) {
-          console.error(`[CompanyForm] Erro ao buscar município na UF ${uf}:`, error);
+          // Erro silencioso
         }
       }
       
@@ -214,7 +212,6 @@ export function CompanyForm(): JSX.Element {
       
       return null;
     } catch (error) {
-      console.error('[CompanyForm] Erro ao buscar cidade por código IBGE:', error);
       return null;
     }
   };
@@ -224,12 +221,7 @@ export function CompanyForm(): JSX.Element {
     const loadCompanyData = async () => {
       setIsLoadingCompany(true);
       try {
-        console.log('[CompanyForm] Buscando dados da empresa...');
         const response = await apiGet('/api/companies', { requireAuth: true });
-        
-        console.log('[CompanyForm] Resposta da API:', response);
-        console.log('[CompanyForm] response.ok:', response.ok);
-        console.log('[CompanyForm] response.data:', response.data);
         
         if (response.ok) {
           // Verifica diferentes estruturas possíveis da resposta
@@ -246,21 +238,14 @@ export function CompanyForm(): JSX.Element {
             companies = response.data;
           }
           
-          console.log('[CompanyForm] Companies encontradas:', companies);
-          
           if (companies && companies.length > 0) {
             const company = companies[0];
-            console.log('[CompanyForm] Empresa encontrada:', company);
             
             setCompanyId(company.id);
             
             const address = company.addresses && company.addresses.length > 0 ? company.addresses[0] : null;
             const phoneContact = company.contacts?.find((c: any) => c.type === 'phone');
             const emailContact = company.contacts?.find((c: any) => c.type === 'email');
-            
-            console.log('[CompanyForm] Address:', address);
-            console.log('[CompanyForm] Phone contact:', phoneContact);
-            console.log('[CompanyForm] Email contact:', emailContact);
             
             const cnpjFormatted = company.cnpj ? formatCNPJ(company.cnpj) : '';
             
@@ -272,19 +257,16 @@ export function CompanyForm(): JSX.Element {
             if (address?.state?.uf) {
               // Se o backend retornou o relacionamento state, usa a UF de lá
               ufValue = address.state.uf;
-              console.log('[CompanyForm] UF obtida do relacionamento state:', ufValue);
             }
             
             if (address?.city?.name) {
               // Se o backend retornou o relacionamento city, usa o nome de lá
               cityName = address.city.name;
-              console.log('[CompanyForm] Cidade obtida do relacionamento city:', cityName);
             }
             
             // Se temos city_id, assume que é o código IBGE (salvo da API IBGE)
             if (address?.city_id) {
               cityIbgeCode = address.city_id.toString();
-              console.log('[CompanyForm] Código IBGE da cidade:', cityIbgeCode);
             }
             
             // Preenche dados da empresa
@@ -307,8 +289,6 @@ export function CompanyForm(): JSX.Element {
               email: emailContact?.value || ''
             };
             
-            console.log('[CompanyForm] Dados da empresa preenchidos:', companyInfo);
-            
             // Atualiza o estado
             setCompanyData(companyInfo);
             
@@ -318,16 +298,9 @@ export function CompanyForm(): JSX.Element {
                 nome: cityName,
                 codigo_ibge: cityIbgeCode
               });
-              console.log('[CompanyForm] selectedCity definido:', { nome: cityName, codigo_ibge: cityIbgeCode });
             }
-          } else {
-            console.log('[CompanyForm] Nenhuma empresa encontrada');
           }
-        } else {
-          console.error('[CompanyForm] Erro na resposta da API:', response.status, response.data);
         }
-      } catch (error) {
-        console.error('[CompanyForm] Erro ao carregar dados da empresa:', error);
       } finally {
         setIsLoadingCompany(false);
       }
@@ -373,7 +346,6 @@ export function CompanyForm(): JSX.Element {
     
     if (city) {
       setSelectedCity(city);
-      console.log('[CompanyForm] selectedCity atualizado de cities:', city);
     } else {
       // Se não encontrou, tenta buscar por similaridade (pode ser que a API retorne com acentos diferentes)
       const similarCity = cities.find(m => 
@@ -382,8 +354,7 @@ export function CompanyForm(): JSX.Element {
       );
       if (similarCity) {
         setSelectedCity(similarCity);
-        console.log('[CompanyForm] selectedCity atualizado de cities (similar):', similarCity);
-    }
+      }
     }
   }, [companyData.city, cities]);
 
@@ -398,8 +369,6 @@ export function CompanyForm(): JSX.Element {
       if (cleanCnpj.length !== 14) {
         return;
       }
-
-      console.log('Consultando CNPJ:', cleanCnpj);
       
       const response = await fetch(`https://brasilapi.com.br/api/cnpj/v1/${cleanCnpj}`);
       
@@ -431,8 +400,6 @@ export function CompanyForm(): JSX.Element {
         simpleNationalOptIn: apiData.opcao_pelo_simples,
         individualMicroEntrepreneurOptIn: apiData.opcao_pelo_mei
       };
-      
-      console.log('Dados recebidos da API (normalizados):', data);
       
       // Preenche os campos automaticamente
       handleInputChange('businessName', data.corporateName || '');
@@ -482,19 +449,8 @@ export function CompanyForm(): JSX.Element {
         }
       }
       
-      console.log('Campos preenchidos automaticamente:', {
-        corporateName: data.corporateName,
-        tradeName: data.tradeName,
-        street: data.street,
-        city: data.city,
-        state: data.state,
-        zipCode: data.zipCode,
-        mainActivityCode: data.mainActivityCode
-      });
-      
     } catch (error) {
-      console.error('Erro ao consultar CNPJ:', error);
-      // Não mostra erro para o usuário, apenas loga no console
+      // Erro silencioso
     } finally {
       setIsLoadingCNPJ(false);
     }
@@ -515,8 +471,7 @@ export function CompanyForm(): JSX.Element {
     // Se estiver completo (14 dígitos), consulta a API
     const cleanCnpj = value.replace(/\D/g, '');
     if (cleanCnpj.length === 14) {
-      console.log('CNPJ completo detectado, consultando API...');
-        await consultCNPJ(formatted);
+      await consultCNPJ(formatted);
     }
   };
 
@@ -590,12 +545,6 @@ export function CompanyForm(): JSX.Element {
         
         // Não calcula state_id no frontend - o backend vai buscar pela UF
         // Envia apenas a UF para o backend processar
-        
-        // Log para debug
-        if (companyData.city && !cityId) {
-          console.warn('[CompanyForm] Município não encontrado para cidade:', companyData.city);
-          console.log('[CompanyForm] Municípios disponíveis:', cities.map(m => m.nome));
-        }
         
         // Monta objeto de endereço
         // Envia a UF para o backend buscar o state_id correto
@@ -702,7 +651,6 @@ export function CompanyForm(): JSX.Element {
         setErrorMessage(errorMsg);
       }
     } catch (error: any) {
-      console.error('[CompanyForm] Erro ao salvar empresa:', error);
       setErrorMessage(error.message || 'Erro ao salvar empresa. Verifique sua conexão e tente novamente.');
     } finally {
       setIsSaving(false);

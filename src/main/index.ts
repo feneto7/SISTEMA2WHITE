@@ -1,9 +1,10 @@
 import path from 'node:path';
 import { app, BrowserWindow, nativeTheme, ipcMain, dialog, Notification } from 'electron';
-import { getInstalledCertificates } from './handlers/certificateHandler';
 import { importNFEXMLs, importNFEXMLsFromFiles } from './handlers/xmlImportHandler';
+import { readCertificateInfo } from './handlers/certificateReader';
 import https from 'node:https';
 import http from 'node:http';
+import fs from 'node:fs';
 
 let mainWindow: BrowserWindow | null = null;
 
@@ -56,9 +57,27 @@ const createWindow = () => {
 };
 
 app.whenReady().then(() => {
-  // Handler para buscar certificados digitais instalados
-  ipcMain.handle('get-installed-certificates', async () => {
-    return await getInstalledCertificates();
+  // Handler para ler arquivo e converter para Base64
+  ipcMain.handle('read-file-base64', async (event, filePath) => {
+    try {
+      const fileBuffer = fs.readFileSync(filePath);
+      const base64 = fileBuffer.toString('base64');
+      return base64;
+    } catch (error) {
+      console.error('Erro ao ler arquivo:', error);
+      throw error;
+    }
+  });
+
+  // Handler para ler informações do certificado
+  ipcMain.handle('read-certificate-info', async (event, filePath, password) => {
+    try {
+      const certInfo = await readCertificateInfo(filePath, password);
+      return certInfo;
+    } catch (error) {
+      console.error('Erro ao ler informações do certificado:', error);
+      throw error;
+    }
   });
 
   // Handler para importar XMLs de notas fiscais de uma pasta
