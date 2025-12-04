@@ -1,8 +1,18 @@
 // Tipos para as APIs do Electron expostas no renderer process
 
+interface CertificateInfo {
+  validFrom: string;
+  validTo: string;
+  cnpj: string | null;
+  companyName: string | null;
+  subject: string;
+  issuer: string;
+}
+
 interface ElectronAPI {
-  getInstalledCertificates: () => Promise<any[]>;
   importNFEXMLs: (folderPath: string) => Promise<any[]>;
+  readFileAsBase64: (filePath: string) => Promise<string>;
+  readCertificateInfo: (filePath: string, password: string) => Promise<CertificateInfo>;
 }
 
 interface ElectronBridge {

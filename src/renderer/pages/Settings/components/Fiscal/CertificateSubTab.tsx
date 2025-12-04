@@ -4,99 +4,232 @@
 //--------------------------------------------------------------------
 import React, { useState, useEffect } from 'react';
 import { useTheme } from '../../../../styles/ThemeProvider';
+import { extractCertificateMetadata } from '../../../../utils/certificateUtils';
+import { Dialog } from '../../../../components/Dialog/Dialog';
 
-// Tipagem para a API do Electron
-declare global {
-  interface Window {
-    electronAPI: {
-      getInstalledCertificates: () => Promise<string[]>;
-    };
-  }
-}
-
-const STORAGE_KEY = 'selected_certificate';
 const ENVIRONMENT_KEY = 'fiscal_environment';
+const CERTIFICATE_TYPE_KEY = 'certificate_type';
+const CERTIFICATE_FILE_KEY = 'certificate_file_base64';
+const CERTIFICATE_PASSWORD_KEY = 'certificate_password';
+const CERTIFICATE_METADATA_KEY = 'certificate_metadata';
+
+interface CertificateMetadata {
+  fileName: string;
+  filePath: string;
+  uploadDate: string;
+  validFrom?: string;
+  validTo?: string;
+  cnpj?: string;
+  companyName?: string;
+}
 
 export function CertificateSubTab(): JSX.Element {
   const { systemColors, systemStyles } = useTheme();
-  const [selectedCertificate, setSelectedCertificate] = useState('');
-  const [savedCertificate, setSavedCertificate] = useState('');
-  const [certificates, setCertificates] = useState<string[]>([]);
-  const [isSelectFocused, setIsSelectFocused] = useState(false);
-  const [isLoading, setIsLoading] = useState(true);
   const [showSuccessMessage, setShowSuccessMessage] = useState(false);
   const [environment, setEnvironment] = useState<'producao' | 'homologacao'>('homologacao');
   const [savedEnvironment, setSavedEnvironment] = useState<'producao' | 'homologacao'>('homologacao');
+  
+  // Estados do certificado
+  const [certificateType, setCertificateType] = useState<'A1' | 'A3'>('A1');
+  const [savedCertificateType, setSavedCertificateType] = useState<'A1' | 'A3'>('A1');
+  const [certificateFile, setCertificateFile] = useState<string>('');
+  const [savedCertificateFile, setSavedCertificateFile] = useState<string>('');
+  const [certificatePassword, setCertificatePassword] = useState<string>('');
+  const [savedCertificatePassword, setSavedCertificatePassword] = useState<string>('');
+  const [certificateMetadata, setCertificateMetadata] = useState<CertificateMetadata | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const [tempFilePath, setTempFilePath] = useState<string>('');
+  
+  // Estados para Dialog
+  const [dialogOpen, setDialogOpen] = useState(false);
+  const [dialogWarning, setDialogWarning] = useState<string>('');
+  const [dialogHint, setDialogHint] = useState<string>('');
 
-  // Carregar certificado e ambiente salvos ao montar o componente
+  // Carregar dados salvos ao montar o componente
   useEffect(() => {
-    const saved = localStorage.getItem(STORAGE_KEY);
-    if (saved) {
-      setSavedCertificate(saved);
-      setSelectedCertificate(saved);
-    }
-
     const savedEnv = localStorage.getItem(ENVIRONMENT_KEY) as 'producao' | 'homologacao' | null;
     if (savedEnv) {
       setSavedEnvironment(savedEnv);
       setEnvironment(savedEnv);
     }
-  }, []);
 
-  useEffect(() => {
-    const fetchCertificates = async () => {
-      setIsLoading(true);
-      try {
-        console.log('CertificateSubTab: Iniciando busca de certificados...');
-        console.log('CertificateSubTab: window.electronAPI disponível?', !!window.electronAPI);
-        
-        if (window.electronAPI) {
-          console.log('CertificateSubTab: Chamando getInstalledCertificates...');
-          const installedCertificates = await window.electronAPI.getInstalledCertificates();
-          console.log('CertificateSubTab: Certificados recebidos:', installedCertificates);
-          setCertificates(installedCertificates);
-        } else {
-          console.warn('CertificateSubTab: electronAPI não disponível');
-          // Fallback para dados de teste
-          setCertificates([
-            'Certificado Digital Teste - CPF: 123.456.789-00',
-            'AC BRASIL v5 - CPF: 987.654.321-00',
-            'Certificado A1 - CNPJ: 12.345.678/0001-90'
-          ]);
-        }
-      } catch (error) {
-        console.error('CertificateSubTab: Erro ao buscar certificados:', error);
-        setCertificates([]);
-      } finally {
-        setIsLoading(false);
-      }
-    };
+    const savedType = localStorage.getItem(CERTIFICATE_TYPE_KEY) as 'A1' | 'A3' | null;
+    if (savedType) {
+      setSavedCertificateType(savedType);
+      setCertificateType(savedType);
+    }
 
-    fetchCertificates();
-  }, []);
+    // Carregar certificado em Base64
+    const savedCertificateFile = localStorage.getItem(CERTIFICATE_FILE_KEY);
+    if (savedCertificateFile) {
+      setCertificateFile(savedCertificateFile);
+      setSavedCertificateFile(savedCertificateFile);
+    }
 
-  const handleSave = () => {
-    if (selectedCertificate) {
-      localStorage.setItem(STORAGE_KEY, selectedCertificate);
-      setSavedCertificate(selectedCertificate);
-      localStorage.setItem(ENVIRONMENT_KEY, environment);
-      setSavedEnvironment(environment);
-      setShowSuccessMessage(true);
+    // Carregar senha do certificado
+    const savedPassword = localStorage.getItem(CERTIFICATE_PASSWORD_KEY);
+    if (savedPassword) {
+      setCertificatePassword(savedPassword);
+      setSavedCertificatePassword(savedPassword);
+    }
+
+    // Carregar metadados do certificado
+    const savedMetadata = localStorage.getItem(CERTIFICATE_METADATA_KEY);
+    if (savedMetadata) {
+      const metadata = JSON.parse(savedMetadata);
+      setCertificateMetadata(metadata);
       
-      // Ocultar mensagem após 3 segundos
-      setTimeout(() => {
-        setShowSuccessMessage(false);
-      }, 3000);
+      // Restaurar caminho do arquivo se disponível nos metadados
+      if (metadata.filePath) {
+        setTempFilePath(metadata.filePath);
+      }
+    }
+  }, []);
+
+  // Função para selecionar certificado
+  const handleSelectCertificate = async () => {
+    try {
+      setIsLoading(true);
+      
+      const filePaths = await window.electron.showOpenDialog({
+        properties: ['openFile'],
+        title: 'Selecionar Certificado Digital',
+        buttonLabel: 'Selecionar',
+        filters: [
+          { name: 'Certificado Digital', extensions: ['pfx', 'p12'] }
+        ]
+      });
+
+      if (filePaths && filePaths.length > 0) {
+        const filePath = filePaths[0];
+        const fileName = filePath.split('\\').pop() || filePath.split('/').pop() || 'certificado.pfx';
+        
+        // Salvar caminho temporário para validar depois
+        setTempFilePath(filePath);
+        
+        // Ler arquivo e converter para Base64
+        const base64 = await window.electronAPI.readFileAsBase64(filePath);
+        
+        setCertificateFile(base64);
+        
+        // Extrair metadados básicos usando utilitário
+        const metadata = extractCertificateMetadata(fileName, filePath);
+        
+        setCertificateMetadata(metadata);
+      }
+    } catch (error) {
+      console.error('Erro ao selecionar certificado:', error);
+      setDialogWarning('Erro ao selecionar certificado');
+      setDialogHint('Não foi possível selecionar o arquivo. Verifique se o arquivo está acessível e tente novamente.');
+      setDialogOpen(true);
+    } finally {
+      setIsLoading(false);
     }
   };
 
-  const hasChanges = selectedCertificate !== savedCertificate || environment !== savedEnvironment;
+  // Função para validar certificado e extrair informações
+  const handleValidateCertificate = async () => {
+    if (!tempFilePath || !certificatePassword) {
+      setDialogWarning('Campos obrigatórios');
+      setDialogHint('Selecione um certificado e informe a senha antes de validar.');
+      setDialogOpen(true);
+      return;
+    }
 
-  // Estilo padrão para selects - o foco é aplicado globalmente via CSS
-  const getSelectStyle = () => ({
-    ...systemStyles.select.field,
-    ...(isLoading ? { opacity: 0.6, cursor: 'wait' } : {})
-  });
+    try {
+      setIsLoading(true);
+      
+      // Ler informações do certificado
+      const certInfo = await window.electronAPI.readCertificateInfo(tempFilePath, certificatePassword);
+      
+      // Atualizar metadados com informações extraídas
+      if (certificateMetadata) {
+        const updatedMetadata: CertificateMetadata = {
+          ...certificateMetadata,
+          validFrom: certInfo.validFrom,
+          validTo: certInfo.validTo,
+          cnpj: certInfo.cnpj || undefined,
+          companyName: certInfo.companyName || undefined
+        };
+        
+        setCertificateMetadata(updatedMetadata);
+      }
+      
+      setDialogWarning('Certificado validado');
+      setDialogHint('O certificado foi validado com sucesso e as informações foram extraídas.');
+      setDialogOpen(true);
+    } catch (error: any) {
+      console.error('Erro ao validar certificado:', error);
+      
+      const errorMessage = error?.message || 'Erro desconhecido';
+      
+      if (errorMessage.includes('Senha incorreta')) {
+        setDialogWarning('Senha incorreta');
+        setDialogHint('A senha informada está incorreta. Verifique a senha do certificado e tente novamente.');
+      } else {
+        setDialogWarning('Erro ao validar certificado');
+        setDialogHint(errorMessage || 'Não foi possível validar o certificado. Verifique o arquivo e a senha e tente novamente.');
+      }
+      
+      setDialogOpen(true);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleSave = () => {
+    // Validar se certificado foi selecionado
+    if (!certificateFile) {
+      setDialogWarning('Certificado não selecionado');
+      setDialogHint('Selecione um certificado digital antes de salvar.');
+      setDialogOpen(true);
+      return;
+    }
+
+    // Validar se senha foi informada
+    if (!certificatePassword) {
+      setDialogWarning('Senha não informada');
+      setDialogHint('Informe a senha do certificado antes de salvar.');
+      setDialogOpen(true);
+      return;
+    }
+
+    // Salvar dados no localStorage
+    localStorage.setItem(ENVIRONMENT_KEY, environment);
+    localStorage.setItem(CERTIFICATE_TYPE_KEY, certificateType);
+    localStorage.setItem(CERTIFICATE_FILE_KEY, certificateFile);
+    localStorage.setItem(CERTIFICATE_PASSWORD_KEY, certificatePassword);
+    
+    if (certificateMetadata) {
+      localStorage.setItem(CERTIFICATE_METADATA_KEY, JSON.stringify(certificateMetadata));
+    }
+    
+    // Atualizar estados salvos para comparação
+    setSavedEnvironment(environment);
+    setSavedCertificateType(certificateType);
+    setSavedCertificateFile(certificateFile);
+    setSavedCertificatePassword(certificatePassword);
+    setShowSuccessMessage(true);
+    
+    // Ocultar mensagem após 3 segundos
+    setTimeout(() => {
+      setShowSuccessMessage(false);
+    }, 3000);
+  };
+
+  // Verificar se há dados válidos para salvar
+  const hasValidData = certificateFile !== '' && certificatePassword !== '';
+  
+  // Verificar se há mudanças em relação aos valores salvos
+  const hasChanges = 
+    environment !== savedEnvironment || 
+    certificateType !== savedCertificateType ||
+    certificateFile !== savedCertificateFile ||
+    certificatePassword !== savedCertificatePassword;
+  
+  // Botão deve estar habilitado se há dados válidos E há mudanças
+  // Também habilita se há dados válidos mas ainda não foram salvos (primeira vez)
+  const canSave = hasValidData && (hasChanges || (savedCertificateFile === '' && savedCertificatePassword === ''));
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '30px' }}>
@@ -105,7 +238,7 @@ export function CertificateSubTab(): JSX.Element {
         color: systemColors.text.secondary,
         fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, Helvetica, Arial, sans-serif'
       }}>
-        Selecione o certificado digital A1 ou A3 para assinatura de documentos fiscais e defina o ambiente fiscal.
+        Configure o certificado digital e o ambiente fiscal para emissão de documentos fiscais.
       </p>
 
       {/* Seleção de Ambiente Fiscal */}
@@ -187,60 +320,148 @@ export function CertificateSubTab(): JSX.Element {
         </div>
       </div>
 
-      {/* Campo de seleção do certificado */}
+      {/* Tipo de Certificado */}
       <div style={systemStyles.input.container}>
-        <label style={systemStyles.input.label}>Certificado Digital *</label>
+        <label style={systemStyles.input.label}>Tipo de Certificado *</label>
         <div style={systemStyles.select.container}>
           <select
-            value={selectedCertificate}
-            onChange={(e) => setSelectedCertificate(e.target.value)}
-            onFocus={() => setIsSelectFocused(true)}
-            onBlur={() => setIsSelectFocused(false)}
-            style={getSelectStyle(isSelectFocused)}
-            disabled={isLoading}
+            value={certificateType}
+            onChange={(e) => setCertificateType(e.target.value as 'A1' | 'A3')}
+            style={systemStyles.select.field}
           >
-            <option value="">
-              {isLoading ? 'Carregando certificados...' : 'Selecione um certificado'}
-            </option>
-            {certificates.map((cert, index) => (
-              <option key={index} value={cert}>
-                {cert}
-              </option>
-            ))}
+            <option value="A1">A1 (Arquivo Digital)</option>
+            <option value="A3">A3 (Token/Cartão)</option>
           </select>
           <div style={systemStyles.select.arrow}>
             <div style={systemStyles.select.arrowIcon}></div>
           </div>
         </div>
-        {certificates.length === 0 && !isLoading && (
-          <p style={{
-            fontSize: '11px',
-            color: systemColors.text.secondary,
-            fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, Helvetica, Arial, sans-serif',
-            margin: '4px 0 0 0'
-          }}>
-            Nenhum certificado digital encontrado. Instale um certificado A1 ou A3.
-          </p>
-        )}
+        <p style={{
+          fontSize: '11px',
+          color: systemColors.text.secondary,
+          fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, Helvetica, Arial, sans-serif',
+          margin: '4px 0 0 0'
+        }}>
+          {certificateType === 'A1' 
+            ? 'Certificado armazenado em arquivo .pfx ou .p12' 
+            : 'Certificado armazenado em token USB ou cartão inteligente'}
+        </p>
+      </div>
+
+      {/* Seleção do Arquivo de Certificado */}
+      <div style={systemStyles.input.container}>
+        <label style={systemStyles.input.label}>Arquivo do Certificado *</label>
+        <div style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
+          <button
+            onClick={handleSelectCertificate}
+            disabled={isLoading}
+            style={{
+              ...systemStyles.button.primary,
+              flex: '0 0 auto',
+              ...(isLoading ? systemStyles.button.disabled : {})
+            }}
+            onMouseOver={(e) => {
+              if (!isLoading) {
+                Object.assign(e.currentTarget.style, systemStyles.button.primaryHover);
+              }
+            }}
+            onMouseOut={(e) => {
+              if (!isLoading) {
+                Object.assign(e.currentTarget.style, systemStyles.button.primary);
+              }
+            }}
+          >
+            {isLoading ? 'Carregando...' : 'Selecionar Certificado'}
+          </button>
+          
+          {certificateMetadata && (
+            <span style={{
+              fontSize: '12px',
+              color: systemColors.text.secondary,
+              fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, Helvetica, Arial, sans-serif'
+            }}>
+              {certificateMetadata.fileName}
+            </span>
+          )}
+        </div>
+        <p style={{
+          fontSize: '11px',
+          color: systemColors.text.secondary,
+          fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, Helvetica, Arial, sans-serif',
+          margin: '4px 0 0 0'
+        }}>
+          Selecione o arquivo .pfx ou .p12 do certificado digital
+        </p>
+      </div>
+
+      {/* Campo de Senha */}
+      <div style={systemStyles.input.container}>
+        <label style={systemStyles.input.label}>Senha do Certificado *</label>
+        <div style={{ display: 'flex', gap: '12px', alignItems: 'flex-start' }}>
+          <div style={{ flex: 1 }}>
+            <input
+              type="password"
+              value={certificatePassword}
+              onChange={(e) => setCertificatePassword(e.target.value)}
+              onKeyPress={(e) => {
+                if (e.key === 'Enter' && certificatePassword && tempFilePath) {
+                  handleValidateCertificate();
+                }
+              }}
+              placeholder="Digite a senha do certificado"
+              style={systemStyles.input.field}
+              disabled={!certificateFile}
+            />
+          </div>
+          <button
+            onClick={handleValidateCertificate}
+            disabled={!certificatePassword || !tempFilePath || isLoading}
+            style={{
+              ...systemStyles.button.primary,
+              flex: '0 0 auto',
+              ...(!certificatePassword || !tempFilePath || isLoading ? systemStyles.button.disabled : {})
+            }}
+            onMouseOver={(e) => {
+              if (certificatePassword && tempFilePath && !isLoading) {
+                Object.assign(e.currentTarget.style, systemStyles.button.primaryHover);
+              }
+            }}
+            onMouseOut={(e) => {
+              if (certificatePassword && tempFilePath && !isLoading) {
+                Object.assign(e.currentTarget.style, systemStyles.button.primary);
+              }
+            }}
+          >
+            {isLoading ? 'Validando...' : 'Validar'}
+          </button>
+        </div>
+        <p style={{
+          fontSize: '11px',
+          color: systemColors.text.secondary,
+          fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, Helvetica, Arial, sans-serif',
+          margin: '4px 0 0 0'
+        }}>
+          Digite a senha e clique em "Validar" para extrair as informações do certificado
+        </p>
       </div>
 
       {/* Botão Salvar */}
       <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
         <button
           onClick={handleSave}
-          disabled={!hasChanges || !selectedCertificate}
+          disabled={!canSave}
           style={{
             ...systemStyles.button.primary,
-            ...(!hasChanges || !selectedCertificate ? systemStyles.button.disabled : {}),
-            ...(!hasChanges || !selectedCertificate ? {} : systemStyles.button.primaryHover)
+            ...(!canSave ? systemStyles.button.disabled : {}),
+            ...(!canSave ? {} : systemStyles.button.primaryHover)
           }}
           onMouseOver={(e) => {
-            if (hasChanges && selectedCertificate) {
+            if (canSave) {
               Object.assign(e.currentTarget.style, systemStyles.button.primaryHover);
             }
           }}
           onMouseOut={(e) => {
-            if (hasChanges && selectedCertificate) {
+            if (canSave) {
               Object.assign(e.currentTarget.style, systemStyles.button.primary);
             }
           }}
@@ -279,40 +500,107 @@ export function CertificateSubTab(): JSX.Element {
             color: '#2E7D32',
             fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, Helvetica, Arial, sans-serif'
           }}>
-            Certificado salvo com sucesso!
+            Certificado e configurações salvos com sucesso!
           </span>
         </div>
       )}
 
-      {/* Informações do certificado e ambiente salvos */}
-      {savedCertificate && !showSuccessMessage && (
+      {/* Informações do Certificado Salvo */}
+      {certificateMetadata && !showSuccessMessage && (
         <div style={{
-          padding: '16px',
-          background: systemColors.selection.background,
-          border: `1px solid ${systemColors.selection.border}`,
-          borderRadius: '6px',
+          padding: '20px',
+          background: systemColors.background.secondary,
+          border: `1px solid ${systemColors.border.light}`,
+          borderRadius: '8px',
           display: 'flex',
           flexDirection: 'column',
-          gap: '8px'
+          gap: '12px'
         }}>
-          <p style={{
-            fontSize: '12px',
+          <h3 style={{
+            fontSize: '14px',
+            fontWeight: '600',
             color: systemColors.text.primary,
             fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, Helvetica, Arial, sans-serif',
             margin: 0
           }}>
-            <strong>Certificado selecionado:</strong> {savedCertificate}
-          </p>
-          <p style={{
-            fontSize: '12px',
-            color: systemColors.text.primary,
-            fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, Helvetica, Arial, sans-serif',
-            margin: 0
-          }}>
-            <strong>Ambiente ativo:</strong> {savedEnvironment === 'producao' ? 'Produção' : 'Homologação'}
-          </p>
+            Informações do Certificado
+          </h3>
+
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+            {certificateMetadata.validTo && (
+              <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                <span style={{
+                  fontSize: '12px',
+                  color: systemColors.text.secondary,
+                  fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, Helvetica, Arial, sans-serif'
+                }}>
+                  Validade:
+                </span>
+                <span style={{
+                  fontSize: '12px',
+                  fontWeight: '500',
+                  color: systemColors.text.primary,
+                  fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, Helvetica, Arial, sans-serif'
+                }}>
+                  {new Date(certificateMetadata.validTo).toLocaleDateString('pt-BR')}
+                </span>
+              </div>
+            )}
+
+            {certificateMetadata.cnpj && (
+              <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                <span style={{
+                  fontSize: '12px',
+                  color: systemColors.text.secondary,
+                  fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, Helvetica, Arial, sans-serif'
+                }}>
+                  CNPJ:
+                </span>
+                <span style={{
+                  fontSize: '12px',
+                  fontWeight: '500',
+                  color: systemColors.text.primary,
+                  fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, Helvetica, Arial, sans-serif'
+                }}>
+                  {certificateMetadata.cnpj}
+                </span>
+              </div>
+            )}
+
+            {certificateMetadata.companyName && (
+              <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                <span style={{
+                  fontSize: '12px',
+                  color: systemColors.text.secondary,
+                  fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, Helvetica, Arial, sans-serif'
+                }}>
+                  Empresa:
+                </span>
+                <span style={{
+                  fontSize: '12px',
+                  fontWeight: '500',
+                  color: systemColors.text.primary,
+                  fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, Helvetica, Arial, sans-serif'
+                }}>
+                  {certificateMetadata.companyName}
+                </span>
+              </div>
+            )}
+          </div>
         </div>
       )}
+
+      {/* Dialog para mensagens */}
+      <Dialog
+        isOpen={dialogOpen}
+        onClose={() => setDialogOpen(false)}
+        onConfirm={() => setDialogOpen(false)}
+        warning={dialogWarning}
+        hint={dialogHint}
+        confirmLabel="OK"
+        showCancel={false}
+      />
+
     </div>
   );
 }

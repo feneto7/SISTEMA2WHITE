@@ -7,7 +7,7 @@ import { WindowHeader } from '../../../../components/WindowHeader/WindowHeader';
 import { Dialog } from '../../../../components/Dialog';
 import { AppIcons } from '../../../../components/Icons/AppIcons';
 import { convertReaisToCents } from '../../../../utils/money';
-import { apiGet } from '../../../../utils/apiService';
+import { apiGet, apiPost } from '../../../../utils/apiService';
 
 // New MDF-e modal
 // Modularized component following project rules
@@ -299,7 +299,6 @@ export function NewMDFe({ isOpen, onClose, onSave }: NewMDFeProps): JSX.Element 
     // Busca dados da empresa da API antes de gerar o JSON
     let companyData: CompanyData | undefined = undefined;
     try {
-      console.log('[NewMDFe] Buscando dados da empresa...');
       const response = await apiGet('/api/companies', { requireAuth: true });
       
       if (response.ok) {
@@ -318,17 +317,11 @@ export function NewMDFe({ isOpen, onClose, onSave }: NewMDFeProps): JSX.Element 
         
         if (companies && companies.length > 0) {
           const company = companies[0];
-          console.log('[NewMDFe] Empresa encontrada:', company);
           companyData = company as CompanyData;
-        } else {
-          console.warn('[NewMDFe] Nenhuma empresa encontrada na API, usando dados do formulário como fallback');
         }
-      } else {
-        console.warn('[NewMDFe] Erro ao buscar empresa:', response.status, 'Usando dados do formulário como fallback');
       }
     } catch (error) {
-      console.error('[NewMDFe] Erro ao buscar dados da empresa:', error);
-      console.warn('[NewMDFe] Usando dados do formulário como fallback');
+      // Em caso de erro, usa apenas os dados do formulário
     }
 
     // Gerar JSON estruturado no padrão SEFAZ (passa dados da empresa se disponível)
@@ -336,16 +329,69 @@ export function NewMDFe({ isOpen, onClose, onSave }: NewMDFeProps): JSX.Element 
 
     // Normalizações críticas antes do envio à API/SEFAZ
     mdfeJSON = normalizeMdfeForApi(mdfeJSON);
-    
-    console.log('MDF-e JSON gerado para envio à API:', JSON.stringify(mdfeJSON, null, 2));
-    
+
+    // Buscar certificado digital salvo no sistema
+    const certificateBase64 = localStorage.getItem('certificate_file_base64');
+    const certificatePassword = localStorage.getItem('certificate_password');
+    const fiscalEnvironment = (localStorage.getItem('fiscal_environment') as 'producao' | 'homologacao' | null) || 'homologacao';
+    const certificateMetadataRaw = localStorage.getItem('certificate_metadata');
+    const certificateMetadata = certificateMetadataRaw ? JSON.parse(certificateMetadataRaw) : null;
+
+    // Se não houver certificado configurado, exibe diálogo de erro e interrompe
+    if (!certificateBase64 || !certificatePassword) {
+      setValidationDialogType('error');
+      setValidationMessage('Certificado digital não configurado.');
+      setValidationHint(
+        'Para emitir o MDF-e é necessário configurar o certificado digital em "Configurações > Fiscal > Certificado Digital".'
+      );
+      setShowValidationDialog(true);
+      return;
+    }
+
+    // Dados do certificado que serão enviados para a API (assinatura ocorre na API)
+    const certificatePayload = {
+      base64: certificateBase64,
+      password: certificatePassword,
+      environment: fiscalEnvironment,
+      environmentCode: getAmbCode(fiscalEnvironment),
+      metadata: certificateMetadata
+    };
+
     // Dados que serão salvos localmente e enviados para a API
     const mdfeData = {
       ...formData,
       mdfeJSON: mdfeJSON, // JSON estruturado no padrão SEFAZ para enviar à API
       status: 'gerado',
-      dataGeracao: new Date().toISOString()
+      dataGeracao: new Date().toISOString(),
+      certificate: certificatePayload
     };
+
+    // Incrementar automaticamente o próximo número de MDF-e na configuração
+    try {
+      // Usa o mesmo ambiente fiscal já carregado
+      const amb = getAmbCode(fiscalEnvironment);
+
+      // Garante que temos um número atual antes de tentar incrementar
+      if (formData.mdfeNumber) {
+        const numeric = parseInt(String(formData.mdfeNumber).replace(/\D/g, ''), 10);
+        if (!Number.isNaN(numeric)) {
+          const length = String(formData.mdfeNumber).length;
+          const nextNumber = String(numeric + 1).padStart(length, '0');
+
+          await apiPost(
+            '/api/mdfe-config',
+            {
+              serie: formData.mdfeSeries || '001',
+              nMDF: nextNumber,
+              amb
+            },
+            { requireAuth: true }
+          );
+        }
+      }
+    } catch {
+      // Em caso de erro ao atualizar numeração, não bloqueia a criação do MDF-e
+    }
 
     // Envia os dados para o componente pai que fará a chamada à API
     // O componente pai controla quando fechar o modal após a resposta da API
@@ -380,8 +426,6 @@ export function NewMDFe({ isOpen, onClose, onSave }: NewMDFeProps): JSX.Element 
         const activeEnv = fiscalEnvironment || 'homologacao';
         const amb = getAmbCode(activeEnv);
 
-        console.log('[NewMDFe] Carregando configuração de MDF-e para ambiente:', activeEnv, 'amb:', amb);
-
         // Busca a configuração da API
         const response = await apiGet(`/api/mdfe-config?amb=${amb}`, {
           requireAuth: true
@@ -393,21 +437,13 @@ export function NewMDFe({ isOpen, onClose, onSave }: NewMDFeProps): JSX.Element 
             : response.data.data;
 
           if (config) {
-            console.log('[NewMDFe] Configuração encontrada:', config);
-            
             // Preenche número e série da MDF-e
             setFormData(prev => ({
               ...prev,
               mdfeNumber: config.nMDF || '',
               mdfeSeries: config.serie || '001'
             }));
-
-            console.log('[NewMDFe] Número e série preenchidos:', {
-              numero: config.nMDF,
-              serie: config.serie
-            });
           } else {
-            console.warn('[NewMDFe] Configuração não encontrada para ambiente:', activeEnv);
             // Mantém valores padrão
             setFormData(prev => ({
               ...prev,
@@ -416,7 +452,6 @@ export function NewMDFe({ isOpen, onClose, onSave }: NewMDFeProps): JSX.Element 
             }));
           }
         } else {
-          console.warn('[NewMDFe] Erro ao buscar configuração:', response.status);
           // Mantém valores padrão em caso de erro
           setFormData(prev => ({
             ...prev,
@@ -425,7 +460,6 @@ export function NewMDFe({ isOpen, onClose, onSave }: NewMDFeProps): JSX.Element 
           }));
         }
       } catch (error) {
-        console.error('[NewMDFe] Erro ao carregar configuração de MDF-e:', error);
         // Mantém valores padrão em caso de erro
         setFormData(prev => ({
           ...prev,
